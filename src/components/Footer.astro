@@ -1,0 +1,86 @@
+---
+import Container from './Container.astro';
+import { footerNav, footerLegal, social } from '../data/navigation';
+import logo from '../assets/icons/logo.svg';
+const year = new Date().getFullYear();
+---
+<footer class="bg-ink text-surface">
+  <Container size="xl" class="py-16 md:py-24">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
+      <div>
+        <a href="/" class="inline-block" aria-label="Sonan Bunkers — home">
+          <img
+            src={logo.src}
+            alt="Sonan Bunkers"
+            width={logo.width}
+            height={logo.height}
+            class="h-10 w-auto brightness-0 invert"
+            loading="lazy"
+          />
+        </a>
+      </div>
+      {footerNav.map((col) => (
+        <div>
+          <h4 class="text-xs font-semibold uppercase tracking-widest text-surface/80">{col.title}</h4>
+          <ul class="mt-4 space-y-2">
+            {col.items.map((it) => (
+              <li>
+                <a
+                  class="text-sm text-surface/70 hover:text-surface transition-colors duration-fast"
+                  href={it.href}
+                >
+                  {it.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
+      {social.length > 0 && (
+        <div>
+          <h4 class="text-xs font-semibold uppercase tracking-widest text-surface/80">Connect</h4>
+          <div class="mt-4 flex gap-4">
+            {social.map((s) => (
+              <a
+                href={s.href}
+                aria-label={s.label}
+                class="text-surface/70 hover:text-surface transition-colors duration-fast"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  aria-hidden="true"
+                  set:html={s.icon}
+                />
+              </a>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+
+    <div class="mt-12 pt-8 border-t border-surface/10 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-surface/60">
+      <p>&copy; Copyright 2020&ndash;{year}</p>
+      {footerLegal.length > 0 && (
+        <nav aria-label="Legal" class="flex flex-wrap items-center justify-center gap-x-4 gap-y-2">
+          {footerLegal.map((it) => (
+            <a class="hover:text-surface transition-colors duration-fast" href={it.href}>{it.label}</a>
+          ))}
+        </nav>
+      )}
+      <p>
+        Designed &amp; Developed by:
+        <a
+          href="https://www.noetik.gr"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="hover:text-surface transition-colors duration-fast"
+        >Noetik</a>
+      </p>
+    </div>
+  </Container>
+</footer>
