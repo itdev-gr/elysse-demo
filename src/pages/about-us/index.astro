@@ -1,0 +1,10 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Hero from '../../components/Hero.astro';
+import SectionRenderer from '../../components/SectionRenderer.astro';
+import { aboutUsPage as page } from '../../data/content';
+---
+<BaseLayout title={page.meta.title} description={page.meta.description}>
+  {page.hero && <Hero {...page.hero} />}
+  {page.sections.map((section) => <SectionRenderer section={section} />)}
+</BaseLayout>
