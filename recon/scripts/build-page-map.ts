@@ -11,6 +11,11 @@ const rows = pages
   })
   .join('\n');
 
+const homepageNav = pages.find(p => new URL(p.url).pathname === '/')?.navLinks ?? [];
+const navCaveat = homepageNav.length < 5
+  ? `_(Only the items inside <header> are captured; the source site also uses a JS-driven mega-menu — see ANIMATION_NOTES.md when written.)_\n`
+  : '';
+
 const md = `# Page Map — sonanbunkers.com
 
 Total pages discovered: **${pages.length}**
@@ -20,7 +25,7 @@ Total pages discovered: **${pages.length}**
 ${rows}
 
 ## Navigation links (homepage)
-${(pages.find(p => new URL(p.url).pathname === '/')?.navLinks ?? []).map(l => `- ${l}`).join('\n')}
+${navCaveat}${homepageNav.map(l => `- ${l}`).join('\n')}
 
 ## Footer links (homepage)
 ${(pages.find(p => new URL(p.url).pathname === '/')?.footerLinks ?? []).map(l => `- ${l}`).join('\n')}
