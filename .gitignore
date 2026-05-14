@@ -12,3 +12,11 @@ recon/screenshots/*.png
 recon/html/*.html
 recon/assets/**
 .lighthouseci/
+
+# Added by Astro scaffold
+.env.production
+.idea/
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
