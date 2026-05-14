@@ -1,0 +1,125 @@
+---
+interface Props {
+  id: string;
+  /** ms between auto-advances; pass 0 to disable */
+  autoplayMs?: number;
+  loop?: boolean;
+  /** how many slides visible (CSS sets flex-basis on slides) */
+  perView?: 1 | 2 | 3;
+}
+const { id, autoplayMs = 5000, loop = true, perView = 1 } = Astro.props;
+
+const basisCls = { 1: 'basis-full', 2: 'sm:basis-1/2 basis-full', 3: 'sm:basis-1/2 lg:basis-1/3 basis-full' }[perView];
+---
+<div
+  data-slider
+  data-slider-id={id}
+  data-slider-autoplay={autoplayMs}
+  data-slider-loop={loop ? '1' : '0'}
+  data-slider-perview={perView}
+  class={`relative ${basisCls ? '' : ''}`}
+>
+  <div class="overflow-hidden" data-slider-viewport>
+    <div class="flex" data-slider-container>
+      <slot />
+    </div>
+  </div>
+  <div class="mt-6 flex items-center justify-between gap-4">
+    <div class="flex flex-wrap gap-2" data-slider-dots aria-label="Slide indicators"></div>
+    <div class="flex gap-2">
+      <button data-slider-prev type="button" class="inline-flex items-center justify-center w-10 h-10 rounded-full border border-ink/20 text-ink hover:border-ink hover:bg-ink hover:text-surface transition-colors duration-fast disabled:opacity-40 disabled:cursor-not-allowed" aria-label="Previous slide">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+      <button data-slider-next type="button" class="inline-flex items-center justify-center w-10 h-10 rounded-full border border-ink/20 text-ink hover:border-ink hover:bg-ink hover:text-surface transition-colors duration-fast disabled:opacity-40 disabled:cursor-not-allowed" aria-label="Next slide">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+      </button>
+    </div>
+  </div>
+</div>
+<style is:global>
+  /* Graceful no-JS fallback: horizontal scroll snap */
+  [data-slider-viewport] {
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+  }
+  [data-slider-container] > * {
+    flex: 0 0 100%;
+    min-width: 0;
+    scroll-snap-align: start;
+  }
+  [data-slider-container] > [data-slide-basis="1/2"] { flex-basis: 100%; }
+  [data-slider-container] > [data-slide-basis="1/3"] { flex-basis: 100%; }
+  @media (min-width: 640px) {
+    [data-slider-container] > [data-slide-basis="1/2"] { flex-basis: 50%; }
+    [data-slider-container] > [data-slide-basis="1/3"] { flex-basis: 50%; }
+  }
+  @media (min-width: 1024px) {
+    [data-slider-container] > [data-slide-basis="1/3"] { flex-basis: 33.333%; }
+  }
+</style>
+<script>
+  import EmblaCarousel from 'embla-carousel';
+  import type { EmblaOptionsType, EmblaCarouselType } from 'embla-carousel';
+
+  const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function setupSlider(root: HTMLElement) {
+    const viewport = root.querySelector<HTMLElement>('[data-slider-viewport]');
+    const prevBtn = root.querySelector<HTMLButtonElement>('[data-slider-prev]');
+    const nextBtn = root.querySelector<HTMLButtonElement>('[data-slider-next]');
+    const dotsEl = root.querySelector<HTMLElement>('[data-slider-dots]');
+    if (!viewport || !prevBtn || !nextBtn || !dotsEl) return;
+
+    const autoplayMs = Number(root.dataset.sliderAutoplay ?? '5000');
+    const loop = root.dataset.sliderLoop === '1';
+    const opts: EmblaOptionsType = { loop, align: 'start', skipSnaps: false };
+    const embla: EmblaCarouselType = EmblaCarousel(viewport, opts);
+
+    prevBtn.addEventListener('click', () => embla.scrollPrev());
+    nextBtn.addEventListener('click', () => embla.scrollNext());
+
+    const renderDots = () => {
+      dotsEl.innerHTML = embla.scrollSnapList().map((_, i) =>
+        `<button type="button" class="h-2 w-6 rounded-full transition-colors duration-fast ${i === embla.selectedScrollSnap() ? 'bg-ink' : 'bg-ink/30 hover:bg-ink/60'}" data-dot="${i}" aria-label="Go to slide ${i + 1}" aria-current="${i === embla.selectedScrollSnap()}"></button>`
+      ).join('');
+      dotsEl.querySelectorAll<HTMLButtonElement>('[data-dot]').forEach((b) => {
+        b.addEventListener('click', () => embla.scrollTo(Number(b.dataset.dot)));
+      });
+    };
+    embla.on('select', renderDots);
+    embla.on('reInit', renderDots);
+    renderDots();
+
+    const updateButtons = () => {
+      if (!loop) {
+        prevBtn.disabled = !embla.canScrollPrev();
+        nextBtn.disabled = !embla.canScrollNext();
+      }
+    };
+    embla.on('select', updateButtons);
+    embla.on('reInit', updateButtons);
+    updateButtons();
+
+    // Autoplay (manual, pause on pointer enter / focus)
+    if (autoplayMs > 0 && !reduceMotion) {
+      let timer: number | null = null;
+      const stop = () => {
+        if (timer != null) {
+          window.clearInterval(timer);
+          timer = null;
+        }
+      };
+      const start = () => {
+        stop();
+        timer = window.setInterval(() => embla.scrollNext(), autoplayMs);
+      };
+      root.addEventListener('pointerenter', stop);
+      root.addEventListener('pointerleave', start);
+      root.addEventListener('focusin', stop);
+      root.addEventListener('focusout', start);
+      start();
+    }
+  }
+
+  document.querySelectorAll<HTMLElement>('[data-slider]').forEach(setupSlider);
+</script>

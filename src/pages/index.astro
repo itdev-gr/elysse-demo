@@ -6,6 +6,7 @@ import Hero from '../components/Hero.astro';
 import Card from '../components/Card.astro';
 import Section from '../components/Section.astro';
 import Container from '../components/Container.astro';
+import Slider from '../components/Slider.astro';
 import heroImage from '../assets/images/ocean-1440x900.jpg';
 import card1 from '../assets/images/shutterstock-377226832-fuel-products.jpg';
 import card2 from '../assets/images/shutterstock-377226832-biofuels.jpg';
@@ -43,6 +44,50 @@ import card3 from '../assets/images/shutterstock-377226832-advisory-services.jpg
           <Card title="Advisory" eyebrow="Service" image={card3} href="/our-services/advisory-services/">
             Risk management, hedging and procurement consulting.
           </Card>
+        </div>
+      </Container>
+    </Section>
+    <Section spacing="lg">
+      <Container size="xl">
+        <h2 class="text-display-2 font-display">News</h2>
+        <div class="mt-12">
+          <Slider id="news" autoplayMs={5000} perView={3}>
+            <article data-slide-basis="1/3" class="pr-6">
+              <div class="bg-surface-alt p-6">
+                <p class="text-xs uppercase tracking-widest text-brand-500">News</p>
+                <h3 class="mt-2 text-xl font-display">Slide 1</h3>
+                <p class="mt-3 text-sm text-ink/70">Placeholder slide content.</p>
+              </div>
+            </article>
+            <article data-slide-basis="1/3" class="pr-6">
+              <div class="bg-surface-alt p-6">
+                <p class="text-xs uppercase tracking-widest text-brand-500">News</p>
+                <h3 class="mt-2 text-xl font-display">Slide 2</h3>
+                <p class="mt-3 text-sm text-ink/70">Placeholder slide content.</p>
+              </div>
+            </article>
+            <article data-slide-basis="1/3" class="pr-6">
+              <div class="bg-surface-alt p-6">
+                <p class="text-xs uppercase tracking-widest text-brand-500">News</p>
+                <h3 class="mt-2 text-xl font-display">Slide 3</h3>
+                <p class="mt-3 text-sm text-ink/70">Placeholder slide content.</p>
+              </div>
+            </article>
+            <article data-slide-basis="1/3" class="pr-6">
+              <div class="bg-surface-alt p-6">
+                <p class="text-xs uppercase tracking-widest text-brand-500">News</p>
+                <h3 class="mt-2 text-xl font-display">Slide 4</h3>
+                <p class="mt-3 text-sm text-ink/70">Placeholder slide content.</p>
+              </div>
+            </article>
+            <article data-slide-basis="1/3" class="pr-6">
+              <div class="bg-surface-alt p-6">
+                <p class="text-xs uppercase tracking-widest text-brand-500">News</p>
+                <h3 class="mt-2 text-xl font-display">Slide 5</h3>
+                <p class="mt-3 text-sm text-ink/70">Placeholder slide content.</p>
+              </div>
+            </article>
+          </Slider>
         </div>
       </Container>
     </Section>
