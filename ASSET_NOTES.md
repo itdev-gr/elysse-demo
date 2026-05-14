@@ -68,3 +68,68 @@ Filename normalization rules applied to media files (and the renames log is at
 - `https://www.sonanbunkers.com/media/<id>/<file>` → `src/assets/images/<normalized-file>` (still images) or `public/media/<file>` (video).
 
 The recon cache at `recon/assets/` is untouched and remains gitignored for re-runs.
+
+## Task 17 — Optimization log
+
+Recorded sizes after the Task 16 move + SVGO pass. Build-time resizing and
+AVIF/WebP transcoding are deferred to `astro:assets` — they apply only to
+files imported via TypeScript, not anything under `public/`.
+
+### SVG (SVGO --multipass)
+
+| Path | Bytes |
+|------|------:|
+| icons/logo-2.svg | 2,133 |
+| icons/logo-7.svg | 2,849 |
+| icons/logo.svg   | 2,711 |
+
+Total saved by SVGO: ~1,969 B (~20.4%) across 3 files.
+
+### Raster icons (PNG, unoptimized)
+
+9 PNG icons under `src/assets/icons/` (~45 KB total). Astro pipeline will
+optimize on import; un-imported icons stay as authored.
+
+### Content images (`src/assets/images/`)
+
+- File count: **70**
+- Total size: **80 MB** (originals, pre-pipeline)
+- Largest 10 (most build-time savings expected):
+
+| File | Original |
+|------|---------:|
+| shutterstock-699756580-2.jpg                            | 6,907 KB |
+| shutterstock-377226832-csr.jpg                          | 6,288 KB |
+| shutterstock-374742190-group-ceo-statement.jpg          | 5,203 KB |
+| shutterstock-132708305-our-commitment-to-clients.png    | 4,951 KB |
+| services.jpg                                            | 4,562 KB |
+| shutterstock-1957229728-your-marine-energy-provider.jpg | 4,562 KB |
+| shutterstock-147759191-group-cfo-statement.jpg          | 4,045 KB |
+| shutterstock-377226832-core-values.jpg                  | 3,534 KB |
+| shutterstock-377226832-compliance.jpg                   | 3,215 KB |
+| shutterstock-377226832-carbon-footprint.jpg             | 2,890 KB |
+
+These will be re-emitted by `astro:assets` at responsive widths (typically
+480 / 960 / 1440) as AVIF + WebP with a JPEG fallback — expect ~85–95% byte
+reduction per delivered variant vs. the originals listed above.
+
+> **License note on `shutterstock-*` filenames**: filenames reflect the
+> source CMS. Confirm relevant Shutterstock licenses cover redistribution
+> on the rebuilt domain before shipping. If any image is not covered, it
+> will be replaced with a same-dimensions placeholder and logged below
+> under "Replacements".
+
+### Video (`public/media/`)
+
+| File | Size |
+|------|-----:|
+| 1052896514-hd.mp4 | 6.5 MB |
+
+No WebM fallback yet. Add `<source type="video/webm">` in Task 22 if the
+hero/feature reel ships in a `<video>` element.
+
+## Replacements
+
+_None._ User owns sonanbunkers.com so all original site assets are
+authorized. This section will be appended to if any third-party stock asset
+turns out to lack carryover license rights for the rebuilt domain.
