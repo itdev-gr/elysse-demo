@@ -2,19 +2,50 @@
 import '../styles/global.css';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import Hero from '../components/Hero.astro';
+import Card from '../components/Card.astro';
+import Section from '../components/Section.astro';
+import Container from '../components/Container.astro';
+import heroImage from '../assets/images/ocean-1440x900.jpg';
+import card1 from '../assets/images/shutterstock-377226832-fuel-products.jpg';
+import card2 from '../assets/images/shutterstock-377226832-biofuels.jpg';
+import card3 from '../assets/images/shutterstock-377226832-advisory-services.jpg';
 ---
 <!doctype html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Smoke test</title>
+  <title>Sonan Bunkers &mdash; smoke test</title>
 </head>
-<body class="min-h-screen pt-24">
+<body class="min-h-screen">
   <Header />
-  <main class="p-8 min-h-[200vh]">
-    <h1 class="text-display-2 font-display">Footer smoke test</h1>
-    <p class="mt-4">Scroll to test header sticky state and footer.</p>
+  <main>
+    <Hero
+      eyebrow="Marine Energy"
+      headline="Fuelling the journey ahead"
+      sub="A leading provider of bunker fuels and energy advisory services for the global maritime industry."
+      image={heroImage}
+      imageAlt="Container ship at sea"
+      cta={{ label: 'Our Services', href: '/our-services/' }}
+      ctaSecondary={{ label: 'Contact us', href: '/contact/' }}
+    />
+    <Section bg="alt" spacing="lg">
+      <Container size="xl">
+        <h2 class="text-display-2 font-display">What we do</h2>
+        <div class="mt-12 grid sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+          <Card title="Fuel Products" eyebrow="Service" image={card1} href="/our-services/fuel-products/">
+            Conventional and low-sulphur marine fuels delivered worldwide.
+          </Card>
+          <Card title="Alternative Fuels" eyebrow="Service" image={card2} href="/our-services/alternative-fuels/">
+            Biofuels, LNG and electricity for the energy transition.
+          </Card>
+          <Card title="Advisory" eyebrow="Service" image={card3} href="/our-services/advisory-services/">
+            Risk management, hedging and procurement consulting.
+          </Card>
+        </div>
+      </Container>
+    </Section>
   </main>
   <Footer />
 </body>
