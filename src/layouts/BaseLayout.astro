@@ -1,0 +1,81 @@
+---
+import '../styles/global.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { fontLinks } from '../data/fonts';
+
+interface Props {
+  title: string;
+  description?: string;
+  ogImage?: string;
+  canonical?: string;
+  /** Hides Header (e.g. for a custom landing). Default false. */
+  hideHeader?: boolean;
+  /** Hides Footer. Default false. */
+  hideFooter?: boolean;
+  /** Apply top padding to main to clear the fixed Header. Default true. */
+  padForHeader?: boolean;
+}
+
+const {
+  title,
+  description,
+  ogImage,
+  canonical,
+  hideHeader = false,
+  hideFooter = false,
+  padForHeader = true,
+} = Astro.props;
+
+const SITE = Astro.site?.toString().replace(/\/$/, '') ?? '';
+const canonicalHref = canonical ?? `${SITE}${Astro.url.pathname}`;
+const fullOgImage = ogImage
+  ? (ogImage.startsWith('http') ? ogImage : `${SITE}${ogImage}`)
+  : `${SITE}/og-default.jpg`;
+
+const titleSuffix = 'Sonan Bunkers';
+const fullTitle = title === titleSuffix ? title : `${title} — ${titleSuffix}`;
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{fullTitle}</title>
+    {description && <meta name="description" content={description} />}
+    <link rel="canonical" href={canonicalHref} />
+
+    {/* Open Graph */}
+    <meta property="og:title" content={fullTitle} />
+    {description && <meta property="og:description" content={description} />}
+    <meta property="og:image" content={fullOgImage} />
+    <meta property="og:url" content={canonicalHref} />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Sonan Bunkers" />
+
+    {/* Twitter */}
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={fullTitle} />
+    {description && <meta name="twitter:description" content={description} />}
+    <meta name="twitter:image" content={fullOgImage} />
+
+    {/* Icons */}
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="alternate icon" href="/favicon.ico" />
+
+    {/* Fonts — Monotype + Google per src/data/fonts.ts */}
+    {fontLinks.map((f) => (
+      <link rel={f.rel} type={f.type} href={f.href} />
+    ))}
+
+    <slot name="head" />
+  </head>
+  <body class="min-h-screen flex flex-col bg-surface text-ink font-sans antialiased">
+    {!hideHeader && <Header />}
+    <main class={`flex-1 ${padForHeader ? 'pt-20 md:pt-24' : ''}`}>
+      <slot />
+    </main>
+    {!hideFooter && <Footer />}
+  </body>
+</html>
