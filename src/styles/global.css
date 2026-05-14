@@ -118,6 +118,7 @@
    */
   --radius-none: 0px;
   --radius-chip: 2px;
+  --radius-input: 2px;     /* near-square form fields (matches source) */
   --radius-btn: 3px;       /* Bootstrap-default-ish button/input radius */
   --radius-pill: 20px;
   --radius-full: 50%;      /* circular icon backgrounds */

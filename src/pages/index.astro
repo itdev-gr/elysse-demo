@@ -7,6 +7,9 @@ import Card from '../components/Card.astro';
 import Section from '../components/Section.astro';
 import Container from '../components/Container.astro';
 import Slider from '../components/Slider.astro';
+import Input from '../components/Input.astro';
+import Textarea from '../components/Textarea.astro';
+import OfficeCard from '../components/OfficeCard.astro';
 import heroImage from '../assets/images/ocean-1440x900.jpg';
 import card1 from '../assets/images/shutterstock-377226832-fuel-products.jpg';
 import card2 from '../assets/images/shutterstock-377226832-biofuels.jpg';
@@ -88,6 +91,33 @@ import card3 from '../assets/images/shutterstock-377226832-advisory-services.jpg
               </div>
             </article>
           </Slider>
+        </div>
+      </Container>
+    </Section>
+    <Section bg="default" spacing="md">
+      <Container size="lg">
+        <h2 class="text-display-2 font-display">Forms + Offices</h2>
+        <form class="mt-8 grid gap-4 max-w-md" action="#" method="post">
+          <Input name="name" label="Name" required />
+          <Input name="email" type="email" label="Email" required />
+          <Textarea name="message" label="Message" required />
+          <button type="submit" class="btn-primary inline-flex items-center justify-center px-6 py-3 bg-brand-500 text-surface uppercase tracking-wide text-sm font-medium rounded-btn hover:bg-brand-600 transition-colors duration-fast">Send</button>
+        </form>
+        <div class="mt-12 grid sm:grid-cols-2 gap-6">
+          <OfficeCard
+            city="London"
+            region="United Kingdom"
+            addressLines={['12 Example Street', 'London EC1A 1BB']}
+            phones={['+44 20 0000 0000']}
+            email="london@sonanbunkers.com"
+          />
+          <OfficeCard
+            city="Athens"
+            region="Greece"
+            addressLines={['1 Example Avenue', 'Athens 11743']}
+            phones={['+30 21 0000 0000']}
+            email="athens@sonanbunkers.com"
+          />
         </div>
       </Container>
     </Section>

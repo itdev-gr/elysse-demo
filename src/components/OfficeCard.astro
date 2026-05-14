@@ -1,0 +1,39 @@
+---
+interface Props {
+  city: string;
+  region?: string;
+  addressLines?: string[];
+  phones?: string[];
+  email?: string;
+  /** Slot for additional rich content (map link, hours, etc.) */
+}
+const { city, region, addressLines = [], phones = [], email } = Astro.props;
+---
+<article class="bg-surface border-t border-ink/15 py-6 md:py-8">
+  <header>
+    <h3 class="font-display text-2xl md:text-3xl leading-tight">{city}</h3>
+    {region && <p class="mt-1 text-sm text-ink-muted uppercase tracking-wide">{region}</p>}
+  </header>
+  <div class="mt-4 space-y-1 text-sm text-ink/80">
+    {addressLines.map((line) => <p>{line}</p>)}
+  </div>
+  {phones.length > 0 && (
+    <div class="mt-4 space-y-1">
+      {phones.map((p) => (
+        <p class="text-sm">
+          <span class="text-ink-muted">T </span>
+          <a class="text-ink hover:text-brand-500 transition-colors duration-fast" href={`tel:${p.replace(/[^\d+]/g, '')}`}>{p}</a>
+        </p>
+      ))}
+    </div>
+  )}
+  {email && (
+    <p class="mt-4">
+      <a class="group inline-flex items-center gap-2 text-sm font-medium text-ink hover:text-brand-500 transition-colors duration-fast" href={`mailto:${email}`}>
+        Message
+        <span aria-hidden="true" class="transition-transform duration-fast group-hover:translate-x-1">+</span>
+      </a>
+    </p>
+  )}
+  <slot />
+</article>
