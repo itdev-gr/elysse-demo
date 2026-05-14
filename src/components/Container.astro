@@ -1,0 +1,17 @@
+---
+interface Props {
+  size?: 'sm' | 'md' | 'lg' | 'xl' | 'full';
+  class?: string;
+}
+const { size = 'xl', class: extra = '' } = Astro.props;
+const sizes = {
+  sm:   'max-w-3xl',
+  md:   'max-w-5xl',
+  lg:   'max-w-6xl',
+  xl:   'max-w-content',    /* 1360px — matches source container per DESIGN.md */
+  full: 'max-w-none',
+} as const;
+---
+<div class={`mx-auto px-4 sm:px-6 lg:px-8 ${sizes[size]} ${extra}`.trim()}>
+  <slot />
+</div>

@@ -1,0 +1,30 @@
+---
+interface Props {
+  tag?: 'section' | 'article' | 'div' | 'aside';
+  bg?: 'default' | 'alt' | 'ink' | 'brand';
+  spacing?: 'sm' | 'md' | 'lg';
+  id?: string;
+  class?: string;
+}
+const {
+  tag: Tag = 'section',
+  bg = 'default',
+  spacing = 'md',
+  id,
+  class: extra = '',
+} = Astro.props;
+const bgs = {
+  default: 'bg-surface text-ink',
+  alt:     'bg-surface-alt text-ink',
+  ink:     'bg-ink text-surface',
+  brand:   'bg-brand-500 text-surface',
+} as const;
+const spacings = {
+  sm: 'py-12 md:py-16',
+  md: 'py-16 md:py-24',
+  lg: 'py-24 md:py-32',
+} as const;
+---
+<Tag id={id} class={`${bgs[bg]} ${spacings[spacing]} ${extra}`.trim()}>
+  <slot />
+</Tag>
