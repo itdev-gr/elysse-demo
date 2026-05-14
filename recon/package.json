@@ -1,0 +1,20 @@
+{
+  "name": "sonan-recon",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "crawl": "tsx scripts/crawl.ts",
+    "screenshots": "tsx scripts/screenshots.ts",
+    "assets": "tsx scripts/inventory-assets.ts",
+    "motion": "tsx scripts/extract-motion.ts"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.49.0",
+    "playwright": "^1.49.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.6.0",
+    "cheerio": "^1.0.0",
+    "node-fetch": "^3.3.2"
+  }
+}
