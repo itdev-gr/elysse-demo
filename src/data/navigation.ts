@@ -1,13 +1,84 @@
 export interface NavItem { label: string; href: string; children?: NavItem[]; }
 
+/**
+ * Primary navigation — mirrors the source site's `.main-menu-title` blocks
+ * (8 top-level sections plus a "Home" entry we add for the rebuild).
+ *
+ * Source order on https://www.sonanbunkers.com/ :
+ *   Sonan Bunkers · About Us · Our Services · Responsible Partner ·
+ *   Press Room · Contact · Careers · Legal
+ *
+ * The "Sonan Bunkers" top-level is a label only on the source (no anchor),
+ * but its child links live under /sonan-bunkers-people-working-together/.
+ * We point the top-level label at that hub so the menu remains navigable.
+ *
+ * `children` capture the source's sub-menu items so the eventual mega-menu /
+ * mobile drawer can render them without re-querying the source.
+ */
 export const primaryNav: NavItem[] = [
   { label: 'Home', href: '/' },
-  { label: 'About Us', href: '/about-us/' },
-  { label: 'Our Services', href: '/our-services/' },
-  { label: 'Responsible Partner', href: '/responsible-partner/' },
-  { label: 'Press Room', href: '/press-room/' },
-  { label: 'Careers', href: '/careers/' },
+  {
+    label: 'Sonan Bunkers',
+    href: '/sonan-bunkers-people-working-together/',
+    children: [
+      { label: 'Our Commitment to Clients', href: '/sonan-bunkers-people-working-together/our-commitment-to-clients/' },
+      { label: 'Our Team', href: '/sonan-bunkers-people-working-together/our-team/' },
+    ],
+  },
+  {
+    label: 'About Us',
+    href: '/about-us/',
+    children: [
+      { label: 'Your Marine Energy Provider', href: '/about-us/your-marine-energy-provider/' },
+      { label: 'Group CEO Statement', href: '/about-us/group-ceo-statement/' },
+      { label: 'Group CFO Statement', href: '/about-us/group-cfo-statement/' },
+    ],
+  },
+  {
+    label: 'Our Services',
+    href: '/our-services/',
+    children: [
+      { label: 'Fuel Products', href: '/our-services/fuel-products/' },
+      { label: 'Marine Lubricants', href: '/our-services/marine-lubricants/' },
+      { label: 'Alternative Fuels', href: '/our-services/alternative-fuels/' },
+      { label: 'Advisory Services', href: '/our-services/advisory-services/' },
+      { label: 'Risk Management / Hedging', href: '/our-services/risk-management-hedging/' },
+      { label: 'Carbon Footprint', href: '/our-services/carbon-footprint-compensation/' },
+      { label: 'Fuel Traceability', href: '/our-services/digital-physical-fuel-traceability/' },
+    ],
+  },
+  {
+    label: 'Responsible Partner',
+    href: '/responsible-partner/',
+    children: [
+      { label: 'Compliance', href: '/responsible-partner/compliance/' },
+      { label: 'CSR', href: '/responsible-partner/csr/' },
+      { label: 'Data Protection', href: '/responsible-partner/data-protection-gdpr/' },
+      { label: 'HSEQ', href: '/responsible-partner/hseq/' },
+      { label: 'Anti-Corruption Policy', href: '/responsible-partner/anti-corruption-policy/' },
+      { label: 'Sustainability', href: '/responsible-partner/sustainability/' },
+    ],
+  },
+  {
+    label: 'Press Room',
+    href: '/press-room/',
+    children: [
+      { label: 'News', href: '/press-room/news/' },
+      { label: 'Annual Reports', href: '/press-room/annual-reports/' },
+    ],
+  },
   { label: 'Contact', href: '/contact/' },
+  { label: 'Careers', href: '/careers/' },
+  {
+    label: 'Legal',
+    href: '/legal/',
+    children: [
+      { label: 'Cookies', href: '/legal/cookies/' },
+      { label: 'Privacy Policy', href: '/legal/privacy-policy/' },
+      { label: 'Terms of Use', href: '/legal/terms-of-use/' },
+      { label: 'Terms and Conditions of Sale', href: '/legal/terms-and-conditions-of-sale/' },
+    ],
+  },
 ];
 
 /**
