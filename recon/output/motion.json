@@ -1,0 +1,2235 @@
+[
+  {
+    "url": "https://www.sonanbunkers.com/",
+    "animated": [
+      {
+        "tag": "header",
+        "cls": "",
+        "id": "header",
+        "markers": {},
+        "transition": {
+          "property": "background-color",
+          "duration": "0.5s",
+          "timing": "ease",
+          "delay": "0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "section",
+        "cls": "section-1 d-flex section fp-noscroll fp-section active fp-completely fp-loaded-before",
+        "markers": {},
+        "transition": {
+          "property": "background-position",
+          "duration": "1s",
+          "timing": "ease",
+          "delay": "0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "h1",
+        "cls": "hc1 text-center",
+        "markers": {},
+        "transition": {
+          "property": "opacity",
+          "duration": "2s",
+          "timing": "ease",
+          "delay": "0.5s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "a",
+        "cls": "button-c1 mt-5 mr-5 mr-md-0",
+        "markers": {},
+        "transition": {
+          "property": "all",
+          "duration": "0.5s",
+          "timing": "ease",
+          "delay": "0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "a",
+        "cls": "button-c2 ml-md-5 mt-5",
+        "markers": {},
+        "transition": {
+          "property": "all",
+          "duration": "0.5s",
+          "timing": "ease",
+          "delay": "0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "a",
+        "cls": "section-1-cities-move-content",
+        "markers": {},
+        "transition": null,
+        "animation": {
+          "name": "anim-1",
+          "duration": "10s",
+          "timing": "ease-in-out",
+          "delay": "5s",
+          "iter": "infinite"
+        }
+      },
+      {
+        "tag": "section",
+        "cls": "frontpage-section section fp-section",
+        "markers": {},
+        "transition": {
+          "property": "background-position",
+          "duration": "1s",
+          "timing": "ease",
+          "delay": "0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "a",
+        "cls": "button-c3",
+        "markers": {},
+        "transition": {
+          "property": "all",
+          "duration": "0.5s",
+          "timing": "ease",
+          "delay": "0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "h2",
+        "cls": "hc2 mt-5 mt-md-0 mt-lg-5 mlsc-4 mrsc-10 align-self-start fp-animate-opacity",
+        "markers": {},
+        "transition": {
+          "property": "opacity",
+          "duration": "2s",
+          "timing": "ease",
+          "delay": "0.5s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "section",
+        "cls": "frontpage-section section fp-section",
+        "markers": {},
+        "transition": {
+          "property": "background-position",
+          "duration": "1s",
+          "timing": "ease",
+          "delay": "0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "h2",
+        "cls": "hc2 mb-5 mrc-4 fp-animate-opacity",
+        "markers": {},
+        "transition": {
+          "property": "opacity",
+          "duration": "2s",
+          "timing": "ease",
+          "delay": "0.5s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "a",
+        "cls": "button-c3 bg-grey-1 align-middle mr-3 mt-4",
+        "markers": {},
+        "transition": {
+          "property": "all",
+          "duration": "0.5s",
+          "timing": "ease",
+          "delay": "0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "section",
+        "cls": "frontpage-section section fp-section",
+        "markers": {},
+        "transition": {
+          "property": "background-position",
+          "duration": "1s",
+          "timing": "ease",
+          "delay": "0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "h2",
+        "cls": "hc2 mb-5 mrc-4 fp-animate-opacity",
+        "markers": {},
+        "transition": {
+          "property": "opacity",
+          "duration": "2s",
+          "timing": "ease",
+          "delay": "0.5s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "a",
+        "cls": "button-c3 bg-grey-1 mr-3",
+        "markers": {},
+        "transition": {
+          "property": "all",
+          "duration": "0.5s",
+          "timing": "ease",
+          "delay": "0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "section",
+        "cls": "frontpage-section section fp-section",
+        "markers": {},
+        "transition": {
+          "property": "background-position",
+          "duration": "1s",
+          "timing": "ease",
+          "delay": "0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "a",
+        "cls": "button-c3 bg-grey-1 mr-3",
+        "markers": {},
+        "transition": {
+          "property": "all",
+          "duration": "0.5s",
+          "timing": "ease",
+          "delay": "0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "h2",
+        "cls": "hc2 mt-5 mlsc-4 mb-5 fp-animate-opacity",
+        "markers": {},
+        "transition": {
+          "property": "opacity",
+          "duration": "2s",
+          "timing": "ease",
+          "delay": "0.5s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "section",
+        "cls": "section-2 section bg-grey-2 fp-section",
+        "markers": {},
+        "transition": {
+          "property": "background-position",
+          "duration": "1s",
+          "timing": "ease",
+          "delay": "0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "span",
+        "cls": "hc3-left fp-animate-opacity",
+        "markers": {},
+        "transition": {
+          "property": "opacity",
+          "duration": "2s",
+          "timing": "ease",
+          "delay": "0.5s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "div",
+        "cls": "",
+        "markers": {},
+        "transition": {
+          "property": "all",
+          "duration": "0.5s",
+          "timing": "ease",
+          "delay": "0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "div",
+        "cls": "",
+        "markers": {},
+        "transition": {
+          "property": "all",
+          "duration": "0.5s",
+          "timing": "ease",
+          "delay": "0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "div",
+        "cls": "",
+        "markers": {},
+        "transition": {
+          "property": "all",
+          "duration": "0.5s",
+          "timing": "ease",
+          "delay": "0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "div",
+        "cls": "",
+        "markers": {},
+        "transition": {
+          "property": "all",
+          "duration": "0.5s",
+          "timing": "ease",
+          "delay": "0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "div",
+        "cls": "section-3 section fp-auto-height fp-section",
+        "markers": {},
+        "transition": {
+          "property": "background-position",
+          "duration": "1s",
+          "timing": "ease",
+          "delay": "0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "span",
+        "cls": "hc3-left fp-animate-opacity",
+        "markers": {},
+        "transition": {
+          "property": "opacity",
+          "duration": "2s",
+          "timing": "ease",
+          "delay": "0.5s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "a",
+        "cls": "button-c3-s",
+        "markers": {},
+        "transition": {
+          "property": "all",
+          "duration": "0.5s",
+          "timing": "ease",
+          "delay": "0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "a",
+        "cls": "button-c3-s",
+        "markers": {},
+        "transition": {
+          "property": "all",
+          "duration": "0.5s",
+          "timing": "ease",
+          "delay": "0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "a",
+        "cls": "button-c3-s",
+        "markers": {},
+        "transition": {
+          "property": "all",
+          "duration": "0.5s",
+          "timing": "ease",
+          "delay": "0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "a",
+        "cls": "button-c3-s",
+        "markers": {},
+        "transition": {
+          "property": "all",
+          "duration": "0.5s",
+          "timing": "ease",
+          "delay": "0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "a",
+        "cls": "button-c3-s",
+        "markers": {},
+        "transition": {
+          "property": "all",
+          "duration": "0.5s",
+          "timing": "ease",
+          "delay": "0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "a",
+        "cls": "button-c3-s",
+        "markers": {},
+        "transition": {
+          "property": "all",
+          "duration": "0.5s",
+          "timing": "ease",
+          "delay": "0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "a",
+        "cls": "button-c3-s",
+        "markers": {},
+        "transition": {
+          "property": "all",
+          "duration": "0.5s",
+          "timing": "ease",
+          "delay": "0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "a",
+        "cls": "button-c3-s",
+        "markers": {},
+        "transition": {
+          "property": "all",
+          "duration": "0.5s",
+          "timing": "ease",
+          "delay": "0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "span",
+        "cls": "fp-sr-only",
+        "markers": {},
+        "transition": {
+          "property": "all",
+          "duration": "0.1s",
+          "timing": "ease-in-out",
+          "delay": "0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "span",
+        "cls": "",
+        "markers": {},
+        "transition": {
+          "property": "all",
+          "duration": "0.1s",
+          "timing": "ease-in-out",
+          "delay": "0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "span",
+        "cls": "fp-sr-only",
+        "markers": {},
+        "transition": {
+          "property": "all",
+          "duration": "0.1s",
+          "timing": "ease-in-out",
+          "delay": "0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "span",
+        "cls": "",
+        "markers": {},
+        "transition": {
+          "property": "all",
+          "duration": "0.1s",
+          "timing": "ease-in-out",
+          "delay": "0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "span",
+        "cls": "fp-sr-only",
+        "markers": {},
+        "transition": {
+          "property": "all",
+          "duration": "0.1s",
+          "timing": "ease-in-out",
+          "delay": "0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "span",
+        "cls": "",
+        "markers": {},
+        "transition": {
+          "property": "all",
+          "duration": "0.1s",
+          "timing": "ease-in-out",
+          "delay": "0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "span",
+        "cls": "fp-sr-only",
+        "markers": {},
+        "transition": {
+          "property": "all",
+          "duration": "0.1s",
+          "timing": "ease-in-out",
+          "delay": "0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "span",
+        "cls": "",
+        "markers": {},
+        "transition": {
+          "property": "all",
+          "duration": "0.1s",
+          "timing": "ease-in-out",
+          "delay": "0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "span",
+        "cls": "fp-sr-only",
+        "markers": {},
+        "transition": {
+          "property": "all",
+          "duration": "0.1s",
+          "timing": "ease-in-out",
+          "delay": "0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "span",
+        "cls": "",
+        "markers": {},
+        "transition": {
+          "property": "all",
+          "duration": "0.1s",
+          "timing": "ease-in-out",
+          "delay": "0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "span",
+        "cls": "fp-sr-only",
+        "markers": {},
+        "transition": {
+          "property": "all",
+          "duration": "0.1s",
+          "timing": "ease-in-out",
+          "delay": "0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "span",
+        "cls": "",
+        "markers": {},
+        "transition": {
+          "property": "all",
+          "duration": "0.1s",
+          "timing": "ease-in-out",
+          "delay": "0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "span",
+        "cls": "fp-sr-only",
+        "markers": {},
+        "transition": {
+          "property": "all",
+          "duration": "0.1s",
+          "timing": "ease-in-out",
+          "delay": "0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "span",
+        "cls": "",
+        "markers": {},
+        "transition": {
+          "property": "all",
+          "duration": "0.1s",
+          "timing": "ease-in-out",
+          "delay": "0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "div",
+        "cls": "",
+        "id": "cookiescript_injected",
+        "markers": {},
+        "transition": {
+          "property": "width",
+          "duration": "0.2s",
+          "timing": "ease",
+          "delay": "0.6s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "a",
+        "cls": "",
+        "id": "cookiescript_readmore",
+        "markers": {},
+        "transition": {
+          "property": "all",
+          "duration": "0.1s",
+          "timing": "ease",
+          "delay": "0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "div",
+        "cls": "mdc-checkbox__background",
+        "markers": {},
+        "transition": {
+          "property": "border-color, background-color",
+          "duration": "0.09s, 0.09s",
+          "timing": "cubic-bezier(0, 0, 0.2, 1), cubic-bezier(0, 0, 0.2, 1)",
+          "delay": "0s, 0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "svg",
+        "cls": "[object SVGAnimatedString]",
+        "markers": {},
+        "transition": {
+          "property": "opacity, transform, -webkit-transform",
+          "duration": "0.18s, 0.18s, 0.18s",
+          "timing": "cubic-bezier(0, 0, 0.2, 1), cubic-bezier(0, 0, 0.2, 1), cubic-bezier(0, 0, 0.2, 1)",
+          "delay": "0s, 0s, 0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "path",
+        "cls": "[object SVGAnimatedString]",
+        "markers": {},
+        "transition": {
+          "property": "stroke-dashoffset",
+          "duration": "0.18s",
+          "timing": "cubic-bezier(0.4, 0, 0.6, 1)",
+          "delay": "0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "div",
+        "cls": "",
+        "id": "cookiescript_save",
+        "markers": {},
+        "transition": {
+          "property": "all",
+          "duration": "0.1s",
+          "timing": "ease-in-out",
+          "delay": "0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "div",
+        "cls": "",
+        "id": "cookiescript_accept",
+        "markers": {},
+        "transition": {
+          "property": "all",
+          "duration": "0.1s",
+          "timing": "ease-in-out",
+          "delay": "0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "div",
+        "cls": "",
+        "id": "cookiescript_reject",
+        "markers": {},
+        "transition": {
+          "property": "all",
+          "duration": "0.1s",
+          "timing": "ease-in-out",
+          "delay": "0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "div",
+        "cls": "cookiescript_hidden",
+        "id": "cookiescript_cookietablewrap",
+        "markers": {},
+        "transition": {
+          "property": "height, min-height, max-height, opacity",
+          "duration": "0.3s, 0.3s, 0.3s, 0.2s",
+          "timing": "ease, ease, ease, ease",
+          "delay": "0.2s, 0.2s, 0.2s, 0s"
+        },
+        "animation": null
+      }
+    ],
+    "keyframes": [
+      {
+        "name": "progress-bar-stripes",
+        "cssText": "@keyframes progress-bar-stripes { \n  0% { background-position: 1rem 0px; }\n  100% { background-position: 0px 0px; }\n}"
+      },
+      {
+        "name": "spinner-border",
+        "cssText": "@keyframes spinner-border { \n  100% { transform: rotate(360deg); }\n}"
+      },
+      {
+        "name": "spinner-grow",
+        "cssText": "@keyframes spinner-grow { \n  0% { transform: scale(0); }\n  50% { opacity: 1; transform: none; }\n}"
+      },
+      {
+        "name": "anim-1",
+        "cssText": "@keyframes anim-1 { \n  0%, 2.5%, 6%, 10%, 27.5%, 31%, 35%, 50%, 52.5%, 56%, 60%, 77.5%, 81%, 85% { transform: translateY(0px); }\n  4%, 29%, 54%, 79% { transform: translateY(10px); }\n  8.5%, 33.5%, 58.5%, 83.5% { transform: translateY(5px); }\n}"
+      },
+      {
+        "name": "mdc-ripple-fg-radius-in",
+        "cssText": "@-webkit-keyframes mdc-ripple-fg-radius-in { \n  0% { animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1); transform: translate(0px) scale(1); }\n  100% { transform: translate(0px) scale(1); }\n}"
+      },
+      {
+        "name": "mdc-ripple-fg-radius-in",
+        "cssText": "@keyframes mdc-ripple-fg-radius-in { \n  0% { animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1); transform: translate(0px) scale(1); }\n  100% { transform: translate(0px) scale(1); }\n}"
+      },
+      {
+        "name": "mdc-ripple-fg-opacity-in",
+        "cssText": "@-webkit-keyframes mdc-ripple-fg-opacity-in { \n  0% { animation-timing-function: linear; opacity: 0; }\n  100% { opacity: 0.1; }\n}"
+      },
+      {
+        "name": "mdc-ripple-fg-opacity-in",
+        "cssText": "@keyframes mdc-ripple-fg-opacity-in { \n  0% { animation-timing-function: linear; opacity: 0; }\n  100% { opacity: 0.1; }\n}"
+      },
+      {
+        "name": "mdc-ripple-fg-opacity-out",
+        "cssText": "@-webkit-keyframes mdc-ripple-fg-opacity-out { \n  0% { animation-timing-function: linear; opacity: 0.1; }\n  100% { opacity: 0; }\n}"
+      },
+      {
+        "name": "mdc-ripple-fg-opacity-out",
+        "cssText": "@keyframes mdc-ripple-fg-opacity-out { \n  0% { animation-timing-function: linear; opacity: 0.1; }\n  100% { opacity: 0; }\n}"
+      }
+    ],
+    "scripts": [
+      "https://www.googletagmanager.com/gtag/js?id=G-KXFHGQ8CN0",
+      "https://cdn.cookie-script.com/s/117a477d72883c6a7e56b3b0eec1f6c4.js",
+      "https://code.jquery.com/jquery-3.5.1.min.js",
+      "https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js",
+      "https://www.sonanbunkers.com/scripts/fullpage/fullpage.parallax.min.js",
+      "https://www.sonanbunkers.com/scripts/fullpage/vendors/scrolloverflow.min.js",
+      "https://www.sonanbunkers.com/scripts/fullpage/fullpage.scrollOverflowReset.min.js",
+      "https://www.sonanbunkers.com/scripts/fullpage/fullpage.extensions.min.js",
+      "https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js",
+      "https://unpkg.com/scrollreveal",
+      "https://www.sonanbunkers.com/scripts/main.js?v=639143735533725927"
+    ]
+  },
+  {
+    "url": "https://www.sonanbunkers.com/about-us/",
+    "animated": [
+      {
+        "tag": "header",
+        "cls": "",
+        "id": "header",
+        "markers": {},
+        "transition": {
+          "property": "background-color",
+          "duration": "0.5s",
+          "timing": "ease",
+          "delay": "0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "section",
+        "cls": "section-1 d-flex section fp-noscroll frontpage-section fp-section active fp-completely fp-loaded-before",
+        "markers": {},
+        "transition": {
+          "property": "background-position",
+          "duration": "1s",
+          "timing": "ease",
+          "delay": "0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "div",
+        "cls": "fp-bg",
+        "markers": {},
+        "transition": {
+          "property": "transform",
+          "duration": "1s",
+          "timing": "ease",
+          "delay": "0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "h1",
+        "cls": "hc1 text-center",
+        "markers": {},
+        "transition": {
+          "property": "opacity",
+          "duration": "2s",
+          "timing": "ease",
+          "delay": "0.5s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "a",
+        "cls": "section-1-cities-move-content",
+        "markers": {},
+        "transition": null,
+        "animation": {
+          "name": "anim-1",
+          "duration": "10s",
+          "timing": "ease-in-out",
+          "delay": "5s",
+          "iter": "infinite"
+        }
+      },
+      {
+        "tag": "div",
+        "cls": "section fp-auto-height fp-section",
+        "markers": {},
+        "transition": {
+          "property": "background-position",
+          "duration": "1s",
+          "timing": "ease",
+          "delay": "0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "a",
+        "cls": "button-c3-s",
+        "markers": {},
+        "transition": {
+          "property": "all",
+          "duration": "0.5s",
+          "timing": "ease",
+          "delay": "0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "a",
+        "cls": "button-c3-s",
+        "markers": {},
+        "transition": {
+          "property": "all",
+          "duration": "0.5s",
+          "timing": "ease",
+          "delay": "0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "a",
+        "cls": "button-c3-s",
+        "markers": {},
+        "transition": {
+          "property": "all",
+          "duration": "0.5s",
+          "timing": "ease",
+          "delay": "0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "a",
+        "cls": "button-c3-s",
+        "markers": {},
+        "transition": {
+          "property": "all",
+          "duration": "0.5s",
+          "timing": "ease",
+          "delay": "0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "a",
+        "cls": "button-c3-s",
+        "markers": {},
+        "transition": {
+          "property": "all",
+          "duration": "0.5s",
+          "timing": "ease",
+          "delay": "0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "a",
+        "cls": "button-c3-s",
+        "markers": {},
+        "transition": {
+          "property": "all",
+          "duration": "0.5s",
+          "timing": "ease",
+          "delay": "0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "a",
+        "cls": "button-c3-s",
+        "markers": {},
+        "transition": {
+          "property": "all",
+          "duration": "0.5s",
+          "timing": "ease",
+          "delay": "0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "a",
+        "cls": "button-c3-s",
+        "markers": {},
+        "transition": {
+          "property": "all",
+          "duration": "0.5s",
+          "timing": "ease",
+          "delay": "0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "span",
+        "cls": "fp-sr-only",
+        "markers": {},
+        "transition": {
+          "property": "all",
+          "duration": "0.1s",
+          "timing": "ease-in-out",
+          "delay": "0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "span",
+        "cls": "",
+        "markers": {},
+        "transition": {
+          "property": "all",
+          "duration": "0.1s",
+          "timing": "ease-in-out",
+          "delay": "0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "span",
+        "cls": "fp-sr-only",
+        "markers": {},
+        "transition": {
+          "property": "all",
+          "duration": "0.1s",
+          "timing": "ease-in-out",
+          "delay": "0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "span",
+        "cls": "",
+        "markers": {},
+        "transition": {
+          "property": "all",
+          "duration": "0.1s",
+          "timing": "ease-in-out",
+          "delay": "0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "div",
+        "cls": "",
+        "id": "cookiescript_injected",
+        "markers": {},
+        "transition": {
+          "property": "width",
+          "duration": "0.2s",
+          "timing": "ease",
+          "delay": "0.6s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "a",
+        "cls": "",
+        "id": "cookiescript_readmore",
+        "markers": {},
+        "transition": {
+          "property": "all",
+          "duration": "0.1s",
+          "timing": "ease",
+          "delay": "0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "div",
+        "cls": "mdc-checkbox__background",
+        "markers": {},
+        "transition": {
+          "property": "border-color, background-color",
+          "duration": "0.09s, 0.09s",
+          "timing": "cubic-bezier(0, 0, 0.2, 1), cubic-bezier(0, 0, 0.2, 1)",
+          "delay": "0s, 0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "svg",
+        "cls": "[object SVGAnimatedString]",
+        "markers": {},
+        "transition": {
+          "property": "opacity, transform, -webkit-transform",
+          "duration": "0.18s, 0.18s, 0.18s",
+          "timing": "cubic-bezier(0, 0, 0.2, 1), cubic-bezier(0, 0, 0.2, 1), cubic-bezier(0, 0, 0.2, 1)",
+          "delay": "0s, 0s, 0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "path",
+        "cls": "[object SVGAnimatedString]",
+        "markers": {},
+        "transition": {
+          "property": "stroke-dashoffset",
+          "duration": "0.18s",
+          "timing": "cubic-bezier(0.4, 0, 0.6, 1)",
+          "delay": "0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "div",
+        "cls": "",
+        "id": "cookiescript_save",
+        "markers": {},
+        "transition": {
+          "property": "all",
+          "duration": "0.1s",
+          "timing": "ease-in-out",
+          "delay": "0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "div",
+        "cls": "",
+        "id": "cookiescript_accept",
+        "markers": {},
+        "transition": {
+          "property": "all",
+          "duration": "0.1s",
+          "timing": "ease-in-out",
+          "delay": "0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "div",
+        "cls": "",
+        "id": "cookiescript_reject",
+        "markers": {},
+        "transition": {
+          "property": "all",
+          "duration": "0.1s",
+          "timing": "ease-in-out",
+          "delay": "0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "div",
+        "cls": "cookiescript_hidden",
+        "id": "cookiescript_cookietablewrap",
+        "markers": {},
+        "transition": {
+          "property": "height, min-height, max-height, opacity",
+          "duration": "0.3s, 0.3s, 0.3s, 0.2s",
+          "timing": "ease, ease, ease, ease",
+          "delay": "0.2s, 0.2s, 0.2s, 0s"
+        },
+        "animation": null
+      }
+    ],
+    "keyframes": [
+      {
+        "name": "progress-bar-stripes",
+        "cssText": "@keyframes progress-bar-stripes { \n  0% { background-position: 1rem 0px; }\n  100% { background-position: 0px 0px; }\n}"
+      },
+      {
+        "name": "spinner-border",
+        "cssText": "@keyframes spinner-border { \n  100% { transform: rotate(360deg); }\n}"
+      },
+      {
+        "name": "spinner-grow",
+        "cssText": "@keyframes spinner-grow { \n  0% { transform: scale(0); }\n  50% { opacity: 1; transform: none; }\n}"
+      },
+      {
+        "name": "anim-1",
+        "cssText": "@keyframes anim-1 { \n  0%, 2.5%, 6%, 10%, 27.5%, 31%, 35%, 50%, 52.5%, 56%, 60%, 77.5%, 81%, 85% { transform: translateY(0px); }\n  4%, 29%, 54%, 79% { transform: translateY(10px); }\n  8.5%, 33.5%, 58.5%, 83.5% { transform: translateY(5px); }\n}"
+      },
+      {
+        "name": "mdc-ripple-fg-radius-in",
+        "cssText": "@-webkit-keyframes mdc-ripple-fg-radius-in { \n  0% { animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1); transform: translate(0px) scale(1); }\n  100% { transform: translate(0px) scale(1); }\n}"
+      },
+      {
+        "name": "mdc-ripple-fg-radius-in",
+        "cssText": "@keyframes mdc-ripple-fg-radius-in { \n  0% { animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1); transform: translate(0px) scale(1); }\n  100% { transform: translate(0px) scale(1); }\n}"
+      },
+      {
+        "name": "mdc-ripple-fg-opacity-in",
+        "cssText": "@-webkit-keyframes mdc-ripple-fg-opacity-in { \n  0% { animation-timing-function: linear; opacity: 0; }\n  100% { opacity: 0.1; }\n}"
+      },
+      {
+        "name": "mdc-ripple-fg-opacity-in",
+        "cssText": "@keyframes mdc-ripple-fg-opacity-in { \n  0% { animation-timing-function: linear; opacity: 0; }\n  100% { opacity: 0.1; }\n}"
+      },
+      {
+        "name": "mdc-ripple-fg-opacity-out",
+        "cssText": "@-webkit-keyframes mdc-ripple-fg-opacity-out { \n  0% { animation-timing-function: linear; opacity: 0.1; }\n  100% { opacity: 0; }\n}"
+      },
+      {
+        "name": "mdc-ripple-fg-opacity-out",
+        "cssText": "@keyframes mdc-ripple-fg-opacity-out { \n  0% { animation-timing-function: linear; opacity: 0.1; }\n  100% { opacity: 0; }\n}"
+      }
+    ],
+    "scripts": [
+      "https://www.googletagmanager.com/gtag/js?id=G-KXFHGQ8CN0",
+      "https://cdn.cookie-script.com/s/117a477d72883c6a7e56b3b0eec1f6c4.js",
+      "https://code.jquery.com/jquery-3.5.1.min.js",
+      "https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js",
+      "https://www.sonanbunkers.com/scripts/fullpage/fullpage.parallax.min.js",
+      "https://www.sonanbunkers.com/scripts/fullpage/vendors/scrolloverflow.min.js",
+      "https://www.sonanbunkers.com/scripts/fullpage/fullpage.scrollOverflowReset.min.js",
+      "https://www.sonanbunkers.com/scripts/fullpage/fullpage.extensions.min.js",
+      "https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js",
+      "https://unpkg.com/scrollreveal",
+      "https://www.sonanbunkers.com/scripts/main.js?v=639143735564552612"
+    ]
+  },
+  {
+    "url": "https://www.sonanbunkers.com/our-services/fuel-products/",
+    "animated": [
+      {
+        "tag": "header",
+        "cls": "",
+        "id": "header",
+        "markers": {},
+        "transition": {
+          "property": "background-color",
+          "duration": "0.5s",
+          "timing": "ease",
+          "delay": "0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "a",
+        "cls": "button-c1",
+        "markers": {},
+        "transition": {
+          "property": "all",
+          "duration": "0.5s",
+          "timing": "ease",
+          "delay": "0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "h1",
+        "cls": "hc4 mtc-4 mbc-5 sr1",
+        "markers": {},
+        "transition": {
+          "property": "all, opacity, transform",
+          "duration": "0s, 0.6s, 0.6s",
+          "timing": "ease, cubic-bezier(0.5, 0, 0, 1), cubic-bezier(0.5, 0, 0, 1)",
+          "delay": "0s, 0.2s, 0.2s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "a",
+        "cls": "button-c3-s",
+        "markers": {},
+        "transition": {
+          "property": "all",
+          "duration": "0.5s",
+          "timing": "ease",
+          "delay": "0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "a",
+        "cls": "button-c3-s",
+        "markers": {},
+        "transition": {
+          "property": "all",
+          "duration": "0.5s",
+          "timing": "ease",
+          "delay": "0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "a",
+        "cls": "button-c3-s",
+        "markers": {},
+        "transition": {
+          "property": "all",
+          "duration": "0.5s",
+          "timing": "ease",
+          "delay": "0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "a",
+        "cls": "button-c3-s",
+        "markers": {},
+        "transition": {
+          "property": "all",
+          "duration": "0.5s",
+          "timing": "ease",
+          "delay": "0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "a",
+        "cls": "button-c3-s",
+        "markers": {},
+        "transition": {
+          "property": "all",
+          "duration": "0.5s",
+          "timing": "ease",
+          "delay": "0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "a",
+        "cls": "button-c3-s",
+        "markers": {},
+        "transition": {
+          "property": "all",
+          "duration": "0.5s",
+          "timing": "ease",
+          "delay": "0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "a",
+        "cls": "button-c3-s",
+        "markers": {},
+        "transition": {
+          "property": "all",
+          "duration": "0.5s",
+          "timing": "ease",
+          "delay": "0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "a",
+        "cls": "button-c3-s",
+        "markers": {},
+        "transition": {
+          "property": "all",
+          "duration": "0.5s",
+          "timing": "ease",
+          "delay": "0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "div",
+        "cls": "",
+        "id": "cookiescript_injected",
+        "markers": {},
+        "transition": {
+          "property": "width",
+          "duration": "0.2s",
+          "timing": "ease",
+          "delay": "0.6s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "a",
+        "cls": "",
+        "id": "cookiescript_readmore",
+        "markers": {},
+        "transition": {
+          "property": "all",
+          "duration": "0.1s",
+          "timing": "ease",
+          "delay": "0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "div",
+        "cls": "mdc-checkbox__background",
+        "markers": {},
+        "transition": {
+          "property": "border-color, background-color",
+          "duration": "0.09s, 0.09s",
+          "timing": "cubic-bezier(0, 0, 0.2, 1), cubic-bezier(0, 0, 0.2, 1)",
+          "delay": "0s, 0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "svg",
+        "cls": "[object SVGAnimatedString]",
+        "markers": {},
+        "transition": {
+          "property": "opacity, transform, -webkit-transform",
+          "duration": "0.18s, 0.18s, 0.18s",
+          "timing": "cubic-bezier(0, 0, 0.2, 1), cubic-bezier(0, 0, 0.2, 1), cubic-bezier(0, 0, 0.2, 1)",
+          "delay": "0s, 0s, 0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "path",
+        "cls": "[object SVGAnimatedString]",
+        "markers": {},
+        "transition": {
+          "property": "stroke-dashoffset",
+          "duration": "0.18s",
+          "timing": "cubic-bezier(0.4, 0, 0.6, 1)",
+          "delay": "0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "div",
+        "cls": "",
+        "id": "cookiescript_save",
+        "markers": {},
+        "transition": {
+          "property": "all",
+          "duration": "0.1s",
+          "timing": "ease-in-out",
+          "delay": "0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "div",
+        "cls": "",
+        "id": "cookiescript_accept",
+        "markers": {},
+        "transition": {
+          "property": "all",
+          "duration": "0.1s",
+          "timing": "ease-in-out",
+          "delay": "0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "div",
+        "cls": "",
+        "id": "cookiescript_reject",
+        "markers": {},
+        "transition": {
+          "property": "all",
+          "duration": "0.1s",
+          "timing": "ease-in-out",
+          "delay": "0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "div",
+        "cls": "cookiescript_hidden",
+        "id": "cookiescript_cookietablewrap",
+        "markers": {},
+        "transition": {
+          "property": "height, min-height, max-height, opacity",
+          "duration": "0.3s, 0.3s, 0.3s, 0.2s",
+          "timing": "ease, ease, ease, ease",
+          "delay": "0.2s, 0.2s, 0.2s, 0s"
+        },
+        "animation": null
+      }
+    ],
+    "keyframes": [
+      {
+        "name": "progress-bar-stripes",
+        "cssText": "@keyframes progress-bar-stripes { \n  0% { background-position: 1rem 0px; }\n  100% { background-position: 0px 0px; }\n}"
+      },
+      {
+        "name": "spinner-border",
+        "cssText": "@keyframes spinner-border { \n  100% { transform: rotate(360deg); }\n}"
+      },
+      {
+        "name": "spinner-grow",
+        "cssText": "@keyframes spinner-grow { \n  0% { transform: scale(0); }\n  50% { opacity: 1; transform: none; }\n}"
+      },
+      {
+        "name": "anim-1",
+        "cssText": "@keyframes anim-1 { \n  0%, 2.5%, 6%, 10%, 27.5%, 31%, 35%, 50%, 52.5%, 56%, 60%, 77.5%, 81%, 85% { transform: translateY(0px); }\n  4%, 29%, 54%, 79% { transform: translateY(10px); }\n  8.5%, 33.5%, 58.5%, 83.5% { transform: translateY(5px); }\n}"
+      },
+      {
+        "name": "mdc-ripple-fg-radius-in",
+        "cssText": "@-webkit-keyframes mdc-ripple-fg-radius-in { \n  0% { animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1); transform: translate(0px) scale(1); }\n  100% { transform: translate(0px) scale(1); }\n}"
+      },
+      {
+        "name": "mdc-ripple-fg-radius-in",
+        "cssText": "@keyframes mdc-ripple-fg-radius-in { \n  0% { animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1); transform: translate(0px) scale(1); }\n  100% { transform: translate(0px) scale(1); }\n}"
+      },
+      {
+        "name": "mdc-ripple-fg-opacity-in",
+        "cssText": "@-webkit-keyframes mdc-ripple-fg-opacity-in { \n  0% { animation-timing-function: linear; opacity: 0; }\n  100% { opacity: 0.1; }\n}"
+      },
+      {
+        "name": "mdc-ripple-fg-opacity-in",
+        "cssText": "@keyframes mdc-ripple-fg-opacity-in { \n  0% { animation-timing-function: linear; opacity: 0; }\n  100% { opacity: 0.1; }\n}"
+      },
+      {
+        "name": "mdc-ripple-fg-opacity-out",
+        "cssText": "@-webkit-keyframes mdc-ripple-fg-opacity-out { \n  0% { animation-timing-function: linear; opacity: 0.1; }\n  100% { opacity: 0; }\n}"
+      },
+      {
+        "name": "mdc-ripple-fg-opacity-out",
+        "cssText": "@keyframes mdc-ripple-fg-opacity-out { \n  0% { animation-timing-function: linear; opacity: 0.1; }\n  100% { opacity: 0; }\n}"
+      }
+    ],
+    "scripts": [
+      "https://www.googletagmanager.com/gtag/js?id=G-KXFHGQ8CN0",
+      "https://cdn.cookie-script.com/s/117a477d72883c6a7e56b3b0eec1f6c4.js",
+      "https://code.jquery.com/jquery-3.5.1.min.js",
+      "https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js",
+      "https://www.sonanbunkers.com/scripts/fullpage/fullpage.parallax.min.js",
+      "https://www.sonanbunkers.com/scripts/fullpage/vendors/scrolloverflow.min.js",
+      "https://www.sonanbunkers.com/scripts/fullpage/fullpage.scrollOverflowReset.min.js",
+      "https://www.sonanbunkers.com/scripts/fullpage/fullpage.extensions.min.js",
+      "https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js",
+      "https://unpkg.com/scrollreveal",
+      "https://www.sonanbunkers.com/scripts/main.js?v=639143735579185752"
+    ]
+  },
+  {
+    "url": "https://www.sonanbunkers.com/contact/",
+    "animated": [
+      {
+        "tag": "header",
+        "cls": "",
+        "id": "header",
+        "markers": {},
+        "transition": {
+          "property": "background-color",
+          "duration": "0.5s",
+          "timing": "ease",
+          "delay": "0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "h1",
+        "cls": "hc4 text-white mbc-8 ptcb-7 sr1",
+        "markers": {},
+        "transition": {
+          "property": "all, opacity, transform",
+          "duration": "0s, 0.6s, 0.6s",
+          "timing": "ease, cubic-bezier(0.5, 0, 0, 1), cubic-bezier(0.5, 0, 0, 1)",
+          "delay": "0s, 0.2s, 0.2s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "div",
+        "cls": "srs2",
+        "markers": {},
+        "transition": {
+          "property": "all, opacity",
+          "duration": "0s, 0.5s",
+          "timing": "ease, cubic-bezier(0.5, 0, 0, 1)",
+          "delay": "0s, 0.1s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "a",
+        "cls": "button-c3-s",
+        "markers": {},
+        "transition": {
+          "property": "all",
+          "duration": "0.5s",
+          "timing": "ease",
+          "delay": "0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "div",
+        "cls": "srs2",
+        "markers": {},
+        "transition": {
+          "property": "all, opacity",
+          "duration": "0s, 0.5s",
+          "timing": "ease, cubic-bezier(0.5, 0, 0, 1)",
+          "delay": "0s, 0.1s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "a",
+        "cls": "button-c3-s",
+        "markers": {},
+        "transition": {
+          "property": "all",
+          "duration": "0.5s",
+          "timing": "ease",
+          "delay": "0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "div",
+        "cls": "srs2",
+        "markers": {},
+        "transition": {
+          "property": "all, opacity",
+          "duration": "0s, 0.5s",
+          "timing": "ease, cubic-bezier(0.5, 0, 0, 1)",
+          "delay": "0s, 0.1s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "a",
+        "cls": "button-c3-s",
+        "markers": {},
+        "transition": {
+          "property": "all",
+          "duration": "0.5s",
+          "timing": "ease",
+          "delay": "0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "div",
+        "cls": "srs2",
+        "markers": {},
+        "transition": {
+          "property": "all, opacity",
+          "duration": "0s, 0.5s",
+          "timing": "ease, cubic-bezier(0.5, 0, 0, 1)",
+          "delay": "0s, 0.1s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "a",
+        "cls": "button-c3-s",
+        "markers": {},
+        "transition": {
+          "property": "all",
+          "duration": "0.5s",
+          "timing": "ease",
+          "delay": "0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "div",
+        "cls": "srs2",
+        "markers": {},
+        "transition": {
+          "property": "all, opacity",
+          "duration": "0s, 0.5s",
+          "timing": "ease, cubic-bezier(0.5, 0, 0, 1)",
+          "delay": "0s, 0.1s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "a",
+        "cls": "button-c3-s",
+        "markers": {},
+        "transition": {
+          "property": "all",
+          "duration": "0.5s",
+          "timing": "ease",
+          "delay": "0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "div",
+        "cls": "srs2",
+        "markers": {},
+        "transition": {
+          "property": "all, opacity",
+          "duration": "0s, 0.5s",
+          "timing": "ease, cubic-bezier(0.5, 0, 0, 1)",
+          "delay": "0s, 0.1s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "a",
+        "cls": "button-c3-s",
+        "markers": {},
+        "transition": {
+          "property": "all",
+          "duration": "0.5s",
+          "timing": "ease",
+          "delay": "0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "a",
+        "cls": "button-c3-s",
+        "markers": {},
+        "transition": {
+          "property": "all",
+          "duration": "0.5s",
+          "timing": "ease",
+          "delay": "0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "a",
+        "cls": "button-c3-s",
+        "markers": {},
+        "transition": {
+          "property": "all",
+          "duration": "0.5s",
+          "timing": "ease",
+          "delay": "0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "div",
+        "cls": "",
+        "id": "cookiescript_injected",
+        "markers": {},
+        "transition": {
+          "property": "width",
+          "duration": "0.2s",
+          "timing": "ease",
+          "delay": "0.6s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "a",
+        "cls": "",
+        "id": "cookiescript_readmore",
+        "markers": {},
+        "transition": {
+          "property": "all",
+          "duration": "0.1s",
+          "timing": "ease",
+          "delay": "0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "div",
+        "cls": "mdc-checkbox__background",
+        "markers": {},
+        "transition": {
+          "property": "border-color, background-color",
+          "duration": "0.09s, 0.09s",
+          "timing": "cubic-bezier(0, 0, 0.2, 1), cubic-bezier(0, 0, 0.2, 1)",
+          "delay": "0s, 0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "svg",
+        "cls": "[object SVGAnimatedString]",
+        "markers": {},
+        "transition": {
+          "property": "opacity, transform, -webkit-transform",
+          "duration": "0.18s, 0.18s, 0.18s",
+          "timing": "cubic-bezier(0, 0, 0.2, 1), cubic-bezier(0, 0, 0.2, 1), cubic-bezier(0, 0, 0.2, 1)",
+          "delay": "0s, 0s, 0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "path",
+        "cls": "[object SVGAnimatedString]",
+        "markers": {},
+        "transition": {
+          "property": "stroke-dashoffset",
+          "duration": "0.18s",
+          "timing": "cubic-bezier(0.4, 0, 0.6, 1)",
+          "delay": "0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "div",
+        "cls": "",
+        "id": "cookiescript_save",
+        "markers": {},
+        "transition": {
+          "property": "all",
+          "duration": "0.1s",
+          "timing": "ease-in-out",
+          "delay": "0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "div",
+        "cls": "",
+        "id": "cookiescript_accept",
+        "markers": {},
+        "transition": {
+          "property": "all",
+          "duration": "0.1s",
+          "timing": "ease-in-out",
+          "delay": "0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "div",
+        "cls": "",
+        "id": "cookiescript_reject",
+        "markers": {},
+        "transition": {
+          "property": "all",
+          "duration": "0.1s",
+          "timing": "ease-in-out",
+          "delay": "0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "div",
+        "cls": "cookiescript_hidden",
+        "id": "cookiescript_cookietablewrap",
+        "markers": {},
+        "transition": {
+          "property": "height, min-height, max-height, opacity",
+          "duration": "0.3s, 0.3s, 0.3s, 0.2s",
+          "timing": "ease, ease, ease, ease",
+          "delay": "0.2s, 0.2s, 0.2s, 0s"
+        },
+        "animation": null
+      }
+    ],
+    "keyframes": [
+      {
+        "name": "progress-bar-stripes",
+        "cssText": "@keyframes progress-bar-stripes { \n  0% { background-position: 1rem 0px; }\n  100% { background-position: 0px 0px; }\n}"
+      },
+      {
+        "name": "spinner-border",
+        "cssText": "@keyframes spinner-border { \n  100% { transform: rotate(360deg); }\n}"
+      },
+      {
+        "name": "spinner-grow",
+        "cssText": "@keyframes spinner-grow { \n  0% { transform: scale(0); }\n  50% { opacity: 1; transform: none; }\n}"
+      },
+      {
+        "name": "anim-1",
+        "cssText": "@keyframes anim-1 { \n  0%, 2.5%, 6%, 10%, 27.5%, 31%, 35%, 50%, 52.5%, 56%, 60%, 77.5%, 81%, 85% { transform: translateY(0px); }\n  4%, 29%, 54%, 79% { transform: translateY(10px); }\n  8.5%, 33.5%, 58.5%, 83.5% { transform: translateY(5px); }\n}"
+      },
+      {
+        "name": "mdc-ripple-fg-radius-in",
+        "cssText": "@-webkit-keyframes mdc-ripple-fg-radius-in { \n  0% { animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1); transform: translate(0px) scale(1); }\n  100% { transform: translate(0px) scale(1); }\n}"
+      },
+      {
+        "name": "mdc-ripple-fg-radius-in",
+        "cssText": "@keyframes mdc-ripple-fg-radius-in { \n  0% { animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1); transform: translate(0px) scale(1); }\n  100% { transform: translate(0px) scale(1); }\n}"
+      },
+      {
+        "name": "mdc-ripple-fg-opacity-in",
+        "cssText": "@-webkit-keyframes mdc-ripple-fg-opacity-in { \n  0% { animation-timing-function: linear; opacity: 0; }\n  100% { opacity: 0.1; }\n}"
+      },
+      {
+        "name": "mdc-ripple-fg-opacity-in",
+        "cssText": "@keyframes mdc-ripple-fg-opacity-in { \n  0% { animation-timing-function: linear; opacity: 0; }\n  100% { opacity: 0.1; }\n}"
+      },
+      {
+        "name": "mdc-ripple-fg-opacity-out",
+        "cssText": "@-webkit-keyframes mdc-ripple-fg-opacity-out { \n  0% { animation-timing-function: linear; opacity: 0.1; }\n  100% { opacity: 0; }\n}"
+      },
+      {
+        "name": "mdc-ripple-fg-opacity-out",
+        "cssText": "@keyframes mdc-ripple-fg-opacity-out { \n  0% { animation-timing-function: linear; opacity: 0.1; }\n  100% { opacity: 0; }\n}"
+      }
+    ],
+    "scripts": [
+      "https://www.googletagmanager.com/gtag/js?id=G-KXFHGQ8CN0",
+      "https://cdn.cookie-script.com/s/117a477d72883c6a7e56b3b0eec1f6c4.js",
+      "https://code.jquery.com/jquery-3.5.1.min.js",
+      "https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js",
+      "https://www.sonanbunkers.com/scripts/fullpage/fullpage.parallax.min.js",
+      "https://www.sonanbunkers.com/scripts/fullpage/vendors/scrolloverflow.min.js",
+      "https://www.sonanbunkers.com/scripts/fullpage/fullpage.scrollOverflowReset.min.js",
+      "https://www.sonanbunkers.com/scripts/fullpage/fullpage.extensions.min.js",
+      "https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js",
+      "https://unpkg.com/scrollreveal",
+      "https://www.sonanbunkers.com/scripts/main.js?v=639143735588802093"
+    ]
+  },
+  {
+    "url": "https://www.sonanbunkers.com/press-room/news/",
+    "animated": [
+      {
+        "tag": "header",
+        "cls": "",
+        "id": "header",
+        "markers": {},
+        "transition": {
+          "property": "background-color",
+          "duration": "0.5s",
+          "timing": "ease",
+          "delay": "0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "h2",
+        "cls": "hc5 mbc-6 mtc-4 mb-5 text-blue-1 sr1",
+        "markers": {},
+        "transition": {
+          "property": "all, opacity, transform",
+          "duration": "0s, 0.6s, 0.6s",
+          "timing": "ease, cubic-bezier(0.5, 0, 0, 1), cubic-bezier(0.5, 0, 0, 1)",
+          "delay": "0s, 0.2s, 0.2s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "a",
+        "cls": "news-box-1-image news-box-image-left srs4",
+        "markers": {},
+        "transition": {
+          "property": "all, opacity",
+          "duration": "0s, 1s",
+          "timing": "ease, cubic-bezier(0.5, 0, 0, 1)",
+          "delay": "0s, 0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "div",
+        "cls": "",
+        "markers": {},
+        "transition": {
+          "property": "all",
+          "duration": "0.5s",
+          "timing": "ease",
+          "delay": "0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "div",
+        "cls": "srs4",
+        "markers": {},
+        "transition": {
+          "property": "all, opacity",
+          "duration": "0s, 1s",
+          "timing": "ease, cubic-bezier(0.5, 0, 0, 1)",
+          "delay": "0s, 0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "a",
+        "cls": "news-box-1-image news-box-image-left srs4",
+        "markers": {},
+        "transition": {
+          "property": "all, opacity",
+          "duration": "0s, 1s",
+          "timing": "ease, cubic-bezier(0.5, 0, 0, 1)",
+          "delay": "0s, 0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "div",
+        "cls": "",
+        "markers": {},
+        "transition": {
+          "property": "all",
+          "duration": "0.5s",
+          "timing": "ease",
+          "delay": "0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "div",
+        "cls": "srs4",
+        "markers": {},
+        "transition": {
+          "property": "all, opacity",
+          "duration": "0s, 1s",
+          "timing": "ease, cubic-bezier(0.5, 0, 0, 1)",
+          "delay": "0s, 0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "div",
+        "cls": "srs4",
+        "markers": {},
+        "transition": {
+          "property": "all, opacity",
+          "duration": "0s, 1s",
+          "timing": "ease, cubic-bezier(0.5, 0, 0, 1)",
+          "delay": "0s, 0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "a",
+        "cls": "news-box-1-image news-box-image-right srs4",
+        "markers": {},
+        "transition": {
+          "property": "all, opacity",
+          "duration": "0s, 1s",
+          "timing": "ease, cubic-bezier(0.5, 0, 0, 1)",
+          "delay": "0s, 0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "div",
+        "cls": "",
+        "markers": {},
+        "transition": {
+          "property": "all",
+          "duration": "0.5s",
+          "timing": "ease",
+          "delay": "0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "div",
+        "cls": "",
+        "markers": {},
+        "transition": {
+          "property": "all",
+          "duration": "0.5s",
+          "timing": "ease",
+          "delay": "0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "a",
+        "cls": "button-c3-s",
+        "markers": {},
+        "transition": {
+          "property": "all",
+          "duration": "0.5s",
+          "timing": "ease",
+          "delay": "0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "a",
+        "cls": "button-c3-s",
+        "markers": {},
+        "transition": {
+          "property": "all",
+          "duration": "0.5s",
+          "timing": "ease",
+          "delay": "0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "a",
+        "cls": "button-c3-s",
+        "markers": {},
+        "transition": {
+          "property": "all",
+          "duration": "0.5s",
+          "timing": "ease",
+          "delay": "0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "a",
+        "cls": "button-c3-s",
+        "markers": {},
+        "transition": {
+          "property": "all",
+          "duration": "0.5s",
+          "timing": "ease",
+          "delay": "0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "a",
+        "cls": "button-c3-s",
+        "markers": {},
+        "transition": {
+          "property": "all",
+          "duration": "0.5s",
+          "timing": "ease",
+          "delay": "0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "a",
+        "cls": "button-c3-s",
+        "markers": {},
+        "transition": {
+          "property": "all",
+          "duration": "0.5s",
+          "timing": "ease",
+          "delay": "0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "a",
+        "cls": "button-c3-s",
+        "markers": {},
+        "transition": {
+          "property": "all",
+          "duration": "0.5s",
+          "timing": "ease",
+          "delay": "0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "a",
+        "cls": "button-c3-s",
+        "markers": {},
+        "transition": {
+          "property": "all",
+          "duration": "0.5s",
+          "timing": "ease",
+          "delay": "0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "div",
+        "cls": "",
+        "id": "cookiescript_injected",
+        "markers": {},
+        "transition": {
+          "property": "width",
+          "duration": "0.2s",
+          "timing": "ease",
+          "delay": "0.6s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "a",
+        "cls": "",
+        "id": "cookiescript_readmore",
+        "markers": {},
+        "transition": {
+          "property": "all",
+          "duration": "0.1s",
+          "timing": "ease",
+          "delay": "0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "div",
+        "cls": "mdc-checkbox__background",
+        "markers": {},
+        "transition": {
+          "property": "border-color, background-color",
+          "duration": "0.09s, 0.09s",
+          "timing": "cubic-bezier(0, 0, 0.2, 1), cubic-bezier(0, 0, 0.2, 1)",
+          "delay": "0s, 0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "svg",
+        "cls": "[object SVGAnimatedString]",
+        "markers": {},
+        "transition": {
+          "property": "opacity, transform, -webkit-transform",
+          "duration": "0.18s, 0.18s, 0.18s",
+          "timing": "cubic-bezier(0, 0, 0.2, 1), cubic-bezier(0, 0, 0.2, 1), cubic-bezier(0, 0, 0.2, 1)",
+          "delay": "0s, 0s, 0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "path",
+        "cls": "[object SVGAnimatedString]",
+        "markers": {},
+        "transition": {
+          "property": "stroke-dashoffset",
+          "duration": "0.18s",
+          "timing": "cubic-bezier(0.4, 0, 0.6, 1)",
+          "delay": "0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "div",
+        "cls": "",
+        "id": "cookiescript_save",
+        "markers": {},
+        "transition": {
+          "property": "all",
+          "duration": "0.1s",
+          "timing": "ease-in-out",
+          "delay": "0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "div",
+        "cls": "",
+        "id": "cookiescript_accept",
+        "markers": {},
+        "transition": {
+          "property": "all",
+          "duration": "0.1s",
+          "timing": "ease-in-out",
+          "delay": "0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "div",
+        "cls": "",
+        "id": "cookiescript_reject",
+        "markers": {},
+        "transition": {
+          "property": "all",
+          "duration": "0.1s",
+          "timing": "ease-in-out",
+          "delay": "0s"
+        },
+        "animation": null
+      },
+      {
+        "tag": "div",
+        "cls": "cookiescript_hidden",
+        "id": "cookiescript_cookietablewrap",
+        "markers": {},
+        "transition": {
+          "property": "height, min-height, max-height, opacity",
+          "duration": "0.3s, 0.3s, 0.3s, 0.2s",
+          "timing": "ease, ease, ease, ease",
+          "delay": "0.2s, 0.2s, 0.2s, 0s"
+        },
+        "animation": null
+      }
+    ],
+    "keyframes": [
+      {
+        "name": "progress-bar-stripes",
+        "cssText": "@keyframes progress-bar-stripes { \n  0% { background-position: 1rem 0px; }\n  100% { background-position: 0px 0px; }\n}"
+      },
+      {
+        "name": "spinner-border",
+        "cssText": "@keyframes spinner-border { \n  100% { transform: rotate(360deg); }\n}"
+      },
+      {
+        "name": "spinner-grow",
+        "cssText": "@keyframes spinner-grow { \n  0% { transform: scale(0); }\n  50% { opacity: 1; transform: none; }\n}"
+      },
+      {
+        "name": "anim-1",
+        "cssText": "@keyframes anim-1 { \n  0%, 2.5%, 6%, 10%, 27.5%, 31%, 35%, 50%, 52.5%, 56%, 60%, 77.5%, 81%, 85% { transform: translateY(0px); }\n  4%, 29%, 54%, 79% { transform: translateY(10px); }\n  8.5%, 33.5%, 58.5%, 83.5% { transform: translateY(5px); }\n}"
+      },
+      {
+        "name": "mdc-ripple-fg-radius-in",
+        "cssText": "@-webkit-keyframes mdc-ripple-fg-radius-in { \n  0% { animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1); transform: translate(0px) scale(1); }\n  100% { transform: translate(0px) scale(1); }\n}"
+      },
+      {
+        "name": "mdc-ripple-fg-radius-in",
+        "cssText": "@keyframes mdc-ripple-fg-radius-in { \n  0% { animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1); transform: translate(0px) scale(1); }\n  100% { transform: translate(0px) scale(1); }\n}"
+      },
+      {
+        "name": "mdc-ripple-fg-opacity-in",
+        "cssText": "@-webkit-keyframes mdc-ripple-fg-opacity-in { \n  0% { animation-timing-function: linear; opacity: 0; }\n  100% { opacity: 0.1; }\n}"
+      },
+      {
+        "name": "mdc-ripple-fg-opacity-in",
+        "cssText": "@keyframes mdc-ripple-fg-opacity-in { \n  0% { animation-timing-function: linear; opacity: 0; }\n  100% { opacity: 0.1; }\n}"
+      },
+      {
+        "name": "mdc-ripple-fg-opacity-out",
+        "cssText": "@-webkit-keyframes mdc-ripple-fg-opacity-out { \n  0% { animation-timing-function: linear; opacity: 0.1; }\n  100% { opacity: 0; }\n}"
+      },
+      {
+        "name": "mdc-ripple-fg-opacity-out",
+        "cssText": "@keyframes mdc-ripple-fg-opacity-out { \n  0% { animation-timing-function: linear; opacity: 0.1; }\n  100% { opacity: 0; }\n}"
+      }
+    ],
+    "scripts": [
+      "https://www.googletagmanager.com/gtag/js?id=G-KXFHGQ8CN0",
+      "https://cdn.cookie-script.com/s/117a477d72883c6a7e56b3b0eec1f6c4.js",
+      "https://code.jquery.com/jquery-3.5.1.min.js",
+      "https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js",
+      "https://www.sonanbunkers.com/scripts/fullpage/fullpage.parallax.min.js",
+      "https://www.sonanbunkers.com/scripts/fullpage/vendors/scrolloverflow.min.js",
+      "https://www.sonanbunkers.com/scripts/fullpage/fullpage.scrollOverflowReset.min.js",
+      "https://www.sonanbunkers.com/scripts/fullpage/fullpage.extensions.min.js",
+      "https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js",
+      "https://unpkg.com/scrollreveal",
+      "https://www.sonanbunkers.com/scripts/main.js?v=639143735602648829"
+    ]
+  }
+]
