@@ -1,0 +1,60 @@
+/* src/styles/tokens.css
+ *
+ * Raw CSS custom-property mirror of the brand-intentional primitives also
+ * exposed via Tailwind v4 `@theme` in global.css. These names use a plain
+ * `--c-*`, `--font-*`, `--dur-*` convention so that non-Tailwind contexts
+ * (inline SVG, third-party widgets, ad-hoc custom CSS) can pull the same
+ * canonical values without having to know Tailwind's variable mapping.
+ *
+ * Values trace back to recon/output/tailwind-tokens.draft.mjs (which in turn
+ * traces back to DESIGN.md + recon/output/tokens.json).
+ */
+
+:root {
+  /* --- Colors --------------------------------------------------------- */
+  /* Brand navy (DESIGN.md §2: paragraph color + primary CTA fill). */
+  --c-brand: #274380;
+  --c-brand-navy: #274380;
+  --c-brand-deep: #1d3274;
+
+  /* Ink / body text. */
+  --c-ink: #212529;
+  --c-ink-muted: #545454;
+  --c-ink-form: #545454;
+
+  /* Surfaces. */
+  --c-surface: #ffffff;
+  --c-surface-alt: #eaefef;
+  --c-surface-divider: #d2d7e4;
+
+  /* Sea-foam teal band/separator panels. */
+  --c-teal: #84a2a4;
+  --c-teal-alt: #86a4a6;
+
+  /* Warm peach accent — use sparingly per DESIGN.md §2. */
+  --c-accent: #f1b578;
+  --c-accent-peach: #f1b578;
+
+  /* Bootstrap leakage: unstyled <a> color still in use on the source. */
+  --c-bootstrap-default: #007bff;
+
+  /* Scrim overlay (cookie banner + image overlays). */
+  --c-scrim: rgba(0, 0, 0, 0.5);
+
+  /* --- Fonts ---------------------------------------------------------- */
+  --font-sans: "Averta Standard W01", system-ui, sans-serif;
+  --font-slab: "Roboto Slab", Georgia, serif;
+  --font-body: "Open Sans", Arial, "Trebuchet MS", "Segoe UI", Helvetica, sans-serif;
+
+  /* --- Motion --------------------------------------------------------- */
+  --ease-in-out: ease-in-out;
+  --ease-decelerate: cubic-bezier(0.1, 0.57, 0.1, 1);
+  --ease-standard: cubic-bezier(0, 0, 0.2, 1);
+  --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
+
+  --dur-micro: 100ms;
+  --dur-fast: 200ms;
+  --dur-base: 500ms;
+  --dur-slow: 1000ms;
+  --dur-hero: 2000ms;
+}

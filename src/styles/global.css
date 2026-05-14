@@ -1,1 +1,174 @@
 @import "tailwindcss";
+@import "./tokens.css";
+
+/* ---------------------------------------------------------------------------
+ * Design tokens — Tailwind v4 `@theme` block.
+ *
+ * Each variable below is auto-promoted by Tailwind v4 into a matching utility
+ * class (e.g. `--color-brand-500` → `bg-brand-500` / `text-brand-500`). Values
+ * come from recon/output/tailwind-tokens.draft.mjs, which traces back to
+ * DESIGN.md + recon/output/tokens.json (1440x900 capture of sonanbunkers.com).
+ * ------------------------------------------------------------------------- */
+@theme {
+  /* === Breakpoints ======================================================
+   * Tailwind defaults preserved; 2xl pinned to the source's widest body
+   * child (tokens.json.widestChild = 1440).
+   */
+  --breakpoint-sm: 640px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
+  --breakpoint-2xl: 1440px;
+
+  /* === Colors ===========================================================
+   * Brand navy — DESIGN.md §2: paragraph color + primary CTA fill.
+   */
+  --color-brand: #274380;
+  --color-brand-500: #274380;     /* alias for utility ergonomics */
+  --color-brand-navy: #274380;
+  --color-brand-deep: #1d3274;    /* footer band */
+
+  /* Ink / body text. */
+  --color-ink: #212529;
+  --color-ink-muted: #545454;     /* form input gray, DESIGN.md §9 */
+  --color-ink-form: #545454;
+
+  /* Surfaces. */
+  --color-surface: #ffffff;
+  --color-surface-alt: #eaefef;       /* light gray section fill */
+  --color-surface-divider: #d2d7e4;   /* muted blue-gray dividers */
+
+  /* Sea-foam teal band/separator panels. */
+  --color-teal: #84a2a4;
+  --color-teal-alt: #86a4a6;
+
+  /* Warm peach accent — use sparingly per DESIGN.md §2. */
+  --color-accent: #f1b578;
+  --color-accent-peach: #f1b578;
+
+  /* Bootstrap leakage: source's unstyled <a> color on ~40 elements. Kept for
+   * intentional parity during the port; refactor links away from this
+   * borderline-AA value in a later pass. */
+  --color-bootstrap-default: #007bff;
+
+  /* Scrim overlay (cookie banner + image overlays). */
+  --color-scrim: rgba(0, 0, 0, 0.5);
+
+  /* === Typography =======================================================
+   * Font stacks — DESIGN.md §3.
+   */
+  --font-sans: "Averta Standard W01", system-ui, sans-serif;
+  --font-slab: "Roboto Slab", Georgia, serif;
+  --font-body: "Open Sans", Arial, "Trebuchet MS", "Segoe UI", Helvetica, sans-serif;
+
+  /* Font sizes — normalized to 16px rem base (source uses a 10px hack). Each
+   * value with line-height/letter-spacing companions becomes a single
+   * `text-*` utility. Source: tokens.json `elements.*`. */
+  --text-body-base: 0.625rem;
+  --text-body-base--line-height: 0.9375rem;
+  --text-body-base--letter-spacing: normal;
+
+  --text-paragraph: 0.875rem;
+  --text-paragraph--line-height: 1.375rem;
+  --text-paragraph--letter-spacing: normal;
+
+  --text-link: 0.625rem;
+  --text-link--line-height: 0.9375rem;
+  --text-link--letter-spacing: normal;
+
+  --text-input: 0.875rem;
+  --text-input--line-height: 1.25rem;
+  --text-input--letter-spacing: normal;
+
+  --text-display-2: 4.375rem;          /* 70px */
+  --text-display-2--line-height: 5.25rem;
+  --text-display-2--letter-spacing: normal;
+
+  --text-display-1: 5.625rem;          /* 90px */
+  --text-display-1--line-height: 6.75rem;
+  --text-display-1--letter-spacing: normal;
+
+  /* Font weights observed in source. */
+  --font-weight-light: 300;
+  --font-weight-normal: 400;
+  --font-weight-heavy: 800;
+
+  /* === Spacing ==========================================================
+   * Recurring numeric rhythm — DESIGN.md §4.
+   * 5 / 10 / 30 vertical, 40 / 70 / 100 horizontal.
+   */
+  --spacing-0_5: 5px;     /* h1 / h2 margin-bottom */
+  --spacing-2_5: 10px;    /* p margin-bottom */
+  --spacing-7_5: 30px;    /* h2 margin-top */
+  --spacing-10: 40px;     /* h2 margin-left */
+  --spacing-17_5: 70px;   /* header horizontal padding */
+  --spacing-25: 100px;    /* h2 margin-right */
+  --spacing-header: 80px; /* desktop header height (tokens.json.headerHeight) */
+
+  /* Vertical section rhythm helper — fluid clamp between mobile/desktop. */
+  --spacing-section-y: clamp(4rem, 8vw, 8rem);
+
+  /* === Layout containers ================================================ */
+  --container-content: 1360px;   /* inner content guide (tokens.json.contentContainerWidth) */
+  --container-bleed: 1440px;     /* full-bleed body child (tokens.json.widestChild) */
+
+  /* === Radii ============================================================
+   * DESIGN.md §6: only a handful of radii rendered. No large card radius.
+   */
+  --radius-none: 0px;
+  --radius-chip: 2px;
+  --radius-btn: 3px;       /* Bootstrap-default-ish button/input radius */
+  --radius-pill: 20px;
+  --radius-full: 50%;      /* circular icon backgrounds */
+  --radius-round: 100%;    /* round badges */
+
+  /* === Shadows ==========================================================
+   * DESIGN.md §7: site is intentionally flat — zero box-shadows rendered.
+   * Defined here to make the flatness explicit and to give utilities a
+   * single canonical `shadow-none`.
+   */
+  --shadow-none: none;
+
+  /* === Motion ===========================================================
+   * Durations + easing curves observed at runtime — DESIGN.md §11.
+   */
+  --duration-micro: 100ms;   /* hover/focus feedback */
+  --duration-fast: 200ms;
+  --duration-base: 500ms;    /* header bg transition on scroll */
+  --duration-slow: 1000ms;   /* section fade-ins */
+  --duration-hero: 2000ms;   /* h1/h2 hero opacity fade */
+
+  --ease-in-out: ease-in-out;
+  --ease-decelerate: cubic-bezier(0.1, 0.57, 0.1, 1);
+  --ease-standard: cubic-bezier(0, 0, 0.2, 1);
+  --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ---------------------------------------------------------------------------
+ * Base layer — global element resets / accessibility primitives.
+ * ------------------------------------------------------------------------- */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-surface text-ink font-sans antialiased;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-brand-500);
+    outline-offset: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
