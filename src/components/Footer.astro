@@ -21,7 +21,7 @@ const year = new Date().getFullYear();
       </div>
       {footerNav.map((col) => (
         <div>
-          <h4 class="text-xs font-semibold uppercase tracking-widest text-surface/80">{col.title}</h4>
+          <h2 class="text-xs font-semibold uppercase tracking-widest text-surface/80">{col.title}</h2>
           <ul class="mt-4 space-y-2">
             {col.items.map((it) => (
               <li>
@@ -38,7 +38,7 @@ const year = new Date().getFullYear();
       ))}
       {social.length > 0 && (
         <div>
-          <h4 class="text-xs font-semibold uppercase tracking-widest text-surface/80">Connect</h4>
+          <h2 class="text-xs font-semibold uppercase tracking-widest text-surface/80">Connect</h2>
           <div class="mt-4 flex gap-4">
             {social.map((s) => (
               <a

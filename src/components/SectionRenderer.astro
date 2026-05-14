@@ -37,7 +37,11 @@ const { section } = Astro.props;
       </div>
       {section.cta && (
         <div class="mt-6">
-          <Button href={section.cta.href} variant="primary">{section.cta.label}</Button>
+          <Button
+            href={section.cta.href}
+            variant="primary"
+            ariaLabel={section.heading ? `${section.cta.label} about ${section.heading}` : section.cta.label}
+          >{section.cta.label}</Button>
         </div>
       )}
     </Container>

@@ -180,7 +180,7 @@ export const homePage: PageContent = {
       body: 'At Sonan Bunkers we are committed to providing our customers with the highest quality products and services while also upholding our values of sustainability and social responsibility. We believe that by taking care of our planet and its people, we can create a better future for everyone.\n\nWe prioritize the needs and satisfaction of our customers, and strive to create a positive and enjoyable experience for them every time they interact with our company. We value honesty, transparency, and respect, and strive to embody these values in all of our interactions with our customers and stakeholders.',
       image: imgCoreValues,
       cta: {
-        label: 'LEARN MORE',
+        label: 'LEARN MORE ABOUT OUR VALUES',
         href: '/about-us/your-marine-energy-provider/',
       },
     },
@@ -190,7 +190,7 @@ export const homePage: PageContent = {
       heading: 'Focus on extended quality control & constant innovation',
       body: 'We strive to be a responsible partner that our clients can rely on. We believe that trust and reliability are the cornerstones of any successful business relationship, and we work hard to earn and maintain the trust of our clients.',
       image: imgResponsiblePartner,
-      cta: { label: 'LEARN MORE', href: '/our-services/advisory-services/' },
+      cta: { label: 'LEARN MORE ABOUT OUR ADVISORY SERVICES', href: '/our-services/advisory-services/' },
     },
     {
       kind: 'text',
@@ -198,7 +198,7 @@ export const homePage: PageContent = {
       heading: 'Caring for what really matters',
       body: 'Sonan Bunkers is committed to operating in an ethical and responsible manner, taking into account the impact of our actions on stakeholders such as employees, customers, and the environment.',
       image: imgWeCare,
-      cta: { label: 'LEARN MORE', href: '/about-us/' },
+      cta: { label: 'LEARN MORE ABOUT SONAN', href: '/about-us/' },
     },
     {
       kind: 'news-list',
