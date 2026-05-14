@@ -25,6 +25,7 @@
    */
   --color-brand: #274380;
   --color-brand-500: #274380;     /* alias for utility ergonomics */
+  --color-brand-600: #1f3669;     /* ~12% darker — hover state for primary CTA */
   --color-brand-navy: #274380;
   --color-brand-deep: #1d3274;    /* footer band */
 
