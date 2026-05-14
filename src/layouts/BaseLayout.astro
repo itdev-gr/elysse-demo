@@ -77,5 +77,8 @@ const fullTitle = title === titleSuffix ? title : `${title} — ${titleSuffix}`;
       <slot />
     </main>
     {!hideFooter && <Footer />}
+    <script>
+      import '../scripts/reveals.client';
+    </script>
   </body>
 </html>

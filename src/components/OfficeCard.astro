@@ -1,5 +1,7 @@
 ---
-interface Props {
+import type { HTMLAttributes } from 'astro/types';
+
+interface Props extends HTMLAttributes<'article'> {
   city: string;
   region?: string;
   addressLines?: string[];
@@ -7,9 +9,20 @@ interface Props {
   email?: string;
   /** Slot for additional rich content (map link, hours, etc.) */
 }
-const { city, region, addressLines = [], phones = [], email } = Astro.props;
+const {
+  city,
+  region,
+  addressLines = [],
+  phones = [],
+  email,
+  class: className,
+  ...rest
+} = Astro.props;
 ---
-<article class="bg-surface border-t border-ink/15 py-6 md:py-8">
+<article
+  class:list={['bg-surface border-t border-ink/15 py-6 md:py-8', className]}
+  {...rest}
+>
   <header>
     <h3 class="font-display text-2xl md:text-3xl leading-tight">{city}</h3>
     {region && <p class="mt-1 text-sm text-ink-muted uppercase tracking-wide">{region}</p>}
