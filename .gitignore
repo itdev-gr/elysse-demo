@@ -10,4 +10,5 @@ playwright-report/
 test-results/
 recon/screenshots/*.png
 recon/html/*.html
+recon/assets/**
 .lighthouseci/
