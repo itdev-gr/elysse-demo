@@ -124,7 +124,6 @@ const { section } = Astro.props;
             title={a.title}
             eyebrow={a.date ?? a.eyebrow}
             image={a.image}
-            href={a.slug.startsWith('/') ? a.slug : `/press-room/news/${a.slug}/`}
             data-reveal
             data-reveal-delay={String(i * 60)}
           >

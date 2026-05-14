@@ -1,123 +1,72 @@
 export interface NavItem { label: string; href: string; children?: NavItem[]; }
 
 /**
- * Primary navigation — mirrors the source site's `.main-menu-title` blocks
- * (8 top-level sections plus a "Home" entry we add for the rebuild).
+ * Primary navigation — trimmed to the 10 routes actually rebuilt under the
+ * Astro plan (Task 32). The source site has many more top-level sections, but
+ * for the rebuild we keep the menu pointed only at pages that exist so there
+ * are zero broken internal links.
  *
- * Source order on https://www.sonanbunkers.com/ :
- *   Sonan Bunkers · About Us · Our Services · Responsible Partner ·
- *   Press Room · Contact · Careers · Legal
+ * Rebuilt routes:
+ *   /  ·  /about-us/  ·  /about-us/your-marine-energy-provider/
+ *   /our-services/{fuel-products,marine-lubricants,alternative-fuels,advisory-services}/
+ *   /contact/  ·  /press-room/news/  ·  /legal/privacy-policy/
  *
- * The "Sonan Bunkers" top-level is a label only on the source (no anchor),
- * but its child links live under /sonan-bunkers-people-working-together/.
- * We point the top-level label at that hub so the menu remains navigable.
- *
- * `children` capture the source's sub-menu items so the eventual mega-menu /
- * mobile drawer can render them without re-querying the source.
+ * `children` are kept where a top-level entry has rebuilt sub-pages so the
+ * mega-menu / mobile drawer can render them without extra plumbing.
  */
 export const primaryNav: NavItem[] = [
   { label: 'Home', href: '/' },
-  {
-    label: 'Sonan Bunkers',
-    href: '/sonan-bunkers-people-working-together/',
-    children: [
-      { label: 'Our Commitment to Clients', href: '/sonan-bunkers-people-working-together/our-commitment-to-clients/' },
-      { label: 'Our Team', href: '/sonan-bunkers-people-working-together/our-team/' },
-    ],
-  },
   {
     label: 'About Us',
     href: '/about-us/',
     children: [
       { label: 'Your Marine Energy Provider', href: '/about-us/your-marine-energy-provider/' },
-      { label: 'Group CEO Statement', href: '/about-us/group-ceo-statement/' },
-      { label: 'Group CFO Statement', href: '/about-us/group-cfo-statement/' },
     ],
   },
   {
     label: 'Our Services',
-    href: '/our-services/',
+    href: '/our-services/fuel-products/',
     children: [
       { label: 'Fuel Products', href: '/our-services/fuel-products/' },
       { label: 'Marine Lubricants', href: '/our-services/marine-lubricants/' },
       { label: 'Alternative Fuels', href: '/our-services/alternative-fuels/' },
       { label: 'Advisory Services', href: '/our-services/advisory-services/' },
-      { label: 'Risk Management / Hedging', href: '/our-services/risk-management-hedging/' },
-      { label: 'Carbon Footprint', href: '/our-services/carbon-footprint-compensation/' },
-      { label: 'Fuel Traceability', href: '/our-services/digital-physical-fuel-traceability/' },
     ],
   },
-  {
-    label: 'Responsible Partner',
-    href: '/responsible-partner/',
-    children: [
-      { label: 'Compliance', href: '/responsible-partner/compliance/' },
-      { label: 'CSR', href: '/responsible-partner/csr/' },
-      { label: 'Data Protection', href: '/responsible-partner/data-protection-gdpr/' },
-      { label: 'HSEQ', href: '/responsible-partner/hseq/' },
-      { label: 'Anti-Corruption Policy', href: '/responsible-partner/anti-corruption-policy/' },
-      { label: 'Sustainability', href: '/responsible-partner/sustainability/' },
-    ],
-  },
-  {
-    label: 'Press Room',
-    href: '/press-room/',
-    children: [
-      { label: 'News', href: '/press-room/news/' },
-      { label: 'Annual Reports', href: '/press-room/annual-reports/' },
-    ],
-  },
+  { label: 'News', href: '/press-room/news/' },
   { label: 'Contact', href: '/contact/' },
-  { label: 'Careers', href: '/careers/' },
-  {
-    label: 'Legal',
-    href: '/legal/',
-    children: [
-      { label: 'Cookies', href: '/legal/cookies/' },
-      { label: 'Privacy Policy', href: '/legal/privacy-policy/' },
-      { label: 'Terms of Use', href: '/legal/terms-of-use/' },
-      { label: 'Terms and Conditions of Sale', href: '/legal/terms-and-conditions-of-sale/' },
-    ],
-  },
 ];
 
 /**
- * Footer link columns — mirrors source structure observed on
- * https://www.sonanbunkers.com/ (div-based markup, captured manually because
- * the Task 4 crawler couldn't infer a semantic `<footer>`).
- *
- * Source layout: 4 cols on desktop — [logo][Discover Sonan][unlabeled][Connect].
- * We collapse the logo column into Footer.astro (it's not a link list) and
- * keep the two link columns + a trailing legal row rendered separately.
+ * Footer link columns — trimmed alongside primaryNav (Task 32) so every link
+ * resolves to a rebuilt page. The source site's footer carried "Discover Sonan"
+ * and "Company" columns plus a Modern Slavery PDF link; we keep the two columns
+ * but populate them only with rebuilt routes.
  */
 export const footerNav: { title: string; items: NavItem[] }[] = [
   {
     title: 'Discover Sonan',
     items: [
-      { label: 'Sonan Bunkers', href: '/sonan-bunkers-people-working-together/' },
       { label: 'About Us', href: '/about-us/' },
-      { label: 'Our Services', href: '/our-services/' },
-      { label: 'Responsible Partner', href: '/responsible-partner/' },
-      { label: 'Modern Slavery Act Statement', href: '/media/1305/signedmsas.pdf' },
+      { label: 'Your Marine Energy Provider', href: '/about-us/your-marine-energy-provider/' },
+      { label: 'Fuel Products', href: '/our-services/fuel-products/' },
+      { label: 'Marine Lubricants', href: '/our-services/marine-lubricants/' },
     ],
   },
   {
     title: 'Company',
     items: [
-      { label: 'Press Room', href: '/press-room/' },
+      { label: 'Alternative Fuels', href: '/our-services/alternative-fuels/' },
+      { label: 'Advisory Services', href: '/our-services/advisory-services/' },
+      { label: 'News', href: '/press-room/news/' },
       { label: 'Contact', href: '/contact/' },
-      { label: 'Careers', href: '/careers/' },
-      { label: 'Legal', href: '/legal/' },
     ],
   },
 ];
 
 /** Legal / utility links rendered in the bottom strip beside the copyright. */
 export const footerLegal: NavItem[] = [
-  { label: 'Cookies', href: '/legal/cookies/' },
   { label: 'Privacy Policy', href: '/legal/privacy-policy/' },
-  { label: 'Terms of use', href: '/legal/terms-of-use/' },
-  { label: 'Terms and Conditions of Sale', href: '/legal/terms-and-conditions-of-sale/' },
 ];
 
 /**

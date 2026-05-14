@@ -142,11 +142,10 @@ export const servicesSiblings: { label: string; href: string }[] = [
   { label: 'Advisory Services', href: '/our-services/advisory-services/' },
 ];
 
-/** Sibling lists for the "About Us" sidebar nav. */
+/** Sibling lists for the "About Us" sidebar nav. Trimmed in Task 32 to only the
+ *  about-us sub-pages we rebuilt (CEO/CFO statements were out of scope). */
 export const aboutSiblings: { label: string; href: string }[] = [
   { label: 'Your Marine Energy Provider', href: '/about-us/your-marine-energy-provider/' },
-  { label: 'Group CEO Statement', href: '/about-us/group-ceo-statement/' },
-  { label: 'Group CFO Statement', href: '/about-us/group-cfo-statement/' },
 ];
 
 // ---------- per-page content ----------
@@ -163,7 +162,7 @@ export const homePage: PageContent = {
     sub: 'Sonan Bunkers Group integrates business strategies whilst upholding the highest ethics for maximum success.',
     image: heroHome,
     cta: { label: 'DISCOVER SONAN', href: '/about-us/your-marine-energy-provider/' },
-    ctaSecondary: { label: 'EXPLORE OUR SERVICES', href: '/our-services/' },
+    ctaSecondary: { label: 'EXPLORE OUR SERVICES', href: '/our-services/fuel-products/' },
   },
   sections: [
     {
@@ -172,7 +171,7 @@ export const homePage: PageContent = {
       heading: 'Propelling fleets into the future',
       body: 'Our team of skilled professionals are committed to exceeding expectations and going above and beyond to ensure that our customers are satisfied with the services we provide.',
       image: imgServicesPanel,
-      cta: { label: 'EXPLORE SERVICES', href: '/our-services/' },
+      cta: { label: 'EXPLORE SERVICES', href: '/our-services/fuel-products/' },
     },
     {
       kind: 'text',
@@ -182,7 +181,7 @@ export const homePage: PageContent = {
       image: imgCoreValues,
       cta: {
         label: 'LEARN MORE',
-        href: '/sonan-bunkers-people-working-together/our-commitment-to-clients/',
+        href: '/about-us/your-marine-energy-provider/',
       },
     },
     {
@@ -191,7 +190,7 @@ export const homePage: PageContent = {
       heading: 'Focus on extended quality control & constant innovation',
       body: 'We strive to be a responsible partner that our clients can rely on. We believe that trust and reliability are the cornerstones of any successful business relationship, and we work hard to earn and maintain the trust of our clients.',
       image: imgResponsiblePartner,
-      cta: { label: 'LEARN MORE', href: '/responsible-partner/' },
+      cta: { label: 'LEARN MORE', href: '/our-services/advisory-services/' },
     },
     {
       kind: 'text',
@@ -199,7 +198,7 @@ export const homePage: PageContent = {
       heading: 'Caring for what really matters',
       body: 'Sonan Bunkers is committed to operating in an ethical and responsible manner, taking into account the impact of our actions on stakeholders such as employees, customers, and the environment.',
       image: imgWeCare,
-      cta: { label: 'LEARN MORE', href: '/responsible-partner/csr/' },
+      cta: { label: 'LEARN MORE', href: '/about-us/' },
     },
     {
       kind: 'news-list',
@@ -261,16 +260,6 @@ export const aboutUsPage: PageContent = {
           body: 'Sonan Bunkers was founded in 2014 with the goal of becoming a leading independent fuel and energy provider to the shipping industry.',
           href: '/about-us/your-marine-energy-provider/',
           image: heroMarineEnergy,
-        },
-        {
-          title: 'Group CEO Statement',
-          eyebrow: 'Leadership',
-          href: '/about-us/group-ceo-statement/',
-        },
-        {
-          title: 'Group CFO Statement',
-          eyebrow: 'Leadership',
-          href: '/about-us/group-cfo-statement/',
         },
       ],
     },
@@ -476,9 +465,9 @@ export const alternativeFuelsPage: PageContent = {
       kind: 'feature-grid',
       heading: 'Our alternative fuel portfolio',
       items: [
-        { title: 'Biofuels', href: '/our-services/alternative-fuels/biofuels/' },
-        { title: 'LNG', href: '/our-services/alternative-fuels/lng/' },
-        { title: 'Electricity Sales', href: '/our-services/alternative-fuels/electricity-sales/' },
+        { title: 'Biofuels', body: 'Drop-in low-carbon fuels — biodiesel, HVO and bio-MGO — compatible with existing engines and bunker infrastructure.' },
+        { title: 'LNG', body: 'Liquefied natural gas and bio-LNG: a key transitional pathway for cutting sulphur and particulate emissions today.' },
+        { title: 'Electricity Sales', body: 'Shore-power supply and onshore charging for hybrid and fully electric vessels, in partnership with port operators.' },
       ],
     },
   ],
