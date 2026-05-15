@@ -39,13 +39,13 @@ export const primaryNav: NavItem[] = [
 
 /**
  * Footer link columns — trimmed alongside primaryNav (Task 32) so every link
- * resolves to a rebuilt page. The source site's footer carried "Discover Sonan"
+ * resolves to a rebuilt page. The source site's footer carried "Discover Elysse"
  * and "Company" columns plus a Modern Slavery PDF link; we keep the two columns
  * but populate them only with rebuilt routes.
  */
 export const footerNav: { title: string; items: NavItem[] }[] = [
   {
-    title: 'Discover Sonan',
+    title: 'Discover Elysse',
     items: [
       { label: 'About Us', href: '/about-us/' },
       { label: 'Your Marine Energy Provider', href: '/about-us/your-marine-energy-provider/' },
@@ -80,4 +80,103 @@ export const social: { label: string; href: string; icon: string }[] = [
     href: 'https://www.linkedin.com/company/11204464/admin/',
     icon: '<path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.852 3.37-1.852 3.601 0 4.267 2.37 4.267 5.455v6.288zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.063 2.063 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>',
   },
+];
+
+/**
+ * Mega-menu data — full source-site nav, 8 category groups arranged in a
+ * 3-column desktop grid (col 1: 3 groups, col 2: 3 groups, col 3: 2 groups).
+ * Mirrors the layout in docs/superpowers/plans/2026-05-15-mega-menu.md.
+ */
+export interface MegaGroup {
+  title: string;
+  /** Optional href if the heading itself is a link. */
+  href?: string;
+  items: NavItem[];
+}
+
+/** Tuple shape: [column 1 groups, column 2 groups, column 3 groups] */
+export type MegaColumns = [MegaGroup[], MegaGroup[], MegaGroup[]];
+
+export const megaNav: MegaColumns = [
+  // Column 1
+  [
+    {
+      title: 'Sonan Bunkers',
+      href: '/sonan-bunkers-people-working-together/',
+      items: [
+        { label: 'Our Commitment to Clients', href: '/sonan-bunkers-people-working-together/our-commitment-to-clients/' },
+        { label: 'Our Team', href: '/sonan-bunkers-people-working-together/our-team/' },
+      ],
+    },
+    {
+      title: 'Responsible Partner',
+      href: '/responsible-partner/',
+      items: [
+        { label: 'Compliance', href: '/responsible-partner/compliance/' },
+        { label: 'CSR', href: '/responsible-partner/csr/' },
+        { label: 'Data Protection', href: '/responsible-partner/data-protection-gdpr/' },
+        { label: 'HSEQ', href: '/responsible-partner/hseq/' },
+        { label: 'Anti-Corruption Policy', href: '/responsible-partner/anti-corruption-policy/' },
+        { label: 'Sustainability', href: '/responsible-partner/sustainability/' },
+      ],
+    },
+    {
+      title: 'Careers',
+      href: '/careers/',
+      items: [
+        { label: 'Join Us', href: '/careers/' },
+      ],
+    },
+  ],
+  // Column 2
+  [
+    {
+      title: 'About Us',
+      href: '/about-us/',
+      items: [
+        { label: 'Your Marine Energy Provider', href: '/about-us/your-marine-energy-provider/' },
+        { label: 'Group CEO Statement', href: '/about-us/group-ceo-statement/' },
+        { label: 'Group CFO Statement', href: '/about-us/group-cfo-statement/' },
+      ],
+    },
+    {
+      title: 'Press Room',
+      href: '/press-room/',
+      items: [
+        { label: 'News', href: '/press-room/news/' },
+        { label: 'Annual Reports', href: '/press-room/annual-reports/' },
+      ],
+    },
+    {
+      title: 'Legal',
+      href: '/legal/',
+      items: [
+        { label: 'Cookies', href: '/legal/cookies/' },
+        { label: 'Privacy Policy', href: '/legal/privacy-policy/' },
+        { label: 'Terms of Use', href: '/legal/terms-of-use/' },
+        { label: 'Terms and Conditions of Sale', href: '/legal/terms-and-conditions-of-sale/' },
+      ],
+    },
+  ],
+  // Column 3
+  [
+    {
+      title: 'Our Services',
+      href: '/our-services/fuel-products/',
+      items: [
+        { label: 'Fuel Products', href: '/our-services/fuel-products/' },
+        { label: 'Advisory Services', href: '/our-services/advisory-services/' },
+        { label: 'Risk Management / Hedging', href: '/our-services/risk-management-hedging/' },
+        { label: 'Carbon Footprint', href: '/our-services/carbon-footprint-compensation/' },
+        { label: 'Fuel Traceability', href: '/our-services/digital-physical-fuel-traceability/' },
+      ],
+    },
+    {
+      title: 'Contact',
+      href: '/contact/',
+      items: [
+        { label: 'Worldwide Offices', href: '/contact/' },
+      ],
+    },
+  ],
 ];
