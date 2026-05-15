@@ -14,7 +14,7 @@ const { items } = Astro.props;
 ---
 <nav
   data-snapnav
-  class="pointer-events-none fixed right-3 md:right-6 top-1/2 z-30 hidden md:flex -translate-y-1/2 flex-col items-center gap-4 rounded-full bg-ink/40 px-2 py-4 backdrop-blur-sm"
+  class="pointer-events-none fixed right-3 md:right-6 top-1/2 z-30 hidden md:flex -translate-y-1/2 flex-col items-center gap-4"
   aria-label="Page sections"
 >
   {items.map((item) => (
@@ -23,7 +23,7 @@ const { items } = Astro.props;
       data-snapnav-dot
       data-target={item.id}
       data-active="false"
-      class="pointer-events-auto group relative inline-flex h-6 w-6 items-center justify-center"
+      class="pointer-events-auto group relative inline-flex h-6 w-6 items-center justify-center rounded-full bg-ink/40 backdrop-blur-sm shadow-[0_0_10px_rgba(0,0,0,0.35)] transition-shadow duration-base ease-out-quint hover:shadow-[0_0_14px_rgba(0,0,0,0.5)]"
       aria-label={`Go to ${item.label}`}
     >
       <span
