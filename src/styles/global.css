@@ -155,14 +155,23 @@
     scroll-behavior: smooth;
   }
 
-  /* Full-page scroll-snap, opted-in per route via document.documentElement[data-snap-page] */
+  /* Panel-height token — panels use min-h-[var(--panel-h)] so they fit between
+   * the fixed header and the viewport bottom exactly. Defaults to 100dvh on
+   * non-snap pages; on snap pages, subtracts the header height. */
+  html {
+    --panel-h: 100dvh;
+  }
   html[data-snap-page] {
-    scroll-snap-type: y mandatory;
-    /* Header is fixed at 80px on mobile, ~96px md+ — make snap clear it */
+    --panel-h: calc(100dvh - 5rem);
+    /* CSS scroll-snap acts as a graceful fallback. The wheel handler in
+     * src/scripts/home-snap.client.ts drives the primary smooth-scroll. */
+    scroll-snap-type: y proximity;
+    /* Header is fixed at 80px on mobile, ~96px md+ — snap aligns under it */
     scroll-padding-top: 5rem;
   }
   @media (min-width: 768px) {
     html[data-snap-page] {
+      --panel-h: calc(100dvh - 6rem);
       scroll-padding-top: 6rem;
     }
   }

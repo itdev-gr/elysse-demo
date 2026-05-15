@@ -48,6 +48,9 @@ const navItems: SnapNavItem[] = [
       document.documentElement.removeAttribute('data-snap-page');
     });
   </script>
+  <script>
+    import '../scripts/home-snap.client';
+  </script>
 
   <SnapNav items={navItems} />
 
@@ -72,7 +75,7 @@ const navItems: SnapNavItem[] = [
     <section
       id={NEWS_ID}
       data-snap
-      class="relative min-h-screen snap-start snap-always bg-surface-alt flex items-center py-20 md:py-28"
+      class="relative min-h-[var(--panel-h)] snap-start snap-always bg-surface-alt flex items-center py-20 md:py-28"
     >
       <Container size="xl" class="w-full">
         {newsSection.eyebrow && (
