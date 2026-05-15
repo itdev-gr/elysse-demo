@@ -5,6 +5,7 @@ import Button from './Button.astro';
 import Container from './Container.astro';
 
 interface Props {
+  id?: string;
   eyebrow?: string;
   headline: string;
   sub?: string;
@@ -18,6 +19,7 @@ interface Props {
   overlay?: boolean;
 }
 const {
+  id,
   eyebrow,
   headline,
   sub,
@@ -41,7 +43,7 @@ const aligns = {
   center: 'text-center items-center mx-auto',
 };
 ---
-<section class={`relative ${heights[height]} flex items-end overflow-hidden bg-ink`}>
+<section id={id} class={`relative ${heights[height]} ${height === 'screen' ? 'snap-start snap-always' : ''} flex items-end overflow-hidden bg-ink`}>
   {image && (
     <Image
       src={image}
