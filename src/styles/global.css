@@ -21,47 +21,71 @@
   --breakpoint-2xl: 1440px;
 
   /* === Colors ===========================================================
-   * Brand navy — DESIGN.md §2: paragraph color + primary CTA fill.
+   * Source of truth: Elysée Brand Guidelines (09 Jan 2024), pp.13–15.
+   * Hierarchy when used together: 50% Elysée Green / 30% Black / 20% Light
+   * Green. Secondary palette is for highlights — apply only after the
+   * primary palette is established.
    */
-  --color-brand: #274380;
-  --color-brand-500: #274380;     /* alias for utility ergonomics */
-  --color-brand-600: #1f3669;     /* ~12% darker — hover state for primary CTA */
-  --color-brand-navy: #274380;
-  --color-brand-deep: #1d3274;    /* footer band */
-  --color-brand-accent: #f1b578;  /* warm peach accent — DESIGN.md §2 */
 
-  /* Ink / body text. */
-  --color-ink: #212529;
-  --color-ink-muted: #545454;     /* form input gray, DESIGN.md §9 */
-  --color-ink-form: #545454;
+  /* --- Primary palette ------------------------------------------------ */
+  /* Elysée Green — Pantone 364C / CMYK 70 38 100 28 / RGB 76 104 48 */
+  --color-brand: #4c6830;
+  --color-brand-500: #4c6830;     /* alias for utility ergonomics */
+  --color-brand-600: #3e5527;     /* ~15% darker — hover state for primary CTA */
+  --color-brand-700: #30421e;     /* darker still — pressed state, dark footer band */
+  --color-brand-dark: #215a2c;    /* Pantone 349C — deep green from secondary */
+  --color-brand-light: #6d8939;   /* Pantone 377C — Elysée Light Green */
 
-  /* Surfaces. */
+  /* Backwards-compat aliases (legacy navy tokens). Existing components still
+   * read these — pointing them at the new Elysée green keeps the build clean
+   * while the rename propagates through component classes. */
+  --color-brand-navy: #4c6830;
+  --color-brand-deep: #3e5527;
+  --color-brand-accent: #f37021;  /* Pantone 158C — orange highlight (snap-nav active dot etc.) */
+
+  /* Ink / body text — brand spec says pure Pantone Black C #000000. */
+  --color-ink: #000000;
+  --color-ink-muted: #4d4d4d;     /* Cool Gray 9C — secondary palette */
+  --color-ink-form: #4d4d4d;
+
+  /* Surfaces. The brand guidelines specify "Black or White" for body copy
+   * surfaces; UI scaffolding tints below stay as soft neutrals. */
   --color-surface: #ffffff;
-  --color-surface-alt: #eaefef;       /* light gray section fill */
-  --color-surface-divider: #d2d7e4;   /* muted blue-gray dividers */
+  --color-surface-alt: #f5f5f5;       /* soft off-white — section alt fill */
+  --color-surface-divider: #cccccc;   /* Cool Gray 4C — secondary palette */
 
-  /* Sea-foam teal band/separator panels. */
-  --color-teal: #84a2a4;
-  --color-teal-alt: #86a4a6;
+  /* --- Secondary palette (highlights — use sparingly) ----------------- */
+  --color-accent: #f37021;        /* Pantone 158C — orange (primary highlight) */
+  --color-accent-orange: #f37021;
+  --color-accent-lime: #8fb83e;   /* Pantone 376C */
+  --color-accent-sky: #4e99c9;    /* Pantone 2915C */
+  --color-accent-gold: #e5b921;   /* Pantone 605C */
+  --color-accent-blue: #055fa4;   /* Pantone 300C */
+  --color-accent-navy: #0a213f;   /* Pantone 281C */
+  --color-accent-red: #ed1c24;    /* Pantone 2347C */
 
-  /* Warm peach accent — use sparingly per DESIGN.md §2. */
-  --color-accent: #f1b578;
-  --color-accent-peach: #f1b578;
-
-  /* Bootstrap leakage: source's unstyled <a> color on ~40 elements. Kept for
-   * intentional parity during the port; refactor links away from this
-   * borderline-AA value in a later pass. */
-  --color-bootstrap-default: #007bff;
+  /* Legacy teal tokens — repointed at brand light green so old utilities
+   * resolve. Drop these once components no longer reference text-teal etc. */
+  --color-teal: #6d8939;
+  --color-teal-alt: #6d8939;
 
   /* Scrim overlay (cookie banner + image overlays). */
   --color-scrim: rgba(0, 0, 0, 0.5);
 
   /* === Typography =======================================================
-   * Font stacks — DESIGN.md §3.
+   * Source of truth: Elysée Brand Guidelines, pp.16–17.
+   *
+   * Corporate font: Effra (Light/Regular/Medium/Bold/Heavy, italics for each).
+   * Online fallback per the guideline: Roboto (Google Fonts, free).
+   * System fallback (Calibri) is Office-document-only — irrelevant on web.
+   *
+   * The font stack tries Effra first so if/when an Effra licence kit is
+   * embedded via src/data/fonts.ts it takes precedence; otherwise Roboto
+   * from Google Fonts kicks in (already loaded by src/data/fonts.ts).
    */
-  --font-sans: "Averta Standard W01", system-ui, sans-serif;
+  --font-sans: "Effra", "Roboto", system-ui, sans-serif;
   --font-slab: "Roboto Slab", Georgia, serif;
-  --font-body: "Open Sans", Arial, "Trebuchet MS", "Segoe UI", Helvetica, sans-serif;
+  --font-body: "Effra", "Roboto", Arial, "Segoe UI", Helvetica, sans-serif;
 
   /* Font sizes — normalized to 16px rem base (source uses a 10px hack). Each
    * value with line-height/letter-spacing companions becomes a single
@@ -155,25 +179,8 @@
     scroll-behavior: smooth;
   }
 
-  /* Panel-height token — panels use min-h-[var(--panel-h)] so they fit between
-   * the fixed header and the viewport bottom exactly. Defaults to 100dvh on
-   * non-snap pages; on snap pages, subtracts the header height. */
-  html {
-    --panel-h: 100dvh;
-  }
   html[data-snap-page] {
-    --panel-h: calc(100dvh - 5rem);
-    /* CSS scroll-snap acts as a graceful fallback. The wheel handler in
-     * src/scripts/home-snap.client.ts drives the primary smooth-scroll.
-     * Per-panel scroll-margin-top (via Tailwind scroll-mt-*) handles the
-     * header offset, so hero gets 0 (full-bleed) and other panels get the
-     * header height. */
     scroll-snap-type: y proximity;
-  }
-  @media (min-width: 768px) {
-    html[data-snap-page] {
-      --panel-h: calc(100dvh - 6rem);
-    }
   }
 
   body {

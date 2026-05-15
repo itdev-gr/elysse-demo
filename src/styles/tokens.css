@@ -12,39 +12,41 @@
 
 :root {
   /* --- Colors --------------------------------------------------------- */
-  /* Brand navy (DESIGN.md §2: paragraph color + primary CTA fill). */
-  --c-brand: #274380;
-  --c-brand-navy: #274380;
-  --c-brand-deep: #1d3274;
+  /* Primary palette — Elysée Brand Guidelines (09 Jan 2024), p.14. */
+  --c-brand: #4c6830;             /* Elysée Green — Pantone 364C */
+  --c-brand-dark: #215a2c;        /* Pantone 349C — deep green */
+  --c-brand-light: #6d8939;       /* Pantone 377C — Elysée Light Green */
 
-  /* Ink / body text. */
-  --c-ink: #212529;
-  --c-ink-muted: #545454;
-  --c-ink-form: #545454;
+  /* Ink / body text (brand spec: pure Pantone Black C). */
+  --c-ink: #000000;
+  --c-ink-muted: #4d4d4d;         /* Cool Gray 9C */
+  --c-ink-form: #4d4d4d;
 
   /* Surfaces. */
   --c-surface: #ffffff;
-  --c-surface-alt: #eaefef;
-  --c-surface-divider: #d2d7e4;
+  --c-surface-alt: #f5f5f5;       /* soft off-white scaffold */
+  --c-surface-divider: #cccccc;   /* Cool Gray 4C */
 
-  /* Sea-foam teal band/separator panels. */
-  --c-teal: #84a2a4;
-  --c-teal-alt: #86a4a6;
-
-  /* Warm peach accent — use sparingly per DESIGN.md §2. */
-  --c-accent: #f1b578;
-  --c-accent-peach: #f1b578;
-
-  /* Bootstrap leakage: unstyled <a> color still in use on the source. */
-  --c-bootstrap-default: #007bff;
+  /* Secondary palette — Elysée Brand Guidelines, p.15. Use sparingly. */
+  --c-accent: #f37021;            /* Pantone 158C — orange (primary highlight) */
+  --c-accent-orange: #f37021;
+  --c-accent-lime: #8fb83e;       /* Pantone 376C */
+  --c-accent-sky: #4e99c9;        /* Pantone 2915C */
+  --c-accent-gold: #e5b921;       /* Pantone 605C */
+  --c-accent-blue: #055fa4;       /* Pantone 300C */
+  --c-accent-navy: #0a213f;       /* Pantone 281C */
+  --c-accent-red: #ed1c24;        /* Pantone 2347C */
 
   /* Scrim overlay (cookie banner + image overlays). */
   --c-scrim: rgba(0, 0, 0, 0.5);
 
   /* --- Fonts ---------------------------------------------------------- */
-  --font-sans: "Averta Standard W01", system-ui, sans-serif;
+  /* Brand corporate font is Effra (Dalton Maag). When an Effra licence
+   * kit is embedded via src/data/fonts.ts it takes precedence; otherwise
+   * Roboto (Google Fonts) is the documented web fallback. */
+  --font-sans: "Effra", "Roboto", system-ui, sans-serif;
   --font-slab: "Roboto Slab", Georgia, serif;
-  --font-body: "Open Sans", Arial, "Trebuchet MS", "Segoe UI", Helvetica, sans-serif;
+  --font-body: "Effra", "Roboto", Arial, "Segoe UI", Helvetica, sans-serif;
 
   /* --- Motion --------------------------------------------------------- */
   --ease-in-out: ease-in-out;

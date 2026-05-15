@@ -33,7 +33,7 @@ const fullOgImage = ogImage
   ? (ogImage.startsWith('http') ? ogImage : `${SITE}${ogImage}`)
   : `${SITE}/og-default.jpg`;
 
-const titleSuffix = 'Sonan Bunkers';
+const titleSuffix = 'Elysse Group';
 const fullTitle = title === titleSuffix ? title : `${title} — ${titleSuffix}`;
 ---
 <!doctype html>
@@ -52,7 +52,7 @@ const fullTitle = title === titleSuffix ? title : `${title} — ${titleSuffix}`;
     <meta property="og:image" content={fullOgImage} />
     <meta property="og:url" content={canonicalHref} />
     <meta property="og:type" content="website" />
-    <meta property="og:site_name" content="Sonan Bunkers" />
+    <meta property="og:site_name" content="Elysse Group" />
 
     {/* Twitter */}
     <meta name="twitter:card" content="summary_large_image" />
@@ -64,9 +64,9 @@ const fullTitle = title === titleSuffix ? title : `${title} — ${titleSuffix}`;
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="alternate icon" href="/favicon.ico" />
 
-    {/* Fonts — Monotype + Google per src/data/fonts.ts */}
+    {/* Fonts — Roboto (Effra fallback per Elysée brand guidelines) per src/data/fonts.ts */}
     {fontLinks.map((f) => (
-      <link rel={f.rel} type={f.type} href={f.href} />
+      <link rel={f.rel} type={f.type} href={f.href} crossorigin={f.crossorigin} />
     ))}
 
     <slot name="head" />
