@@ -1,7 +1,7 @@
 ---
 import Container from './Container.astro';
 import { footerNav, footerLegal, social } from '../data/navigation';
-import logo from '../assets/icons/logo.svg';
+import logo from '../assets/icons/elysee-logo.svg';
 const year = new Date().getFullYear();
 ---
 <footer class="bg-ink text-surface">
@@ -11,10 +11,10 @@ const year = new Date().getFullYear();
         <a href="/" class="inline-block" aria-label="Sonan Bunkers — home">
           <img
             src={logo.src}
-            alt="Sonan Bunkers"
+            alt="Elysee"
             width={logo.width}
             height={logo.height}
-            class="h-10 w-auto brightness-0 invert"
+            class="h-12 w-auto"
             loading="lazy"
           />
         </a>
