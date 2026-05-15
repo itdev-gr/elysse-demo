@@ -52,14 +52,13 @@ const aligns = {
   {video ? (
     <video
       src={video}
-      poster={image?.src}
       autoplay
       muted
       loop
       playsinline
-      preload="metadata"
+      preload="auto"
       aria-hidden="true"
-      class="absolute inset-0 h-full w-full object-cover"
+      class="absolute inset-0 h-full w-full object-cover bg-ink"
     ></video>
   ) : image && (
     <Image
