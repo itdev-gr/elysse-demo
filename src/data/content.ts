@@ -2,7 +2,7 @@
 // for each of the 10 pages chosen for rebuild. Pages become thin compositions
 // of components + the structs exported here.
 //
-// Copy is extracted faithfully from the source site (https://www.sonanbunkers.com/).
+// Copy is extracted faithfully from the source site (https://www.elyssegroup.com/).
 // The user owns the source, so reproducing on-page text verbatim is authorised;
 // we deliberately mirror the source's exact wording rather than paraphrase.
 //
@@ -15,17 +15,17 @@ import type { ImageMetadata } from 'astro';
 // Hero images — one per page (where the source has a clear hero asset).
 import heroHome from '../assets/images/ocean-1440x900.jpg';
 import heroAboutUs from '../assets/images/shutterstock-699756580-2.jpg';
-import heroMarineEnergy from '../assets/images/shutterstock-1957229728-your-marine-energy-provider.jpg';
+import heroStreamingWater from '../assets/images/streaming-water.jpg';
 import heroFuelProducts from '../assets/images/shutterstock-377226832-fuel-products.jpg';
 import heroMarineLubricants from '../assets/images/shutterstock-1007620258-scaled.jpg';
 import heroAlternativeFuels from '../assets/images/green-hydrogen-shutterstock-1938738706.jpg';
 import heroAdvisoryServices from '../assets/images/shutterstock-377226832-advisory-services.jpg';
 import heroContact from '../assets/images/shutterstock-374742190-group-ceo-statement.jpg';
-import heroNews from '../assets/images/services.jpg'; // press-room landing has no dedicated hero asset; reuse services banner.
+import heroNews from '../assets/images/landscape.jpg'; // press-room landing has no dedicated hero asset; reuse landscape banner.
 import heroPrivacy from '../assets/images/shutterstock-377226832-privacy-policy.jpg';
 
 // Section/article images.
-import imgServicesPanel from '../assets/images/services.jpg';
+import imgServicesPanel from '../assets/images/landscape.jpg';
 import imgCoreValues from '../assets/images/shutterstock-377226832-core-values.jpg';
 import imgResponsiblePartner from '../assets/images/shutterstock-377226832-responsible-partner.jpg';
 import imgWeCare from '../assets/images/shutterstock-377226832-we-care.jpg';
@@ -54,6 +54,8 @@ export interface HeroBlock {
   headline: string;
   sub?: string;
   image?: ImageMetadata;
+  /** Public-folder URL of a background video; if set, the Hero plays this instead of `image` and reuses `image` as the poster. */
+  video?: string;
   cta?: CTA;
   ctaSecondary?: CTA;
 }
@@ -136,10 +138,10 @@ export interface PageContent {
 
 /** Sibling lists for the "Our Services" sidebar nav. */
 export const servicesSiblings: { label: string; href: string }[] = [
-  { label: 'Fuel Products', href: '/our-services/fuel-products/' },
-  { label: 'Marine Lubricants', href: '/our-services/marine-lubricants/' },
-  { label: 'Alternative Fuels', href: '/our-services/alternative-fuels/' },
-  { label: 'Advisory Services', href: '/our-services/advisory-services/' },
+  { label: 'Agriculture', href: '/our-services/agriculture/' },
+  { label: 'Landscape', href: '/our-services/landscape/' },
+  { label: 'Building & Infrastructure', href: '/our-services/building-infrastructure/' },
+  { label: 'Industry', href: '/our-services/industry/' },
 ];
 
 /** Sibling lists for the "About Us" sidebar nav. Trimmed in Task 32 to only the
@@ -153,16 +155,17 @@ export const aboutSiblings: { label: string; href: string }[] = [
 export const homePage: PageContent = {
   slug: '/',
   meta: {
-    title: 'Sonan Bunkers — Fuelling the shipping industry',
+    title: 'Elysse Group — Fuelling the shipping industry',
     description:
-      'Sonan Bunkers Group integrates business strategies whilst upholding the highest ethics for maximum success — a leading independent fuel and energy provider to the shipping industry.',
+      'Elysse Group integrates business strategies whilst upholding the highest ethics for maximum success — a leading independent fuel and energy provider to the shipping industry.',
   },
   hero: {
-    headline: 'fuelling the shipping industry',
-    sub: 'Sonan Bunkers Group integrates business strategies whilst upholding the highest ethics for maximum success.',
+    headline: 'Text Placeholder',
+    sub: 'Elysse Group integrates business strategies whilst upholding the highest ethics for maximum success.',
     image: heroHome,
-    cta: { label: 'DISCOVER SONAN', href: '/about-us/your-marine-energy-provider/' },
-    ctaSecondary: { label: 'EXPLORE OUR SERVICES', href: '/our-services/fuel-products/' },
+    video: '/media/hero-elysee.mp4',
+    cta: { label: 'discover Elysse', href: '/about-us/your-marine-energy-provider/' },
+    ctaSecondary: { label: 'EXPLORE OUR SERVICES', href: '/our-services/agriculture/' },
   },
   sections: [
     {
@@ -171,13 +174,13 @@ export const homePage: PageContent = {
       heading: 'Propelling fleets into the future',
       body: 'Our team of skilled professionals are committed to exceeding expectations and going above and beyond to ensure that our customers are satisfied with the services we provide.',
       image: imgServicesPanel,
-      cta: { label: 'EXPLORE SERVICES', href: '/our-services/fuel-products/' },
+      cta: { label: 'EXPLORE SERVICES', href: '/our-services/agriculture/' },
     },
     {
       kind: 'text',
       eyebrow: 'Core Values',
       heading: 'A strong vision for sustainable development',
-      body: 'At Sonan Bunkers we are committed to providing our customers with the highest quality products and services while also upholding our values of sustainability and social responsibility. We believe that by taking care of our planet and its people, we can create a better future for everyone.\n\nWe prioritize the needs and satisfaction of our customers, and strive to create a positive and enjoyable experience for them every time they interact with our company. We value honesty, transparency, and respect, and strive to embody these values in all of our interactions with our customers and stakeholders.',
+      body: 'At Elysse Group we are committed to providing our customers with the highest quality products and services while also upholding our values of sustainability and social responsibility. We believe that by taking care of our planet and its people, we can create a better future for everyone.\n\nWe prioritize the needs and satisfaction of our customers, and strive to create a positive and enjoyable experience for them every time they interact with our company. We value honesty, transparency, and respect, and strive to embody these values in all of our interactions with our customers and stakeholders.',
       image: imgCoreValues,
       cta: {
         label: 'LEARN MORE ABOUT OUR VALUES',
@@ -190,15 +193,15 @@ export const homePage: PageContent = {
       heading: 'Focus on extended quality control & constant innovation',
       body: 'We strive to be a responsible partner that our clients can rely on. We believe that trust and reliability are the cornerstones of any successful business relationship, and we work hard to earn and maintain the trust of our clients.',
       image: imgResponsiblePartner,
-      cta: { label: 'LEARN MORE ABOUT OUR ADVISORY SERVICES', href: '/our-services/advisory-services/' },
+      cta: { label: 'LEARN MORE ABOUT OUR SERVICES', href: '/our-services/industry/' },
     },
     {
       kind: 'text',
       eyebrow: 'We Care',
       heading: 'Caring for what really matters',
-      body: 'Sonan Bunkers is committed to operating in an ethical and responsible manner, taking into account the impact of our actions on stakeholders such as employees, customers, and the environment.',
+      body: 'Elysse Group is committed to operating in an ethical and responsible manner, taking into account the impact of our actions on stakeholders such as employees, customers, and the environment.',
       image: imgWeCare,
-      cta: { label: 'LEARN MORE ABOUT SONAN', href: '/about-us/' },
+      cta: { label: 'LEARN MORE ABOUT ELYSSE', href: '/about-us/' },
     },
     {
       kind: 'news-list',
@@ -207,21 +210,21 @@ export const homePage: PageContent = {
       articles: [
         {
           title:
-            'Sonan Bunkers Expands into the Americas with the Launch of SONAN ENERGY Panama',
-          slug: '/press-room/news/sonan-energy-panama-launch/',
+            'Elysse Group Expands into the Americas with the Launch of ELYSSE ENERGY Panama',
+          slug: '/press-room/news/elysse-energy-panama-launch/',
           date: '10/1/2025',
           image: imgArticlePanama,
           excerpt:
-            'Sonan Bunkers expands into the Americas with the launch of SONAN ENERGY PANAMA S.A. in Panama City. Led by industry veteran Hernán Ortiz, the new hub strengthens the company’s regional presence from Canada to Argentina and marks a key step in its transition toward cleaner marine energy solutions.',
+            'Elysse Group expands into the Americas with the launch of ELYSSE ENERGY PANAMA S.A. in Panama City. Led by industry veteran Hernán Ortiz, the new hub strengthens the company’s regional presence from Canada to Argentina and marks a key step in its transition toward cleaner marine energy solutions.',
         },
         {
           title:
-            'Sonan Bunkers Secures Significant Funding to Propel Global Expansion',
+            'Elysse Group Secures Significant Funding to Propel Global Expansion',
           slug: '/press-room/news/hsbc-funding-increase-july-2024/',
           date: '7/29/2024',
           image: imgArticleHsbc,
           excerpt:
-            'At Sonan Bunkers, we are thrilled to announce a major milestone in our journey towards global expansion. With the steadfast support of HSBC UK, our company is poised for significant growth, driven by a substantial funding increase that will enable us to meet rising demands and enhance our operations worldwide.',
+            'At Elysse Group, we are thrilled to announce a major milestone in our journey towards global expansion. With the steadfast support of HSBC UK, our company is poised for significant growth, driven by a substantial funding increase that will enable us to meet rising demands and enhance our operations worldwide.',
         },
         {
           title: 'CELEBRATING A DECADE OF EXCELLENCE',
@@ -239,9 +242,9 @@ export const homePage: PageContent = {
 export const aboutUsPage: PageContent = {
   slug: '/about-us/',
   meta: {
-    title: 'About Us — Sonan Bunkers',
+    title: 'About Us — Elysse Group',
     description:
-      'Get to know Sonan Bunkers — our vision as a marine energy provider, our leadership statements, and our worldwide offices.',
+      'Get to know Elysse Group — our vision as a marine energy provider, our leadership statements, and our worldwide offices.',
   },
   hero: {
     eyebrow: 'About Us',
@@ -252,14 +255,14 @@ export const aboutUsPage: PageContent = {
   sections: [
     {
       kind: 'feature-grid',
-      heading: 'Discover more about Sonan',
+      heading: 'Discover more about Elysse',
       items: [
         {
-          title: 'Your Marine Energy Provider',
+          title: 'Streaming Water, Streaming Life',
           eyebrow: 'Our Story',
-          body: 'Sonan Bunkers was founded in 2014 with the goal of becoming a leading independent fuel and energy provider to the shipping industry.',
+          body: 'Elysse Group was founded in 2014 with the goal of becoming a leading independent fuel and energy provider to the shipping industry.',
           href: '/about-us/your-marine-energy-provider/',
-          image: heroMarineEnergy,
+          image: heroStreamingWater,
         },
       ],
     },
@@ -270,26 +273,26 @@ export const aboutUsPage: PageContent = {
 export const marineEnergyPage: PageContent = {
   slug: '/about-us/your-marine-energy-provider/',
   meta: {
-    title: 'Your Marine Energy Provider — Sonan Bunkers',
+    title: 'Your Marine Energy Provider — Elysse Group',
     description:
-      'Sonan Bunkers was founded in 2014 with the goal of becoming a leading independent fuel and energy provider to the shipping industry.',
+      'Elysse Group was founded in 2014 with the goal of becoming a leading independent fuel and energy provider to the shipping industry.',
   },
   hero: {
     eyebrow: 'About Us',
-    headline: 'Your Marine Energy Provider',
+    headline: 'Streaming Water, Streaming Life',
     sub: 'Constantly seeking out exceptional products and services, exceeding our customers’ expectations, and helping them achieve their goals.',
-    image: heroMarineEnergy,
+    image: heroStreamingWater,
   },
   sections: [
     {
       kind: 'text',
       heading: 'Who we are',
-      body: 'Sonan Bunkers was founded in 2014 with the goal of becoming a leading independent fuel and energy provider to the shipping industry. We understand that this industry can be complex and challenging, as it involves navigating dynamic and constantly changing markets. That’s why we have made it our mission to constantly seek out exceptional products and services, exceed our customers’ expectations, and help them achieve their goals.',
+      body: 'Elysée manufactures and supplies piping and irrigation systems for water supply, irrigation, sewerage and energy. Based in Cyprus, a key location at crossroads of three continents, Elysée serves more than 65 destinations in Europe, the Middle East, South Africa, Japan, Australia and New Zealand.\n\nIt is in our nature as a company but also as people, to be ambitious and set high targets. We are inspired by our 40-year history and experience and we look forward to our fifth decade with optimism and confidence. From our expert engineers to our highly knowledgeable customer services staff, teamwork plays a huge part in the success of Elysee. Collaboration across all departments, attention to detail and a lot of hard work result in amazing products, to create brilliant solutions that can be tailored perfectly to every customer.\n\nWe strive to innovate and improve, and because we have our own in-house R&D department, we can be ahead of the crowd when it comes to developing and creating new and exciting products. With each new product we look to maximise not just the efficiency of the product, but also the durability and ease of use. We also love to add in new features that make your life easier. Always with a thought to minimising environmental impact, and keeping prices competitive for you and your business, we want to save you time, save you money, and save the planet. We’re proud to say that we manage to achieve these targets time and time again, thanks to every member of the Elysee team.',
     },
     {
       kind: 'text',
       heading: 'Beyond sourcing & physical operations',
-      body: 'At Sonan Bunkers, we are not just a sourcing and physical operation. We go beyond that by providing our customers with a range of value-added services, including an advisory service, risk management, and market analysis. These services enable us to support our customers throughout the entire lifecycle of their fuel needs, from sourcing and procurement to delivery.',
+      body: 'At Elysse Group, we are not just a sourcing and physical operation. We go beyond that by providing our customers with a range of value-added services, including an advisory service, risk management, and market analysis. These services enable us to support our customers throughout the entire lifecycle of their fuel needs, from sourcing and procurement to delivery.',
     },
     {
       kind: 'text',
@@ -299,209 +302,128 @@ export const marineEnergyPage: PageContent = {
     {
       kind: 'text',
       heading: 'Creating value for everyone',
-      body: 'At Sonan Bunkers, we firmly believe that by creating value for our customers, we also create value for our employees and the community. We are proud of our team of experts who have extensive experience in the industry and are dedicated to providing exceptional service to our customers.\n\nWhether you are a small business or a large corporation, Sonan Bunkers is here to provide you with the highest quality fuel products and services, as well as the expertise and support you need to succeed. Contact us today to learn more about how we can help you achieve your goals.',
+      body: 'At Elysse Group, we firmly believe that by creating value for our customers, we also create value for our employees and the community. We are proud of our team of experts who have extensive experience in the industry and are dedicated to providing exceptional service to our customers.\n\nWhether you are a small business or a large corporation, Elysse Group is here to provide you with the highest quality fuel products and services, as well as the expertise and support you need to succeed. Contact us today to learn more about how we can help you achieve your goals.',
       cta: { label: 'Contact us', href: '/contact/' },
     },
   ],
   siblings: aboutSiblings,
 };
 
-export const fuelProductsPage: PageContent = {
-  slug: '/our-services/fuel-products/',
+// ---------- Service pages — Elysee Group's 4 sectors ----------
+// Heroes reuse the previously-imported shutterstock photos as placeholders;
+// swap to dedicated category photography when available. Body copy below is
+// short placeholder text — replace with real sector content.
+
+export const agriculturePage: PageContent = {
+  slug: '/our-services/agriculture/',
   meta: {
-    title: 'Fuel Products — Sonan Bunkers',
+    title: 'Agriculture — Elysse Group',
     description:
-      'Sonan Bunkers provides exceptional fuel products to customers worldwide, strictly adhering to ISO 8217 standards across the product development process.',
+      'Solutions for agricultural operations — from irrigation systems and water management to soil preparation, planting, and harvesting support.',
   },
   hero: {
     eyebrow: 'Our Services',
-    headline: 'Fuel Products',
-    sub: 'Exceptional fuel products to customers worldwide — held to the highest standards of excellence and built around safety and reliability.',
+    headline: 'Agriculture',
+    sub: 'Equipment, expertise, and supply solutions for modern agricultural operations.',
     image: heroFuelProducts,
   },
   sections: [
     {
       kind: 'text',
-      heading: 'Commitment to quality',
-      body: 'At Sonan Bunkers, we take pride in our commitment to providing exceptional fuel products to our customers worldwide. We hold ourselves to the highest standards of excellence and prioritize safety and reliability. This is achieved by strictly adhering to the ISO 8217 standards in our product development process.',
+      heading: 'Built for the field',
+      body: 'Elysee Group supports farmers and agricultural operators with a full range of equipment, materials, and advisory services. Our solutions span irrigation, soil preparation, planting, harvesting, and post-harvest logistics — engineered to perform reliably in the most demanding conditions.',
     },
     {
       kind: 'text',
-      heading: 'ISO 8217 & competitive pricing',
-      body: 'Our rigorous adherence to these standards ensures that our oil products are of the highest quality and are suitable for use in a wide range of marine engines. We understand that price is a crucial factor in the energy sector, and we strive to offer competitive pricing without compromising the quality of our products.',
-    },
-    {
-      kind: 'text',
-      heading: 'Sustainability & environmental responsibility',
-      body: 'Moreover, we recognize the importance of sustainability and environmental responsibility. We acknowledge the impact our operations have on the environment and work tirelessly to minimize that impact. We source our products from environmentally responsible suppliers and take steps to reduce emissions.',
-    },
-    {
-      kind: 'text',
-      heading: 'The Sonan difference',
-      body: 'At Sonan Bunkers, we firmly believe that our combination of superior quality, competitive pricing, and a strong emphasis on sustainability and environmental responsibility makes us the optimal choice for customers seeking bunker requirements.',
-      cta: { label: 'Get in touch', href: '/contact/' },
+      heading: 'Working in partnership',
+      body: 'We work directly with growers, cooperatives, and agribusinesses to understand their operational needs and recommend the right combination of products and services. From smallholdings to industrial-scale operations, our team brings the same commitment to quality and follow-through.',
+      cta: { label: 'Talk to our team', href: '/contact/' },
     },
   ],
   siblings: servicesSiblings,
 };
 
-export const marineLubricantsPage: PageContent = {
-  slug: '/our-services/marine-lubricants/',
+export const landscapePage: PageContent = {
+  slug: '/our-services/landscape/',
   meta: {
-    title: 'Marine Lubricants — Sonan Bunkers',
+    title: 'Landscape — Elysse Group',
     description:
-      'Sonan Bunkers helps customers improve operational efficiency through an extensive supply network of global major oil and independent suppliers in 1,000+ ports across 80+ countries.',
+      'Solutions for landscape design, installation, and maintenance — turfgrass care, irrigation, hardscape construction, and ongoing grounds management.',
   },
   hero: {
     eyebrow: 'Our Services',
-    headline: 'Marine lubricants',
-    sub: '24/7 supply with high flexibility and reliability, combining decades of marine lubricants experience.',
+    headline: 'Landscape',
+    sub: 'Design, installation, and ongoing care for outdoor environments — public, commercial, and residential.',
     image: heroMarineLubricants,
   },
   sections: [
     {
       kind: 'text',
-      heading: 'Operational efficiency, worldwide',
-      body: 'Sonan Bunkers is looking to help its customers to improve their operational efficiency through an extensive supply network of global major oil and independent suppliers.\n\nOur primary objective is to ensure our customer’s peace of mind regarding their lubricant supplies and keep them satisfied by providing them with premium products at competitive prices at all ports around the world with a respective technical service whenever this is needed by a team of experts.',
+      heading: 'From concept to upkeep',
+      body: 'Our landscape practice covers every stage of an outdoor project — initial design, installation, planting, and the long-term maintenance that keeps grounds looking their best. We supply the equipment, materials, and the technical know-how to deliver consistent results at any scale.',
     },
     {
       kind: 'text',
-      heading: '24/7 service across 1,000+ ports',
-      body: 'Our mission is to provide a 24/7 service to our customers with high flexibility and reliability combining our vast experience in the field of marine lubricants.\n\nOur partners’ network covers supplies in more than 1,000 ports and above 80 countries. Our day-to-day business is to keep constant contact with our customers and provide them with frequent updates regarding the progress of their orders.',
-    },
-    {
-      kind: 'list',
-      heading: 'Premium product range',
-      intro: 'We offer a wide range of premium quality products covering well above manufacturer requirements such as:',
-      items: [
-        'Cylinder and system oils for crosshead engines and four-stroke diesel engines',
-        'Hydraulic, gear oils',
-        'Heat transfer oils',
-        'Turbine, compressor oils',
-        'Refrigeration oils',
-        'Greases',
-        'Environmentally responsible lubricants and great range of synthetics',
-      ],
-    },
-    {
-      kind: 'list',
-      heading: 'Used oil analysis services',
-      intro: 'Technical experts will offer the optimum lubricants and create a lubrication chart for each vessel with services such as:',
-      items: [
-        'Used Oil Analysis Service (UOA)',
-        'Scavenging Drain Analysis (SDA)',
-        'Cold Corrosion Monitoring (CCM)',
-      ],
-    },
-    {
-      kind: 'text',
-      heading: 'A trustworthy partner under IMO 2020',
-      body: 'Our dedicated team of marine lubricant experts provides the global shipping industry with optimal supply solutions and first-class technical services. With a focus on long-term relationships and value-for-money service offerings, we help our clients — owners and managers — to overcome the many challenges they face every day.\n\nIn a rapidly changing industry environment and with the IMO 2020 in place Sonan Bunkers Group is committed to supplying global coverage while being a trustworthy partner, guaranteeing smooth operations and the best fleet lubrication results.',
-    },
-    {
-      kind: 'feature-grid',
-      heading: 'How we support you',
-      items: [
-        {
-          title: 'Fast-paced technical support',
-          body: 'Conscious of efficiency, we offer fast-paced solutions with onshore and onboard technical support tailored to your maintenance needs.',
-        },
-        {
-          title: 'Global coverage, local depth',
-          body: 'Our broad international network of physical suppliers connects global majors with local distributors ensuring optimal supply coverage, even in remote areas.',
-        },
-        {
-          title: 'Expert marine lubricants team',
-          body: 'Our marine lubricant experts are well aware of the technical needs of your onboard and onshore teams, offering the best combination of well-rounded expertise, hands-on client service, and the usage of high-quality products from premium engines and auxiliary equipment manufacturers.',
-        },
-        {
-          title: 'Preventive maintenance package',
-          body: 'As part of Sonan Bunkers Lubricants Preventive Maintenance Package, we offer a classic lube monitor used oil analysis service for all types of vessels, as well as a cold corrosion control solution for marine main engine cylinders.',
-        },
-      ],
+      heading: 'Specialist support',
+      body: 'Whether the project is a public park, a corporate campus, or a private estate, our team works alongside contractors and groundskeepers to plan irrigation, soil conditioning, and seasonal care programmes that match local climate and site conditions.',
+      cta: { label: 'Talk to our team', href: '/contact/' },
     },
   ],
   siblings: servicesSiblings,
 };
 
-export const alternativeFuelsPage: PageContent = {
-  slug: '/our-services/alternative-fuels/',
+export const buildingInfrastructurePage: PageContent = {
+  slug: '/our-services/building-infrastructure/',
   meta: {
-    title: 'Alternative Fuels — Sonan Bunkers',
+    title: 'Building & Infrastructure — Elysse Group',
     description:
-      'The shipping sector is crucial to a carbon-free future. Sonan Bunkers works with major energy and fuel producers to support the transition to biofuels, bio-LNG, bio-methanol and green hydrogen.',
+      'Equipment, materials, and project support for building and infrastructure works — from groundworks and structural construction to roads, utilities, and public works.',
   },
   hero: {
     eyebrow: 'Our Services',
-    headline: 'Alternative fuels',
-    sub: 'Supporting the IMO’s 2050 decarbonisation targets — biofuels, bio-LNG, bio-methanol, electricity, and green hydrogen.',
+    headline: 'Building & Infrastructure',
+    sub: 'End-to-end support for construction and civil-engineering projects, large and small.',
     image: heroAlternativeFuels,
   },
   sections: [
     {
       kind: 'text',
-      heading: 'A carbon-free future for shipping',
-      body: 'The shipping sector is crucial to achieving a carbon-free future. In response to the Paris Climate Agreement, the International Maritime Organisation (IMO) has set an ambitious target to halve greenhouse gas emissions by 2050 compared to 2008 levels, while reducing carbon intensity by 40% by 2030 and 70% by 2050.\n\nFuture marine fuel markets will be increasingly diverse, dependent on a variety of energy sources and interconnected and linked to different geographical energy markets, production and industries.',
-      image: imgShipInfographic,
+      heading: 'On site, on schedule',
+      body: 'We supply equipment, materials, and technical support across the building and infrastructure sectors — including groundworks, structural construction, roadworks, drainage, and utilities installation. Our network keeps contractors moving on tight schedules and difficult sites.',
     },
     {
       kind: 'text',
-      heading: 'The future fuel mix',
-      body: 'The future fuel mix and the uptake of carbon-neutral fuels will be primarily influenced by regulatory policy and primary energy pricing. To fully decarbonise shipping, the use of carbon-neutral fuels will need to increase from the mid-2030s and reach a 40% share of the fuel mix by 2050, according to current IMO targets.\n\nBy mid-century, the use of fossil fuel oil with very low sulphate content (VLSFO), marine gas oil (LSMGO) and LNG will rapidly decline or be phased out altogether in the most ambitious decarbonisation scenarios. Until then, however, LNG will be widely used and account for 20-30% of the fuel mix, accelerating the shift to zero-carbon fuels.',
-      image: imgEnergyPrice,
-    },
-    {
-      kind: 'text',
-      heading: 'Sustainable biomass & e-fuels',
-      body: 'With sufficient supply of sustainable biomass, bio-LNG, bio-MGO and bio-methanol, which are very energy-rich hydrocarbons, would be the preferred fuels. Compared to bio-MGO and bio-LNG, the acceptance of bio-methanol is particularly dependent on production costs. Due to the limited supply of sustainable biomass, biofuel prices are expected to be higher than those for e-fuels and blue fuels.\n\nThe use of different forms of carbon neutral fuels is constrained by the availability of sustainable energy sources and raw materials for production. The supply of electric fuels depends on the availability of renewable energy to produce hydrogen.',
-      image: imgSustainableBiomass,
-    },
-    {
-      kind: 'text',
-      heading: 'Working with major producers',
-      body: 'Sonan Bunkers aims to work with major energy and fuel producers. We will ensure that shore power and infrastructure for storage and refuelling of vessels with future fuels are provided from a single source. We will also help early adopters and support the development of green energy corridors or supply chains and work with the various ports that play an important role in the transition to green shipping.',
-    },
-    {
-      kind: 'feature-grid',
-      heading: 'Our alternative fuel portfolio',
-      items: [
-        { title: 'Biofuels', body: 'Drop-in low-carbon fuels — biodiesel, HVO and bio-MGO — compatible with existing engines and bunker infrastructure.' },
-        { title: 'LNG', body: 'Liquefied natural gas and bio-LNG: a key transitional pathway for cutting sulphur and particulate emissions today.' },
-        { title: 'Electricity Sales', body: 'Shore-power supply and onshore charging for hybrid and fully electric vessels, in partnership with port operators.' },
-      ],
+      heading: 'Project-tailored partnership',
+      body: 'From private developers to public-works programmes, we build long-term relationships with project teams and adapt our offer to the specific demands of each job. Our specialists help plan logistics, recommend the right kit, and stay engaged through commissioning.',
+      cta: { label: 'Talk to our team', href: '/contact/' },
     },
   ],
   siblings: servicesSiblings,
 };
 
-export const advisoryServicesPage: PageContent = {
-  slug: '/our-services/advisory-services/',
+export const industryPage: PageContent = {
+  slug: '/our-services/industry/',
   meta: {
-    title: 'Advisory Services — Sonan Bunkers',
+    title: 'Industry — Elysse Group',
     description:
-      'Our Advisory Services Team helps customers optimise their fuel procurement and management processes — from market analysis and forecasting to risk management and procurement strategy.',
+      'Solutions for industrial operations — from manufacturing and processing to maintenance, retrofits, and plant-side technical support.',
   },
   hero: {
     eyebrow: 'Our Services',
-    headline: 'Advisory Services',
-    sub: 'Vast shipping knowledge translated into market analysis, risk management, and procurement strategy for our customers.',
+    headline: 'Industry',
+    sub: 'Equipment, supply, and technical services for industrial plants and manufacturing operations.',
     image: heroAdvisoryServices,
   },
   sections: [
     {
       kind: 'text',
-      heading: 'Collaborating with our customers',
-      body: 'Sonan Bunkers is always looking at new ways to collaborate with customers and we believe that with our vast shipping knowledge, our Advisory Services Team can provide valuable support and guidance to customers looking to optimise their fuel procurement and management processes.\n\nThese services can take many forms, including market analysis and forecasting, risk management and procurement strategy development.',
+      heading: 'Plant-side support',
+      body: 'Elysee Group works with industrial operators across manufacturing, processing, and heavy-asset sectors. We supply the equipment and consumables your operation needs and provide technical specialists who understand the demands of plant uptime, maintenance windows, and regulatory compliance.',
     },
     {
       kind: 'text',
-      heading: 'Making informed fuel decisions',
-      body: 'One key benefit of using our Advisory Service Team is that they can help customers to make informed decisions about their fuel purchases. This might include providing guidance on market trends and conditions, helping customers to identify the best times to buy fuel, or assisting with the development of long-term procurement strategies. Advisory services can also help customers to manage risk by providing guidance on how to mitigate the impact of volatility in fuel prices or other market conditions.',
-    },
-    {
-      kind: 'text',
-      heading: 'Optimising fuel usage & efficiency',
-      body: 'In addition to providing guidance on fuel procurement and management, the Advisory Team can also help customers to optimize their fuel usage and improve efficiency. This might include providing recommendations on the best types of fuel to use, helping customers to identify opportunities to reduce fuel consumption, or assisting with the implementation of fuel-saving technologies.',
+      heading: 'Long-term partner, not a one-off vendor',
+      body: 'Our industrial customers value continuity. We invest in the operational knowledge to recommend the right products, anticipate maintenance cycles, and respond quickly when plans change. The result is fewer surprises and a partner you can rely on across multi-year programmes.',
       cta: { label: 'Talk to our team', href: '/contact/' },
     },
   ],
@@ -511,9 +433,9 @@ export const advisoryServicesPage: PageContent = {
 export const contactPage: PageContent = {
   slug: '/contact/',
   meta: {
-    title: 'Contact — Sonan Bunkers',
+    title: 'Contact — Elysse Group',
     description:
-      'Get in touch with Sonan Bunkers — offices in London, Athens, Rotterdam, Oslo, Rio de Janeiro, Singapore, Dubai, and Panama.',
+      'Get in touch with Elysse Group — offices in London, Athens, Rotterdam, Oslo, Rio de Janeiro, Singapore, Dubai, and Panama.',
   },
   hero: {
     eyebrow: 'Contact',
@@ -536,7 +458,7 @@ export const contactPage: PageContent = {
             'London EC1R 5HL',
             'United Kingdom',
           ],
-          email: 'london@sonanbunkers.com',
+          email: 'london@elyssegroup.com',
         },
         {
           city: 'Athens',
@@ -547,7 +469,7 @@ export const contactPage: PageContent = {
             'Glyfada, 166 75,',
             'Greece',
           ],
-          email: 'athens@sonanbunkers.com',
+          email: 'athens@elyssegroup.com',
         },
         {
           city: 'Rotterdam',
@@ -560,14 +482,14 @@ export const contactPage: PageContent = {
             'Rotterdam',
             'Netherlands',
           ],
-          email: 'rotterdam@sonanbunkers.com',
+          email: 'rotterdam@elyssegroup.com',
         },
         {
           city: 'Oslo',
           code: 'OSL',
           region: 'Norway',
           addressLines: ['Grundingen 6,', 'Oslo', '0250', 'Norway'],
-          email: 'oslo@sonanbunkers.com',
+          email: 'oslo@elyssegroup.com',
         },
         {
           city: 'Rio de Janeiro',
@@ -578,7 +500,7 @@ export const contactPage: PageContent = {
             '52 -1002,',
             'CEP 20.011-030 Centro',
           ],
-          email: 'rio@sonanbunkers.com',
+          email: 'rio@elyssegroup.com',
         },
         {
           city: 'Singapore',
@@ -591,7 +513,7 @@ export const contactPage: PageContent = {
             '048581',
             'Singapore',
           ],
-          email: 'singapore@sonanbunkers.com',
+          email: 'singapore@elyssegroup.com',
         },
         {
           city: 'Dubai',
@@ -604,7 +526,7 @@ export const contactPage: PageContent = {
             'Dubai',
             'United Arab Emirates',
           ],
-          email: 'dubai@sonanbunkers.com',
+          email: 'dubai@elyssegroup.com',
         },
         {
           city: 'Panama',
@@ -616,7 +538,7 @@ export const contactPage: PageContent = {
             'Marbella, Panama',
           ],
           phones: ['+507 6461 5040'],
-          email: 'panama@sonanbunkers.com',
+          email: 'panama@elyssegroup.com',
         },
       ],
     },
@@ -626,14 +548,14 @@ export const contactPage: PageContent = {
 export const newsIndexPage: PageContent = {
   slug: '/press-room/news/',
   meta: {
-    title: 'News — Sonan Bunkers Press Room',
+    title: 'News — Elysse Group Press Room',
     description:
-      'Latest news from Sonan Bunkers — expansion announcements, industry analysis, sustainability updates, and milestones from across our worldwide offices.',
+      'Latest news from Elysse Group — expansion announcements, industry analysis, sustainability updates, and milestones from across our worldwide offices.',
   },
   hero: {
     eyebrow: 'Press Room',
     headline: 'News',
-    sub: 'Announcements, industry analysis, and milestones from the Sonan Bunkers team.',
+    sub: 'Announcements, industry analysis, and milestones from the Elysse Group team.',
     image: heroNews,
   },
   sections: [
@@ -644,21 +566,21 @@ export const newsIndexPage: PageContent = {
       articles: [
         {
           title:
-            'Sonan Bunkers Expands into the Americas with the Launch of SONAN ENERGY Panama',
-          slug: '/press-room/news/sonan-energy-panama-launch/',
+            'Elysse Group Expands into the Americas with the Launch of ELYSSE ENERGY Panama',
+          slug: '/press-room/news/elysse-energy-panama-launch/',
           date: '10/1/2025',
           image: imgArticlePanama,
           excerpt:
-            'Sonan Bunkers expands into the Americas with the launch of SONAN ENERGY PANAMA S.A. in Panama City. Led by industry veteran Hernán Ortiz, the new hub strengthens the company’s regional presence from Canada to Argentina and marks a key step in its transition toward cleaner marine energy solutions.',
+            'Elysse Group expands into the Americas with the launch of ELYSSE ENERGY PANAMA S.A. in Panama City. Led by industry veteran Hernán Ortiz, the new hub strengthens the company’s regional presence from Canada to Argentina and marks a key step in its transition toward cleaner marine energy solutions.',
         },
         {
           title:
-            'Sonan Bunkers Secures Significant Funding to Propel Global Expansion',
+            'Elysse Group Secures Significant Funding to Propel Global Expansion',
           slug: '/press-room/news/hsbc-funding-increase-july-2024/',
           date: '7/29/2024',
           image: imgArticleHsbc,
           excerpt:
-            'At Sonan Bunkers, we are thrilled to announce a major milestone in our journey towards global expansion. With the steadfast support of HSBC UK, our company is poised for significant growth, driven by a substantial funding increase that will enable us to meet rising demands and enhance our operations worldwide.',
+            'At Elysse Group, we are thrilled to announce a major milestone in our journey towards global expansion. With the steadfast support of HSBC UK, our company is poised for significant growth, driven by a substantial funding increase that will enable us to meet rising demands and enhance our operations worldwide.',
         },
         {
           title: 'CELEBRATING A DECADE OF EXCELLENCE',
@@ -702,14 +624,14 @@ export const newsIndexPage: PageContent = {
 export const privacyPolicyPage: PageContent = {
   slug: '/legal/privacy-policy/',
   meta: {
-    title: 'Privacy Policy — Sonan Bunkers',
+    title: 'Privacy Policy — Elysse Group',
     description:
-      'Your privacy is important to us. It is Sonan Bunkers’ policy to respect your privacy regarding any information we may collect from you across our website, www.sonanbunkers.com and other sites we own and operate.',
+      'Your privacy is important to us. It is Elysse Group’ policy to respect your privacy regarding any information we may collect from you across our website, www.elyssegroup.com and other sites we own and operate.',
   },
   hero: {
     eyebrow: 'Legal',
     headline: 'Privacy Policy',
-    sub: 'Your privacy is important to us. It is Sonan Bunkers’ policy to respect your privacy regarding any information we may collect from you.',
+    sub: 'Your privacy is important to us. It is Elysse Group’ policy to respect your privacy regarding any information we may collect from you.',
     image: heroPrivacy,
   },
   sections: [
@@ -719,7 +641,7 @@ export const privacyPolicyPage: PageContent = {
     {
       kind: 'text',
       heading: 'About this policy',
-      body: 'Your privacy is important to us. It is Sonan Bunkers’ policy to respect your privacy regarding any information we may collect from you across our website, www.sonanbunkers.com and other sites we own and operate. The full policy text — covering log data, cookies, third-party services, your data-protection rights, and contact details for our Data Protection Officer — is published below.',
+      body: 'Your privacy is important to us. It is Elysse Group’ policy to respect your privacy regarding any information we may collect from you across our website, www.elyssegroup.com and other sites we own and operate. The full policy text — covering log data, cookies, third-party services, your data-protection rights, and contact details for our Data Protection Officer — is published below.',
     },
   ],
 };
@@ -730,10 +652,10 @@ export const allPages: Record<string, PageContent> = {
   '/': homePage,
   '/about-us/': aboutUsPage,
   '/about-us/your-marine-energy-provider/': marineEnergyPage,
-  '/our-services/fuel-products/': fuelProductsPage,
-  '/our-services/marine-lubricants/': marineLubricantsPage,
-  '/our-services/alternative-fuels/': alternativeFuelsPage,
-  '/our-services/advisory-services/': advisoryServicesPage,
+  '/our-services/agriculture/': agriculturePage,
+  '/our-services/landscape/': landscapePage,
+  '/our-services/building-infrastructure/': buildingInfrastructurePage,
+  '/our-services/industry/': industryPage,
   '/contact/': contactPage,
   '/press-room/news/': newsIndexPage,
   '/legal/privacy-policy/': privacyPolicyPage,

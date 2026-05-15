@@ -8,7 +8,7 @@ export interface NavItem { label: string; href: string; children?: NavItem[]; }
  *
  * Rebuilt routes:
  *   /  ·  /about-us/  ·  /about-us/your-marine-energy-provider/
- *   /our-services/{fuel-products,marine-lubricants,alternative-fuels,advisory-services}/
+ *   /our-services/{agriculture,landscape,building-infrastructure,industry}/
  *   /contact/  ·  /press-room/news/  ·  /legal/privacy-policy/
  *
  * `children` are kept where a top-level entry has rebuilt sub-pages so the
@@ -25,12 +25,12 @@ export const primaryNav: NavItem[] = [
   },
   {
     label: 'Our Services',
-    href: '/our-services/fuel-products/',
+    href: '/our-services/agriculture/',
     children: [
-      { label: 'Fuel Products', href: '/our-services/fuel-products/' },
-      { label: 'Marine Lubricants', href: '/our-services/marine-lubricants/' },
-      { label: 'Alternative Fuels', href: '/our-services/alternative-fuels/' },
-      { label: 'Advisory Services', href: '/our-services/advisory-services/' },
+      { label: 'Agriculture', href: '/our-services/agriculture/' },
+      { label: 'Landscape', href: '/our-services/landscape/' },
+      { label: 'Building & Infrastructure', href: '/our-services/building-infrastructure/' },
+      { label: 'Industry', href: '/our-services/industry/' },
     ],
   },
   { label: 'News', href: '/press-room/news/' },
@@ -49,15 +49,15 @@ export const footerNav: { title: string; items: NavItem[] }[] = [
     items: [
       { label: 'About Us', href: '/about-us/' },
       { label: 'Your Marine Energy Provider', href: '/about-us/your-marine-energy-provider/' },
-      { label: 'Fuel Products', href: '/our-services/fuel-products/' },
-      { label: 'Marine Lubricants', href: '/our-services/marine-lubricants/' },
+      { label: 'Agriculture', href: '/our-services/agriculture/' },
+      { label: 'Landscape', href: '/our-services/landscape/' },
     ],
   },
   {
     title: 'Company',
     items: [
-      { label: 'Alternative Fuels', href: '/our-services/alternative-fuels/' },
-      { label: 'Advisory Services', href: '/our-services/advisory-services/' },
+      { label: 'Building & Infrastructure', href: '/our-services/building-infrastructure/' },
+      { label: 'Industry', href: '/our-services/industry/' },
       { label: 'News', href: '/press-room/news/' },
       { label: 'Contact', href: '/contact/' },
     ],
@@ -101,7 +101,7 @@ export const megaNav: MegaColumns = [
   // Column 1
   [
     {
-      title: 'Sonan Bunkers',
+      title: 'Elysee',
       href: '/sonan-bunkers-people-working-together/',
       items: [
         { label: 'Our Commitment to Clients', href: '/sonan-bunkers-people-working-together/our-commitment-to-clients/' },
@@ -162,13 +162,12 @@ export const megaNav: MegaColumns = [
   [
     {
       title: 'Our Services',
-      href: '/our-services/fuel-products/',
+      href: '/our-services/agriculture/',
       items: [
-        { label: 'Fuel Products', href: '/our-services/fuel-products/' },
-        { label: 'Advisory Services', href: '/our-services/advisory-services/' },
-        { label: 'Risk Management / Hedging', href: '/our-services/risk-management-hedging/' },
-        { label: 'Carbon Footprint', href: '/our-services/carbon-footprint-compensation/' },
-        { label: 'Fuel Traceability', href: '/our-services/digital-physical-fuel-traceability/' },
+        { label: 'Agriculture', href: '/our-services/agriculture/' },
+        { label: 'Landscape', href: '/our-services/landscape/' },
+        { label: 'Building & Infrastructure', href: '/our-services/building-infrastructure/' },
+        { label: 'Industry', href: '/our-services/industry/' },
       ],
     },
     {

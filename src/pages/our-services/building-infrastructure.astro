@@ -3,8 +3,8 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import Hero from '../../components/Hero.astro';
 import SectionRenderer from '../../components/SectionRenderer.astro';
 import Container from '../../components/Container.astro';
-import { advisoryServicesPage as page, servicesSiblings } from '../../data/content';
-const currentPath = '/our-services/advisory-services/';
+import { buildingInfrastructurePage as page, servicesSiblings } from '../../data/content';
+const currentPath = '/our-services/building-infrastructure/';
 ---
 <BaseLayout title={page.meta.title} description={page.meta.description}>
   {page.hero && <Hero {...page.hero} />}
