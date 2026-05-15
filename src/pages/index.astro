@@ -1,10 +1,106 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Hero from '../components/Hero.astro';
-import SectionRenderer from '../components/SectionRenderer.astro';
+import SnapSection from '../components/SnapSection.astro';
+import SnapNav, { type SnapNavItem } from '../components/SnapNav.astro';
+import Container from '../components/Container.astro';
+import Card from '../components/Card.astro';
 import { homePage as page } from '../data/content';
+
+// Split sections so text sections become full-screen image panels
+// and the news list becomes its own snap panel.
+const textSections = page.sections.filter(
+  (s): s is Extract<typeof s, { kind: 'text' }> => s.kind === 'text',
+);
+const newsSection = page.sections.find(
+  (s): s is Extract<typeof s, { kind: 'news-list' }> => s.kind === 'news-list',
+);
+
+// Stable kebab-case id per panel
+const slugify = (s: string) =>
+  s
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '');
+
+const HERO_ID = 'panel-hero';
+const NEWS_ID = 'panel-news';
+
+const textIds = textSections.map((s) => `panel-${slugify(s.eyebrow ?? s.heading ?? 'section')}`);
+
+const navItems: SnapNavItem[] = [
+  { id: HERO_ID, label: 'Top' },
+  ...textSections.map((s, i) => ({
+    id: textIds[i],
+    label: s.eyebrow ?? s.heading ?? `Section ${i + 1}`,
+  })),
+  ...(newsSection ? [{ id: NEWS_ID, label: newsSection.heading ?? 'News' }] : []),
+];
 ---
-<BaseLayout title={page.meta.title} description={page.meta.description}>
-  {page.hero && <Hero {...page.hero} />}
-  {page.sections.map((section) => <SectionRenderer section={section} />)}
+<BaseLayout
+  title={page.meta.title}
+  description={page.meta.description}
+  padForHeader={false}
+>
+  <script is:inline>
+    document.documentElement.setAttribute('data-snap-page', '');
+    addEventListener('beforeunload', () => {
+      document.documentElement.removeAttribute('data-snap-page');
+    });
+  </script>
+
+  <SnapNav items={navItems} />
+
+  {/* Panel 1 — Hero */}
+  {page.hero && <Hero id={HERO_ID} {...page.hero} height="screen" />}
+
+  {/* Panels 2..N — one full-screen image per text section */}
+  {textSections.map((s, i) => (
+    <SnapSection
+      id={textIds[i]}
+      eyebrow={s.eyebrow}
+      heading={s.heading ?? ''}
+      body={s.body}
+      image={s.image!}
+      imageAlt={s.heading}
+      cta={s.cta}
+    />
+  ))}
+
+  {/* Final panel — Latest News (3-up grid, full screen) */}
+  {newsSection && (
+    <section
+      id={NEWS_ID}
+      data-snap
+      class="relative min-h-screen snap-start snap-always bg-surface-alt flex items-center py-20 md:py-28"
+    >
+      <Container size="xl" class="w-full">
+        {newsSection.eyebrow && (
+          <p data-reveal class="text-xs uppercase tracking-widest text-brand-500 mb-3">
+            {newsSection.eyebrow}
+          </p>
+        )}
+        {newsSection.heading && (
+          <h2
+            data-reveal
+            data-reveal-delay="80"
+            class="font-display text-4xl md:text-5xl lg:text-6xl"
+          >
+            {newsSection.heading}
+          </h2>
+        )}
+        <div class="mt-10 md:mt-14 grid sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+          {newsSection.articles.map((a, i) => (
+            <Card
+              title={a.title}
+              eyebrow={a.date ?? a.eyebrow}
+              image={a.image}
+              data-reveal
+              data-reveal-delay={String(160 + i * 80)}
+            />
+          ))}
+        </div>
+      </Container>
+    </section>
+  )}
 </BaseLayout>
