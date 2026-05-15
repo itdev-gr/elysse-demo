@@ -164,15 +164,15 @@
   html[data-snap-page] {
     --panel-h: calc(100dvh - 5rem);
     /* CSS scroll-snap acts as a graceful fallback. The wheel handler in
-     * src/scripts/home-snap.client.ts drives the primary smooth-scroll. */
+     * src/scripts/home-snap.client.ts drives the primary smooth-scroll.
+     * Per-panel scroll-margin-top (via Tailwind scroll-mt-*) handles the
+     * header offset, so hero gets 0 (full-bleed) and other panels get the
+     * header height. */
     scroll-snap-type: y proximity;
-    /* Header is fixed at 80px on mobile, ~96px md+ — snap aligns under it */
-    scroll-padding-top: 5rem;
   }
   @media (min-width: 768px) {
     html[data-snap-page] {
       --panel-h: calc(100dvh - 6rem);
-      scroll-padding-top: 6rem;
     }
   }
 

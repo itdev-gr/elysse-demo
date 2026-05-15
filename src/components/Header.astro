@@ -5,7 +5,7 @@ import MenuDrawer from './MenuDrawer.astro';
 ---
 <header
   data-header
-  class="fixed inset-x-0 top-0 z-40 transition-[background-color,backdrop-filter,box-shadow] duration-base ease-out-quint"
+  class="fixed inset-x-0 top-0 z-40 transition-[background-color,backdrop-filter,box-shadow,color] duration-base ease-out-quint"
 >
   <Container size="xl" class="flex items-center justify-between py-4 md:py-5">
     <a href="/" class="flex items-center" aria-label="Sonan Bunkers — home">
@@ -13,7 +13,7 @@ import MenuDrawer from './MenuDrawer.astro';
     </a>
     <button
       data-menu-trigger
-      class="inline-flex items-center gap-3 px-3 py-2 text-sm uppercase tracking-wide font-medium text-ink hover:text-brand-500 transition-colors duration-fast"
+      class="inline-flex items-center gap-3 px-3 py-2 text-sm uppercase tracking-wide font-medium hover:text-brand-500 transition-colors duration-fast"
       type="button"
       aria-expanded="false"
       aria-controls="primary-menu"

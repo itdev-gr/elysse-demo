@@ -2,7 +2,8 @@ import { test, expect } from '@playwright/test';
 
 test('home: snap-nav dots reflect active section and scroll on click', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
-  await page.goto('http://localhost:4321/', { waitUntil: 'networkidle' });
+  // 'load' (not 'networkidle') — robust against HMR WebSocket on the dev server.
+  await page.goto('http://localhost:4321/', { waitUntil: 'load' });
 
   const dots = page.locator('[data-snapnav-dot]');
   await expect(dots).toHaveCount(6);
@@ -24,6 +25,7 @@ test('home: snap-nav dots reflect active section and scroll on click', async ({ 
 
 test('home: snap-nav hidden on mobile viewport', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
-  await page.goto('http://localhost:4321/', { waitUntil: 'networkidle' });
+  // 'load' (not 'networkidle') — robust against HMR WebSocket on the dev server.
+  await page.goto('http://localhost:4321/', { waitUntil: 'load' });
   await expect(page.locator('[data-snapnav]')).toBeHidden();
 });

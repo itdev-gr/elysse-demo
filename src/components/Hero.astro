@@ -11,6 +11,8 @@ interface Props {
   sub?: string;
   image?: ImageMetadata;
   imageAlt?: string;
+  /** Public-folder URL to a background video (e.g. "/media/hero.mp4"). Takes precedence over `image` for the background layer; `image` is reused as the poster. */
+  video?: string;
   cta?: { label: string; href: string };
   ctaSecondary?: { label: string; href: string };
   align?: 'left' | 'center';
@@ -25,6 +27,7 @@ const {
   sub,
   image,
   imageAlt = '',
+  video,
   cta,
   ctaSecondary,
   align = 'left',
@@ -32,19 +35,33 @@ const {
   overlay = true,
 } = Astro.props;
 
+const hasMedia = Boolean(video || image);
+
 const heights = {
   sm:     'min-h-[60vh]',
   md:     'min-h-[75vh]',
   lg:     'min-h-[88vh]',
-  screen: 'min-h-[var(--panel-h)]',
+  screen: 'min-h-[100dvh]',
 };
 const aligns = {
   left:   'text-left items-start',
   center: 'text-center items-center mx-auto',
 };
 ---
-<section id={id} class={`relative ${heights[height]} ${height === 'screen' ? 'snap-start snap-always' : ''} flex items-end overflow-hidden bg-ink`}>
-  {image && (
+<section id={id} data-hero data-snap={height === 'screen' ? '' : undefined} class={`relative ${heights[height]} ${height === 'screen' ? 'snap-start snap-always scroll-mt-0' : ''} flex items-end overflow-hidden bg-ink`}>
+  {video ? (
+    <video
+      src={video}
+      poster={image?.src}
+      autoplay
+      muted
+      loop
+      playsinline
+      preload="metadata"
+      aria-hidden="true"
+      class="absolute inset-0 h-full w-full object-cover"
+    ></video>
+  ) : image && (
     <Image
       src={image}
       alt={imageAlt}
@@ -55,19 +72,19 @@ const aligns = {
       class="absolute inset-0 h-full w-full object-cover"
     />
   )}
-  {image && overlay && (
+  {hasMedia && overlay && (
     <div class="absolute inset-0 bg-gradient-to-t from-ink/70 via-ink/30 to-transparent" aria-hidden="true"></div>
   )}
   <Container size="xl" class="relative z-10 pb-16 md:pb-24">
     <div class={`flex flex-col ${aligns[align]} max-w-3xl ${align === 'center' ? 'mx-auto' : ''}`}>
       {eyebrow && (
-        <p class={`text-xs md:text-sm uppercase tracking-widest mb-3 md:mb-4 ${image && overlay ? 'text-surface/80' : 'text-ink/60'}`}>{eyebrow}</p>
+        <p class={`text-xs md:text-sm uppercase tracking-widest mb-3 md:mb-4 ${hasMedia && overlay ? 'text-surface/80' : 'text-ink/60'}`}>{eyebrow}</p>
       )}
-      <h1 data-reveal class={`font-display leading-tight ${image && overlay ? 'text-surface' : 'text-ink'} text-4xl sm:text-5xl md:text-6xl lg:text-7xl`}>
+      <h1 data-reveal class={`font-display leading-tight ${hasMedia && overlay ? 'text-surface' : 'text-ink'} text-4xl sm:text-5xl md:text-6xl lg:text-7xl`}>
         {headline}
       </h1>
       {sub && (
-        <p data-reveal data-reveal-delay="100" class={`mt-4 md:mt-6 max-w-prose text-base md:text-lg ${image && overlay ? 'text-surface/90' : 'text-ink/70'}`}>
+        <p data-reveal data-reveal-delay="100" class={`mt-4 md:mt-6 max-w-prose text-base md:text-lg ${hasMedia && overlay ? 'text-surface/90' : 'text-ink/70'}`}>
           {sub}
         </p>
       )}

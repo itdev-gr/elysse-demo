@@ -7,14 +7,33 @@ const closeBtn = document.querySelector<HTMLButtonElement>('[data-menu-close]');
 const links = Array.from(document.querySelectorAll<HTMLAnchorElement>('[data-menu-link]'));
 
 if (header) {
-  const onScroll = () => {
-    const scrolled = window.scrollY > 12;
-    header.classList.toggle('bg-surface/90', scrolled);
-    header.classList.toggle('backdrop-blur-md', scrolled);
-    header.classList.toggle('shadow-sm', scrolled);
+  const setOpaque = (opaque: boolean) => {
+    header.dataset.opaque = opaque ? 'true' : 'false';
+    header.classList.toggle('bg-surface/90', opaque);
+    header.classList.toggle('backdrop-blur-md', opaque);
+    header.classList.toggle('shadow-sm', opaque);
+    // Invert text colour over the transparent (over-hero) state so logo/menu
+    // remain legible against the dark hero image.
+    header.classList.toggle('text-ink', opaque);
+    header.classList.toggle('text-surface', !opaque);
   };
-  onScroll();
-  window.addEventListener('scroll', onScroll, { passive: true });
+
+  const isSnapPage = document.documentElement.hasAttribute('data-snap-page');
+  const hero = document.querySelector<HTMLElement>('[data-hero]');
+
+  if (isSnapPage && hero) {
+    // Transparent while any part of the hero is in the viewport; opaque after.
+    setOpaque(false);
+    const observer = new IntersectionObserver(
+      ([entry]) => setOpaque(!entry.isIntersecting),
+      { threshold: 0.05 },
+    );
+    observer.observe(hero);
+  } else {
+    // Non-snap pages: opaque from the start (no transparent hero behind the
+    // header, so transparency would just show the white body color).
+    setOpaque(true);
+  }
 }
 
 if (trigger && root && backdrop && drawer && closeBtn) {
