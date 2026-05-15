@@ -1,0 +1,93 @@
+---
+export interface SnapNavItem {
+  /** id of the target panel — must match the id of a [data-snap] element on the page */
+  id: string;
+  /** Accessible name for the button, e.g. "Hero", "Services", "News" */
+  label: string;
+}
+
+interface Props {
+  items: SnapNavItem[];
+}
+
+const { items } = Astro.props;
+---
+<nav
+  data-snapnav
+  class="pointer-events-none fixed right-3 md:right-6 top-1/2 z-30 hidden md:flex -translate-y-1/2 flex-col items-center gap-4 rounded-full bg-ink/40 px-2 py-4 backdrop-blur-sm"
+  aria-label="Page sections"
+>
+  {items.map((item) => (
+    <button
+      type="button"
+      data-snapnav-dot
+      data-target={item.id}
+      data-active="false"
+      class="pointer-events-auto group relative inline-flex h-6 w-6 items-center justify-center"
+      aria-label={`Go to ${item.label}`}
+    >
+      <span
+        class="block h-2.5 w-2.5 rounded-full bg-surface/50 transition-all duration-base ease-out-quint group-hover:bg-surface group-data-[active=true]:bg-brand-accent group-data-[active=true]:scale-125"
+      ></span>
+    </button>
+  ))}
+</nav>
+
+<script>
+  type Cleanup = () => void;
+
+  function init(): Cleanup {
+    const nav = document.querySelector<HTMLElement>('[data-snapnav]');
+    if (!nav) return () => {};
+    const dots = Array.from(
+      nav.querySelectorAll<HTMLButtonElement>('[data-snapnav-dot]'),
+    );
+
+    const targets = new Map<HTMLButtonElement, HTMLElement>();
+    for (const d of dots) {
+      const id = d.dataset.target;
+      const target = id ? document.getElementById(id) : null;
+      if (target) targets.set(d, target);
+    }
+
+    const setActive = (activeId: string | null) => {
+      for (const d of dots) {
+        const isActive = d.dataset.target === activeId;
+        d.dataset.active = isActive ? 'true' : 'false';
+        if (isActive) d.setAttribute('aria-current', 'true');
+        else d.removeAttribute('aria-current');
+      }
+    };
+
+    const onClick = (e: Event) => {
+      const btn = e.currentTarget as HTMLButtonElement;
+      const target = targets.get(btn);
+      if (!target) return;
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    };
+    for (const d of dots) d.addEventListener('click', onClick);
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries.filter((e) => e.isIntersecting);
+        if (!visible.length) return;
+        visible.sort((a, b) => b.intersectionRatio - a.intersectionRatio);
+        const top = visible[0].target as HTMLElement;
+        setActive(top.id || null);
+      },
+      { threshold: [0.35, 0.55, 0.75], rootMargin: '-15% 0px -15% 0px' },
+    );
+    for (const target of targets.values()) observer.observe(target);
+
+    return () => {
+      for (const d of dots) d.removeEventListener('click', onClick);
+      observer.disconnect();
+    };
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init, { once: true });
+  } else {
+    init();
+  }
+</script>
