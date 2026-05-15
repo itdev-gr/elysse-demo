@@ -19,16 +19,31 @@ if (header) {
   };
 
   const isSnapPage = document.documentElement.hasAttribute('data-snap-page');
-  const hero = document.querySelector<HTMLElement>('[data-hero]');
 
-  if (isSnapPage && hero) {
-    // Transparent while any part of the hero is in the viewport; opaque after.
+  if (isSnapPage) {
+    // Snap pages: panels are full-bleed under the header. Stay transparent
+    // over dark panels; flip opaque over any [data-light-bg] panel so logo/menu
+    // stay legible.
     setOpaque(false);
-    const observer = new IntersectionObserver(
-      ([entry]) => setOpaque(!entry.isIntersecting),
-      { threshold: 0.05 },
+    const lightPanels = Array.from(
+      document.querySelectorAll<HTMLElement>('[data-snap][data-light-bg]'),
     );
-    observer.observe(hero);
+    if (lightPanels.length) {
+      const visible = new Set<Element>();
+      const observer = new IntersectionObserver(
+        (entries) => {
+          for (const e of entries) {
+            if (e.isIntersecting) visible.add(e.target);
+            else visible.delete(e.target);
+          }
+          setOpaque(visible.size > 0);
+        },
+        // Only count as "visible" once a light panel reaches the top 40% of the
+        // viewport — i.e. it's the panel currently being snapped to.
+        { threshold: 0, rootMargin: '0px 0px -60% 0px' },
+      );
+      for (const p of lightPanels) observer.observe(p);
+    }
   } else {
     // Non-snap pages: opaque from the start (no transparent hero behind the
     // header, so transparency would just show the white body color).
@@ -43,16 +58,20 @@ if (trigger && root && backdrop && drawer && closeBtn) {
     lastFocus = document.activeElement as HTMLElement | null;
     root.classList.remove('hidden');
     requestAnimationFrame(() => {
-      backdrop.classList.add('opacity-100');
-      drawer.classList.remove('translate-x-full');
+      backdrop.classList.add('opacity-100', 'bg-brand-500/40');
+      backdrop.classList.remove('bg-brand-500/0');
+      drawer.classList.remove('translate-y-2', 'opacity-0');
+      drawer.classList.add('translate-y-0', 'opacity-100');
     });
     trigger.setAttribute('aria-expanded', 'true');
     document.body.style.overflow = 'hidden';
     (links[0] ?? closeBtn).focus();
   };
   const close = () => {
-    backdrop.classList.remove('opacity-100');
-    drawer.classList.add('translate-x-full');
+    backdrop.classList.remove('opacity-100', 'bg-brand-500/40');
+    backdrop.classList.add('bg-brand-500/0');
+    drawer.classList.remove('translate-y-0', 'opacity-100');
+    drawer.classList.add('translate-y-2', 'opacity-0');
     trigger.setAttribute('aria-expanded', 'false');
     document.body.style.overflow = '';
     window.setTimeout(() => root.classList.add('hidden'), 320);

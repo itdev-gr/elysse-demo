@@ -1,15 +1,15 @@
 ---
 import logo from '../assets/icons/elysee-logo.svg';
 import Container from './Container.astro';
-import MenuDrawer from './MenuDrawer.astro';
+import MegaMenu from './MegaMenu.astro';
 ---
 <header
   data-header
   class="fixed inset-x-0 top-0 z-40 transition-[background-color,backdrop-filter,box-shadow,color] duration-base ease-out-quint"
 >
   <Container size="xl" class="flex items-center justify-between py-4 md:py-5">
-    <a href="/" class="flex items-center" aria-label="Sonan Bunkers — home">
-      <img src={logo.src} width={logo.width} height={logo.height} alt="Sonan Bunkers" class="h-8 w-auto md:h-10" loading="eager" />
+    <a href="/" class="flex items-center" aria-label="Elysse Group — home">
+      <img src={logo.src} width={logo.width} height={logo.height} alt="Elysse Group" class="h-8 w-auto md:h-10" loading="eager" />
     </a>
     <button
       data-menu-trigger
@@ -25,5 +25,5 @@ import MenuDrawer from './MenuDrawer.astro';
     </button>
   </Container>
 </header>
-<MenuDrawer />
+<MegaMenu />
 <script>import '../scripts/header.client';</script>
