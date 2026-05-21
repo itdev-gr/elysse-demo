@@ -9,11 +9,16 @@ dist/
 playwright-report/
 test-results/
 recon/screenshots/*.png
+recon/screenshots/**/*.png
 recon/screenshots-rebuild/*.png
 recon/screenshots-rebuild/**/*.png
 recon/html/*.html
 recon/assets/**
 .lighthouseci/
+
+# Debug artifacts (root-level screenshots from Playwright MCP runs)
+/*.png
+.playwright-mcp/
 
 # Added by Astro scaffold
 .env.production

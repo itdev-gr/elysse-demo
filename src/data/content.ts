@@ -144,6 +144,35 @@ export const servicesSiblings: { label: string; href: string }[] = [
   { label: 'Industry', href: '/our-services/industry/' },
 ];
 
+/** Home-page service cards — image is optional until category photography is supplied. */
+export const servicesCards: {
+  label: string;
+  href: string;
+  blurb: string;
+  image?: ImageMetadata;
+}[] = [
+  {
+    label: 'Agriculture',
+    href: '/our-services/agriculture/',
+    blurb: 'text placeholder',
+  },
+  {
+    label: 'Landscape',
+    href: '/our-services/landscape/',
+    blurb: 'text placeholder',
+  },
+  {
+    label: 'Building & Infrastructure',
+    href: '/our-services/building-infrastructure/',
+    blurb: 'text placeholder',
+  },
+  {
+    label: 'Industry',
+    href: '/our-services/industry/',
+    blurb: 'Text Placeholder',
+  },
+];
+
 /** Sibling lists for the "About Us" sidebar nav. Trimmed in Task 32 to only the
  *  about-us sub-pages we rebuilt (CEO/CFO statements were out of scope). */
 export const aboutSiblings: { label: string; href: string }[] = [
@@ -624,24 +653,133 @@ export const newsIndexPage: PageContent = {
 export const privacyPolicyPage: PageContent = {
   slug: '/legal/privacy-policy/',
   meta: {
-    title: 'Privacy Policy — Elysse Group',
+    title: 'Privacy Policy — Elysée Irrigation Ltd',
     description:
-      'Your privacy is important to us. It is Elysse Group’ policy to respect your privacy regarding any information we may collect from you across our website, www.elyssegroup.com and other sites we own and operate.',
+      'How Elysée Irrigation Ltd collects, uses, and protects personal information from visitors to elysee.com.cy, in line with the EU General Data Protection Regulation (GDPR) and Cyprus data-protection law.',
   },
   hero: {
     eyebrow: 'Legal',
     headline: 'Privacy Policy',
-    sub: 'Your privacy is important to us. It is Elysse Group’ policy to respect your privacy regarding any information we may collect from you.',
+    sub: 'How Elysée Irrigation Ltd collects, uses, and protects personal information you share with us through elysee.com.cy.',
     image: heroPrivacy,
   },
   sections: [
-    // Full policy body lives in `src/pages/legal/privacy-policy.astro` (or a sibling
-    // .md file) — it's far too long to mirror in this struct. We render the hero
-    // here and then the page composes the long-form text directly.
     {
       kind: 'text',
-      heading: 'About this policy',
-      body: 'Your privacy is important to us. It is Elysse Group’ policy to respect your privacy regarding any information we may collect from you across our website, www.elyssegroup.com and other sites we own and operate. The full policy text — covering log data, cookies, third-party services, your data-protection rights, and contact details for our Data Protection Officer — is published below.',
+      body: 'Last updated: [LAST_UPDATED_DATE].\n\nThis Privacy Policy explains how Elysée Irrigation Ltd ("Elysée", "we", "us", or "our") collects, uses, discloses, and safeguards personal information you provide through elysee.com.cy (the "Site") or in the course of dealings with us. It applies to information about identifiable individuals and is written to meet our obligations under the EU General Data Protection Regulation (Regulation (EU) 2016/679, "GDPR") and the Cyprus Law providing for the Protection of Natural Persons with regard to the Processing of Personal Data (Law 125(I)/2018).\n\nBy using the Site, you confirm you have read and understood this Policy. If you do not agree with it, please do not use the Site.',
+    },
+    {
+      kind: 'text',
+      heading: 'Who we are',
+      body: 'Elysée Irrigation Ltd is the data controller responsible for the personal information described in this Policy.\n\nRegistered office: [REGISTERED_OFFICE_ADDRESS], Cyprus.\nCompany registration number: [COMPANY_REG_NUMBER].\nGeneral contact: [GENERAL_CONTACT_EMAIL].\nData Protection Officer: [DPO_EMAIL].',
+    },
+    {
+      kind: 'text',
+      heading: 'What information we collect',
+      body: 'We collect personal information in the following categories:\n\nInformation you give us directly. When you contact us through a form, by email, or by phone, we receive your name, email address, telephone number, company (if provided), and the content of your message.\n\nInformation we collect automatically. When you visit the Site, our servers and analytics providers record technical data such as your IP address, browser type and version, device and operating system, referring URL, pages visited, time and date of your visit, and time spent on each page. This information is used to operate, secure, and improve the Site.\n\nCookies. The Site uses cookies and similar technologies as described in the "Cookies and similar technologies" section below.\n\nWe do not knowingly collect special-category data (such as health, religion, or political opinions) through the Site, and we ask that you do not send such information to us through the contact channels.',
+    },
+    {
+      kind: 'list',
+      heading: 'Lawful bases for processing',
+      intro: 'Under the GDPR, we only process your personal information where we have a lawful basis. The bases we rely on are:',
+      items: [
+        'Your consent — for example, when you accept non-essential cookies, or subscribe to a mailing list.',
+        'Performance of a contract — when you ask us to provide products, services, or a quotation.',
+        'Compliance with a legal obligation — for example, retaining invoices and tax records as required by Cyprus law.',
+        'Our legitimate interests — to operate and secure the Site, respond to enquiries, and improve our products and services, where these interests are not overridden by your rights and freedoms.',
+      ],
+    },
+    {
+      kind: 'text',
+      heading: 'How we use your information',
+      body: 'We use the personal information we collect to: respond to enquiries and provide the information, quotes, or services you request; manage our customer and supplier relationships; operate, maintain, secure, and improve the Site; comply with our legal and regulatory obligations; and, where you have consented, send you marketing communications.\n\nWe do not use your information for automated decision-making that produces legal or similarly significant effects on you.',
+    },
+    {
+      kind: 'text',
+      heading: 'Cookies and similar technologies',
+      body: 'A cookie is a small text file placed on your device when you visit a website. Cookies allow the Site to recognise your device and remember information such as preferences and previous actions.\n\nWe use the following categories of cookies:\n\nStrictly necessary cookies — required for the Site to function. These do not require your consent.\n\nAnalytics cookies — set by [ANALYTICS_PROVIDER] to help us understand how visitors use the Site. These are only set with your consent.\n\nYou can accept or refuse non-essential cookies through the cookie banner shown on your first visit, and change your choice at any time via [COOKIE_PREFERENCES_LINK]. You can also block or delete cookies through your browser settings; note that some parts of the Site may not function correctly if you do so.',
+    },
+    {
+      kind: 'list',
+      heading: 'Who we share your information with',
+      intro: 'We do not sell your personal information. We share it only with the following categories of recipients, and only to the extent necessary:',
+      items: [
+        'Service providers acting as processors on our behalf — for example, our website hosting provider, email and CRM platforms, and analytics provider. Each is bound by a written contract to process your information only on our instructions.',
+        'Professional advisers — such as lawyers, auditors, and insurers, where required for the establishment, exercise, or defence of legal claims.',
+        'Competent public authorities — where we are required to disclose information by law, court order, or regulatory request.',
+        'Successors in interest — in the event of a merger, acquisition, or reorganisation of our business, subject to appropriate confidentiality protections.',
+      ],
+    },
+    {
+      kind: 'text',
+      heading: 'International transfers',
+      body: 'Your personal information is primarily processed within the European Economic Area (EEA). Where a service provider processes information outside the EEA, we rely on the European Commission’s Standard Contractual Clauses, an adequacy decision, or another transfer mechanism recognised under the GDPR. You can request a copy of the safeguards we use by writing to [DPO_EMAIL].',
+    },
+    {
+      kind: 'text',
+      heading: 'How long we keep your information',
+      body: 'We keep personal information only for as long as necessary for the purposes set out in this Policy, or as required by law.\n\nEnquiry and contact-form data: [ENQUIRY_RETENTION_PERIOD].\nCustomer and supplier records: for the duration of the relationship and for [COMMERCIAL_RECORDS_RETENTION_PERIOD] thereafter, in line with Cyprus tax and commercial law.\nWebsite server logs: [LOG_RETENTION_PERIOD].\n\nAt the end of the applicable period, we securely delete or anonymise the information.',
+    },
+    {
+      kind: 'list',
+      heading: 'Your rights under the GDPR',
+      intro: 'Subject to the conditions set out in the GDPR, you have the right to:',
+      items: [
+        'Access — request confirmation that we hold personal information about you, and a copy of it.',
+        'Rectification — ask us to correct inaccurate or incomplete information.',
+        'Erasure — ask us to delete your information where one of the GDPR grounds applies.',
+        'Restriction — ask us to limit how we use your information in certain circumstances.',
+        'Data portability — receive the information you provided to us in a structured, commonly used, machine-readable format, or have it sent to another controller.',
+        'Objection — object to processing based on our legitimate interests, including profiling, and to direct marketing at any time.',
+        'Withdrawal of consent — where we rely on your consent, you may withdraw it at any time without affecting the lawfulness of processing carried out before withdrawal.',
+        'Complaint — lodge a complaint with the Office of the Commissioner for Personal Data Protection of the Republic of Cyprus (commissioner@dataprotection.gov.cy, www.dataprotection.gov.cy) or with the supervisory authority in your country of residence.',
+      ],
+    },
+    {
+      kind: 'text',
+      heading: 'Security',
+      body: 'We use appropriate technical and organisational measures to protect personal information against unauthorised access, alteration, disclosure, or destruction. These include access controls, encryption in transit, secure hosting, and staff training. However, no method of transmission over the internet or method of electronic storage is completely secure, and we cannot guarantee absolute security.',
+    },
+    {
+      kind: 'text',
+      heading: 'Children’s privacy',
+      body: 'The Site is not directed at children, and we do not knowingly collect personal information from children under 16. If you believe a child has provided us with personal information, please contact [DPO_EMAIL] and we will take steps to delete it.',
+    },
+    {
+      kind: 'text',
+      heading: 'Links to third-party sites',
+      body: 'The Site may contain links to websites operated by third parties. We are not responsible for the privacy practices or the content of those sites. We encourage you to read the privacy policy of every website you visit.',
+    },
+    {
+      kind: 'text',
+      heading: 'Changes to this policy',
+      body: 'We may update this Policy from time to time to reflect changes in our practices or in applicable law. The "Last updated" date at the top of this Policy indicates when it was most recently revised. Material changes will be brought to your attention through the Site or, where appropriate, by direct notice.',
+    },
+    {
+      kind: 'text',
+      heading: 'Contact us',
+      body: 'If you have questions about this Policy or wish to exercise your rights, please contact our Data Protection Officer:\n\nElysée Irrigation Ltd — Data Protection Officer\n[REGISTERED_OFFICE_ADDRESS], Cyprus\nEmail: [DPO_EMAIL]\nTelephone: [DPO_PHONE]\n\nYou also have the right to lodge a complaint with the Office of the Commissioner for Personal Data Protection of the Republic of Cyprus — commissioner@dataprotection.gov.cy, www.dataprotection.gov.cy.',
+    },
+  ],
+};
+
+export const termsOfUsagePage: PageContent = {
+  slug: '/legal/terms-of-use/',
+  meta: {
+    title: 'Terms of Usage — Elysse Group',
+    description:
+      'The information appearing on this Web site is provided in good faith. Every attempt has been taken by Elysée Irrigation employees to ensure its accuracy.',
+  },
+  hero: {
+    eyebrow: 'Legal',
+    headline: 'Terms of Usage',
+    image: heroPrivacy,
+  },
+  sections: [
+    {
+      kind: 'text',
+      heading: 'Terms of Usage',
+      body: 'The information appearing on this Web site is provided in good faith. Every attempt has been taken by Elysée Irrigation employees to ensure its accuracy.\n\nHowever, neither Elysée Irrigation nor any of its directors or employees gives any representation or warranty as to the reliability, accuracy or completeness of the information, nor do they accept any responsibility arising in any way (including negligence) for errors in, or omissions from, the information.\n\nAll content is copyright 2013 and any reproduction without the prior consent of Elysée Irrigation is prohibited.',
     },
   ],
 };
@@ -659,4 +797,5 @@ export const allPages: Record<string, PageContent> = {
   '/contact/': contactPage,
   '/press-room/news/': newsIndexPage,
   '/legal/privacy-policy/': privacyPolicyPage,
+  '/legal/terms-of-use/': termsOfUsagePage,
 };

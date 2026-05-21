@@ -1,11 +1,12 @@
 ---
+import { Image } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Hero from '../components/Hero.astro';
 import SnapSection from '../components/SnapSection.astro';
 import SnapNav, { type SnapNavItem } from '../components/SnapNav.astro';
 import Container from '../components/Container.astro';
 import Card from '../components/Card.astro';
-import { homePage as page } from '../data/content';
+import { homePage as page, servicesCards } from '../data/content';
 
 // Split sections so text sections become full-screen image panels
 // and the news list becomes its own snap panel.
@@ -57,17 +58,71 @@ const navItems: SnapNavItem[] = [
   {/* Panel 1 — Hero */}
   {page.hero && <Hero id={HERO_ID} {...page.hero} height="screen" />}
 
-  {/* Panels 2..N — one full-screen image per text section */}
+  {/* Panels 2..N — one full-screen image per text section.
+       The Services panel is special-cased: instead of a single CTA it renders
+       a 4-card row at the bottom, one per service sector. */}
   {textSections.map((s, i) => (
-    <SnapSection
-      id={textIds[i]}
-      eyebrow={s.eyebrow}
-      heading={s.heading ?? ''}
-      body={s.body}
-      image={s.image!}
-      imageAlt={s.heading}
-      cta={s.cta}
-    />
+    s.eyebrow === 'Services' ? (
+      <section
+        id={textIds[i]}
+        data-snap
+        class="relative min-h-[100dvh] w-full snap-start snap-always overflow-hidden bg-ink text-surface flex flex-col"
+      >
+        <Image
+          src={s.image!}
+          alt={s.heading ?? ''}
+          widths={[768, 1280, 1920, 2400]}
+          sizes="100vw"
+          loading="lazy"
+          class="absolute inset-0 h-full w-full object-cover"
+        />
+        <div
+          class="absolute inset-0"
+          aria-hidden="true"
+          style="background: linear-gradient(180deg, rgba(10,10,10,0.25) 0%, rgba(10,10,10,0.45) 60%, rgba(10,10,10,0.5) 100%);"
+        ></div>
+        <Container size="xl" class="relative z-10 flex flex-col justify-between w-full pt-28 md:pt-32 pb-12 md:pb-16">
+          <div class="max-w-3xl">
+            {s.eyebrow && (
+              <p data-reveal class="text-xs md:text-sm uppercase tracking-widest text-surface/80 mb-3 md:mb-4">{s.eyebrow}</p>
+            )}
+            <h2 data-reveal data-reveal-delay="80" class="font-display leading-[1.05] text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-surface">
+              {s.heading}
+            </h2>
+            {s.body && (
+              <p data-reveal data-reveal-delay="160" class="mt-5 md:mt-7 max-w-prose text-base md:text-lg text-surface/90">
+                {s.body.split(/\n\n+/)[0]}
+              </p>
+            )}
+          </div>
+
+          <div class="mt-8 md:mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+            {servicesCards.map((c, ci) => (
+              <Card
+                title={c.label}
+                href={c.href}
+                image={c.image}
+                class="bg-surface/95 text-ink backdrop-blur-sm"
+                data-reveal
+                data-reveal-delay={String(240 + ci * 60)}
+              >
+                {c.blurb}
+              </Card>
+            ))}
+          </div>
+        </Container>
+      </section>
+    ) : (
+      <SnapSection
+        id={textIds[i]}
+        eyebrow={s.eyebrow}
+        heading={s.heading ?? ''}
+        body={s.body}
+        image={s.image!}
+        imageAlt={s.heading}
+        cta={s.cta}
+      />
+    )
   ))}
 
   {/* Final panel — Latest News (3-up grid, full screen) */}
@@ -75,7 +130,8 @@ const navItems: SnapNavItem[] = [
     <section
       id={NEWS_ID}
       data-snap
-      class="relative min-h-[var(--panel-h)] snap-start snap-always scroll-mt-20 md:scroll-mt-24 bg-surface-alt flex items-center py-20 md:py-28"
+      data-light-bg
+      class="relative min-h-[100dvh] snap-start snap-always scroll-mt-0 bg-surface-alt flex items-center py-20 md:py-28"
     >
       <Container size="xl" class="w-full">
         {newsSection.eyebrow && (

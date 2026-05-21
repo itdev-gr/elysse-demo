@@ -34,8 +34,8 @@ const aspects = {
   href={href}
   class={[
     'group block overflow-hidden bg-surface-alt',
-    'transition-colors duration-base ease-out-quint',
-    href ? 'hover:bg-surface' : '',
+    'transition-all duration-base ease-out-quint will-change-transform',
+    href ? 'hover:bg-surface hover:-translate-y-1 hover:shadow-lg' : '',
     className,
   ].filter(Boolean).join(' ')}
   {...rest}
