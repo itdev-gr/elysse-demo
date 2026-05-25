@@ -1,0 +1,19 @@
+---
+interface Item { number: number; title: string; body: string; }
+interface Props { intro?: string; items: Item[]; }
+const { intro, items } = Astro.props;
+---
+<section class="my-12">
+  {intro && <p class="text-base md:text-lg text-ink/85 mb-8 max-w-3xl">{intro}</p>}
+  <ol class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    {items.map((it) => (
+      <li class="p-6 bg-brand-500/5 border border-brand-500/10 rounded-sm">
+        <div class="flex items-baseline gap-3 mb-2">
+          <span class="text-2xl font-heavy text-brand-500">{it.number.toString().padStart(2, '0')}</span>
+          <h3 class="text-lg font-heavy text-ink">{it.title}</h3>
+        </div>
+        <p class="text-sm text-ink/80">{it.body}</p>
+      </li>
+    ))}
+  </ol>
+</section>

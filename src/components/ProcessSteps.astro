@@ -1,0 +1,14 @@
+---
+interface Item { title: string; description: string; }
+interface Props { items: Item[]; }
+const { items } = Astro.props;
+---
+<ol class="grid grid-cols-1 md:grid-cols-4 gap-4 my-10">
+  {items.map((it, i) => (
+    <li class="p-6 bg-surface border border-ink/10 rounded-sm">
+      <div class="text-xs uppercase tracking-widest text-brand-500 font-medium">Step {i + 1}</div>
+      <h3 class="mt-2 text-lg font-heavy text-ink">{it.title}</h3>
+      <p class="mt-1 text-sm text-ink/75">{it.description}</p>
+    </li>
+  ))}
+</ol>

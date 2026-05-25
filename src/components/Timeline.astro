@@ -1,0 +1,15 @@
+---
+interface Item { year: string; title?: string; body: string; }
+interface Props { items: Item[]; }
+const { items } = Astro.props;
+---
+<ol class="relative border-l-2 border-brand-500/40 pl-6 md:pl-8 my-10 space-y-8">
+  {items.map((it) => (
+    <li class="relative">
+      <span aria-hidden="true" class="absolute -left-[33px] md:-left-[37px] top-1 w-4 h-4 rounded-full bg-brand-500"></span>
+      <div class="text-sm uppercase tracking-widest font-medium text-brand-500">{it.year}</div>
+      {it.title && <div class="mt-1 text-lg font-heavy text-ink">{it.title}</div>}
+      <p class="mt-1 text-base text-ink/85">{it.body}</p>
+    </li>
+  ))}
+</ol>
