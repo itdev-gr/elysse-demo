@@ -1,19 +1,8 @@
 export interface NavItem { label: string; href: string; children?: NavItem[]; }
 
 /**
- * Primary navigation — trimmed to the 10 routes actually rebuilt under the
- * Astro plan (Task 32). The source site has many more top-level sections, but
- * for the rebuild we keep the menu pointed only at pages that exist so there
- * are zero broken internal links.
- *
- * Rebuilt routes:
- *   /  ·  /about-us/  ·  /about-us/your-marine-energy-provider/
- *   /our-services/{agriculture,landscape,building-infrastructure,industry}/
- *   /contact/  ·  /press-room/news/  ·  /legal/privacy-policy/
- *
- * `children` are kept where a top-level entry has rebuilt sub-pages so the
- * mobile drawer (MobileNav.astro) can render them without extra plumbing.
- * Note: the primary navbar (PrimaryNav.astro) consumes navGroups, not this export.
+ * Primary navigation — full rebuild mirroring elysee.com.cy's 6-pillar structure.
+ * Source: https://elysee.com.cy/en (mega-menu, May 2026).
  */
 export const primaryNav: NavItem[] = [
   { label: 'Home', href: '/' },
@@ -21,77 +10,70 @@ export const primaryNav: NavItem[] = [
     label: 'About Us',
     href: '/about-us/',
     children: [
-      { label: 'Your Marine Energy Provider', href: '/about-us/your-marine-energy-provider/' },
+      { label: 'Corporate Profile', href: '/about-us/' },
+      { label: 'History', href: '/about-us/history/' },
+      { label: 'Company Structure', href: '/about-us/company-structure/' },
+      { label: 'Vision, Mission & Values', href: '/about-us/vision-mission-values/' },
+      { label: 'Quality & Certifications', href: '/about-us/quality-certifications/' },
     ],
   },
   {
-    label: 'Our Services',
-    href: '/our-services/agriculture/',
+    label: 'Green Elysée',
+    href: '/green-elysee/',
     children: [
-      { label: 'Agriculture', href: '/our-services/agriculture/' },
-      { label: 'Landscape', href: '/our-services/landscape/' },
-      { label: 'Building & Infrastructure', href: '/our-services/building-infrastructure/' },
-      { label: 'Industry', href: '/our-services/industry/' },
-    ],
-  },
-  { label: 'News', href: '/press-room/news/' },
-  { label: 'Contact', href: '/contact/' },
-];
-
-/**
- * Footer link columns — trimmed alongside primaryNav (Task 32) so every link
- * resolves to a rebuilt page. The source site's footer carried "Discover Elysse"
- * and "Company" columns plus a Modern Slavery PDF link; we keep the two columns
- * but populate them only with rebuilt routes.
- */
-export const footerNav: { title: string; items: NavItem[] }[] = [
-  {
-    title: 'Discover Elysse',
-    items: [
-      { label: 'About Us', href: '/about-us/' },
-      { label: 'Your Marine Energy Provider', href: '/about-us/your-marine-energy-provider/' },
-      { label: 'Agriculture', href: '/our-services/agriculture/' },
-      { label: 'Landscape', href: '/our-services/landscape/' },
+      { label: 'About Green Elysée', href: '/green-elysee/' },
+      { label: 'Certifications', href: '/green-elysee/certifications/' },
+      { label: 'Reports', href: '/green-elysee/reports/' },
+      { label: 'Insights', href: '/green-elysee/insights/' },
     ],
   },
   {
-    title: 'Company',
-    items: [
-      { label: 'Building & Infrastructure', href: '/our-services/building-infrastructure/' },
-      { label: 'Industry', href: '/our-services/industry/' },
-      { label: 'News', href: '/press-room/news/' },
-      { label: 'Contact', href: '/contact/' },
+    label: 'Innovation',
+    href: '/innovation/why-innovation/',
+    children: [
+      { label: 'Why Innovation', href: '/innovation/why-innovation/' },
+      { label: 'Research & Development', href: '/innovation/research-development/' },
+      { label: 'Funded Research Projects', href: '/innovation/funded-research-projects/' },
+      { label: 'Innovation Insights', href: '/innovation/insights/' },
+      { label: 'Network Partners', href: '/innovation/network-partners/' },
+      { label: 'Innovate with Us', href: '/innovation/innovate-with-us/' },
+    ],
+  },
+  {
+    label: 'Products',
+    href: '/products/',
+    children: [
+      { label: 'Categories', href: '/products/' },
+      { label: 'Catalogues & Leaflets', href: '/products/catalogues/' },
+      { label: 'BIM Designs', href: 'https://elysee.partcommunity.com/' },
+    ],
+  },
+  {
+    label: 'Insights',
+    href: '/insights/news/',
+    children: [
+      { label: 'News', href: '/insights/news/' },
+      { label: 'Blog', href: '/insights/blog/' },
+      { label: 'Exhibitions', href: '/insights/exhibitions/' },
+      { label: 'Media', href: '/insights/media/' },
+      { label: 'eBooks', href: '/insights/ebooks/' },
+    ],
+  },
+  {
+    label: 'Contact Us',
+    href: '/contact/local/',
+    children: [
+      { label: 'Local Network', href: '/contact/local/' },
+      { label: 'Worldwide Network', href: '/contact/worldwide/' },
+      { label: 'Elysée WISE', href: '/contact/wise/' },
+      { label: 'Elysée PRIME', href: '/contact/prime/' },
+      { label: 'Elysée Rohrsysteme', href: '/contact/rohrsysteme/' },
     ],
   },
 ];
 
-/** Legal / utility links rendered in the bottom strip beside the copyright. */
-export const footerLegal: NavItem[] = [
-  { label: 'Privacy Policy', href: '/legal/privacy-policy/' },
-];
-
-/**
- * Social icons — only LinkedIn is present on the source ("Connect" column).
- * `icon` is the inner-SVG markup; Footer.astro wraps it in <svg viewBox="0 0 24 24">.
- * Path is the LinkedIn glyph (Simple Icons, CC0).
- */
-export const social: { label: string; href: string; icon: string }[] = [
-  {
-    label: 'LinkedIn',
-    href: 'https://www.linkedin.com/company/11204464/admin/',
-    icon: '<path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.852 3.37-1.852 3.601 0 4.267 2.37 4.267 5.455v6.288zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.063 2.063 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>',
-  },
-];
-
-/**
- * Mega-menu data — full source-site nav, 8 category groups arranged in a
- * 3-column desktop grid (col 1: 3 groups, col 2: 3 groups, col 3: 2 groups).
- * Data structure introduced in the mega-menu plan; now consumed via navGroups
- * by PrimaryNav.astro (desktop) and MobileNav.astro (mobile).
- */
 export interface MegaGroup {
   title: string;
-  /** Optional href if the heading itself is a link. */
   href?: string;
   items: NavItem[];
 }
@@ -99,92 +81,155 @@ export interface MegaGroup {
 /** Tuple shape: [column 1 groups, column 2 groups, column 3 groups] */
 export type MegaColumns = [MegaGroup[], MegaGroup[], MegaGroup[]];
 
+/**
+ * Mega-menu data — 6 categories arranged across 3 columns. Consumed via
+ * `navGroups` by PrimaryNav.astro (desktop) and MobileNav.astro (mobile).
+ */
 export const megaNav: MegaColumns = [
   // Column 1
   [
     {
-      title: 'Elysee',
-      href: '/sonan-bunkers-people-working-together/',
+      title: 'About Us',
+      href: '/about-us/',
       items: [
-        { label: 'Our Commitment to Clients', href: '/sonan-bunkers-people-working-together/our-commitment-to-clients/' },
-        { label: 'Our Team', href: '/sonan-bunkers-people-working-together/our-team/' },
+        { label: 'Corporate Profile', href: '/about-us/' },
+        { label: 'History', href: '/about-us/history/' },
+        { label: 'Company Structure', href: '/about-us/company-structure/' },
+        { label: 'Vision, Mission & Values', href: '/about-us/vision-mission-values/' },
+        { label: 'Quality & Certifications', href: '/about-us/quality-certifications/' },
       ],
     },
     {
-      title: 'Responsible Partner',
-      href: '/responsible-partner/',
+      title: 'Green Elysée',
+      href: '/green-elysee/',
       items: [
-        { label: 'Compliance', href: '/responsible-partner/compliance/' },
-        { label: 'CSR', href: '/responsible-partner/csr/' },
-        { label: 'Data Protection', href: '/responsible-partner/data-protection-gdpr/' },
-        { label: 'HSEQ', href: '/responsible-partner/hseq/' },
-        { label: 'Anti-Corruption Policy', href: '/responsible-partner/anti-corruption-policy/' },
-        { label: 'Sustainability', href: '/responsible-partner/sustainability/' },
-      ],
-    },
-    {
-      title: 'Careers',
-      href: '/careers/',
-      items: [
-        { label: 'Join Us', href: '/careers/' },
+        { label: 'About Green Elysée', href: '/green-elysee/' },
+        { label: 'Certifications', href: '/green-elysee/certifications/' },
+        { label: 'Reports', href: '/green-elysee/reports/' },
+        { label: 'Insights', href: '/green-elysee/insights/' },
       ],
     },
   ],
   // Column 2
   [
     {
-      title: 'About Us',
-      href: '/about-us/',
+      title: 'Innovation',
+      href: '/innovation/why-innovation/',
       items: [
-        { label: 'Your Marine Energy Provider', href: '/about-us/your-marine-energy-provider/' },
-        { label: 'Group CEO Statement', href: '/about-us/group-ceo-statement/' },
-        { label: 'Group CFO Statement', href: '/about-us/group-cfo-statement/' },
+        { label: 'Why Innovation', href: '/innovation/why-innovation/' },
+        { label: 'Research & Development', href: '/innovation/research-development/' },
+        { label: 'Funded Research Projects', href: '/innovation/funded-research-projects/' },
+        { label: 'Innovation Insights', href: '/innovation/insights/' },
+        { label: 'Network Partners', href: '/innovation/network-partners/' },
+        { label: 'Innovate with Us', href: '/innovation/innovate-with-us/' },
       ],
     },
     {
-      title: 'Press Room',
-      href: '/press-room/',
+      title: 'Products',
+      href: '/products/',
       items: [
-        { label: 'News', href: '/press-room/news/' },
-        { label: 'Annual Reports', href: '/press-room/annual-reports/' },
-      ],
-    },
-    {
-      title: 'Legal',
-      href: '/legal/',
-      items: [
-        { label: 'Cookies', href: '/legal/cookies/' },
-        { label: 'Privacy Policy', href: '/legal/privacy-policy/' },
-        { label: 'Terms of Use', href: '/legal/terms-of-use/' },
-        { label: 'Terms and Conditions of Sale', href: '/legal/terms-and-conditions-of-sale/' },
+        { label: 'Categories', href: '/products/' },
+        { label: 'Catalogues & Leaflets', href: '/products/catalogues/' },
+        { label: 'BIM Designs', href: 'https://elysee.partcommunity.com/' },
       ],
     },
   ],
   // Column 3
   [
     {
-      title: 'Our Services',
-      href: '/our-services/agriculture/',
+      title: 'Insights',
+      href: '/insights/news/',
       items: [
-        { label: 'Agriculture', href: '/our-services/agriculture/' },
-        { label: 'Landscape', href: '/our-services/landscape/' },
-        { label: 'Building & Infrastructure', href: '/our-services/building-infrastructure/' },
-        { label: 'Industry', href: '/our-services/industry/' },
+        { label: 'News', href: '/insights/news/' },
+        { label: 'Blog', href: '/insights/blog/' },
+        { label: 'Exhibitions', href: '/insights/exhibitions/' },
+        { label: 'Media', href: '/insights/media/' },
+        { label: 'eBooks', href: '/insights/ebooks/' },
       ],
     },
     {
-      title: 'Contact',
-      href: '/contact/',
+      title: 'Contact Us',
+      href: '/contact/local/',
       items: [
-        { label: 'Worldwide Offices', href: '/contact/' },
+        { label: 'Local Network', href: '/contact/local/' },
+        { label: 'Worldwide Network', href: '/contact/worldwide/' },
+        { label: 'Elysée WISE', href: '/contact/wise/' },
+        { label: 'Elysée PRIME', href: '/contact/prime/' },
+        { label: 'Elysée Rohrsysteme', href: '/contact/rohrsysteme/' },
       ],
     },
   ],
 ];
 
-/**
- * Flat ordered list of every mega-menu group — consumed by PrimaryNav.astro and
- * MobileNav.astro so both renders stay in lockstep with the single source of truth.
- * Order is column-major: column 1 groups, then column 2, then column 3.
- */
+/** Flat list consumed by PrimaryNav and MobileNav (one source of truth). */
 export const navGroups: MegaGroup[] = megaNav.flat();
+
+/**
+ * Footer link columns — mirrors live site footer (About us, Green Elysée,
+ * Products, Insights, Contact us). 5 columns; bottom strip has Terms of Use,
+ * Terms of Supply, Privacy Policy + copyright.
+ */
+export const footerNav: { title: string; items: NavItem[] }[] = [
+  {
+    title: 'About us',
+    items: [
+      { label: 'History', href: '/about-us/history/' },
+      { label: 'Company Structure', href: '/about-us/company-structure/' },
+      { label: 'Vision, Mission & Values', href: '/about-us/vision-mission-values/' },
+      { label: 'Quality & Certifications', href: '/about-us/quality-certifications/' },
+    ],
+  },
+  {
+    title: 'Green Elysée',
+    items: [
+      { label: 'About Green Elysée', href: '/green-elysee/' },
+      { label: 'Certifications', href: '/green-elysee/certifications/' },
+      { label: 'Reports', href: '/green-elysee/reports/' },
+      { label: 'Insights', href: '/green-elysee/insights/' },
+    ],
+  },
+  {
+    title: 'Products',
+    items: [
+      { label: 'Categories', href: '/products/' },
+      { label: 'Catalogues & Leaflets', href: '/products/catalogues/' },
+    ],
+  },
+  {
+    title: 'Insights',
+    items: [
+      { label: 'News', href: '/insights/news/' },
+      { label: 'Blog', href: '/insights/blog/' },
+      { label: 'Exhibitions', href: '/insights/exhibitions/' },
+      { label: 'Media', href: '/insights/media/' },
+      { label: 'eBooks', href: '/insights/ebooks/' },
+      { label: 'Environmental Report', href: '/green-elysee/reports/' },
+    ],
+  },
+  {
+    title: 'Contact us',
+    items: [
+      { label: 'Local Network', href: '/contact/local/' },
+      { label: 'Worldwide Network', href: '/contact/worldwide/' },
+      { label: 'Elysée WISE', href: '/contact/wise/' },
+      { label: 'Elysée PRIME', href: '/contact/prime/' },
+      { label: 'Elysée Rohrsysteme', href: '/contact/rohrsysteme/' },
+    ],
+  },
+];
+
+/** Legal/utility links rendered in the bottom strip beside the copyright. */
+export const footerLegal: NavItem[] = [
+  { label: 'Terms of Use', href: '/legal/terms-of-use/' },
+  { label: 'Terms of Supply', href: '/legal/terms-of-supply/' },
+  { label: 'Privacy Policy', href: '/legal/privacy-policy/' },
+];
+
+/** Social icons — LinkedIn only (per source site Connect column). */
+export const social: { label: string; href: string; icon: string }[] = [
+  {
+    label: 'LinkedIn',
+    href: 'https://www.linkedin.com/company/11204464/admin/',
+    icon: '<path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.852 3.37-1.852 3.601 0 4.267 2.37 4.267 5.455v6.288zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.063 2.063 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>',
+  },
+];
