@@ -38,10 +38,7 @@ for (const g of groups) {
     setOpen(g, true);
   });
 
-  btn.addEventListener('focus', () => {
-    closeAll(g);
-    setOpen(g, true);
-  });
+
 }
 
 document.addEventListener('keydown', (e) => {

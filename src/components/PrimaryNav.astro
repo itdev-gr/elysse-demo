@@ -15,7 +15,7 @@ import { navGroups } from '../data/navigation';
           type="button"
           data-nav-trigger
           aria-expanded="false"
-          aria-controls={panelId}
+          aria-controls={hasItems ? panelId : undefined}
           aria-haspopup={hasItems ? 'menu' : undefined}
           class="inline-flex items-center gap-1 px-3 py-2 text-xs uppercase tracking-widest font-medium hover:text-brand-accent transition-colors duration-fast"
         >
