@@ -62,3 +62,47 @@ test.describe('desktop primary nav', () => {
     await expect(legalTrigger).toHaveAttribute('aria-expanded', 'true');
   });
 });
+
+const MOBILE = { width: 390, height: 844 };
+
+test.describe('mobile primary nav', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.setViewportSize(MOBILE);
+    await page.goto('http://localhost:4321/', { waitUntil: 'load' });
+  });
+
+  test('desktop nav is hidden on mobile', async ({ page }) => {
+    await expect(page.locator('[data-primary-nav]')).toBeHidden();
+  });
+
+  test('hamburger opens the drawer; drawer lists all 8 categories', async ({ page }) => {
+    const hamburger = page.locator('[data-mobile-trigger]');
+    await expect(hamburger).toBeVisible();
+    await hamburger.click();
+    const drawer = page.locator('[data-mobile-drawer]');
+    await expect(drawer).toBeVisible();
+    const accTriggers = drawer.locator('[data-mobile-acc-trigger]');
+    await expect(accTriggers).toHaveCount(8);
+  });
+
+  test('tapping a category expands its sub-items; tapping another closes the first', async ({ page }) => {
+    await page.locator('[data-mobile-trigger]').click();
+    const drawer = page.locator('[data-mobile-drawer]');
+    const careers = drawer.locator('[data-mobile-group]', { hasText: 'Careers' }).locator('[data-mobile-acc-trigger]');
+    const about = drawer.locator('[data-mobile-group]', { hasText: 'About Us' }).locator('[data-mobile-acc-trigger]');
+
+    await careers.click();
+    await expect(careers).toHaveAttribute('aria-expanded', 'true');
+    await about.click();
+    await expect(careers).toHaveAttribute('aria-expanded', 'false');
+    await expect(about).toHaveAttribute('aria-expanded', 'true');
+  });
+
+  test('Escape closes the drawer', async ({ page }) => {
+    const hamburger = page.locator('[data-mobile-trigger]');
+    await hamburger.click();
+    await expect(hamburger).toHaveAttribute('aria-expanded', 'true');
+    await page.keyboard.press('Escape');
+    await expect(hamburger).toHaveAttribute('aria-expanded', 'false');
+  });
+});
