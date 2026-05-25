@@ -2,6 +2,7 @@
 import logo from '../assets/icons/elysee-logo.svg';
 import Container from './Container.astro';
 import PrimaryNav from './PrimaryNav.astro';
+import MobileNav from './MobileNav.astro';
 ---
 <header
   data-header
@@ -12,6 +13,7 @@ import PrimaryNav from './PrimaryNav.astro';
       <img src={logo.src} width={logo.width} height={logo.height} alt="Elysse Group" class="h-8 w-auto md:h-10" loading="eager" />
     </a>
     <PrimaryNav />
+    <MobileNav />
   </Container>
 </header>
 <script>import '../scripts/header.client';</script>

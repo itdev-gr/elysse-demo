@@ -1,0 +1,94 @@
+---
+import { navGroups } from '../data/navigation';
+---
+<button
+  data-mobile-trigger
+  type="button"
+  class="ml-auto inline-flex items-center gap-2 px-3 py-2 text-sm uppercase tracking-wide font-medium hover:text-brand-accent transition-colors duration-fast lg:hidden"
+  aria-expanded="false"
+  aria-controls="mobile-nav"
+  aria-label="Open menu"
+>
+  <svg width="28" height="28" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+    <path d="M5 9h18M5 14h18M5 19h18" />
+  </svg>
+</button>
+
+<div
+  data-mobile-root
+  id="mobile-nav"
+  class="fixed inset-0 z-50 hidden lg:!hidden"
+  role="dialog"
+  aria-modal="true"
+  aria-label="Primary navigation"
+>
+  <div
+    data-mobile-backdrop
+    class="absolute inset-0 bg-black/40 opacity-0 transition-opacity duration-base ease-out-quint"
+  ></div>
+  <aside
+    data-mobile-drawer
+    class="absolute right-0 top-0 bottom-0 w-full max-w-sm bg-surface text-ink translate-x-full transition-transform duration-base ease-out-quint overflow-y-auto"
+  >
+    <div class="flex items-center justify-between px-6 py-5 border-b border-ink/10">
+      <span class="text-sm uppercase tracking-widest font-medium">Menu</span>
+      <button
+        data-mobile-close
+        type="button"
+        class="inline-flex items-center justify-center p-2 hover:text-brand-500 transition-colors duration-fast"
+        aria-label="Close menu"
+      >
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path d="M6 6l12 12M6 18L18 6" />
+        </svg>
+      </button>
+    </div>
+
+    <nav class="px-2 py-4" aria-label="Mobile primary">
+      <ul>
+        {navGroups.map((group, idx) => {
+          const panelId = `mobile-panel-${idx}`;
+          const hasItems = group.items.length > 0;
+          return (
+            <li data-mobile-group class="border-b border-ink/5">
+              <button
+                type="button"
+                data-mobile-acc-trigger
+                aria-expanded="false"
+                aria-controls={hasItems ? panelId : undefined}
+                class="w-full flex items-center justify-between px-4 py-3 text-sm uppercase tracking-widest font-medium text-ink hover:text-brand-500 transition-colors duration-fast"
+              >
+                <span>{group.title}</span>
+                {hasItems && (
+                  <svg data-mobile-acc-icon class="transition-transform duration-fast" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+                    <path d="M3 5l3 3 3-3" />
+                  </svg>
+                )}
+              </button>
+              {hasItems && (
+                <div data-mobile-panel id={panelId} class="hidden px-4 pb-3">
+                  <ul class="space-y-1">
+                    {group.href && (
+                      <li>
+                        <a href={group.href} class="block py-2 text-sm font-medium text-ink/90 hover:text-brand-500 transition-colors duration-fast">
+                          {group.title}
+                        </a>
+                      </li>
+                    )}
+                    {group.items.map((it) => (
+                      <li>
+                        <a href={it.href} class="block py-2 text-sm text-ink/80 hover:text-brand-500 transition-colors duration-fast">
+                          {it.label}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </li>
+          );
+        })}
+      </ul>
+    </nav>
+  </aside>
+</div>
