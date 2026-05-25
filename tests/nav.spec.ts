@@ -93,6 +93,10 @@ test.describe('mobile primary nav', () => {
 
     await careers.click();
     await expect(careers).toHaveAttribute('aria-expanded', 'true');
+    const careersPanel = drawer
+      .locator('[data-mobile-group]', { hasText: 'Careers' })
+      .locator('[data-mobile-panel]');
+    await expect(careersPanel).toBeVisible();
     await about.click();
     await expect(careers).toHaveAttribute('aria-expanded', 'false');
     await expect(about).toHaveAttribute('aria-expanded', 'true');

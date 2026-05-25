@@ -37,8 +37,6 @@ for (const g of groups) {
     closeAll(g);
     setOpen(g, true);
   });
-
-
 }
 
 document.addEventListener('keydown', (e) => {
@@ -81,7 +79,7 @@ if (mobileTrigger && mobileRoot && mobileBackdrop && mobileDrawer && mobileClose
     mobileDrawer.classList.remove('translate-x-0');
     mobileTrigger.setAttribute('aria-expanded', 'false');
     document.body.style.overflow = '';
-    window.setTimeout(() => mobileRoot.classList.add('hidden'), 320);
+    window.setTimeout(() => mobileRoot.classList.add('hidden'), 500);
     mobileTrigger.focus();
   };
 
@@ -94,6 +92,29 @@ if (mobileTrigger && mobileRoot && mobileBackdrop && mobileDrawer && mobileClose
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && mobileTrigger.getAttribute('aria-expanded') === 'true') {
       closeDrawer();
+    }
+  });
+
+  // Tab focus trap inside the drawer (since role="dialog" + aria-modal="true").
+  const focusable = () =>
+    Array.from(
+      mobileDrawer.querySelectorAll<HTMLElement>(
+        'a, button, [tabindex]:not([tabindex="-1"])',
+      ),
+    ).filter((el) => !el.hasAttribute('disabled') && el.offsetParent !== null);
+
+  mobileDrawer.addEventListener('keydown', (e) => {
+    if (e.key !== 'Tab') return;
+    const items = focusable();
+    if (!items.length) return;
+    const first = items[0];
+    const last = items[items.length - 1];
+    if (e.shiftKey && document.activeElement === first) {
+      e.preventDefault();
+      last.focus();
+    } else if (!e.shiftKey && document.activeElement === last) {
+      e.preventDefault();
+      first.focus();
     }
   });
 }
