@@ -1,0 +1,66 @@
+---
+import { navGroups } from '../data/navigation';
+---
+<nav
+  data-primary-nav
+  class="ml-auto hidden lg:flex items-stretch gap-1"
+  aria-label="Primary"
+>
+  {navGroups.map((group, idx) => {
+    const panelId = `nav-panel-${idx}`;
+    const hasItems = group.items.length > 0;
+    return (
+      <div data-nav-group class="relative flex items-stretch">
+        <button
+          type="button"
+          data-nav-trigger
+          aria-expanded="false"
+          aria-controls={panelId}
+          aria-haspopup={hasItems ? 'menu' : undefined}
+          class="inline-flex items-center gap-1 px-3 py-2 text-xs uppercase tracking-widest font-medium hover:text-brand-accent transition-colors duration-fast"
+        >
+          <span>{group.title}</span>
+          {hasItems && (
+            <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+              <path d="M2 4l3 3 3-3" />
+            </svg>
+          )}
+        </button>
+
+        {hasItems && (
+          <div
+            data-nav-panel
+            id={panelId}
+            role="menu"
+            class="absolute left-0 top-full mt-1 min-w-[240px] bg-surface text-ink shadow-md rounded-sm opacity-0 invisible translate-y-1 transition-[opacity,transform,visibility] duration-fast ease-out-quint"
+          >
+            <ul class="py-2">
+              {group.href && (
+                <li>
+                  <a
+                    href={group.href}
+                    role="menuitem"
+                    class="block px-4 py-2 text-sm font-medium text-ink hover:bg-brand-500/5 hover:text-brand-500 transition-colors duration-fast"
+                  >
+                    {group.title}
+                  </a>
+                </li>
+              )}
+              {group.items.map((it) => (
+                <li>
+                  <a
+                    href={it.href}
+                    role="menuitem"
+                    class="block px-4 py-2 text-sm text-ink/85 hover:bg-brand-500/5 hover:text-brand-500 transition-colors duration-fast"
+                  >
+                    {it.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </div>
+    );
+  })}
+</nav>
