@@ -6,7 +6,7 @@ if (header) {
     header.classList.toggle('bg-surface/90', opaque);
     header.classList.toggle('backdrop-blur-md', opaque);
     header.classList.toggle('shadow-sm', opaque);
-    // Invert text colour over the transparent (over-hero) state so logo/menu
+    // Invert text colour over the transparent (over-hero) state so logo/nav
     // remain legible against the dark hero image.
     header.classList.toggle('text-ink', opaque);
     header.classList.toggle('text-surface', !opaque);

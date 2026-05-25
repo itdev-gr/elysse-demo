@@ -12,7 +12,8 @@ export interface NavItem { label: string; href: string; children?: NavItem[]; }
  *   /contact/  ·  /press-room/news/  ·  /legal/privacy-policy/
  *
  * `children` are kept where a top-level entry has rebuilt sub-pages so the
- * mega-menu / mobile drawer can render them without extra plumbing.
+ * mobile drawer (MobileNav.astro) can render them without extra plumbing.
+ * Note: the primary navbar (PrimaryNav.astro) consumes navGroups, not this export.
  */
 export const primaryNav: NavItem[] = [
   { label: 'Home', href: '/' },
@@ -85,7 +86,8 @@ export const social: { label: string; href: string; icon: string }[] = [
 /**
  * Mega-menu data — full source-site nav, 8 category groups arranged in a
  * 3-column desktop grid (col 1: 3 groups, col 2: 3 groups, col 3: 2 groups).
- * Mirrors the layout in docs/superpowers/plans/2026-05-15-mega-menu.md.
+ * Data structure introduced in the mega-menu plan; now consumed via navGroups
+ * by PrimaryNav.astro (desktop) and MobileNav.astro (mobile).
  */
 export interface MegaGroup {
   title: string;
