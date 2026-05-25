@@ -1,29 +1,17 @@
 ---
 import logo from '../assets/icons/elysee-logo.svg';
 import Container from './Container.astro';
-import MegaMenu from './MegaMenu.astro';
+import PrimaryNav from './PrimaryNav.astro';
 ---
 <header
   data-header
   class="fixed inset-x-0 top-0 z-40 transition-[background-color,backdrop-filter,box-shadow,color] duration-base ease-out-quint"
 >
-  <Container size="xl" class="relative flex items-center py-4 md:py-5">
-    <a href="/" class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center" aria-label="Elysse Group — home">
+  <Container size="xl" class="flex items-center gap-6 py-4 md:py-5">
+    <a href="/" class="flex items-center shrink-0" aria-label="Elysse Group — home">
       <img src={logo.src} width={logo.width} height={logo.height} alt="Elysse Group" class="h-8 w-auto md:h-10" loading="eager" />
     </a>
-    <button
-      data-menu-trigger
-      class="ml-auto inline-flex items-center gap-3 px-3 py-2 text-sm uppercase tracking-wide font-medium hover:text-brand-500 transition-colors duration-fast"
-      type="button"
-      aria-expanded="false"
-      aria-controls="primary-menu"
-    >
-      <span class="hidden lg:inline">Menu</span>
-      <svg width="28" height="28" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-        <path d="M5 9h18M5 14h18M5 19h18" />
-      </svg>
-    </button>
+    <PrimaryNav />
   </Container>
 </header>
-<MegaMenu />
 <script>import '../scripts/header.client';</script>
