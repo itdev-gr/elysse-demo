@@ -1,0 +1,31 @@
+---
+interface Props { count: number; }
+const { count } = Astro.props;
+---
+<div class="sticky top-16 z-20 bg-surface border-b border-ink/10">
+  <div class="flex items-center justify-between gap-4 py-3">
+    <nav aria-label="Breadcrumb" class="font-mono text-[11px] text-ink/65">
+      <a href="/" class="hover:text-brand-500">Home</a>
+      <span class="mx-2">/</span>
+      <span aria-current="page">Catalog</span>
+    </nav>
+    <p class="font-mono text-[11px] text-ink/70" data-catalog-count>
+      Showing {count} of {count} products
+    </p>
+    <div class="flex items-center gap-3">
+      <label class="font-mono text-[11px] text-ink/70 flex items-center gap-2">
+        Sort
+        <select data-catalog-sort class="font-mono text-[11px] bg-surface border border-ink/10 rounded-sm px-2 py-1">
+          <option value="relevance">Most relevant</option>
+          <option value="name-asc">Name A–Z</option>
+          <option value="pressure-desc">Pressure (high to low)</option>
+          <option value="newest">Newest</option>
+        </select>
+      </label>
+      <div class="flex items-center border border-ink/10 rounded-sm overflow-hidden" role="group" aria-label="View mode">
+        <button data-catalog-view="grid" class="font-mono text-[11px] px-2 py-1 bg-brand-500 text-surface" aria-pressed="true">Grid</button>
+        <button data-catalog-view="list" class="font-mono text-[11px] px-2 py-1" aria-pressed="false">List</button>
+      </div>
+    </div>
+  </div>
+</div>

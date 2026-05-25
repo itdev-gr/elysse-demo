@@ -154,29 +154,32 @@ export const servicesCards: {
   {
     label: 'Agriculture',
     href: '/our-services/agriculture/',
-    blurb: 'text placeholder',
+    blurb: 'Reliable irrigation systems from the pump to the plant — main, sub-main and laterals.',
   },
   {
     label: 'Landscape',
     href: '/our-services/landscape/',
-    blurb: 'text placeholder',
+    blurb: 'Specialist support for parks, campuses, and grounds — irrigation, turf, and ongoing care.',
   },
   {
     label: 'Building & Infrastructure',
     href: '/our-services/building-infrastructure/',
-    blurb: 'text placeholder',
+    blurb: 'Pipe and fitting systems for water supply, sewerage and drainage on construction projects of every scale.',
   },
   {
     label: 'Industry',
     href: '/our-services/industry/',
-    blurb: 'Text Placeholder',
+    blurb: 'Industrial-grade plastic piping, valves, and fittings engineered for plant uptime and regulatory compliance.',
   },
 ];
 
-/** Sibling lists for the "About Us" sidebar nav. Trimmed in Task 32 to only the
- *  about-us sub-pages we rebuilt (CEO/CFO statements were out of scope). */
+/** Sibling lists for the "About Us" sidebar nav. */
 export const aboutSiblings: { label: string; href: string }[] = [
-  { label: 'Your Marine Energy Provider', href: '/about-us/your-marine-energy-provider/' },
+  { label: 'Corporate Profile', href: '/about-us/' },
+  { label: 'History', href: '/about-us/history/' },
+  { label: 'Company Structure', href: '/about-us/company-structure/' },
+  { label: 'Vision, Mission & Values', href: '/about-us/vision-mission-values/' },
+  { label: 'Quality & Certifications', href: '/about-us/quality-certifications/' },
 ];
 
 // ---------- per-page content ----------
@@ -184,84 +187,82 @@ export const aboutSiblings: { label: string; href: string }[] = [
 export const homePage: PageContent = {
   slug: '/',
   meta: {
-    title: 'Elysse Group — Fuelling the shipping industry',
+    title: 'Elysée — The Leading Green Company in Innovative & Smart Piping Systems',
     description:
-      'Elysse Group integrates business strategies whilst upholding the highest ethics for maximum success — a leading independent fuel and energy provider to the shipping industry.',
+      'Elysée manufactures and supplies piping and irrigation systems for water supply, irrigation, sewerage and energy. Based in Cyprus, a key Mediterranean location, serving 65+ destinations worldwide.',
   },
   hero: {
-    headline: 'Text Placeholder',
-    sub: 'Elysse Group integrates business strategies whilst upholding the highest ethics for maximum success.',
+    headline: 'The leading green company',
+    sub: 'With innovative & smart piping & fitting systems for water supply, irrigation, sewerage and energy.',
     image: heroHome,
     video: '/media/hero-elysee.mp4',
-    cta: { label: 'discover Elysse', href: '/about-us/your-marine-energy-provider/' },
-    ctaSecondary: { label: 'EXPLORE OUR SERVICES', href: '/our-services/agriculture/' },
+    cta: { label: 'discover Elysée', href: '/about-us/' },
+    ctaSecondary: { label: 'EXPLORE OUR PRODUCTS', href: '/products/' },
   },
   sections: [
     {
       kind: 'text',
       eyebrow: 'Services',
-      heading: 'Propelling fleets into the future',
-      body: 'Our team of skilled professionals are committed to exceeding expectations and going above and beyond to ensure that our customers are satisfied with the services we provide.',
+      heading: 'Solutions across four sectors',
+      body: "From the pump to the plant and from the building site to the industrial plant — Elysée's world-class products bring innovative and efficient solutions, tailored to each sector's specific demands.",
       image: imgServicesPanel,
-      cta: { label: 'EXPLORE SERVICES', href: '/our-services/agriculture/' },
+      cta: { label: 'EXPLORE SECTORS', href: '/our-services/agriculture/' },
     },
     {
       kind: 'text',
-      eyebrow: 'Core Values',
-      heading: 'A strong vision for sustainable development',
-      body: 'At Elysse Group we are committed to providing our customers with the highest quality products and services while also upholding our values of sustainability and social responsibility. We believe that by taking care of our planet and its people, we can create a better future for everyone.\n\nWe prioritize the needs and satisfaction of our customers, and strive to create a positive and enjoyable experience for them every time they interact with our company. We value honesty, transparency, and respect, and strive to embody these values in all of our interactions with our customers and stakeholders.',
+      eyebrow: 'Green Elysée',
+      heading: 'Streaming Water, Streaming Life',
+      body: 'We are committed to protecting the earth in every possible way, making it a better place to live, while maintaining our business-driven innovation, green thinking, and continuous improvement. Our tag-line “Streaming Water, Streaming Life” synopsizes our beliefs and culture — it is the foundation of all principles and strategies that define Elysée.',
       image: imgCoreValues,
       cta: {
-        label: 'LEARN MORE ABOUT OUR VALUES',
-        href: '/about-us/your-marine-energy-provider/',
+        label: 'DISCOVER GREEN ELYSÉE',
+        href: '/green-elysee/',
       },
     },
     {
       kind: 'text',
-      eyebrow: 'Responsible Partner',
-      heading: 'Focus on extended quality control & constant innovation',
-      body: 'We strive to be a responsible partner that our clients can rely on. We believe that trust and reliability are the cornerstones of any successful business relationship, and we work hard to earn and maintain the trust of our clients.',
+      eyebrow: 'Innovation Matters',
+      heading: 'Innovation Pillar',
+      body: "Elysée's vision is to be a green leader worldwide through Innovative, Smart, Easy-to-use Piping Systems. Today's competitive perspective of Elysée highly relies on scientific and technical research and innovation activities.",
       image: imgResponsiblePartner,
-      cta: { label: 'LEARN MORE ABOUT OUR SERVICES', href: '/our-services/industry/' },
+      cta: { label: 'DISCOVER INNOVATION', href: '/innovation/why-innovation/' },
     },
     {
       kind: 'text',
-      eyebrow: 'We Care',
-      heading: 'Caring for what really matters',
-      body: 'Elysse Group is committed to operating in an ethical and responsible manner, taking into account the impact of our actions on stakeholders such as employees, customers, and the environment.',
+      eyebrow: 'Knowledge & Experience',
+      heading: 'With knowledge and experience',
+      body: 'Founded in 1979, Elysée combines 40+ years of experience with continuous in-house R&D. We serve 65+ countries with 5000+ product codes, supported by 215+ team members. Our products are certified by DVGW, KIWA, WRAS, SII, OVGW, and the most reputable international standards organizations.',
       image: imgWeCare,
-      cta: { label: 'LEARN MORE ABOUT ELYSSE', href: '/about-us/' },
+      cta: { label: 'LEARN MORE ABOUT US', href: '/about-us/' },
     },
     {
       kind: 'news-list',
-      eyebrow: 'Showing latest',
-      heading: 'Latest News',
+      eyebrow: 'Latest from Elysée',
+      heading: 'News & Updates',
       articles: [
         {
-          title:
-            'Elysse Group Expands into the Americas with the Launch of ELYSSE ENERGY Panama',
-          slug: '/press-room/news/elysse-energy-panama-launch/',
+          title: 'Elysée launches new W.I.S.E. compression-fitting range',
+          slug: '/insights/news/wise-compression-fittings-launch/',
           date: '10/1/2025',
           image: imgArticlePanama,
           excerpt:
-            'Elysse Group expands into the Americas with the launch of ELYSSE ENERGY PANAMA S.A. in Panama City. Led by industry veteran Hernán Ortiz, the new hub strengthens the company’s regional presence from Canada to Argentina and marks a key step in its transition toward cleaner marine energy solutions.',
+            'Elysée expands its WISE (Worldwide, Innovative, Smart, Easy-to-use) product family with a new line of certified compression fittings, engineered to extend the established 40-year track record across European and Middle Eastern markets.',
         },
         {
-          title:
-            'Elysse Group Secures Significant Funding to Propel Global Expansion',
-          slug: '/press-room/news/hsbc-funding-increase-july-2024/',
+          title: 'New distribution centre opens in Lebanon',
+          slug: '/insights/news/lebanon-distribution-centre/',
           date: '7/29/2024',
           image: imgArticleHsbc,
           excerpt:
-            'At Elysse Group, we are thrilled to announce a major milestone in our journey towards global expansion. With the steadfast support of HSBC UK, our company is poised for significant growth, driven by a substantial funding increase that will enable us to meet rising demands and enhance our operations worldwide.',
+            'Following successful operations in Austria and Russia, Elysée opens a new distribution centre in Lebanon, strengthening our reach across the Middle East and supporting fast lead times for irrigation and infrastructure projects.',
         },
         {
-          title: 'CELEBRATING A DECADE OF EXCELLENCE',
-          slug: '/press-room/news/10-year-celebration/',
+          title: '45 years of Streaming Water, Streaming Life',
+          slug: '/insights/news/45-year-anniversary/',
           date: '4/30/2024',
           image: imgArticleTenYear,
           excerpt:
-            'We proudly celebrated our 10th Anniversary on April 30th, marking a decade of achievements and growth.',
+            'On April 16, 2024 Elysée Irrigation marked 45 years since its founding in Nicosia. Read about our journey from premium-flower cultivation to a 65-country presence in piping systems.',
         },
       ],
     },
@@ -271,26 +272,57 @@ export const homePage: PageContent = {
 export const aboutUsPage: PageContent = {
   slug: '/about-us/',
   meta: {
-    title: 'About Us — Elysse Group',
+    title: 'About Us — Elysée',
     description:
-      'Get to know Elysse Group — our vision as a marine energy provider, our leadership statements, and our worldwide offices.',
+      'Elysée manufactures and supplies piping and irrigation systems for water supply, irrigation, sewerage and energy. Based in Cyprus, serving 65+ destinations.',
   },
   hero: {
     eyebrow: 'About Us',
-    headline: 'About Us',
-    sub: 'A leading independent fuel and energy provider to the shipping industry — founded in 2014 with offices across eight cities worldwide.',
+    headline: 'Corporate Profile',
+    sub: 'A family business founded in 1979 — manufacturing piping and irrigation systems for water supply, irrigation, sewerage and energy across more than 65 countries.',
     image: heroAboutUs,
   },
   sections: [
     {
+      kind: 'text',
+      heading: 'Who we are',
+      body: 'Elysée manufactures and supplies piping and irrigation systems for water supply, irrigation, sewerage and energy. Based in Cyprus, a key location at the crossroads of three continents, Elysée serves more than 65 destinations in Europe, the Middle East, South Africa, Japan, Australia and New Zealand.\n\nIt is in our nature as a company but also as people, to be ambitious and set high targets. We are inspired by our 40-year history and experience and we look forward to our fifth decade with optimism and confidence. From our expert engineers to our highly knowledgeable customer-services staff, teamwork plays a huge part in the success of Elysée.',
+    },
+    {
+      kind: 'text',
+      heading: 'Years of experience',
+      body: 'With a flexible organizational structure, Elysée ensures a quick response to customer enquiries, orders and opportunities for collaboration. New products are developed every year and added to upgrade existing products, creating a consistently growing range. Many years of experience in fittings design, manufacture and supply are reflected in new products which respond to customer needs, and in our ability to produce and deliver every order to its destination on schedule.',
+    },
+    {
       kind: 'feature-grid',
-      heading: 'Discover more about Elysse',
+      heading: 'Discover more about Elysée',
       items: [
         {
-          title: 'Streaming Water, Streaming Life',
-          eyebrow: 'Our Story',
-          body: 'Elysse Group was founded in 2014 with the goal of becoming a leading independent fuel and energy provider to the shipping industry.',
-          href: '/about-us/your-marine-energy-provider/',
+          title: 'History',
+          eyebrow: 'Our journey',
+          body: 'From premium-flower cultivation in the 1970s to a 65-country presence today — the milestones that built Elysée.',
+          href: '/about-us/history/',
+          image: heroStreamingWater,
+        },
+        {
+          title: 'Company Structure',
+          eyebrow: 'How we are organized',
+          body: 'The departments and divisions that keep Elysée operating across its production, distribution, and R&D activities.',
+          href: '/about-us/company-structure/',
+          image: heroStreamingWater,
+        },
+        {
+          title: 'Vision, Mission & Values',
+          eyebrow: 'What drives us',
+          body: 'To be a green leader worldwide through Innovative, Smart, Easy-to-use Piping Systems — and the values that take us there.',
+          href: '/about-us/vision-mission-values/',
+          image: heroStreamingWater,
+        },
+        {
+          title: 'Quality & Certifications',
+          eyebrow: 'How we prove it',
+          body: 'ISO 9001 since 1998, plus DVGW, KIWA, WRAS, SII and OVGW product certifications.',
+          href: '/about-us/quality-certifications/',
           image: heroStreamingWater,
         },
       ],
@@ -346,27 +378,27 @@ export const marineEnergyPage: PageContent = {
 export const agriculturePage: PageContent = {
   slug: '/our-services/agriculture/',
   meta: {
-    title: 'Agriculture — Elysse Group',
+    title: 'Agriculture — Elysée',
     description:
-      'Solutions for agricultural operations — from irrigation systems and water management to soil preparation, planting, and harvesting support.',
+      "A reliable supplier of irrigation systems from the pump to the plant — Elysée's world-class products bring innovative and efficient solutions for open-field farming, greenhouses, and nurseries.",
   },
   hero: {
     eyebrow: 'Our Services',
     headline: 'Agriculture',
-    sub: 'Equipment, expertise, and supply solutions for modern agricultural operations.',
+    sub: 'A reliable supplier of irrigation systems from the pump to the plant. Main, sub-main and laterals.',
     image: heroFuelProducts,
   },
   sections: [
     {
       kind: 'text',
       heading: 'Built for the field',
-      body: 'Elysee Group supports farmers and agricultural operators with a full range of equipment, materials, and advisory services. Our solutions span irrigation, soil preparation, planting, harvesting, and post-harvest logistics — engineered to perform reliably in the most demanding conditions.',
+      body: "With a low environmental impact and a high return with regards to crop yield and water saving, Elysée's world-class products bring innovative and efficient solutions that can be tailored to your specific requirements. Reliable, consistent water flow from products that are durable and easy to install, brings measurable results with a system that has in-built longevity and low maintenance requirements. Elysée solutions are ideal for open-field farming such as crop rows and orchards, greenhouses, glasshouses, nurseries, and more.",
     },
     {
       kind: 'text',
-      heading: 'Working in partnership',
-      body: 'We work directly with growers, cooperatives, and agribusinesses to understand their operational needs and recommend the right combination of products and services. From smallholdings to industrial-scale operations, our team brings the same commitment to quality and follow-through.',
-      cta: { label: 'Talk to our team', href: '/contact/' },
+      heading: 'Star products',
+      body: 'Ledra (No. 182). PVC Riser 3" (No. 580). Adaptor Flanged Set (No. 330D). No. 2 (No. 442B). Single 4 Bolts (No. 550B). Venturi Injectors (No. 190). Coupling (No. 381). Mini Valve Gromet with Rubber × Dripline (No. 127D).',
+      cta: { label: 'View the product catalogue', href: '/products/' },
     },
   ],
   siblings: servicesSiblings,
@@ -375,27 +407,27 @@ export const agriculturePage: PageContent = {
 export const landscapePage: PageContent = {
   slug: '/our-services/landscape/',
   meta: {
-    title: 'Landscape — Elysse Group',
+    title: 'Landscape — Elysée',
     description:
-      'Solutions for landscape design, installation, and maintenance — turfgrass care, irrigation, hardscape construction, and ongoing grounds management.',
+      'Elysée supplies the irrigation, turf, and water-management products that keep parks, campuses, sports facilities, and private grounds at their best.',
   },
   hero: {
     eyebrow: 'Our Services',
     headline: 'Landscape',
-    sub: 'Design, installation, and ongoing care for outdoor environments — public, commercial, and residential.',
+    sub: 'Specialist support for parks, campuses, and grounds — irrigation, turf, and ongoing care.',
     image: heroMarineLubricants,
   },
   sections: [
     {
       kind: 'text',
-      heading: 'From concept to upkeep',
-      body: 'Our landscape practice covers every stage of an outdoor project — initial design, installation, planting, and the long-term maintenance that keeps grounds looking their best. We supply the equipment, materials, and the technical know-how to deliver consistent results at any scale.',
+      heading: 'Designed for outdoor environments',
+      body: 'Elysée supplies the irrigation, turf, and water-management products that keep parks, campuses, sports facilities, and private grounds at their best. Our range covers micro-irrigation, sprinklers, control valves, and the pipework that ties it all together.',
     },
     {
       kind: 'text',
-      heading: 'Specialist support',
-      body: 'Whether the project is a public park, a corporate campus, or a private estate, our team works alongside contractors and groundskeepers to plan irrigation, soil conditioning, and seasonal care programmes that match local climate and site conditions.',
-      cta: { label: 'Talk to our team', href: '/contact/' },
+      heading: 'Specialist support, season after season',
+      body: 'From large public-works contracts to private estates, our team works alongside contractors and groundskeepers to plan irrigation, soil conditioning, and seasonal care programmes that match local climate and site conditions.',
+      cta: { label: 'View the product catalogue', href: '/products/' },
     },
   ],
   siblings: servicesSiblings,
@@ -404,27 +436,27 @@ export const landscapePage: PageContent = {
 export const buildingInfrastructurePage: PageContent = {
   slug: '/our-services/building-infrastructure/',
   meta: {
-    title: 'Building & Infrastructure — Elysse Group',
+    title: 'Building & Infrastructure — Elysée',
     description:
-      'Equipment, materials, and project support for building and infrastructure works — from groundworks and structural construction to roads, utilities, and public works.',
+      'Polyethylene pipes, PVC pressure pipes, fittings, valves, and drainage solutions for water supply, sewerage, and infrastructure projects — certified to the most demanding European standards.',
   },
   hero: {
     eyebrow: 'Our Services',
     headline: 'Building & Infrastructure',
-    sub: 'End-to-end support for construction and civil-engineering projects, large and small.',
+    sub: 'Pipe and fitting systems for water supply, sewerage and drainage on construction projects of every scale.',
     image: heroAlternativeFuels,
   },
   sections: [
     {
       kind: 'text',
-      heading: 'On site, on schedule',
-      body: 'We supply equipment, materials, and technical support across the building and infrastructure sectors — including groundworks, structural construction, roadworks, drainage, and utilities installation. Our network keeps contractors moving on tight schedules and difficult sites.',
+      heading: 'Pipe systems for the build',
+      body: 'Polyethylene pipes, PVC pressure pipes, fittings, valves, and drainage solutions for water supply, sewerage, and infrastructure projects. Our products are certified to the most demanding European standards and proven across 40+ years of use in the field.',
     },
     {
       kind: 'text',
-      heading: 'Project-tailored partnership',
-      body: 'From private developers to public-works programmes, we build long-term relationships with project teams and adapt our offer to the specific demands of each job. Our specialists help plan logistics, recommend the right kit, and stay engaged through commissioning.',
-      cta: { label: 'Talk to our team', href: '/contact/' },
+      heading: 'Long-term partnership on the project',
+      body: 'From private developers to public-works programmes, we work alongside engineering teams to specify the right products for each site, recommend installation best practices, and stay engaged through commissioning.',
+      cta: { label: 'View the product catalogue', href: '/products/' },
     },
   ],
   siblings: servicesSiblings,
@@ -433,27 +465,27 @@ export const buildingInfrastructurePage: PageContent = {
 export const industryPage: PageContent = {
   slug: '/our-services/industry/',
   meta: {
-    title: 'Industry — Elysse Group',
+    title: 'Industry — Elysée',
     description:
-      'Solutions for industrial operations — from manufacturing and processing to maintenance, retrofits, and plant-side technical support.',
+      'Industrial-grade plastic piping, valves, and fittings engineered for plant uptime and regulatory compliance — certified to ISO 9001 and carrying DVGW, KIWA, WRAS, SII, and OVGW certifications.',
   },
   hero: {
     eyebrow: 'Our Services',
     headline: 'Industry',
-    sub: 'Equipment, supply, and technical services for industrial plants and manufacturing operations.',
+    sub: 'Industrial-grade plastic piping, valves, and fittings engineered for plant uptime and regulatory compliance.',
     image: heroAdvisoryServices,
   },
   sections: [
     {
       kind: 'text',
-      heading: 'Plant-side support',
-      body: 'Elysee Group works with industrial operators across manufacturing, processing, and heavy-asset sectors. We supply the equipment and consumables your operation needs and provide technical specialists who understand the demands of plant uptime, maintenance windows, and regulatory compliance.',
+      heading: 'Industrial-grade piping',
+      body: 'Plastic pipes, fittings, and valves engineered for industrial uptime — including cable applications, network drainage, and building sewerage systems. Our products meet ISO 9001 quality standards and carry DVGW, KIWA, WRAS, SII, and OVGW certifications where applicable.',
     },
     {
       kind: 'text',
-      heading: 'Long-term partner, not a one-off vendor',
-      body: 'Our industrial customers value continuity. We invest in the operational knowledge to recommend the right products, anticipate maintenance cycles, and respond quickly when plans change. The result is fewer surprises and a partner you can rely on across multi-year programmes.',
-      cta: { label: 'Talk to our team', href: '/contact/' },
+      heading: 'Continuity for plant operations',
+      body: 'Industrial customers value continuity. We invest in operational knowledge to recommend the right products, anticipate maintenance cycles, and respond quickly when plans change.',
+      cta: { label: 'View the product catalogue', href: '/products/' },
     },
   ],
   siblings: servicesSiblings,

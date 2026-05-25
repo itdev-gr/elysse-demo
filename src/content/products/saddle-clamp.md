@@ -1,0 +1,24 @@
+---
+name: Saddle Clamp
+categorySlug: saddles
+blurb: Tapping saddle for PE mains — fast branch connections without cutting the line.
+pressure: 16 bar
+sizeRange: Ø63–Ø315
+featured: false
+image: /images/products/saddle-clamp.svg
+# code synthesized — Elysee doesn't publish a single SKU for this fitting
+code: SDL-CL-32
+sectors: [agriculture, landscape, industry]
+material: PP saddle / EPDM gasket / stainless bolts
+dnRange: [63, 315]
+pnRating: 16
+standards: [ISO 8085]
+imageUrls:
+  - /images/products/saddle-clamp.svg
+installation: |
+  Drill the main pipe to the saddle's outlet bore. Center the saddle and fit the gasket. Tighten bolts evenly in a cross pattern to the manufacturer's specified torque.
+# Translated from source's `availableCountries: [country-1, country-3]` per catalog-port plan.
+availableCountries: [cy, gr, de, at, fr, it, es, pt, jp, au, nz, in, sg, us, ca, br, mx]
+---
+
+Drill and branch in one operation — no pipe interruption, no flow stoppage.

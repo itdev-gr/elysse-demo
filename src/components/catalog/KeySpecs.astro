@@ -1,0 +1,20 @@
+---
+import type { CatalogProduct } from '~/scripts/catalog/types';
+import { formatDN, formatPN } from '~/scripts/catalog/format';
+interface Props { product: CatalogProduct; }
+const { product: p } = Astro.props;
+const stats = [
+  { label: 'Pressure', value: p.pnRating !== undefined ? formatPN(p.pnRating) : p.pressure || '—' },
+  { label: 'Size range', value: p.dnRange ? formatDN(p.dnRange) : p.sizeRange || '—' },
+  { label: 'Material', value: (p.material ?? '—').split('/')[0].trim() },
+  { label: 'Standard', value: p.standards[0] ?? '—' }
+];
+---
+<dl class="grid grid-cols-2 gap-px bg-ink/10 border border-ink/10 rounded-md overflow-hidden">
+  {stats.map(s => (
+    <div class="bg-surface p-3">
+      <dt class="font-mono text-[10px] uppercase tracking-wider text-ink/65">{s.label}</dt>
+      <dd class="font-mono text-sm mt-1">{s.value}</dd>
+    </div>
+  ))}
+</dl>

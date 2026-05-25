@@ -1,0 +1,23 @@
+---
+name: Coupling Repair
+categorySlug: compression-fittings
+blurb: Repair coupling for quick in-line joint recovery. No pipe movement required.
+pressure: 16 bar
+sizeRange: Ø20–Ø110
+featured: false
+image: /images/products/coupling-repair.svg
+code: NO331B
+sectors: [agriculture, building]
+material: PP body / EPDM seal
+dnRange: [20, 110]
+pnRating: 16
+standards: [ISO 14236]
+imageUrls:
+  - https://elysee.com.cy/portal-img/default/246/no331b-a-coupling-repair-1.jpg
+installation: |
+  Slide coupling over both pipe ends until centered on the break. Tighten both compression nuts evenly.
+# Translated from source's `availableCountries: [country-1]` per catalog-port plan.
+availableCountries: [cy, gr, de, at, fr, it, es, pt]
+---
+
+Restores pressure integrity on damaged PE joints without excavating the full line.

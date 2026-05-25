@@ -1,0 +1,79 @@
+---
+import type { SkuRow } from '~/scripts/catalog/sku-tables';
+interface Props {
+  rows: SkuRow[];
+  title?: string;
+}
+const { rows, title = 'Available sizes' } = Astro.props;
+
+const hasCountrySplit = rows.some(r => r.code1 || r.code2);
+const hasMoq = rows.some(r => r.moq !== undefined && String(r.moq) !== '0' && r.moq !== '');
+const hasNpt = rows.some(r => r.npt !== undefined && String(r.npt) !== '0' && r.npt !== '');
+const hasNote = rows.some(r => r.note);
+
+function display(v: number | string | undefined): string {
+  if (v === undefined) return '';
+  if (v === 0 || v === '0') return '';
+  return String(v);
+}
+---
+{rows.length > 0 && (
+  <section class="sku-table-wrap mt-2">
+    {title && <h3 class="font-mono text-[11px] uppercase tracking-wider text-ink/70 mb-2">{title}</h3>}
+    <div class="overflow-x-auto border border-ink/10 rounded-md">
+      <table class="sku-table w-full text-sm">
+        <thead>
+          <tr>
+            <th rowspan="2" class="px-3 py-2 text-center">Code</th>
+            <th rowspan="2" class="px-3 py-2 text-center">Size</th>
+            <th colspan="2" class="px-3 py-1 text-center border-b border-white/30">Packing (pcs)</th>
+            {hasMoq && <th rowspan="2" class="px-3 py-2 text-center">MOQ</th>}
+            {hasNpt && <th rowspan="2" class="px-3 py-2 text-center">NPT</th>}
+            {hasNote && <th rowspan="2" class="px-3 py-2 text-center">Note</th>}
+          </tr>
+          <tr>
+            <th class="px-3 py-1 text-center font-normal">Box</th>
+            <th class="px-3 py-1 text-center font-normal">Bag</th>
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((r, i) => (
+            <tr class={i % 2 === 1 ? 'bg-ink/5' : ''}>
+              <td class="px-3 py-1.5 text-center font-mono">
+                {hasCountrySplit ? (
+                  <>
+                    <span data-for-country="country-1">{r.code1 ?? ''}</span>
+                    <span data-for-country="country-2">{r.code2 ?? ''}</span>
+                  </>
+                ) : (r.code ?? '')}
+              </td>
+              <td class="px-3 py-1.5 text-center">{r.size}</td>
+              <td class="px-3 py-1.5 text-center">{display(r.box)}</td>
+              <td class="px-3 py-1.5 text-center">{display(r.bag)}</td>
+              {hasMoq && <td class="px-3 py-1.5 text-center">{display(r.moq)}</td>}
+              {hasNpt && <td class="px-3 py-1.5 text-center">{display(r.npt)}</td>}
+              {hasNote && <td class="px-3 py-1.5 text-center">{r.note ?? ''}</td>}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </section>
+)}
+
+<style is:global>
+  .sku-table thead tr th {
+    background: var(--color-brand-500);
+    color: var(--color-surface);
+    font-family: 'Inter Tight', system-ui, sans-serif;
+    font-weight: 600;
+    font-size: 12px;
+    border-color: rgba(255, 255, 255, 0.3);
+  }
+  .sku-table tbody tr {
+    border-bottom: 1px solid color-mix(in srgb, var(--color-ink) 10%, transparent);
+  }
+  .sku-table tbody tr:last-child {
+    border-bottom: none;
+  }
+</style>

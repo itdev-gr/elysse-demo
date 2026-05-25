@@ -1,0 +1,24 @@
+---
+name: PVC Ball Valve
+categorySlug: valves
+blurb: Quarter-turn PVC ball valve with EPDM seals for water and chemical lines.
+pressure: 16 bar
+sizeRange: Ø20–Ø110
+featured: false
+image: /images/products/pvc-ball-valve.svg
+# code synthesized — Elysee doesn't publish a SKU for this size
+code: PVC-BV-50
+sectors: [building, landscape]
+material: PVC-U body / PTFE seat / EPDM o-ring
+dnRange: [20, 110]
+pnRating: 16
+standards: [EN 1452, DIN 8061]
+imageUrls:
+  - /images/products/pvc-ball-valve.svg
+installation: |
+  Solvent-weld both spigots. Test handle rotation before installation. Avoid using as a flow-control device for prolonged partial openings.
+# Translated from source's `availableCountries: [country-1, country-3]` per catalog-port plan.
+availableCountries: [cy, gr, de, at, fr, it, es, pt, jp, au, nz, in, sg, us, ca, br, mx]
+---
+
+Full-bore quarter-turn isolation for PVC pipelines in aggressive media.

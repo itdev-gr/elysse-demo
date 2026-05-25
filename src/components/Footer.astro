@@ -6,7 +6,7 @@ const year = new Date().getFullYear();
 ---
 <footer class="bg-ink text-surface">
   <Container size="xl" class="py-16 md:py-24">
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
+    <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-10">
       <div>
         <a href="/" class="inline-block" aria-label="Elysse Group — home">
           <img
@@ -36,35 +36,32 @@ const year = new Date().getFullYear();
           </ul>
         </div>
       ))}
-      {social.length > 0 && (
-        <div>
-          <h2 class="text-xs font-semibold uppercase tracking-widest text-surface/80">Connect</h2>
-          <div class="mt-4 flex gap-4">
-            {social.map((s) => (
-              <a
-                href={s.href}
-                aria-label={s.label}
-                class="text-surface/70 hover:text-surface transition-colors duration-fast"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <svg
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="currentColor"
-                  aria-hidden="true"
-                  set:html={s.icon}
-                />
-              </a>
-            ))}
-          </div>
-        </div>
-      )}
     </div>
 
     <div class="mt-12 pt-8 border-t border-surface/10 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-surface/60">
       <p>&copy; Copyright 2020&ndash;{year}</p>
+      {social.length > 0 && (
+        <div class="flex items-center gap-3">
+          {social.map((s) => (
+            <a
+              href={s.href}
+              aria-label={s.label}
+              class="text-surface/70 hover:text-surface transition-colors duration-fast"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                aria-hidden="true"
+                set:html={s.icon}
+              />
+            </a>
+          ))}
+        </div>
+      )}
       {footerLegal.length > 0 && (
         <nav aria-label="Legal" class="flex flex-wrap items-center justify-center gap-x-4 gap-y-2">
           {footerLegal.map((it) => (
@@ -75,11 +72,11 @@ const year = new Date().getFullYear();
       <p>
         Designed &amp; Developed by:
         <a
-          href="https://www.noetik.gr"
+          href="https://www.itdev.gr"
           target="_blank"
-          rel="noopener noreferrer"
+          rel="noopener"
           class="hover:text-surface transition-colors duration-fast"
-        >Noetik</a>
+        >ITDEV</a>
       </p>
     </div>
   </Container>

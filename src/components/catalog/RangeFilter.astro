@@ -1,0 +1,15 @@
+---
+interface Props { title: string; facetKey: string; min: number; max: number; }
+const { title, facetKey, min, max } = Astro.props;
+---
+<details open class="border-b border-ink/10 py-3">
+  <summary class="font-mono text-[11px] uppercase tracking-wider text-ink/70 cursor-pointer">{title}</summary>
+  <div class="mt-3 flex flex-col gap-2">
+    <div class="flex justify-between font-mono text-[11px]">
+      <span data-range-label-min={facetKey}>{min}</span>
+      <span data-range-label-max={facetKey}>{max}</span>
+    </div>
+    <input type="range" data-range-min={facetKey} min={min} max={max} value={min} class="w-full accent-brand-500" aria-label={`${title} minimum`} />
+    <input type="range" data-range-max={facetKey} min={min} max={max} value={max} class="w-full accent-brand-500" aria-label={`${title} maximum`} />
+  </div>
+</details>

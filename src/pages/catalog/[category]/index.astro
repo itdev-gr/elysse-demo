@@ -1,0 +1,138 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+import { deriveFacets } from '../../../scripts/catalog/derive-facets';
+import { byCategory, byCountry } from '../../../scripts/catalog/filter-engine';
+import type { CatalogProduct, CategorySlug, Country } from '../../../scripts/catalog/types';
+import { COUNTRIES } from '../../../data/catalog-countries';
+import '../../../styles/catalog.css';
+import UtilityBar from '../../../components/catalog/UtilityBar.astro';
+import ProductGrid from '../../../components/catalog/ProductGrid.astro';
+import FilterRail from '../../../components/catalog/FilterRail.astro';
+import QuoteBasket from '../../../components/catalog/QuoteBasket.astro';
+import CountryModal from '../../../components/catalog/CountryModal.astro';
+import CategoriesNav from '../../../components/catalog/CategoriesNav.astro';
+
+export async function getStaticPaths() {
+  const categories = await getCollection('categories');
+  return categories.map((c) => ({
+    params: { category: c.data.slug ?? c.id },
+    props: { categoryEntry: c },
+  }));
+}
+
+const { category } = Astro.params as { category: CategorySlug };
+const { categoryEntry } = Astro.props;
+
+const collection = await getCollection('products');
+const products: CatalogProduct[] = collection.map((c) => ({
+  slug: c.id,
+  name: c.data.name,
+  code: c.data.code,
+  categorySlug: c.data.categorySlug,
+  sectors: c.data.sectors,
+  material: c.data.material,
+  dnRange: c.data.dnRange,
+  pnRating: c.data.pnRating,
+  standards: c.data.standards,
+  imageUrls: c.data.imageUrls,
+  image: c.data.image,
+  blurb: c.data.blurb,
+  pressure: c.data.pressure,
+  sizeRange: c.data.sizeRange,
+  bim: c.data.bim,
+  datasheet: c.data.datasheet,
+  installation: c.data.installation,
+  specs: c.data.specs,
+  featured: c.data.featured,
+  availableCountries: c.data.availableCountries,
+}));
+
+const categoryProducts = byCategory(products, category);
+const isEmpty = categoryProducts.length === 0;
+
+const productsByCountry = Object.fromEntries(
+  COUNTRIES.map((c) => [c.code, byCategory(byCountry(products, c.code), category)]),
+) as Record<Country, CatalogProduct[]>;
+
+const facetsByCountry = Object.fromEntries(
+  COUNTRIES.map((c) => [c.code, deriveFacets(productsByCountry[c.code])]),
+) as Record<Country, ReturnType<typeof deriveFacets>>;
+
+const productsJson = JSON.stringify(products);
+---
+<BaseLayout title={`${categoryEntry.data.name} — Catalog — Elysée`} description={categoryEntry.data.blurb}>
+  <div class="catalog-scope pt-24 md:pt-28 px-4 md:px-8" data-catalog-root>
+    {!isEmpty && <CountryModal />}
+    <section class="mx-auto max-w-screen-xl pb-12">
+      <nav aria-label="Breadcrumb" class="text-xs text-ink/60">
+        <a href="/" class="hover:text-brand-500">Home</a>
+        <span class="mx-2">/</span>
+        <a href="/products/" class="hover:text-brand-500">Products</a>
+        <span class="mx-2">/</span>
+        <span aria-current="page">{categoryEntry.data.name}</span>
+      </nav>
+
+      <header class="mt-6 mb-8">
+        <h1 class="text-3xl md:text-4xl font-heavy text-ink">{categoryEntry.data.name}</h1>
+        <p class="text-base text-ink/75 mt-2 max-w-3xl">{categoryEntry.data.blurb}</p>
+      </header>
+
+      {isEmpty ? (
+        <div class="grid grid-cols-12 gap-6 py-6">
+          <aside class="col-span-12 md:col-span-3">
+            <CategoriesNav active={category} />
+          </aside>
+          <section class="col-span-12 md:col-span-9 flex flex-col items-center justify-center py-24 text-center">
+            <p class="text-xl font-heavy text-ink">No products in this category yet.</p>
+            <p class="text-sm text-ink/70 mt-2">We're still cataloguing this section. Coming soon.</p>
+            <a href="/products/" class="mt-6 inline-block text-xs uppercase tracking-widest font-medium text-brand-500 hover:text-brand-accent">Back to all categories →</a>
+          </section>
+        </div>
+      ) : (
+        <div class="grid grid-cols-12 gap-6 py-6">
+          <aside class="col-span-12 md:col-span-3 flex flex-col gap-8">
+            <CategoriesNav active={category} />
+            {COUNTRIES.map((c) => (
+              <div data-country-rail={c.code} hidden>
+                <FilterRail facets={facetsByCountry[c.code]} count={productsByCountry[c.code].length} />
+              </div>
+            ))}
+          </aside>
+          <section class="col-span-12 md:col-span-9">
+            <UtilityBar count={categoryProducts.length} />
+            <ProductGrid products={categoryProducts} />
+          </section>
+        </div>
+      )}
+
+      <pre data-products-json style="display:none">{productsJson}</pre>
+    </section>
+  </div>
+  {!isEmpty && <QuoteBasket />}
+  <script>
+    import { initCatalogPage } from '../../../scripts/catalog/page-init';
+    import { initBasketUi } from '../../../scripts/catalog/basket-ui';
+    import { openCountryModal } from '../../../scripts/catalog/country-modal';
+    import { readCountry, writeCountry } from '../../../scripts/catalog/country';
+
+    function go() {
+      initBasketUi();
+      const empty = !document.querySelector('[data-country-modal]');
+      if (empty) return;
+      const parts = window.location.pathname.split('/').filter(Boolean);
+      const category = parts[1];
+      const stored = readCountry();
+      if (stored) {
+        initCatalogPage(stored, category as any);
+        return;
+      }
+      openCountryModal((picked) => {
+        writeCountry(picked);
+        initCatalogPage(picked, category as any);
+      });
+    }
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', go);
+    else go();
+  </script>
+</BaseLayout>

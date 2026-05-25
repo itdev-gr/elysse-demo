@@ -1,0 +1,16 @@
+---
+import DirectoryPageLayout from '../../../layouts/DirectoryPageLayout.astro';
+import ContactForm from '../../../components/ContactForm.astro';
+import { localOffices } from '../../../data/site-content';
+---
+<DirectoryPageLayout
+  title="Local Network"
+  eyebrow="Contact Us"
+  subtitle="Find your nearest Elysée shop in Cyprus."
+  offices={localOffices}
+>
+  <ContactForm
+    title="Send us a message"
+    subtitle="Prefer to write instead of visit? Drop us a line and we'll route your enquiry to the right Cyprus location."
+  />
+</DirectoryPageLayout>

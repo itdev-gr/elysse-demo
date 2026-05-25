@@ -1,0 +1,91 @@
+---
+import type { CatalogProduct } from '~/scripts/catalog/types';
+import { imagesForProduct } from '~/scripts/catalog/per-country-images';
+
+interface Props { product: CatalogProduct; }
+const { product: p } = Astro.props;
+
+const fallback = p.imageUrls[0] ?? p.image;
+const perCountry = imagesForProduct(p.slug);
+const perCountryEntries = perCountry ? Object.entries(perCountry) : [];
+const detailUrl = `/catalog/${p.categorySlug}/${p.slug}`;
+---
+<article
+  class="group relative flex flex-col bg-surface border border-ink/10 rounded-md overflow-hidden transition-all duration-200 ease-out hover:border-brand-500/40 hover:shadow-[0_8px_24px_-8px_rgba(0,0,0,0.12)]"
+  data-product-card
+  data-slug={p.slug}
+>
+  <a href={detailUrl} class="relative block aspect-square bg-gradient-to-br from-brand-500/5 via-surface to-brand-500/10 overflow-hidden">
+    {p.code && (
+      <span class="absolute top-3 left-3 z-10 inline-flex items-center px-2 py-0.5 text-[10px] font-mono uppercase tracking-wider bg-surface/90 backdrop-blur-sm text-ink/70 border border-ink/10 rounded-sm">
+        {p.code}
+      </span>
+    )}
+    {p.featured && (
+      <span class="absolute top-3 right-3 z-10 inline-flex items-center px-2 py-0.5 text-[10px] uppercase tracking-wider font-medium bg-brand-500 text-surface rounded-sm">
+        Featured
+      </span>
+    )}
+    {perCountryEntries.length > 0 ? (
+      perCountryEntries.map(([code, url]) => (
+        <img
+          src={url}
+          data-for-country={code}
+          alt={p.name}
+          loading="lazy"
+          width="320"
+          height="320"
+          class="absolute inset-0 w-full h-full object-contain p-6 transition-transform duration-300 ease-out group-hover:scale-[1.04]"
+        />
+      ))
+    ) : (
+      <img
+        src={fallback}
+        alt={p.name}
+        loading="lazy"
+        width="320"
+        height="320"
+        class="absolute inset-0 w-full h-full object-contain p-6 transition-transform duration-300 ease-out group-hover:scale-[1.04]"
+      />
+    )}
+  </a>
+
+  <div class="flex flex-col flex-1 p-5 gap-2">
+    <a
+      href={detailUrl}
+      class="font-heavy text-lg leading-tight text-ink hover:text-brand-500 transition-colors duration-fast line-clamp-2 min-h-[2.75rem]"
+    >
+      {p.name}
+    </a>
+
+    <p class="text-sm text-ink/70 line-clamp-2 min-h-[2.5rem]">{p.blurb}</p>
+
+    <div class="flex items-center gap-2 text-[11px] uppercase tracking-wider text-ink/55 mt-1">
+      {p.pressure && <span class="font-medium">{p.pressure}</span>}
+      {p.pressure && p.sizeRange && <span aria-hidden="true" class="opacity-50">·</span>}
+      {p.sizeRange && <span>{p.sizeRange}</span>}
+    </div>
+
+    <div class="flex items-center justify-between gap-3 mt-auto pt-4 border-t border-ink/5">
+      <button
+        type="button"
+        data-add-to-quote
+        data-slug={p.slug}
+        data-name={p.name}
+        data-code={p.code ?? ''}
+        data-thumb={fallback}
+        class="inline-flex items-center gap-1.5 px-3 py-2 text-[11px] uppercase tracking-wider font-medium text-brand-500 border border-brand-500/30 rounded-sm hover:bg-brand-500 hover:text-surface hover:border-brand-500 transition-colors duration-fast"
+      >
+        <span aria-hidden="true">+</span>
+        <span>Add to quote</span>
+      </button>
+      <a
+        href={detailUrl}
+        class="text-[11px] uppercase tracking-widest font-medium text-ink/60 hover:text-brand-500 transition-colors duration-fast"
+        aria-label={`View ${p.name} details`}
+      >
+        View →
+      </a>
+    </div>
+  </div>
+</article>

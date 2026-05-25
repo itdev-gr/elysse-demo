@@ -1,0 +1,23 @@
+---
+name: Double Union Glued
+categorySlug: valves
+blurb: Double-union glued valve for solvent-weld PVC lines. Full-bore, removable.
+pressure: 16 bar
+sizeRange: Ø20–Ø63
+featured: false
+image: /images/products/double-union-glued.svg
+code: NO108F
+sectors: [building, industry]
+material: PVC-U body / EPDM o-rings
+dnRange: [20, 63]
+pnRating: 16
+standards: [EN 1452]
+imageUrls:
+  - https://elysee.com.cy/portal-img/default/246/no108f-e-double-union-glued-1.jpg
+installation: |
+  Solvent-weld both spigots. Allow 24h cure under no-pressure conditions before commissioning.
+# Translated from source's `availableCountries: [country-1]` per catalog-port plan.
+availableCountries: [cy, gr, de, at, fr, it, es, pt]
+---
+
+Full-bore ball valve with removable unions for easy in-line maintenance on glued PVC systems.

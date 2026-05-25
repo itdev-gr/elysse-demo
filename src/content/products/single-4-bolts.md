@@ -1,0 +1,23 @@
+---
+name: Single 4-bolts Flange
+categorySlug: hydraulic-fittings
+blurb: 4-bolt flange for large-diameter PE mains. Powder-coated ductile iron.
+pressure: 10 bar
+sizeRange: Ø110–Ø315
+featured: false
+image: /images/products/single-4-bolts.svg
+code: NO550V
+sectors: [building, industry]
+material: Ductile iron flange / EPDM gasket / steel bolts
+dnRange: [110, 315]
+pnRating: 10
+standards: [EN 1092-1]
+imageUrls:
+  - https://elysee.com.cy/portal-img/default/246/no550v-c-single-4-bolts-1.jpg
+installation: |
+  Align bolt holes between mating flanges. Place the gasket. Hand-tighten the four bolts in a star pattern, then torque progressively to the manufacturer's spec.
+# Translated from source's `availableCountries: [country-2, country-3]` per catalog-port plan.
+availableCountries: [lb, ae, sa, eg, il, jo, ma, za, jp, au, nz, in, sg, us, ca, br, mx]
+---
+
+Heavy-duty flanged connection for large-bore PE pressure mains in municipal water supply.

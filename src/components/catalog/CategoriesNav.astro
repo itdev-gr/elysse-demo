@@ -1,0 +1,27 @@
+---
+import { getCollection } from 'astro:content';
+interface Props { active: string; }
+const { active } = Astro.props;
+const categories = (await getCollection('categories')).sort((a, b) => a.data.order - b.data.order);
+---
+<nav aria-label="Categories" class="categories-nav">
+  <h3 class="font-mono text-[11px] uppercase tracking-wider text-ink/70 mb-2">Categories</h3>
+  <ul class="flex flex-col gap-0.5">
+    {categories.map(c => (
+      <li>
+        <a
+          href={`/catalog/${c.data.slug ?? c.id}`}
+          aria-current={c.data.slug ?? c.id === active ? 'page' : undefined}
+          class:list={[
+            'block py-1.5 px-2 text-xs leading-tight rounded',
+            (c.data.slug ?? c.id) === active
+              ? 'bg-ink/5 text-brand-500 font-semibold border-l-2 border-brand-500'
+              : 'text-ink/70 hover:text-brand-500 hover:bg-ink/5 border-l-2 border-transparent'
+          ]}
+        >
+          {c.data.name}
+        </a>
+      </li>
+    ))}
+  </ul>
+</nav>

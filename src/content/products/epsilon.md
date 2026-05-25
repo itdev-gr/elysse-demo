@@ -1,0 +1,32 @@
+---
+name: Epsilon Series
+categorySlug: compression-fittings
+blurb: Compression fittings for PE pipes. Ø20–Ø110. PN16.
+pressure: 16 bar
+sizeRange: Ø20–Ø110
+featured: true
+image: /images/products/epsilon-hero.svg
+specs:
+  - { key: 'Material', value: 'POM body / EPDM seal' }
+  - { key: 'Standard', value: 'ISO 17885' }
+  - { key: 'Temperature', value: '-10°C to 60°C' }
+  - { key: 'Pressure', value: 'PN16' }
+  - { key: 'Certification', value: 'WRAS, KIWA' }
+bim: true
+datasheet: /downloads/epsilon-datasheet.pdf
+# code synthesized — Elysee publishes Series-level not single-SKU
+code: EPS-PE-001
+sectors: [agriculture, landscape]
+material: POM body / EPDM seal
+dnRange: [20, 110]
+pnRating: 16
+standards: [ISO 17885, WRAS, KIWA]
+imageUrls:
+  - /images/products/epsilon-hero.svg
+installation: |
+  Cut PE pipe square. Insert through the nut, then the collet, then the o-ring. Push fully into the body until the pipe meets the internal stop. Tighten the nut hand-tight, then a quarter turn with a wrench.
+# Translated from source's `availableCountries: [country-1, country-2]` per catalog-port plan.
+availableCountries: [cy, gr, de, at, fr, it, es, pt, lb, ae, sa, eg, il, jo, ma, za]
+---
+
+A quick-fit, re-usable compression system with a market-proven five-part architecture: body, o-ring, collet, insert, and nut.

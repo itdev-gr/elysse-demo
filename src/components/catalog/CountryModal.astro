@@ -1,0 +1,44 @@
+---
+import { countriesByRegion } from '../../data/catalog-countries';
+const groups = countriesByRegion();
+---
+<div
+  class="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center px-4"
+  data-country-modal
+  hidden
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="country-modal-title"
+>
+  <div class="absolute inset-0" aria-hidden="true"></div>
+  <div class="relative bg-surface text-ink rounded-md shadow-xl max-w-2xl w-full max-h-[85vh] overflow-y-auto p-6 md:p-8">
+    <h2 id="country-modal-title" class="text-2xl font-heavy text-ink">Select your country</h2>
+    <p class="text-sm text-ink/70 mt-2">Product availability varies by region. Choose your country to browse the catalog.</p>
+
+    <div class="mt-6 space-y-6">
+      {groups.map((g) => (
+        <section>
+          <h3 class="text-xs uppercase tracking-widest font-medium text-brand-500 mb-3">{g.region.label}</h3>
+          <ul class="grid grid-cols-2 sm:grid-cols-3 gap-2">
+            {g.countries.map((c) => (
+              <li>
+                <button
+                  type="button"
+                  data-country={c.code}
+                  class="w-full text-left px-3 py-2 rounded-sm border border-ink/10 text-sm text-ink hover:border-brand-500 hover:text-brand-500 hover:bg-brand-500/5 transition-colors duration-fast"
+                >
+                  {c.label}
+                </button>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ))}
+    </div>
+  </div>
+</div>
+<noscript>
+  <p class="fixed inset-x-0 top-0 z-50 bg-brand-500 text-surface text-center py-3 text-sm">
+    Please enable JavaScript to browse the catalog.
+  </p>
+</noscript>

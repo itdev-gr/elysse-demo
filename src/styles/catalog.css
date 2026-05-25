@@ -1,0 +1,497 @@
+/* Catalog-only styles. Imported only by /catalog routes.
+ * `.catalog-scope` only declares CSS variables; it intentionally does NOT
+ * paint a background or override font/color. The QuoteBasket overlay uses
+ * this class on a full-screen `fixed inset-0` element — a fill there would
+ * cover the page underneath. The page wrappers
+ * (`[data-catalog-root]` / `[data-catalog-detail]`) get the surface fill
+ * explicitly below.
+ *
+ * Token mapping from source → Elysée brand:
+ *   --cat-surface     → our bg-surface (warm off-white from tokens.css)
+ *   --cat-ink         → our text colour
+ *   --cat-ink-muted   → 70% opacity ink
+ *   --cat-ink-subtle  → 50% opacity ink
+ *   --cat-accent      → brand-500 green
+ *   --cat-accent-bright → brand-accent highlight green
+ *   --cat-hairline    → 10% ink border
+ *   --cat-hairline-strong → 18% ink border
+ *   Font rules: body font inherited from site; Fraunces/JetBrains Mono dropped.
+ */
+.catalog-scope {
+  --cat-surface: var(--color-surface, #f6f1e6);
+  --cat-surface-raised: #ffffff;
+  --cat-surface-sunken: #ece5d4;
+  --cat-ink: var(--color-ink, #0a1410);
+  --cat-ink-muted: color-mix(in srgb, var(--color-ink, #0a1410) 70%, transparent);
+  --cat-ink-subtle: color-mix(in srgb, var(--color-ink, #0a1410) 50%, transparent);
+  --cat-accent: var(--color-brand-500, #3d6b52);
+  --cat-accent-bright: var(--color-brand-accent, #7eb08c);
+  --cat-hairline: rgba(10, 20, 16, 0.10);
+  --cat-hairline-strong: rgba(10, 20, 16, 0.18);
+}
+
+[data-catalog-root].catalog-scope,
+[data-catalog-detail].catalog-scope {
+  background: var(--cat-surface);
+  color: var(--cat-ink);
+}
+
+/* Top padding on the catalog page section — must clear the 64px fixed nav.
+ * Tailwind's pt-24 utility is shadowed by reset.css's universal `* { padding: 0 }`
+ * because reset.css is unlayered while Tailwind utilities live in `@layer`,
+ * and unlayered CSS wins over any layer regardless of specificity. */
+[data-catalog-root] > section.page-x { padding-top: 6rem; padding-bottom: 3rem; }
+[data-catalog-detail] > section.page-x { padding-top: 6rem; padding-bottom: 2rem; }
+
+.catalog-scope .cat-mono { font-family: ui-monospace, monospace; letter-spacing: 0.04em; }
+.catalog-scope .cat-display { /* inherit site display font */ }
+
+.catalog-scope .cat-card {
+  background: var(--cat-surface-raised);
+  border: 1px solid var(--cat-hairline);
+  border-radius: 4px;
+  transition: box-shadow 150ms ease, border-color 150ms ease;
+}
+.catalog-scope .cat-card:hover {
+  box-shadow: 0 4px 16px rgba(10, 20, 16, 0.06);
+  border-color: var(--cat-hairline-strong);
+}
+
+.catalog-scope .cat-btn {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  padding: 0.625rem 1rem;
+  font-size: 13px; font-weight: 600;
+  border-radius: 3px;
+  transition: background 150ms ease, color 150ms ease, border-color 150ms ease;
+  cursor: pointer;
+}
+.catalog-scope .cat-btn--primary { background: var(--cat-accent); color: var(--cat-surface-raised); border: 1px solid var(--cat-accent); }
+.catalog-scope .cat-btn--primary:hover { background: var(--cat-accent-bright); border-color: var(--cat-accent-bright); }
+.catalog-scope .cat-btn--ghost { background: transparent; color: var(--cat-accent); border: 1px solid var(--cat-hairline-strong); }
+.catalog-scope .cat-btn--ghost:hover { background: var(--cat-surface-sunken); }
+.catalog-scope .cat-btn[disabled] { opacity: 0.4; cursor: not-allowed; }
+
+.catalog-scope .cat-chip {
+  display: inline-flex; align-items: center; gap: 0.25rem;
+  padding: 0.125rem 0.5rem;
+  font-family: ui-monospace, monospace;
+  font-size: 11px; letter-spacing: 0.04em;
+  background: var(--cat-surface-sunken);
+  border: 1px solid var(--cat-hairline);
+  border-radius: 999px;
+}
+
+.catalog-scope .cat-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.catalog-scope .cat-table tr { border-bottom: 1px solid var(--cat-hairline); }
+.catalog-scope .cat-table tr:nth-child(even) { background: var(--cat-surface-sunken); }
+.catalog-scope .cat-table th, .catalog-scope .cat-table td { padding: 0.625rem 0.875rem; text-align: left; vertical-align: top; }
+.catalog-scope .cat-table th { font-weight: 600; color: var(--cat-ink-muted); width: 40%; }
+.catalog-scope .cat-table td { font-family: ui-monospace, monospace; font-size: 12px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .catalog-scope * { transition-duration: 0ms !important; }
+}
+
+/* Country picker modal */
+.country-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+.country-modal[hidden] { display: none; }
+.country-modal__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(10, 20, 16, 0.55);
+}
+.country-modal__panel {
+  position: relative;
+  background: var(--cat-surface-raised);
+  color: var(--cat-ink);
+  border: 1px solid var(--cat-hairline);
+  border-radius: 6px;
+  padding: 2rem 1.75rem;
+  width: 100%;
+  max-width: 28rem;
+  box-shadow: 0 20px 60px rgba(10, 20, 16, 0.25);
+}
+.country-modal__choice {
+  width: 100%;
+  justify-content: center;
+}
+
+.country-modal__noscript {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background: var(--cat-surface);
+  color: var(--cat-ink);
+  margin: 0;
+}
+
+/* === per-country visibility rules =========================================
+   Default: only the 'cy' country's elements show. Switching the active country
+   on the catalog-root (via JS) reveals that country's elements instead.
+   25 codes: cy, gr, de, at, fr, it, es, pt, lb, ae, sa, eg, il, jo, ma, za,
+             jp, au, nz, in, sg, us, ca, br, mx
+   `data-for-country` is used (not `data-country`) to avoid collision with the
+   country-modal buttons. Applies to BOTH the listing root [data-catalog-root]
+   and the detail root [data-catalog-detail]. JS sets data-active-country on
+   the matching root after the country is picked or read from storage.
+   =========================================================================== */
+
+/* Default visible: cy */
+[data-catalog-root] [data-for-country="cy"],
+[data-catalog-detail] [data-for-country="cy"] { display: inline; }
+
+/* Default hidden: all 24 non-default */
+[data-catalog-root] [data-for-country="gr"],
+[data-catalog-detail] [data-for-country="gr"] { display: none; }
+[data-catalog-root] [data-for-country="de"],
+[data-catalog-detail] [data-for-country="de"] { display: none; }
+[data-catalog-root] [data-for-country="at"],
+[data-catalog-detail] [data-for-country="at"] { display: none; }
+[data-catalog-root] [data-for-country="fr"],
+[data-catalog-detail] [data-for-country="fr"] { display: none; }
+[data-catalog-root] [data-for-country="it"],
+[data-catalog-detail] [data-for-country="it"] { display: none; }
+[data-catalog-root] [data-for-country="es"],
+[data-catalog-detail] [data-for-country="es"] { display: none; }
+[data-catalog-root] [data-for-country="pt"],
+[data-catalog-detail] [data-for-country="pt"] { display: none; }
+[data-catalog-root] [data-for-country="lb"],
+[data-catalog-detail] [data-for-country="lb"] { display: none; }
+[data-catalog-root] [data-for-country="ae"],
+[data-catalog-detail] [data-for-country="ae"] { display: none; }
+[data-catalog-root] [data-for-country="sa"],
+[data-catalog-detail] [data-for-country="sa"] { display: none; }
+[data-catalog-root] [data-for-country="eg"],
+[data-catalog-detail] [data-for-country="eg"] { display: none; }
+[data-catalog-root] [data-for-country="il"],
+[data-catalog-detail] [data-for-country="il"] { display: none; }
+[data-catalog-root] [data-for-country="jo"],
+[data-catalog-detail] [data-for-country="jo"] { display: none; }
+[data-catalog-root] [data-for-country="ma"],
+[data-catalog-detail] [data-for-country="ma"] { display: none; }
+[data-catalog-root] [data-for-country="za"],
+[data-catalog-detail] [data-for-country="za"] { display: none; }
+[data-catalog-root] [data-for-country="jp"],
+[data-catalog-detail] [data-for-country="jp"] { display: none; }
+[data-catalog-root] [data-for-country="au"],
+[data-catalog-detail] [data-for-country="au"] { display: none; }
+[data-catalog-root] [data-for-country="nz"],
+[data-catalog-detail] [data-for-country="nz"] { display: none; }
+[data-catalog-root] [data-for-country="in"],
+[data-catalog-detail] [data-for-country="in"] { display: none; }
+[data-catalog-root] [data-for-country="sg"],
+[data-catalog-detail] [data-for-country="sg"] { display: none; }
+[data-catalog-root] [data-for-country="us"],
+[data-catalog-detail] [data-for-country="us"] { display: none; }
+[data-catalog-root] [data-for-country="ca"],
+[data-catalog-detail] [data-for-country="ca"] { display: none; }
+[data-catalog-root] [data-for-country="br"],
+[data-catalog-detail] [data-for-country="br"] { display: none; }
+[data-catalog-root] [data-for-country="mx"],
+[data-catalog-detail] [data-for-country="mx"] { display: none; }
+
+/* Image variants: default visible: cy */
+[data-catalog-root] img[data-for-country="cy"],
+[data-catalog-detail] img[data-for-country="cy"] { display: block; }
+
+/* Image variants: default hidden non-default */
+[data-catalog-root] img[data-for-country="gr"],
+[data-catalog-detail] img[data-for-country="gr"] { display: none; }
+[data-catalog-root] img[data-for-country="de"],
+[data-catalog-detail] img[data-for-country="de"] { display: none; }
+[data-catalog-root] img[data-for-country="at"],
+[data-catalog-detail] img[data-for-country="at"] { display: none; }
+[data-catalog-root] img[data-for-country="fr"],
+[data-catalog-detail] img[data-for-country="fr"] { display: none; }
+[data-catalog-root] img[data-for-country="it"],
+[data-catalog-detail] img[data-for-country="it"] { display: none; }
+[data-catalog-root] img[data-for-country="es"],
+[data-catalog-detail] img[data-for-country="es"] { display: none; }
+[data-catalog-root] img[data-for-country="pt"],
+[data-catalog-detail] img[data-for-country="pt"] { display: none; }
+[data-catalog-root] img[data-for-country="lb"],
+[data-catalog-detail] img[data-for-country="lb"] { display: none; }
+[data-catalog-root] img[data-for-country="ae"],
+[data-catalog-detail] img[data-for-country="ae"] { display: none; }
+[data-catalog-root] img[data-for-country="sa"],
+[data-catalog-detail] img[data-for-country="sa"] { display: none; }
+[data-catalog-root] img[data-for-country="eg"],
+[data-catalog-detail] img[data-for-country="eg"] { display: none; }
+[data-catalog-root] img[data-for-country="il"],
+[data-catalog-detail] img[data-for-country="il"] { display: none; }
+[data-catalog-root] img[data-for-country="jo"],
+[data-catalog-detail] img[data-for-country="jo"] { display: none; }
+[data-catalog-root] img[data-for-country="ma"],
+[data-catalog-detail] img[data-for-country="ma"] { display: none; }
+[data-catalog-root] img[data-for-country="za"],
+[data-catalog-detail] img[data-for-country="za"] { display: none; }
+[data-catalog-root] img[data-for-country="jp"],
+[data-catalog-detail] img[data-for-country="jp"] { display: none; }
+[data-catalog-root] img[data-for-country="au"],
+[data-catalog-detail] img[data-for-country="au"] { display: none; }
+[data-catalog-root] img[data-for-country="nz"],
+[data-catalog-detail] img[data-for-country="nz"] { display: none; }
+[data-catalog-root] img[data-for-country="in"],
+[data-catalog-detail] img[data-for-country="in"] { display: none; }
+[data-catalog-root] img[data-for-country="sg"],
+[data-catalog-detail] img[data-for-country="sg"] { display: none; }
+[data-catalog-root] img[data-for-country="us"],
+[data-catalog-detail] img[data-for-country="us"] { display: none; }
+[data-catalog-root] img[data-for-country="ca"],
+[data-catalog-detail] img[data-for-country="ca"] { display: none; }
+[data-catalog-root] img[data-for-country="br"],
+[data-catalog-detail] img[data-for-country="br"] { display: none; }
+[data-catalog-root] img[data-for-country="mx"],
+[data-catalog-detail] img[data-for-country="mx"] { display: none; }
+
+/* When data-active-country="gr": hide cy, show gr */
+[data-catalog-root][data-active-country="gr"] [data-for-country="cy"],
+[data-catalog-detail][data-active-country="gr"] [data-for-country="cy"] { display: none; }
+[data-catalog-root][data-active-country="gr"] [data-for-country="gr"],
+[data-catalog-detail][data-active-country="gr"] [data-for-country="gr"] { display: inline; }
+[data-catalog-root][data-active-country="gr"] img[data-for-country="cy"],
+[data-catalog-detail][data-active-country="gr"] img[data-for-country="cy"] { display: none; }
+[data-catalog-root][data-active-country="gr"] img[data-for-country="gr"],
+[data-catalog-detail][data-active-country="gr"] img[data-for-country="gr"] { display: block; }
+
+/* When data-active-country="de": hide cy, show de */
+[data-catalog-root][data-active-country="de"] [data-for-country="cy"],
+[data-catalog-detail][data-active-country="de"] [data-for-country="cy"] { display: none; }
+[data-catalog-root][data-active-country="de"] [data-for-country="de"],
+[data-catalog-detail][data-active-country="de"] [data-for-country="de"] { display: inline; }
+[data-catalog-root][data-active-country="de"] img[data-for-country="cy"],
+[data-catalog-detail][data-active-country="de"] img[data-for-country="cy"] { display: none; }
+[data-catalog-root][data-active-country="de"] img[data-for-country="de"],
+[data-catalog-detail][data-active-country="de"] img[data-for-country="de"] { display: block; }
+
+/* When data-active-country="at": hide cy, show at */
+[data-catalog-root][data-active-country="at"] [data-for-country="cy"],
+[data-catalog-detail][data-active-country="at"] [data-for-country="cy"] { display: none; }
+[data-catalog-root][data-active-country="at"] [data-for-country="at"],
+[data-catalog-detail][data-active-country="at"] [data-for-country="at"] { display: inline; }
+[data-catalog-root][data-active-country="at"] img[data-for-country="cy"],
+[data-catalog-detail][data-active-country="at"] img[data-for-country="cy"] { display: none; }
+[data-catalog-root][data-active-country="at"] img[data-for-country="at"],
+[data-catalog-detail][data-active-country="at"] img[data-for-country="at"] { display: block; }
+
+/* When data-active-country="fr": hide cy, show fr */
+[data-catalog-root][data-active-country="fr"] [data-for-country="cy"],
+[data-catalog-detail][data-active-country="fr"] [data-for-country="cy"] { display: none; }
+[data-catalog-root][data-active-country="fr"] [data-for-country="fr"],
+[data-catalog-detail][data-active-country="fr"] [data-for-country="fr"] { display: inline; }
+[data-catalog-root][data-active-country="fr"] img[data-for-country="cy"],
+[data-catalog-detail][data-active-country="fr"] img[data-for-country="cy"] { display: none; }
+[data-catalog-root][data-active-country="fr"] img[data-for-country="fr"],
+[data-catalog-detail][data-active-country="fr"] img[data-for-country="fr"] { display: block; }
+
+/* When data-active-country="it": hide cy, show it */
+[data-catalog-root][data-active-country="it"] [data-for-country="cy"],
+[data-catalog-detail][data-active-country="it"] [data-for-country="cy"] { display: none; }
+[data-catalog-root][data-active-country="it"] [data-for-country="it"],
+[data-catalog-detail][data-active-country="it"] [data-for-country="it"] { display: inline; }
+[data-catalog-root][data-active-country="it"] img[data-for-country="cy"],
+[data-catalog-detail][data-active-country="it"] img[data-for-country="cy"] { display: none; }
+[data-catalog-root][data-active-country="it"] img[data-for-country="it"],
+[data-catalog-detail][data-active-country="it"] img[data-for-country="it"] { display: block; }
+
+/* When data-active-country="es": hide cy, show es */
+[data-catalog-root][data-active-country="es"] [data-for-country="cy"],
+[data-catalog-detail][data-active-country="es"] [data-for-country="cy"] { display: none; }
+[data-catalog-root][data-active-country="es"] [data-for-country="es"],
+[data-catalog-detail][data-active-country="es"] [data-for-country="es"] { display: inline; }
+[data-catalog-root][data-active-country="es"] img[data-for-country="cy"],
+[data-catalog-detail][data-active-country="es"] img[data-for-country="cy"] { display: none; }
+[data-catalog-root][data-active-country="es"] img[data-for-country="es"],
+[data-catalog-detail][data-active-country="es"] img[data-for-country="es"] { display: block; }
+
+/* When data-active-country="pt": hide cy, show pt */
+[data-catalog-root][data-active-country="pt"] [data-for-country="cy"],
+[data-catalog-detail][data-active-country="pt"] [data-for-country="cy"] { display: none; }
+[data-catalog-root][data-active-country="pt"] [data-for-country="pt"],
+[data-catalog-detail][data-active-country="pt"] [data-for-country="pt"] { display: inline; }
+[data-catalog-root][data-active-country="pt"] img[data-for-country="cy"],
+[data-catalog-detail][data-active-country="pt"] img[data-for-country="cy"] { display: none; }
+[data-catalog-root][data-active-country="pt"] img[data-for-country="pt"],
+[data-catalog-detail][data-active-country="pt"] img[data-for-country="pt"] { display: block; }
+
+/* When data-active-country="lb": hide cy, show lb */
+[data-catalog-root][data-active-country="lb"] [data-for-country="cy"],
+[data-catalog-detail][data-active-country="lb"] [data-for-country="cy"] { display: none; }
+[data-catalog-root][data-active-country="lb"] [data-for-country="lb"],
+[data-catalog-detail][data-active-country="lb"] [data-for-country="lb"] { display: inline; }
+[data-catalog-root][data-active-country="lb"] img[data-for-country="cy"],
+[data-catalog-detail][data-active-country="lb"] img[data-for-country="cy"] { display: none; }
+[data-catalog-root][data-active-country="lb"] img[data-for-country="lb"],
+[data-catalog-detail][data-active-country="lb"] img[data-for-country="lb"] { display: block; }
+
+/* When data-active-country="ae": hide cy, show ae */
+[data-catalog-root][data-active-country="ae"] [data-for-country="cy"],
+[data-catalog-detail][data-active-country="ae"] [data-for-country="cy"] { display: none; }
+[data-catalog-root][data-active-country="ae"] [data-for-country="ae"],
+[data-catalog-detail][data-active-country="ae"] [data-for-country="ae"] { display: inline; }
+[data-catalog-root][data-active-country="ae"] img[data-for-country="cy"],
+[data-catalog-detail][data-active-country="ae"] img[data-for-country="cy"] { display: none; }
+[data-catalog-root][data-active-country="ae"] img[data-for-country="ae"],
+[data-catalog-detail][data-active-country="ae"] img[data-for-country="ae"] { display: block; }
+
+/* When data-active-country="sa": hide cy, show sa */
+[data-catalog-root][data-active-country="sa"] [data-for-country="cy"],
+[data-catalog-detail][data-active-country="sa"] [data-for-country="cy"] { display: none; }
+[data-catalog-root][data-active-country="sa"] [data-for-country="sa"],
+[data-catalog-detail][data-active-country="sa"] [data-for-country="sa"] { display: inline; }
+[data-catalog-root][data-active-country="sa"] img[data-for-country="cy"],
+[data-catalog-detail][data-active-country="sa"] img[data-for-country="cy"] { display: none; }
+[data-catalog-root][data-active-country="sa"] img[data-for-country="sa"],
+[data-catalog-detail][data-active-country="sa"] img[data-for-country="sa"] { display: block; }
+
+/* When data-active-country="eg": hide cy, show eg */
+[data-catalog-root][data-active-country="eg"] [data-for-country="cy"],
+[data-catalog-detail][data-active-country="eg"] [data-for-country="cy"] { display: none; }
+[data-catalog-root][data-active-country="eg"] [data-for-country="eg"],
+[data-catalog-detail][data-active-country="eg"] [data-for-country="eg"] { display: inline; }
+[data-catalog-root][data-active-country="eg"] img[data-for-country="cy"],
+[data-catalog-detail][data-active-country="eg"] img[data-for-country="cy"] { display: none; }
+[data-catalog-root][data-active-country="eg"] img[data-for-country="eg"],
+[data-catalog-detail][data-active-country="eg"] img[data-for-country="eg"] { display: block; }
+
+/* When data-active-country="il": hide cy, show il */
+[data-catalog-root][data-active-country="il"] [data-for-country="cy"],
+[data-catalog-detail][data-active-country="il"] [data-for-country="cy"] { display: none; }
+[data-catalog-root][data-active-country="il"] [data-for-country="il"],
+[data-catalog-detail][data-active-country="il"] [data-for-country="il"] { display: inline; }
+[data-catalog-root][data-active-country="il"] img[data-for-country="cy"],
+[data-catalog-detail][data-active-country="il"] img[data-for-country="cy"] { display: none; }
+[data-catalog-root][data-active-country="il"] img[data-for-country="il"],
+[data-catalog-detail][data-active-country="il"] img[data-for-country="il"] { display: block; }
+
+/* When data-active-country="jo": hide cy, show jo */
+[data-catalog-root][data-active-country="jo"] [data-for-country="cy"],
+[data-catalog-detail][data-active-country="jo"] [data-for-country="cy"] { display: none; }
+[data-catalog-root][data-active-country="jo"] [data-for-country="jo"],
+[data-catalog-detail][data-active-country="jo"] [data-for-country="jo"] { display: inline; }
+[data-catalog-root][data-active-country="jo"] img[data-for-country="cy"],
+[data-catalog-detail][data-active-country="jo"] img[data-for-country="cy"] { display: none; }
+[data-catalog-root][data-active-country="jo"] img[data-for-country="jo"],
+[data-catalog-detail][data-active-country="jo"] img[data-for-country="jo"] { display: block; }
+
+/* When data-active-country="ma": hide cy, show ma */
+[data-catalog-root][data-active-country="ma"] [data-for-country="cy"],
+[data-catalog-detail][data-active-country="ma"] [data-for-country="cy"] { display: none; }
+[data-catalog-root][data-active-country="ma"] [data-for-country="ma"],
+[data-catalog-detail][data-active-country="ma"] [data-for-country="ma"] { display: inline; }
+[data-catalog-root][data-active-country="ma"] img[data-for-country="cy"],
+[data-catalog-detail][data-active-country="ma"] img[data-for-country="cy"] { display: none; }
+[data-catalog-root][data-active-country="ma"] img[data-for-country="ma"],
+[data-catalog-detail][data-active-country="ma"] img[data-for-country="ma"] { display: block; }
+
+/* When data-active-country="za": hide cy, show za */
+[data-catalog-root][data-active-country="za"] [data-for-country="cy"],
+[data-catalog-detail][data-active-country="za"] [data-for-country="cy"] { display: none; }
+[data-catalog-root][data-active-country="za"] [data-for-country="za"],
+[data-catalog-detail][data-active-country="za"] [data-for-country="za"] { display: inline; }
+[data-catalog-root][data-active-country="za"] img[data-for-country="cy"],
+[data-catalog-detail][data-active-country="za"] img[data-for-country="cy"] { display: none; }
+[data-catalog-root][data-active-country="za"] img[data-for-country="za"],
+[data-catalog-detail][data-active-country="za"] img[data-for-country="za"] { display: block; }
+
+/* When data-active-country="jp": hide cy, show jp */
+[data-catalog-root][data-active-country="jp"] [data-for-country="cy"],
+[data-catalog-detail][data-active-country="jp"] [data-for-country="cy"] { display: none; }
+[data-catalog-root][data-active-country="jp"] [data-for-country="jp"],
+[data-catalog-detail][data-active-country="jp"] [data-for-country="jp"] { display: inline; }
+[data-catalog-root][data-active-country="jp"] img[data-for-country="cy"],
+[data-catalog-detail][data-active-country="jp"] img[data-for-country="cy"] { display: none; }
+[data-catalog-root][data-active-country="jp"] img[data-for-country="jp"],
+[data-catalog-detail][data-active-country="jp"] img[data-for-country="jp"] { display: block; }
+
+/* When data-active-country="au": hide cy, show au */
+[data-catalog-root][data-active-country="au"] [data-for-country="cy"],
+[data-catalog-detail][data-active-country="au"] [data-for-country="cy"] { display: none; }
+[data-catalog-root][data-active-country="au"] [data-for-country="au"],
+[data-catalog-detail][data-active-country="au"] [data-for-country="au"] { display: inline; }
+[data-catalog-root][data-active-country="au"] img[data-for-country="cy"],
+[data-catalog-detail][data-active-country="au"] img[data-for-country="cy"] { display: none; }
+[data-catalog-root][data-active-country="au"] img[data-for-country="au"],
+[data-catalog-detail][data-active-country="au"] img[data-for-country="au"] { display: block; }
+
+/* When data-active-country="nz": hide cy, show nz */
+[data-catalog-root][data-active-country="nz"] [data-for-country="cy"],
+[data-catalog-detail][data-active-country="nz"] [data-for-country="cy"] { display: none; }
+[data-catalog-root][data-active-country="nz"] [data-for-country="nz"],
+[data-catalog-detail][data-active-country="nz"] [data-for-country="nz"] { display: inline; }
+[data-catalog-root][data-active-country="nz"] img[data-for-country="cy"],
+[data-catalog-detail][data-active-country="nz"] img[data-for-country="cy"] { display: none; }
+[data-catalog-root][data-active-country="nz"] img[data-for-country="nz"],
+[data-catalog-detail][data-active-country="nz"] img[data-for-country="nz"] { display: block; }
+
+/* When data-active-country="in": hide cy, show in */
+[data-catalog-root][data-active-country="in"] [data-for-country="cy"],
+[data-catalog-detail][data-active-country="in"] [data-for-country="cy"] { display: none; }
+[data-catalog-root][data-active-country="in"] [data-for-country="in"],
+[data-catalog-detail][data-active-country="in"] [data-for-country="in"] { display: inline; }
+[data-catalog-root][data-active-country="in"] img[data-for-country="cy"],
+[data-catalog-detail][data-active-country="in"] img[data-for-country="cy"] { display: none; }
+[data-catalog-root][data-active-country="in"] img[data-for-country="in"],
+[data-catalog-detail][data-active-country="in"] img[data-for-country="in"] { display: block; }
+
+/* When data-active-country="sg": hide cy, show sg */
+[data-catalog-root][data-active-country="sg"] [data-for-country="cy"],
+[data-catalog-detail][data-active-country="sg"] [data-for-country="cy"] { display: none; }
+[data-catalog-root][data-active-country="sg"] [data-for-country="sg"],
+[data-catalog-detail][data-active-country="sg"] [data-for-country="sg"] { display: inline; }
+[data-catalog-root][data-active-country="sg"] img[data-for-country="cy"],
+[data-catalog-detail][data-active-country="sg"] img[data-for-country="cy"] { display: none; }
+[data-catalog-root][data-active-country="sg"] img[data-for-country="sg"],
+[data-catalog-detail][data-active-country="sg"] img[data-for-country="sg"] { display: block; }
+
+/* When data-active-country="us": hide cy, show us */
+[data-catalog-root][data-active-country="us"] [data-for-country="cy"],
+[data-catalog-detail][data-active-country="us"] [data-for-country="cy"] { display: none; }
+[data-catalog-root][data-active-country="us"] [data-for-country="us"],
+[data-catalog-detail][data-active-country="us"] [data-for-country="us"] { display: inline; }
+[data-catalog-root][data-active-country="us"] img[data-for-country="cy"],
+[data-catalog-detail][data-active-country="us"] img[data-for-country="cy"] { display: none; }
+[data-catalog-root][data-active-country="us"] img[data-for-country="us"],
+[data-catalog-detail][data-active-country="us"] img[data-for-country="us"] { display: block; }
+
+/* When data-active-country="ca": hide cy, show ca */
+[data-catalog-root][data-active-country="ca"] [data-for-country="cy"],
+[data-catalog-detail][data-active-country="ca"] [data-for-country="cy"] { display: none; }
+[data-catalog-root][data-active-country="ca"] [data-for-country="ca"],
+[data-catalog-detail][data-active-country="ca"] [data-for-country="ca"] { display: inline; }
+[data-catalog-root][data-active-country="ca"] img[data-for-country="cy"],
+[data-catalog-detail][data-active-country="ca"] img[data-for-country="cy"] { display: none; }
+[data-catalog-root][data-active-country="ca"] img[data-for-country="ca"],
+[data-catalog-detail][data-active-country="ca"] img[data-for-country="ca"] { display: block; }
+
+/* When data-active-country="br": hide cy, show br */
+[data-catalog-root][data-active-country="br"] [data-for-country="cy"],
+[data-catalog-detail][data-active-country="br"] [data-for-country="cy"] { display: none; }
+[data-catalog-root][data-active-country="br"] [data-for-country="br"],
+[data-catalog-detail][data-active-country="br"] [data-for-country="br"] { display: inline; }
+[data-catalog-root][data-active-country="br"] img[data-for-country="cy"],
+[data-catalog-detail][data-active-country="br"] img[data-for-country="cy"] { display: none; }
+[data-catalog-root][data-active-country="br"] img[data-for-country="br"],
+[data-catalog-detail][data-active-country="br"] img[data-for-country="br"] { display: block; }
+
+/* When data-active-country="mx": hide cy, show mx */
+[data-catalog-root][data-active-country="mx"] [data-for-country="cy"],
+[data-catalog-detail][data-active-country="mx"] [data-for-country="cy"] { display: none; }
+[data-catalog-root][data-active-country="mx"] [data-for-country="mx"],
+[data-catalog-detail][data-active-country="mx"] [data-for-country="mx"] { display: inline; }
+[data-catalog-root][data-active-country="mx"] img[data-for-country="cy"],
+[data-catalog-detail][data-active-country="mx"] img[data-for-country="cy"] { display: none; }
+[data-catalog-root][data-active-country="mx"] img[data-for-country="mx"],
+[data-catalog-detail][data-active-country="mx"] img[data-for-country="mx"] { display: block; }

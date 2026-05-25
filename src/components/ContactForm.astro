@@ -1,0 +1,44 @@
+---
+import Input from './Input.astro';
+import Textarea from './Textarea.astro';
+import Button from './Button.astro';
+
+interface Props {
+  title?: string;
+  subtitle?: string;
+  action?: string;
+}
+const {
+  title = 'Get in touch',
+  subtitle = "Send us a message and a member of the Elysée team will get back to you.",
+  action = 'mailto:info@elysee.com.cy',
+} = Astro.props;
+---
+<section class="mt-16 md:mt-20 max-w-3xl mx-auto">
+  <header class="mb-8 text-center md:text-left">
+    <h2 class="text-2xl md:text-3xl font-heavy text-ink">{title}</h2>
+    {subtitle && <p class="mt-2 text-base text-ink/75">{subtitle}</p>}
+  </header>
+
+  <form
+    action={action}
+    method="post"
+    enctype="text/plain"
+    class="grid grid-cols-1 md:grid-cols-2 gap-5"
+    aria-label="Contact form"
+  >
+    <Input name="name" label="Name" required autocomplete="name" placeholder="Your full name" />
+    <Input name="company" label="Company" autocomplete="organization" placeholder="Optional" />
+    <Input name="email" type="email" label="Email" required autocomplete="email" placeholder="you@example.com" />
+    <Input name="phone" type="tel" label="Phone" autocomplete="tel" placeholder="Optional" />
+    <div class="md:col-span-2">
+      <Textarea name="message" label="Message" required placeholder="How can we help?" rows={6} />
+    </div>
+    <div class="md:col-span-2 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 mt-2">
+      <p class="text-xs text-ink/60">
+        By submitting, you agree to be contacted by Elysée regarding your enquiry.
+      </p>
+      <Button type="submit" variant="primary" size="md">Send message</Button>
+    </div>
+  </form>
+</section>
