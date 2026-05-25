@@ -179,3 +179,10 @@ export const megaNav: MegaColumns = [
     },
   ],
 ];
+
+/**
+ * Flat ordered list of every mega-menu group — consumed by PrimaryNav.astro and
+ * MobileNav.astro so both renders stay in lockstep with the single source of truth.
+ * Order is column-major: column 1 groups, then column 2, then column 3.
+ */
+export const navGroups: MegaGroup[] = megaNav.flat();
