@@ -1,0 +1,62 @@
+---
+import Container from '../Container.astro';
+import MotionCounter from './distinct/MotionCounter.tsx';
+
+export interface HeroStat {
+  label: string;
+  value: string;
+}
+
+interface Props {
+  eyebrow?: string;
+  title: string;
+  subtitle?: string;
+  /** Large watermark string visible behind the title (e.g. "1979"). */
+  watermark?: string;
+  /** Up to four small stat tiles rendered under the subtitle. */
+  stats?: HeroStat[];
+}
+
+const { eyebrow, title, subtitle, watermark, stats = [] } = Astro.props;
+---
+<section class="relative bg-brand-500 text-surface overflow-hidden">
+  {watermark && (
+    <span
+      aria-hidden="true"
+      class="pointer-events-none select-none absolute -right-4 sm:right-2 md:right-8 top-28 md:top-36 leading-none font-heavy text-[clamp(7rem,22vw,22rem)] text-surface/10 tracking-tighter"
+    >{watermark}</span>
+  )}
+  <Container size="xl" class="relative pt-36 md:pt-48 pb-20 md:pb-28">
+    {eyebrow && (
+      <p data-reveal class="text-[11px] md:text-xs uppercase tracking-[0.3em] text-surface/80 mb-6 md:mb-8">
+        {eyebrow}
+      </p>
+    )}
+    <h1 data-reveal data-reveal-delay="80" class="font-display font-heavy leading-[0.95] tracking-tight text-5xl sm:text-6xl md:text-7xl lg:text-8xl max-w-4xl">
+      {title}
+    </h1>
+    {subtitle && (
+      <p data-reveal data-reveal-delay="160" class="mt-6 md:mt-8 max-w-2xl text-lg md:text-xl text-surface/90 leading-relaxed">
+        {subtitle}
+      </p>
+    )}
+    {stats.length > 0 && (
+      <dl
+        data-reveal
+        data-reveal-delay="240"
+        class={`mt-14 md:mt-20 grid gap-6 md:gap-12 max-w-3xl border-t border-surface/20 pt-8 md:pt-10 ${
+          stats.length === 4 ? 'grid-cols-2 md:grid-cols-4' : 'grid-cols-3'
+        }`}
+      >
+        {stats.map((s) => (
+          <div>
+            <dt class="text-[10px] md:text-xs uppercase tracking-[0.25em] text-surface/70">{s.label}</dt>
+            <dd class="mt-2 font-display font-heavy leading-none text-3xl md:text-4xl">
+              <MotionCounter client:visible value={s.value} />
+            </dd>
+          </div>
+        ))}
+      </dl>
+    )}
+  </Container>
+</section>

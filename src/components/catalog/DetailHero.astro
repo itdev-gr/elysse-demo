@@ -36,16 +36,7 @@ const skuRows = skuTableRowsForProduct(p.slug);
     <p class="text-sm text-ink/70">{p.blurb}</p>
     {skuRows.length > 0 && <SkuTable rows={skuRows} title="Available sizes" />}
     <div class="flex flex-col gap-2 mt-2">
-      <button
-        type="button"
-        data-add-to-quote
-        data-slug={p.slug}
-        data-name={p.name}
-        data-code={p.code ?? ''}
-        data-thumb={fallback}
-        class="cat-btn cat-btn--primary"
-      >Add to quote</button>
-      {p.datasheet && <a href={p.datasheet} class="cat-btn cat-btn--ghost"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 3v12m0 0-4-4m4 4 4-4M4 17v4h16v-4"/></svg>Download datasheet</a>}
+      {p.datasheet && <a href={p.datasheet} class="cat-btn cat-btn--primary"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 3v12m0 0-4-4m4 4 4-4M4 17v4h16v-4"/></svg>Download datasheet</a>}
       {p.bim && <a href="https://elysee.partcommunity.com" class="cat-btn cat-btn--ghost">View BIM</a>}
       {p.slug === 'epsilon' && <a href="/catalog/compression-fittings/epsilon" class="font-mono text-[11px] text-brand-500 hover:text-brand-accent mt-2">Discover the technology →</a>}
     </div>

@@ -1,5 +1,113 @@
 ---
-import ContentPageLayout from '../../../layouts/ContentPageLayout.astro';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Container from '../../../components/Container.astro';
+import Section from '../../../components/Section.astro';
+import AboutSubNav from '../../../components/about/AboutSubNav.astro';
+import AboutHero from '../../../components/about/AboutHero.astro';
+import AboutFigure from '../../../components/about/AboutFigure.astro';
+import AboutChapterHeader from '../../../components/about/AboutChapterHeader.astro';
+import AboutClosingCta from '../../../components/about/AboutClosingCta.astro';
 import { aboutUsCompanyStructure } from '../../../data/site-content';
+
+const blocks = aboutUsCompanyStructure.blocks;
+const paragraphs = blocks.filter((b): b is Extract<typeof b, { kind: 'paragraph' }> => b.kind === 'paragraph');
+const callout = blocks.find((b): b is Extract<typeof b, { kind: 'callout' }> => b.kind === 'callout');
+const h3Headings = blocks.filter((b): b is Extract<typeof b, { kind: 'heading' }> => b.kind === 'heading' && b.level === 3);
+
+const [teamP1, teamP2, teamP3, divisionsLeadP, fittingsP, pipesP, qaP] = paragraphs;
+const divisionData = h3Headings.map((h, i) => {
+  const body = [fittingsP, pipesP, qaP][i];
+  return { title: h.text, body: body?.text ?? '' };
+});
+
+const desc =
+  aboutUsCompanyStructure.metaDescription ??
+  teamP1?.text?.slice(0, 160) ??
+  aboutUsCompanyStructure.title;
 ---
-<ContentPageLayout content={aboutUsCompanyStructure} />
+<BaseLayout title={aboutUsCompanyStructure.title} description={desc} padForHeader={false}>
+  <AboutHero
+    eyebrow={`${aboutUsCompanyStructure.eyebrow} · Built for Quality`}
+    title={aboutUsCompanyStructure.title}
+    subtitle={aboutUsCompanyStructure.subtitle}
+    watermark="STRUCTURE"
+    stats={[
+      { label: 'Divisions', value: '3' },
+      { label: 'Items Produced', value: '1000+' },
+      { label: 'Pipe Range', value: '5–315mm' },
+    ]}
+  />
+
+  <AboutSubNav currentPath={Astro.url.pathname} />
+
+  {/* ===== CHAPTER 01 — AN EFFICIENT TEAM (right variant) ===== */}
+  <Section bg="default" spacing="lg">
+    <Container size="lg">
+      <AboutChapterHeader
+        number="01"
+        label="Chapter One"
+        title="An Efficient Team"
+        variant="right"
+        maxWidth="wide"
+      />
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-16">
+        <div class="md:col-span-8 space-y-6 md:space-y-7">
+          {teamP1 && <p data-reveal class="text-lg md:text-xl text-ink leading-relaxed font-light">{teamP1.text}</p>}
+          {teamP2 && <p data-reveal data-reveal-delay="80" class="text-base md:text-lg text-ink/80 leading-relaxed">{teamP2.text}</p>}
+          {teamP3 && <p data-reveal data-reveal-delay="160" class="text-base md:text-lg text-ink/80 leading-relaxed">{teamP3.text}</p>}
+        </div>
+      </div>
+    </Container>
+  </Section>
+
+  <AboutFigure
+    index={1}
+    src="/images/about/engineers-meeting.jpg"
+    alt="Group of professionals gathered around a laptop in an office setting"
+    caption="Elysée engineers and technical consultants — collaborative product development on the Ergates site."
+  />
+
+  {/* ===== CALLOUT — GREEN OPERATIONS (ink variant) ===== */}
+  {callout && (
+    <Section bg="ink" spacing="lg">
+      <Container size="lg">
+        <div class="mx-auto max-w-3xl text-center">
+          <p data-reveal class="text-[11px] md:text-xs uppercase tracking-[0.3em] text-accent mb-8">Our Operating Principle</p>
+          <blockquote data-reveal data-reveal-delay="80" class="font-display font-heavy leading-[1.05] tracking-tight text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-surface">
+            <span aria-hidden="true" class="text-brand-500">&ldquo;</span>{callout.title}<span aria-hidden="true" class="text-brand-500">&rdquo;</span>
+          </blockquote>
+          <p data-reveal data-reveal-delay="160" class="mt-8 md:mt-10 text-base md:text-lg text-surface/80 leading-relaxed">{callout.body}</p>
+        </div>
+      </Container>
+    </Section>
+  )}
+
+  {/* ===== CHAPTER 02 — OUR DIVISIONS ===== */}
+  <Section bg="alt" spacing="lg">
+    <Container size="lg">
+      <AboutChapterHeader number="02" label="Chapter Two" title="Our Divisions" lead={divisionsLeadP?.text} maxWidth="wide" variant="right" />
+      <ol class="grid grid-cols-1 md:grid-cols-3 gap-px bg-ink/15 border border-ink/15">
+        {divisionData.map((d, i) => {
+          const accentClass = ['border-t-brand-500', 'border-t-brand-light', 'border-t-accent'][i] || 'border-t-brand-500';
+          return (
+            <li data-reveal data-reveal-delay={String(i * 60)} class={`bg-surface p-8 md:p-10 min-h-[280px] flex flex-col border-t-4 ${accentClass}`}>
+              <span class="font-display font-heavy text-[11px] uppercase tracking-[0.25em] text-brand-500">Division {String(i + 1).padStart(2, '0')}</span>
+              <h3 class="mt-6 md:mt-8 font-display font-heavy leading-tight text-2xl md:text-3xl text-ink">{d.title}</h3>
+              <div aria-hidden="true" class="mt-4 h-px w-12 bg-accent"></div>
+              <p class="mt-5 text-base md:text-lg text-ink/80 leading-relaxed flex-1">{d.body}</p>
+            </li>
+          );
+        })}
+      </ol>
+    </Container>
+  </Section>
+
+  <AboutFigure
+    index={2}
+    src="/images/about/pipes-warehouse.jpg"
+    alt="Large stack of metal pipes arranged in rows in an outdoor yard"
+    caption="Fittings and Pipes — over 1,000 items manufactured on-site at the Ergates Industrial Area facility."
+  />
+
+  <AboutClosingCta text="Want to discuss a specific application, a custom OEM run, or a project specification? Our engineers and technical consultants are available to advise." />
+</BaseLayout>

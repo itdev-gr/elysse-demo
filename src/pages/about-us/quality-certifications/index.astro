@@ -1,5 +1,145 @@
 ---
-import ContentPageLayout from '../../../layouts/ContentPageLayout.astro';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Container from '../../../components/Container.astro';
+import Section from '../../../components/Section.astro';
+import AboutSubNav from '../../../components/about/AboutSubNav.astro';
+import AboutHero from '../../../components/about/AboutHero.astro';
+import AboutFigure from '../../../components/about/AboutFigure.astro';
+import AboutChapterHeader from '../../../components/about/AboutChapterHeader.astro';
+import AboutClosingCta from '../../../components/about/AboutClosingCta.astro';
 import { aboutUsQualityCertifications } from '../../../data/site-content';
+
+const blocks = aboutUsQualityCertifications.blocks;
+const paragraphs = blocks.filter((b): b is Extract<typeof b, { kind: 'paragraph' }> => b.kind === 'paragraph');
+const [intro1, intro2, certsLeadP] = paragraphs;
+const callout = blocks.find((b): b is Extract<typeof b, { kind: 'callout' }> => b.kind === 'callout');
+const categories = blocks.find((b): b is Extract<typeof b, { kind: 'pillars' }> => b.kind === 'pillars');
+
+// Per-category thumbnails — mirrored from the live elysee.com.cy page. Keyed by
+// pillar number so the order in the data export stays the single source of truth.
+const categoryImages: Record<number, { src: string; alt: string }> = {
+  1: { src: '/images/certifications/categories/management-system.png',  alt: 'Quality management systems certificate marks' },
+  2: { src: '/images/certifications/categories/general.png',            alt: 'General product certification marks' },
+  3: { src: '/images/certifications/categories/compression-fittings.png', alt: 'Compression fittings certification marks' },
+  4: { src: '/images/certifications/categories/pe-pipes.png',           alt: 'Polyethylene (PE) pipe certification marks' },
+  5: { src: '/images/certifications/categories/pvc-pipes.png',          alt: 'PVC pipe certification marks' },
+  6: { src: '/images/certifications/categories/green-elysee.jpg',       alt: 'Green Elysée sustainability certification marks' },
+};
+
+const desc =
+  aboutUsQualityCertifications.metaDescription ??
+  intro1?.text?.slice(0, 160) ??
+  aboutUsQualityCertifications.title;
 ---
-<ContentPageLayout content={aboutUsQualityCertifications} />
+<BaseLayout title={aboutUsQualityCertifications.title} description={desc} padForHeader={false}>
+  <AboutHero
+    eyebrow={`${aboutUsQualityCertifications.eyebrow} · ISO 9001 since 1998`}
+    title="Quality & Certifications"
+    subtitle={aboutUsQualityCertifications.subtitle}
+    watermark="1998"
+    stats={[
+      { label: 'ISO 9001 since', value: '1998' },
+      { label: 'Certificate Bodies', value: '6+' },
+      { label: 'Markets Served', value: '65' },
+    ]}
+  />
+
+  <AboutSubNav currentPath={Astro.url.pathname} />
+
+  {/* ===== CHAPTER 01 — QUALITY PRINCIPLE (lead-first variant) ===== */}
+  <Section bg="default" spacing="lg">
+    <Container size="lg">
+      <div class="max-w-3xl">
+        {intro1 && <p data-reveal class="text-lg md:text-xl text-ink leading-relaxed font-light mb-10 md:mb-12">{intro1.text}</p>}
+        <div data-reveal data-reveal-delay="80" aria-hidden="true" class="h-px w-16 bg-accent mb-8"></div>
+        <div data-reveal data-reveal-delay="160" aria-hidden="true" class="font-display font-heavy leading-none text-7xl md:text-8xl text-brand-500/15 tracking-tighter">01</div>
+        <p data-reveal data-reveal-delay="240" class="mt-4 text-[11px] md:text-xs uppercase tracking-[0.3em] text-ink/60">Chapter One</p>
+        <h2 data-reveal data-reveal-delay="320" class="mt-5 font-display font-heavy leading-tight text-3xl md:text-4xl lg:text-5xl text-ink">A Matter of Principle</h2>
+        {intro2 && <p data-reveal data-reveal-delay="400" class="mt-8 text-base md:text-lg text-ink/80 leading-relaxed">{intro2.text}</p>}
+      </div>
+    </Container>
+  </Section>
+
+  {/* ===== CALLOUT — ISO 9001 (alt variant — light) ===== */}
+  {callout && (
+    <Section bg="alt" spacing="lg">
+      <Container size="lg">
+        <div class="mx-auto max-w-3xl text-center">
+          <p data-reveal class="text-[11px] md:text-xs uppercase tracking-[0.3em] text-brand-500 mb-8">Cornerstone Certification</p>
+          <blockquote data-reveal data-reveal-delay="80" class="font-display font-heavy leading-[1.05] tracking-tight text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-ink">
+            <span aria-hidden="true" class="text-brand-500">&ldquo;</span>{callout.title}<span aria-hidden="true" class="text-brand-500">&rdquo;</span>
+          </blockquote>
+          <p data-reveal data-reveal-delay="160" class="mt-8 md:mt-10 text-base md:text-lg text-ink/80 leading-relaxed">{callout.body}</p>
+        </div>
+      </Container>
+    </Section>
+  )}
+
+  <AboutFigure
+    index={1}
+    src="/images/about/qa-lab.jpg"
+    alt="Laboratory technician in white lab coat working at a bench in a cleanroom"
+    caption="Quality Assurance Division — measurement and verification equipment used to certify every batch."
+  />
+
+  {/* ===== CHAPTER 02 — OUR CERTIFICATIONS ===== */}
+  {categories && (
+    <Section bg="alt" spacing="lg">
+      <Container size="lg">
+        <AboutChapterHeader
+          number="02"
+          label="Chapter Two"
+          title="Our Certifications"
+          lead={certsLeadP?.text}
+          maxWidth="wide"
+          variant="lead-first"
+        />
+        <ol class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px bg-ink/15 border border-ink/15">
+          {categories.items.map((cat, i) => {
+            const img = categoryImages[cat.number];
+            return (
+              <li data-reveal data-reveal-delay={String(i * 60)} class="group bg-surface flex flex-col">
+                {img && (
+                  <div class="bg-surface-alt border-b border-ink/10 aspect-[4/3] flex items-center justify-center p-6 md:p-8">
+                    <img
+                      src={img.src}
+                      alt={img.alt}
+                      width="434"
+                      height="434"
+                      loading="lazy"
+                      decoding="async"
+                      class="max-h-full max-w-full w-auto h-auto object-contain"
+                    />
+                  </div>
+                )}
+                <div class="p-8 md:p-10 flex-1 flex flex-col">
+                  <span class="font-display font-heavy text-[11px] uppercase tracking-[0.25em] text-brand-500">Category {String(cat.number).padStart(2, '0')}</span>
+                  <h3 class="mt-6 md:mt-7 font-display font-heavy leading-tight text-xl md:text-2xl text-ink">{cat.title}</h3>
+                  <div aria-hidden="true" class="mt-4 h-px w-12 bg-accent"></div>
+                  <p class="mt-5 text-base text-ink/75 leading-relaxed flex-1">{cat.body}</p>
+                  <a
+                    href="/about-us/quality-certifications/"
+                    class="cursor-pointer mt-6 inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.25em] text-ink hover:text-brand-500 transition-colors duration-200"
+                    aria-label={`View ${cat.title} certificates`}
+                  >
+                    <span>View certificates</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 transition-transform duration-200 group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <path d="M5 12h14" />
+                      <path d="m12 5 7 7-7 7" />
+                    </svg>
+                  </a>
+                </div>
+              </li>
+            );
+          })}
+        </ol>
+      </Container>
+    </Section>
+  )}
+
+  <AboutClosingCta
+    text="Need a specific certificate for a tender, regulatory submission, or specification document? Our team can provide it on request."
+    ctaLabel="Request a certificate"
+    ctaHref="/contact/local/"
+  />
+</BaseLayout>

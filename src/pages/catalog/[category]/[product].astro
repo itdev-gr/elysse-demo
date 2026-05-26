@@ -5,7 +5,6 @@ import type { CatalogProduct, CategorySlug } from '../../../scripts/catalog/type
 import DetailHero from '../../../components/catalog/DetailHero.astro';
 import RelatedProducts from '../../../components/catalog/RelatedProducts.astro';
 import CountryModal from '../../../components/catalog/CountryModal.astro';
-import QuoteBasket from '../../../components/catalog/QuoteBasket.astro';
 import '../../../styles/catalog.css';
 
 export async function getStaticPaths() {
@@ -94,15 +93,12 @@ const related: CatalogProduct[] = all
       <section data-availability-gate></section>
     </section>
   </div>
-  <QuoteBasket />
   <script>
     import { initDetailPage } from '../../../scripts/catalog/page-init-detail';
-    import { initBasketUi } from '../../../scripts/catalog/basket-ui';
     import { openCountryModal } from '../../../scripts/catalog/country-modal';
     import { readCountry, writeCountry } from '../../../scripts/catalog/country';
 
     function go() {
-      initBasketUi();
       const parts = window.location.pathname.split('/').filter(Boolean);
       const category = parts[1];
       const stored = readCountry();

@@ -1,5 +1,155 @@
 ---
-import ContentPageLayout from '../../../layouts/ContentPageLayout.astro';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Container from '../../../components/Container.astro';
+import Section from '../../../components/Section.astro';
+import AboutSubNav from '../../../components/about/AboutSubNav.astro';
+import AboutHero from '../../../components/about/AboutHero.astro';
+import AboutFigure from '../../../components/about/AboutFigure.astro';
+import AboutChapterHeader from '../../../components/about/AboutChapterHeader.astro';
+import AboutClosingCta from '../../../components/about/AboutClosingCta.astro';
 import { aboutUsHistory } from '../../../data/site-content';
+
+const blocks = aboutUsHistory.blocks;
+const paragraphs = blocks.filter((b): b is Extract<typeof b, { kind: 'paragraph' }> => b.kind === 'paragraph');
+const [intro1, intro2, intro3, sectorsP, productsLeadP, closingP] = paragraphs;
+const callout = blocks.find((b): b is Extract<typeof b, { kind: 'callout' }> => b.kind === 'callout');
+const timeline = blocks.find((b): b is Extract<typeof b, { kind: 'timeline' }> => b.kind === 'timeline');
+const stats = blocks.find((b): b is Extract<typeof b, { kind: 'stats' }> => b.kind === 'stats');
+const productList = blocks.find((b): b is Extract<typeof b, { kind: 'list' }> => b.kind === 'list');
+
+const desc =
+  aboutUsHistory.metaDescription ??
+  intro1?.text?.slice(0, 160) ??
+  aboutUsHistory.title;
 ---
-<ContentPageLayout content={aboutUsHistory} />
+<BaseLayout title={aboutUsHistory.title} description={desc} padForHeader={false}>
+  <AboutHero
+    eyebrow={`${aboutUsHistory.eyebrow} · Established 1979`}
+    title={aboutUsHistory.title}
+    subtitle={aboutUsHistory.subtitle}
+    watermark="1979"
+    stats={[
+      { label: 'Founded', value: '1979' },
+      { label: 'Markets', value: '65' },
+      { label: 'Sectors', value: '4' },
+    ]}
+  />
+
+  <AboutSubNav currentPath={Astro.url.pathname} />
+
+  {/* ===== CHAPTER 01 — ORIGINS (centered variant) ===== */}
+  <Section bg="default" spacing="lg">
+    <Container size="lg">
+      <AboutChapterHeader
+        number="01"
+        label="1979 · Chapter One"
+        title="Origins"
+        variant="centered"
+      />
+      <div class="max-w-3xl mx-auto space-y-6 md:space-y-7">
+        <p data-reveal class="text-lg md:text-xl text-ink leading-relaxed font-light">{intro1?.text}</p>
+        <p data-reveal data-reveal-delay="80" class="text-base md:text-lg text-ink/80 leading-relaxed">{intro2?.text}</p>
+        <p data-reveal data-reveal-delay="160" class="text-base md:text-lg text-ink/80 leading-relaxed">{intro3?.text}</p>
+      </div>
+    </Container>
+  </Section>
+
+  <AboutFigure
+    index={1}
+    src="/images/about/founder-vintage.jpg"
+    alt="Man tending young plants inside a commercial greenhouse"
+    caption="Founder Antonis Protopapas — early days of Elysée Irrigation, Nicosia."
+  />
+
+  {/* ===== CALLOUT — FOUNDING CONVICTION ===== */}
+  {callout && (
+    <Section bg="brand" spacing="lg">
+      <Container size="lg">
+        <div class="mx-auto max-w-3xl text-center">
+          <p data-reveal class="text-[11px] md:text-xs uppercase tracking-[0.3em] text-surface/70 mb-8">Our Founding Conviction</p>
+          <blockquote data-reveal data-reveal-delay="80" class="font-display font-heavy leading-[1.05] tracking-tight text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-surface">
+            <span aria-hidden="true" class="text-surface/50">&ldquo;</span>{callout.title}<span aria-hidden="true" class="text-surface/50">&rdquo;</span>
+          </blockquote>
+          <p data-reveal data-reveal-delay="160" class="mt-8 md:mt-10 text-base md:text-lg text-surface/90 leading-relaxed">{callout.body}</p>
+        </div>
+      </Container>
+    </Section>
+  )}
+
+  {/* ===== CHAPTER 02 — MILESTONES ===== */}
+  {timeline && (
+    <Section bg="default" spacing="lg">
+      <Container size="lg">
+        <AboutChapterHeader number="02" label="1989–2009 · Chapter Two" title="Milestones" variant="centered" />
+        <ol class="border-t border-ink/15">
+          {timeline.items.map((item, i) => {
+            const isLast = i === timeline.items.length - 1;
+            return (
+              <li data-reveal data-reveal-delay={String(i * 60)} class="grid grid-cols-12 gap-4 md:gap-8 py-8 md:py-10 border-b border-ink/15">
+                <div class="col-span-12 md:col-span-3">
+                  <div
+                    class={`font-display font-heavy leading-none tracking-tight text-3xl md:text-4xl lg:text-5xl ${
+                      isLast ? 'text-accent' : 'text-brand-500'
+                    }`}
+                  >{item.year}</div>
+                </div>
+                <div class="col-span-12 md:col-span-9 max-w-2xl">
+                  {item.title && (
+                    <h3 class="font-display font-heavy text-lg md:text-xl text-ink mb-2">{item.title}</h3>
+                  )}
+                  <p class="text-base md:text-lg text-ink/80 leading-relaxed">{item.body}</p>
+                </div>
+              </li>
+            );
+          })}
+        </ol>
+      </Container>
+    </Section>
+  )}
+
+  <AboutFigure
+    index={2}
+    src="/images/about/facility-exterior.jpg"
+    alt="Aerial view of a large industrial building complex in daylight"
+    caption="Ergates Industrial Area — Elysée manufacturing facility, in operation since 1989."
+  />
+
+  {/* ===== CHAPTER 03 — WHERE WE ARE TODAY ===== */}
+  {stats && (
+    <Section bg="alt" spacing="lg">
+      <Container size="lg">
+        <AboutChapterHeader number="03" label="Today · Chapter Three" title="Where we are today" variant="centered" />
+        <dl class="grid grid-cols-2 md:grid-cols-4 gap-y-12 gap-x-6 md:gap-x-10 border-y border-ink/15 py-12 md:py-16">
+          {stats.items.map((s, i) => (
+            <div data-reveal data-reveal-delay={String(i * 60)}>
+              <dd data-counter={s.value} class="font-display font-heavy leading-none tracking-tight text-5xl md:text-6xl lg:text-7xl text-brand-500">{s.value}</dd>
+              <dt class="mt-4 text-[10px] md:text-xs uppercase tracking-[0.25em] text-ink/60">{s.label}</dt>
+            </div>
+          ))}
+        </dl>
+        {sectorsP && (
+          <p data-reveal class="mt-12 md:mt-16 max-w-3xl text-lg md:text-xl text-ink/80 leading-relaxed">{sectorsP.text}</p>
+        )}
+      </Container>
+    </Section>
+  )}
+
+  {/* ===== CHAPTER 04 — WHERE IT STARTED ===== */}
+  {productList && (
+    <Section bg="default" spacing="lg">
+      <Container size="lg">
+        <AboutChapterHeader number="04" label="The original line · Chapter Four" title="Where it started" lead={productsLeadP?.text} variant="centered" />
+        <ul class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-px bg-ink/15 border border-ink/15">
+          {productList.items.map((p, i) => (
+            <li data-reveal data-reveal-delay={String(i * 60)} class="bg-surface p-6 md:p-8 min-h-[180px] flex flex-col justify-between">
+              <span class="font-display font-heavy text-[11px] uppercase tracking-[0.25em] text-brand-500">{String(i + 1).padStart(2, '0')}</span>
+              <span class="mt-8 font-display font-heavy leading-tight text-xl md:text-2xl text-ink">{p}</span>
+            </li>
+          ))}
+        </ul>
+      </Container>
+    </Section>
+  )}
+
+  {closingP && <AboutClosingCta text={closingP.text} />}
+</BaseLayout>

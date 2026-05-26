@@ -1,0 +1,45 @@
+---
+import Container from '../Container.astro';
+import Section from '../Section.astro';
+
+interface Props {
+  text: string;
+  ctaLabel?: string;
+  ctaHref?: string;
+}
+
+const {
+  text,
+  ctaLabel = 'Contact our network',
+  ctaHref = '/contact/local/',
+} = Astro.props;
+---
+<Section bg="ink" spacing="md">
+  <Container size="lg">
+    <div class="mx-auto max-w-2xl text-center">
+      <p data-reveal class="text-base md:text-lg text-surface/90 leading-relaxed">{text}</p>
+      <a
+        data-reveal
+        data-reveal-delay="160"
+        href={ctaHref}
+        class="group cursor-pointer mt-8 md:mt-10 inline-flex items-center gap-3 px-6 py-3 border border-surface/30 hover:border-surface text-surface text-[11px] md:text-xs uppercase tracking-[0.25em] transition-colors duration-200"
+      >
+        <span>{ctaLabel}</span>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <path d="M5 12h14" />
+          <path d="m12 5 7 7-7 7" />
+        </svg>
+      </a>
+    </div>
+  </Container>
+</Section>

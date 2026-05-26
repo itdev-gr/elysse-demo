@@ -1,5 +1,131 @@
 ---
-import ContentPageLayout from '../../../layouts/ContentPageLayout.astro';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Container from '../../../components/Container.astro';
+import Section from '../../../components/Section.astro';
+import AboutSubNav from '../../../components/about/AboutSubNav.astro';
+import AboutHero from '../../../components/about/AboutHero.astro';
+import AboutFigure from '../../../components/about/AboutFigure.astro';
+import AboutChapterHeader from '../../../components/about/AboutChapterHeader.astro';
+import AboutClosingCta from '../../../components/about/AboutClosingCta.astro';
 import { aboutUsVisionMissionValues } from '../../../data/site-content';
+
+const blocks = aboutUsVisionMissionValues.blocks;
+const paragraphs = blocks.filter((b): b is Extract<typeof b, { kind: 'paragraph' }> => b.kind === 'paragraph');
+const [introP, visionP] = paragraphs;
+const missionList = blocks.find((b): b is Extract<typeof b, { kind: 'list' }> => b.kind === 'list');
+const valueList = blocks.find((b): b is Extract<typeof b, { kind: 'valuelist' }> => b.kind === 'valuelist');
+
+const desc =
+  aboutUsVisionMissionValues.metaDescription ??
+  introP?.text?.slice(0, 160) ??
+  aboutUsVisionMissionValues.title;
 ---
-<ContentPageLayout content={aboutUsVisionMissionValues} />
+<BaseLayout title={aboutUsVisionMissionValues.title} description={desc} padForHeader={false}>
+  <AboutHero
+    eyebrow={`${aboutUsVisionMissionValues.eyebrow} · What Drives Us`}
+    title="Vision, Mission & Values"
+    subtitle={aboutUsVisionMissionValues.subtitle}
+    watermark="WISE"
+    stats={[
+      { label: 'Vision', value: '01' },
+      { label: 'Mission Pillars', value: '05' },
+      { label: 'Core Values', value: '06' },
+    ]}
+  />
+
+  <AboutSubNav currentPath={Astro.url.pathname} />
+
+  {/* ===== INTRO — CUSTOMER-FIRST PHILOSOPHY ===== */}
+  {introP && (
+    <Section bg="default" spacing="lg">
+      <Container size="lg">
+        <div class="mx-auto max-w-3xl">
+          <p data-reveal class="text-[11px] md:text-xs uppercase tracking-[0.3em] text-ink/60 mb-6">Why we exist</p>
+          <p data-reveal data-reveal-delay="80" class="font-display font-heavy leading-[1.15] tracking-tight text-2xl md:text-3xl lg:text-4xl text-ink">
+            {introP.text}
+          </p>
+        </div>
+      </Container>
+    </Section>
+  )}
+
+  {/* ===== CHAPTER 01 — VISION (full-bleed brand band) ===== */}
+  {visionP && (
+    <Section bg="brand" spacing="lg">
+      <Container size="lg">
+        <div class="mx-auto max-w-3xl text-center">
+          <p data-reveal class="text-[11px] md:text-xs uppercase tracking-[0.3em] text-surface/70 mb-6">Chapter One · Our Vision</p>
+          <blockquote data-reveal data-reveal-delay="80" class="font-display font-heavy leading-[1.05] tracking-tight text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-surface">
+            <span aria-hidden="true" class="text-surface/50">&ldquo;</span>{visionP.text.replace(/\.$/, '')}<span aria-hidden="true" class="text-surface/50">.&rdquo;</span>
+          </blockquote>
+          <p data-reveal data-reveal-delay="160" class="mt-8 md:mt-10 text-sm md:text-base text-surface/80 uppercase tracking-[0.3em]">
+            W · I · S · E — Worldwide · Innovative · Smart · Easy-to-Use
+          </p>
+        </div>
+      </Container>
+    </Section>
+  )}
+
+  <AboutFigure
+    index={1}
+    src="/images/about/water-flowing.jpg"
+    alt="Macro photograph of two colliding water droplets mid-splash"
+    caption="Streaming Water, Streaming Life — Elysée's brand promise translated into product design and operating practice."
+  />
+
+  {/* ===== CHAPTER 02 — MISSION ===== */}
+  {missionList && (
+    <Section bg="default" spacing="lg">
+      <Container size="lg">
+        <AboutChapterHeader
+          number="02"
+          label="Chapter Two"
+          title="Our Mission"
+          lead="Five commitments that translate the Vision into day-to-day priorities — for our customers, our people, our growth, and the planet."
+          maxWidth="wide"
+          variant="inline"
+        />
+        <ol class="border-t border-ink/15">
+          {missionList.items.map((item, i) => (
+            <li data-reveal data-reveal-delay={String(i * 60)} class="grid grid-cols-12 gap-4 md:gap-8 py-8 md:py-10 border-b border-ink/15">
+              <div class="col-span-12 md:col-span-2">
+                <div class="font-display font-heavy leading-none tracking-tight text-4xl md:text-5xl text-brand-500">
+                  {String(i + 1).padStart(2, '0')}
+                </div>
+              </div>
+              <div class="col-span-12 md:col-span-10 max-w-3xl">
+                <p class="text-lg md:text-xl text-ink leading-relaxed">{item}</p>
+              </div>
+            </li>
+          ))}
+        </ol>
+      </Container>
+    </Section>
+  )}
+
+  {/* ===== CHAPTER 03 — VALUES ===== */}
+  {valueList && (
+    <Section bg="alt" spacing="lg">
+      <Container size="lg">
+        <AboutChapterHeader
+          number="03"
+          label="Chapter Three"
+          title="Our Values"
+          lead="Six principles that guide how we work — with each other, with our customers, and with the environment we operate in."
+          maxWidth="wide"
+          variant="inline"
+        />
+        <ul class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px bg-ink/15 border border-ink/15">
+          {valueList.items.map((item, i) => (
+            <li data-reveal data-reveal-delay={String(i * 60)} class="bg-surface p-8 md:p-10 min-h-[180px] flex flex-col justify-between">
+              <span class="font-display font-heavy text-[11px] uppercase tracking-[0.25em] text-brand-500">Value {String(i + 1).padStart(2, '0')}</span>
+              <span class="mt-6 md:mt-8 font-display font-heavy leading-tight text-xl md:text-2xl text-ink">{item.label}</span>
+            </li>
+          ))}
+        </ul>
+      </Container>
+    </Section>
+  )}
+
+  <AboutClosingCta text="Our Vision, Mission and Values are not posters on a wall — they shape every decision we make, from product design to customer service. Talk to us about how we put them into practice." />
+</BaseLayout>

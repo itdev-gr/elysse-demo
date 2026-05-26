@@ -21,15 +21,6 @@ const thumb = p.imageUrls[0] ?? p.image;
     </div>
   </div>
   <div class="flex md:flex-col items-stretch md:items-end gap-2 md:justify-center">
-    <button
-      type="button"
-      data-add-to-quote
-      data-slug={p.slug}
-      data-name={p.name}
-      data-code={p.code ?? ''}
-      data-thumb={thumb}
-      class="cat-btn cat-btn--primary"
-    >Add to quote</button>
-    <a href={`/catalog/${p.slug}`} class="cat-btn cat-btn--ghost">View details</a>
+    <a href={`/catalog/${p.slug}`} class="cat-btn cat-btn--primary">View details</a>
   </div>
 </article>

@@ -9,7 +9,6 @@ import '../../../styles/catalog.css';
 import UtilityBar from '../../../components/catalog/UtilityBar.astro';
 import ProductGrid from '../../../components/catalog/ProductGrid.astro';
 import FilterRail from '../../../components/catalog/FilterRail.astro';
-import QuoteBasket from '../../../components/catalog/QuoteBasket.astro';
 import CountryModal from '../../../components/catalog/CountryModal.astro';
 import CategoriesNav from '../../../components/catalog/CategoriesNav.astro';
 
@@ -109,15 +108,12 @@ const productsJson = JSON.stringify(products);
       <pre data-products-json style="display:none">{productsJson}</pre>
     </section>
   </div>
-  {!isEmpty && <QuoteBasket />}
   <script>
     import { initCatalogPage } from '../../../scripts/catalog/page-init';
-    import { initBasketUi } from '../../../scripts/catalog/basket-ui';
     import { openCountryModal } from '../../../scripts/catalog/country-modal';
     import { readCountry, writeCountry } from '../../../scripts/catalog/country';
 
     function go() {
-      initBasketUi();
       const empty = !document.querySelector('[data-country-modal]');
       if (empty) return;
       const parts = window.location.pathname.split('/').filter(Boolean);

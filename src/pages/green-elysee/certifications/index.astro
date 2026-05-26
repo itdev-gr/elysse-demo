@@ -1,5 +1,59 @@
 ---
-import ContentPageLayout from '../../../layouts/ContentPageLayout.astro';
-import { greenElyseeCertifications } from '../../../data/site-content';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import PageHero from '../../../components/PageHero.astro';
+import CertificationsGrid from '../../../components/CertificationsGrid.astro';
+
+const certifications = [
+  {
+    name: 'ISO 14001',
+    description: 'Environmental Management System',
+    logo: '/images/certifications/iso-14001.svg',
+  },
+  {
+    name: 'ISCC PLUS',
+    description: 'International Sustainability and Carbon Certification',
+    logo: '/images/certifications/iscc-plus.svg',
+  },
+  {
+    name: 'ISO 14064-3:2019',
+    description: 'Greenhouse Gas Validation and Verification',
+    logo: '/images/certifications/iso-14064-3.svg',
+  },
+  {
+    name: 'EMAS 2024',
+    description: 'EU Eco-Management and Audit Scheme',
+    logo: '/images/certifications/emas.svg',
+  },
+  {
+    name: 'CYS EN ISO 50001:2018',
+    description: 'Energy Management System',
+    logo: '/images/certifications/iso-50001.svg',
+  },
+  {
+    name: 'Environmental Declaration 2024',
+    description: 'Annual environmental performance report',
+    logo: '/images/certifications/environmental-declaration.svg',
+  },
+];
 ---
-<ContentPageLayout content={greenElyseeCertifications} />
+<BaseLayout
+  title="Green Certifications — Elysée"
+  description="Internationally recognized environmental and sustainability certifications held by Elysée — ISO 14001, ISCC PLUS, ISO 14064-3, EMAS, ISO 50001, and the annual Environmental Declaration."
+>
+  <PageHero
+    title="Certifications"
+    eyebrow="Green Elysée"
+    subtitle="Committed to drive life in a Green future."
+  />
+  <article class="mx-auto max-w-screen-xl px-4 md:px-8 py-12 md:py-16">
+    <p class="text-base md:text-lg text-ink/85 leading-relaxed max-w-3xl">
+      Elysée proudly holds internationally recognized certificates &mdash; a testimony of our commitment to drive life in a Green future and our effort to be as Green as it gets across all operations.
+    </p>
+
+    <section class="mt-10">
+      <h2 class="text-2xl md:text-3xl font-heavy text-ink mb-2">Our Green Certifications</h2>
+      <p class="text-sm text-ink/65">Six standards covering environmental, energy, sustainability, and emissions verification.</p>
+      <CertificationsGrid items={certifications} />
+    </section>
+  </article>
+</BaseLayout>

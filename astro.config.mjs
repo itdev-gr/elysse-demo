@@ -6,6 +6,7 @@ import path from 'path';
 import tailwindcss from '@tailwindcss/vite';
 
 import sitemap from '@astrojs/sitemap';
+import react from '@astrojs/react';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -22,5 +23,5 @@ export default defineConfig({
     },
   },
 
-  integrations: [sitemap()]
+  integrations: [react(), sitemap()]
 });

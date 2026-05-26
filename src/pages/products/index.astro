@@ -9,6 +9,7 @@ const categories = cats.map((c) => ({
   name: c.data.name,
   slug: c.data.slug ?? c.id,
   pdf: c.data.leafletPdf,
+  image: c.data.image,
 }));
 ---
 <BaseLayout

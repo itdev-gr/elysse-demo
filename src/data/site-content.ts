@@ -154,26 +154,74 @@ export const aboutUsHistory: ContentPage = {
     {
       kind: 'paragraph',
       text:
-        "The company's origins trace to founder Antonis Protopapas, who possessed a love of nature and an agricultural background with a physics education. His initial vision focused on cultivating premium flowers in the Middle East. During the 1970s, irrigation knowledge became essential to the flower business, which led to trading irrigation supplies, then to manufacturing.",
+        "It was a love of nature that led to the birth of our company, Elysée. With origins in agriculture and a degree in physics, the founder, Antonis Protopapas, had the idea to make a business focused on growing the best flowers in the Middle East. And so, that was the start of this beautiful journey…",
     },
+    {
+      kind: 'paragraph',
+      text:
+        "Through this venture, the need to know more about irrigation became a priority. Back in the 1970s the new art of irrigation was on the rise, and the know-how was brought in to help Elysée grow world-class flowers.",
+    },
+    {
+      kind: 'paragraph',
+      text:
+        "With our newly acquired knowledge of irrigation and irrigation needs, the next step was to move into irrigation trading, trading pipe fittings and then… into manufacturing them. So, in 1979, on 16 April, Elysée Irrigation was founded.",
+    },
+    {
+      kind: 'callout',
+      title: 'Streaming Water, Streaming Life',
+      body:
+        'The same conviction that started the company still drives it today: build reliable systems that carry water — and Life — safely to where it is needed.',
+    },
+    { kind: 'heading', level: 2, text: 'Milestones' },
     {
       kind: 'timeline',
       items: [
-        { year: '1979', title: 'Elysée Irrigation founded', body: 'Established on April 16, 1979 in Nicosia, Cyprus.' },
-        { year: '1980', body: 'Export activities commenced to nearby Middle Eastern markets.' },
-        { year: '1989', body: 'Current facility opened in Ergates Industrial Area due to growth demands. Product range includes drippers, sprinklers, compression fittings, saddles, and threaded fittings.' },
-        { year: '1991', body: 'Polyethylene pipe manufacturing unit launched, enabling complete water-supply solutions.' },
-        { year: '1998', body: 'ISO 9001 certification achieved after formal quality-control division establishment.' },
-        { year: '2001', body: 'New office building erected; headquarters relocated from central Nicosia.' },
-        { year: '2002', body: 'Special Export Award received; Research and Development department created.' },
-        { year: '2003–2016', body: 'Four further Export Awards (2003, 2008, 2012, 2016). Products now available on all five continents.' },
-        { year: 'Today', body: 'Active in 65 markets across four sectors — Water Supply, Irrigation, Infrastructure, Energy. Distribution centres in Austria, Russia, and Lebanon.' },
+        { year: '1979', title: 'Elysée Irrigation founded', body: 'Founded on 16 April 1979 in Nicosia, Cyprus, by Antonis Protopapas. The first production facility was co-located with farming and flower preparation for the international markets — exciting times where the exploration of the unknown field of plastic manufacturing was hard but rewarding for a young company.' },
+        { year: '1980', body: 'As early as 1980, the first export activities began, in the nearby markets of the Middle East — an area which at the time was only starting to utilize irrigation techniques.' },
+        { year: '1989', body: 'Early success led to fast growth which demanded a dedicated industrial space. The current site in the Ergates Industrial Area was established. The product range at the time comprised a substantial series of drippers and sprinklers as well as an extensive range of compression fittings, saddles, and threaded fittings.' },
+        { year: '1991', body: 'A piping system is never complete without a pipe, hence in 1991 a polyethylene pipe manufacturing unit was established at the Ergates site — Elysée could now offer a full water-supply solution. Its early success led to the extension of the range with PVC pipe manufacturing, entering the construction and infrastructure world.' },
+        { year: '1998', body: 'An extensive range of products meant the quality-control division had to be formally established, leading to the certification of the company with ISO 9001 as early as 1998.' },
+        { year: '2001', body: 'A new office building was erected to host the main offices of the company — until then located in central Nicosia — optimizing operations and preparing for the next step in expansion.' },
+        { year: '2002', body: 'The first recognition of international activity for Elysée came with the Special Export Award. That same year, a new function was born within the company: the Research and Development department, leading the advancement of technology and improvement of the product range. Elysée was now a complete and modern company, investing significantly in the international market.' },
+        { year: '2003 – 2016', body: 'The years that followed saw a major expansion in global reach and market coverage. Elysée products could be found on all 5 continents and in a steadily growing number of countries. A series of 4 further Export Awards (2003, 2008, 2012 and 2016) is a testimony to just that.' },
+        { year: 'Today', body: 'Our international network of selected partners currently spans 65 markets, where Elysée is active in 4 sectors — Water Supply, Irrigation, Infrastructure and Energy. To respond directly to the changing needs of the global market, Elysée has expanded its operations by establishing 3 distribution centres in Austria, Russia, and Lebanon.' },
+      ],
+    },
+    { kind: 'heading', level: 2, text: 'Where we are today' },
+    {
+      kind: 'stats',
+      items: [
+        { label: 'Markets served', value: '65' },
+        { label: 'Sectors', value: '4' },
+        { label: 'Export awards', value: '5' },
+        { label: 'ISO 9001 since', value: '1998' },
       ],
     },
     {
       kind: 'paragraph',
       text:
-        'Enquiries and orders can reach us through our wide network of local agents and sales representatives.',
+        'Our international network of selected partners spans 65 markets across four sectors — Water Supply, Irrigation, Infrastructure, and Energy — supported by 3 distribution centres in Austria, Russia, and Lebanon and a network of local agents and sales representatives.',
+    },
+    { kind: 'heading', level: 3, text: 'Where it started' },
+    {
+      kind: 'paragraph',
+      text:
+        'The product range that put Elysée on the map in the 1980s still anchors the catalogue today:',
+    },
+    {
+      kind: 'list',
+      items: [
+        'Drippers',
+        'Sprinklers',
+        'Compression fittings',
+        'Saddles',
+        'Threaded fittings',
+      ],
+    },
+    {
+      kind: 'paragraph',
+      text:
+        'Enquiries and orders reach us through our wide network of local agents and sales representatives.',
     },
   ],
 };
@@ -181,22 +229,28 @@ export const aboutUsHistory: ContentPage = {
 export const aboutUsVisionMissionValues: ContentPage = {
   title: 'Vision, Mission & Values',
   eyebrow: 'About Us',
+  subtitle: 'What drives us, every day, in every market.',
   blocks: [
+    {
+      kind: 'paragraph',
+      text:
+        'Our customers are at the heart of everything we do, so that is what we focus on. We design innovative piping solutions for easy installation, durability, and minimal maintenance — and we tailor them, through our expert advisors and OEM programmes, to the specific needs of each customer.',
+    },
     { kind: 'heading', level: 2, text: 'Vision' },
     {
       kind: 'paragraph',
       text:
-        'To be a green leader worldwide through Innovative, Smart, Easy-to-use Piping Systems.',
+        'To be a green leader worldwide through Innovative, Smart, Easy-to-Use Piping Systems.',
     },
     { kind: 'heading', level: 2, text: 'Mission' },
     {
       kind: 'list',
       items: [
-        'Develop W.I.S.E. Products to preserve water resources for future generations (Worldwide, Innovative, Smart, Easy-to-use).',
+        'Develop W.I.S.E. Products to preserve water resources for future generations.',
         'Provide our Customers and Partners with a competitive edge.',
         'Lead our people to meet their full potential.',
         'Achieve sustainable and profitable company growth.',
-        'Contribute to Society and the Environment making Earth a better place to live.',
+        'Contribute to Society and the Environment, making Earth a better place to live.',
       ],
     },
     { kind: 'heading', level: 2, text: 'Values' },
@@ -289,22 +343,21 @@ export const aboutUsQualityCertifications: ContentPage = {
       body:
         'Elysée achieved ISO 9001 certification in 1998 following the formal establishment of its quality-control division — a commitment to quality management that has been maintained and renewed continuously ever since.',
     },
-    { kind: 'heading', level: 2, text: 'Our Certifications' },
+    { kind: 'heading', level: 2, text: 'Certifications' },
     {
       kind: 'paragraph',
       text:
-        'Elysée products are certified by the most reputable international standards organizations. Our certification portfolio covers management systems, compression fittings, PE pipes, PVC pipes, and green product lines.',
+        'Elysée products are certified by the most reputable international standards organizations. Our portfolio is organised into six categories, mirroring the way our products reach the market.',
     },
     {
-      kind: 'list',
+      kind: 'pillars',
       items: [
-        'ISO 9001 — Quality Management System',
-        'DVGW — German technical and scientific association for gas and water (Germany)',
-        'KIWA — Dutch standards body for piping systems (Netherlands)',
-        'WRAS — Water Regulations Advisory Scheme (UK)',
-        'SII — Standards Institution of Israel (Israel)',
-        'OVGW — Austrian Gas and Water Association (Austria)',
-        'Green Elysée certifications — environmental and sustainability standards',
+        { number: 1, title: 'Management System', body: 'ISO 9001 quality management — certified since 1998 and renewed continuously.' },
+        { number: 2, title: 'General', body: 'Cross-product certifications from internationally recognised bodies including DVGW, KIWA, SII and OVGW.' },
+        { number: 3, title: 'Compression Fittings', body: 'Product certifications covering the full Elysée compression-fitting range for water-supply applications.' },
+        { number: 4, title: 'PE Pipes', body: 'Polyethylene pipe certifications across the manufactured diameter range, suitable for potable water, gas and industrial fluids.' },
+        { number: 5, title: 'PVC Pipes', body: 'PVC pipe certifications for water-supply, drainage and infrastructure applications.' },
+        { number: 6, title: 'Green Elysée', body: 'Environmental and sustainability certifications attached to the Green Elysée product line.' },
       ],
     },
   ],

@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" role="img" aria-label="ISO 14001 Environmental Management certification badge">
+  <rect x="10" y="10" width="180" height="180" rx="14" fill="#ffffff" stroke="#4c6830" stroke-width="2"/>
+  <rect x="18" y="18" width="164" height="164" rx="10" fill="none" stroke="#4c6830" stroke-width="0.6" opacity="0.4"/>
+  <text x="100" y="50" font-family="ui-sans-serif, system-ui, sans-serif" font-size="9" font-weight="600" fill="#4c6830" text-anchor="middle" letter-spacing="2">CERTIFIED</text>
+  <line x1="60" y1="60" x2="140" y2="60" stroke="#4c6830" stroke-width="1" opacity="0.4"/>
+  <text x="100" y="98" font-family="ui-sans-serif, system-ui, sans-serif" font-size="30" font-weight="800" fill="#4c6830" text-anchor="middle">ISO</text>
+  <text x="100" y="132" font-family="ui-sans-serif, system-ui, sans-serif" font-size="26" font-weight="700" fill="#4c6830" text-anchor="middle">14001</text>
+  <line x1="60" y1="148" x2="140" y2="148" stroke="#4c6830" stroke-width="1" opacity="0.4"/>
+  <text x="100" y="170" font-family="ui-sans-serif, system-ui, sans-serif" font-size="8" font-weight="600" fill="#4c6830" text-anchor="middle" letter-spacing="1.5">ENVIRONMENTAL</text>
+</svg>
