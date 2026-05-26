@@ -29,7 +29,7 @@ export default function MegaPanel({ group }: { group: MegaGroup }) {
             </a>
           )}
         </div>
-        <div className={`grid grid-cols-2 md:grid-cols-3 ${cols} gap-x-6 gap-y-8`}>
+        <div className={`grid grid-cols-2 md:grid-cols-3 ${cols} gap-x-4 gap-y-5`}>
           {group.items.map((it) => (
             <MegaCard key={it.href} item={it} />
           ))}

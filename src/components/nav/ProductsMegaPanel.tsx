@@ -77,9 +77,9 @@ export default function ProductsMegaPanel({ group, categories }: Props) {
       className="w-full"
       data-products-mega-panel
     >
-      <div className="mx-auto w-full max-w-[860px] px-4">
+      <div className="mx-auto w-full max-w-[920px] px-4">
         <div className="rounded-[20px] bg-surface p-6 shadow-[0_16px_48px_rgba(0,0,0,0.12)] ring-1 ring-black/5">
-          <div className="grid grid-cols-1 gap-6 lg:grid-cols-[220px_220px_240px]">
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-[300px_220px_240px]">
 
             {/* Column 1 — category names */}
             <div
@@ -88,7 +88,7 @@ export default function ProductsMegaPanel({ group, categories }: Props) {
               aria-orientation="vertical"
               aria-label="Product categories"
               onKeyDown={onTabKey}
-              className="flex flex-col gap-1"
+              className="flex flex-col gap-1 lg:grid lg:grid-flow-col lg:grid-rows-7 lg:gap-x-3 lg:gap-y-1"
             >
               {categories.map((cat) => {
                 const isActive = cat.slug === active;
@@ -161,8 +161,8 @@ export default function ProductsMegaPanel({ group, categories }: Props) {
               </AnimatePresence>
             </div>
 
-            {/* Column 3 — smaller image of the active category */}
-            <div className="relative min-h-[180px] overflow-hidden rounded-[16px] bg-brand-500/5 lg:before:absolute lg:before:-left-3 lg:before:top-0 lg:before:h-full lg:before:w-px lg:before:bg-surface-divider lg:before:content-['']">
+            {/* Column 3 — image of the active category (no frame, fits the image) */}
+            <div className="relative aspect-[4/3] lg:before:absolute lg:before:-left-3 lg:before:top-0 lg:before:h-full lg:before:w-px lg:before:bg-surface-divider lg:before:content-['']">
               <AnimatePresence mode="wait" initial={false}>
                 {activeCategory && (
                   <motion.img
@@ -175,7 +175,7 @@ export default function ProductsMegaPanel({ group, categories }: Props) {
                     exit="exit"
                     loading="lazy"
                     decoding="async"
-                    className="absolute inset-0 h-full w-full object-contain p-4"
+                    className="absolute inset-0 h-full w-full object-contain"
                   />
                 )}
               </AnimatePresence>

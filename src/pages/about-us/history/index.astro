@@ -37,7 +37,7 @@ const desc =
 
   <AboutSubNav currentPath={Astro.url.pathname} />
 
-  {/* ===== CHAPTER 01 — ORIGINS (centered variant) ===== */}
+  {/* ===== CHAPTER 01 — ORIGINS (centered header + editorial 2-column body) ===== */}
   <Section bg="default" spacing="lg">
     <Container size="lg">
       <AboutChapterHeader
@@ -46,10 +46,83 @@ const desc =
         title="Origins"
         variant="centered"
       />
-      <div class="max-w-3xl mx-auto space-y-6 md:space-y-7">
-        <p data-reveal class="text-lg md:text-xl text-ink leading-relaxed font-light">{intro1?.text}</p>
-        <p data-reveal data-reveal-delay="80" class="text-base md:text-lg text-ink/80 leading-relaxed">{intro2?.text}</p>
-        <p data-reveal data-reveal-delay="160" class="text-base md:text-lg text-ink/80 leading-relaxed">{intro3?.text}</p>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 max-w-6xl mx-auto">
+
+        {/* Prose column — magazine layout with drop cap on lead */}
+        <div class="lg:col-span-8 space-y-6 md:space-y-7">
+          {intro1 && (
+            <p
+              data-reveal
+              class="text-lg md:text-xl text-ink leading-[1.7] font-light
+                     first-letter:font-display first-letter:font-heavy
+                     first-letter:text-7xl md:first-letter:text-8xl
+                     first-letter:float-left first-letter:mr-3 first-letter:mt-1
+                     first-letter:leading-[0.85] first-letter:text-brand-500"
+            >
+              {intro1.text}
+            </p>
+          )}
+          {intro2 && (
+            <p data-reveal data-reveal-delay="80" class="text-base md:text-lg text-ink/80 leading-relaxed">
+              {intro2.text}
+            </p>
+          )}
+          {intro3 && (
+            <p data-reveal data-reveal-delay="160" class="text-base md:text-lg text-ink/80 leading-relaxed">
+              {intro3.text}
+            </p>
+          )}
+        </div>
+
+        {/* Sticky Origin Record card */}
+        <aside class="lg:col-span-4">
+          <div
+            data-reveal
+            data-reveal-delay="120"
+            class="lg:sticky lg:top-32 bg-surface-alt border-l-4 border-brand-500 p-6 md:p-8"
+          >
+            <div class="flex items-center gap-2 mb-6">
+              <span aria-hidden="true" class="inline-block w-2 h-2 bg-brand-500 rounded-full"></span>
+              <p class="text-[10px] uppercase tracking-[0.3em] text-brand-500 font-semibold">
+                Origin Record
+              </p>
+            </div>
+
+            <dl class="space-y-5">
+              <div data-reveal data-reveal-delay="200">
+                <dt class="text-[10px] uppercase tracking-[0.25em] text-ink/55 mb-1.5">Founded</dt>
+                <dd class="font-display font-heavy text-lg md:text-xl text-ink leading-tight">
+                  16 April 1979
+                </dd>
+              </div>
+              <div data-reveal data-reveal-delay="260" class="border-t border-ink/10 pt-5">
+                <dt class="text-[10px] uppercase tracking-[0.25em] text-ink/55 mb-1.5">Founder</dt>
+                <dd class="font-display font-heavy text-lg md:text-xl text-ink leading-tight">
+                  Antonis Protopapas
+                </dd>
+              </div>
+              <div data-reveal data-reveal-delay="320" class="border-t border-ink/10 pt-5">
+                <dt class="text-[10px] uppercase tracking-[0.25em] text-ink/55 mb-1.5">Place</dt>
+                <dd class="font-display font-heavy text-lg md:text-xl text-ink leading-tight">
+                  Nicosia, Cyprus
+                </dd>
+              </div>
+              <div data-reveal data-reveal-delay="380" class="border-t border-ink/10 pt-5">
+                <dt class="text-[10px] uppercase tracking-[0.25em] text-ink/55 mb-1.5">First venture</dt>
+                <dd class="font-display font-heavy text-lg md:text-xl text-ink leading-tight">
+                  Elysée Irrigation
+                </dd>
+              </div>
+            </dl>
+
+            <div data-reveal data-reveal-delay="440" class="mt-8 pt-6 border-t border-ink/10">
+              <p class="text-xs text-ink/60 leading-relaxed italic">
+                "Streaming water, streaming life" — a phrase that would later become the company's founding conviction.
+              </p>
+            </div>
+          </div>
+        </aside>
       </div>
     </Container>
   </Section>
