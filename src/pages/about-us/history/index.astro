@@ -1,13 +1,23 @@
 ---
+/**
+ * History page.
+ *
+ * URL: /about-us/history/
+ * Source of truth content: `aboutUsHistory` from src/data/site-content.ts.
+ *
+ * Layout notes:
+ *   - Origins narrative flows in one column
+ *   - Milestones group into decades with sticky decade labels
+ *   - "Today" reads as a proper section with sectors + distribution-centre chips
+ *   - GSAP-driven image tooltip pops out beside each milestone on hover
+ *     (desktop only; src/scripts/history-timeline-hover.client.ts)
+ */
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import Container from '../../../components/Container.astro';
 import Section from '../../../components/Section.astro';
 import AboutSubNav from '../../../components/about/AboutSubNav.astro';
-import AboutHero from '../../../components/about/AboutHero.astro';
-import AboutFigure from '../../../components/about/AboutFigure.astro';
-import AboutChapterHeader from '../../../components/about/AboutChapterHeader.astro';
-import AboutClosingCta from '../../../components/about/AboutClosingCta.astro';
 import { aboutUsHistory } from '../../../data/site-content';
+import { getTimelineImage } from '../../../data/history-timeline-images';
 
 const blocks = aboutUsHistory.blocks;
 const paragraphs = blocks.filter((b): b is Extract<typeof b, { kind: 'paragraph' }> => b.kind === 'paragraph');
@@ -17,212 +27,469 @@ const timeline = blocks.find((b): b is Extract<typeof b, { kind: 'timeline' }> =
 const stats = blocks.find((b): b is Extract<typeof b, { kind: 'stats' }> => b.kind === 'stats');
 const productList = blocks.find((b): b is Extract<typeof b, { kind: 'list' }> => b.kind === 'list');
 
+// Split intro1 into 3 sentence-level moments so Origins can present them
+// as distinct typographic beats: headline, body (with drop-cap), tail aside.
+const intro1Text = intro1?.text ?? '';
+const intro1Sentences = intro1Text.split(/(?<=[.!?…])\s+/).filter(Boolean);
+const originsHeadline = intro1Sentences[0] ?? intro1Text;
+const originsBody = intro1Sentences[1] ?? '';
+const originsTail = intro1Sentences[2] ?? '';
+
+// Bucket the timeline rows into decades for the sticky-label treatment.
+type TimelineItem = NonNullable<typeof timeline>['items'][number];
+const decadeMap = new Map<string, TimelineItem[]>();
+const decadeOrder: string[] = [];
+for (const item of timeline?.items ?? []) {
+  const yearMatch = item.year.match(/(\d{4})/);
+  const label = item.year === 'Today'
+    ? 'Today'
+    : yearMatch
+      ? `${Math.floor(parseInt(yearMatch[1], 10) / 10) * 10}s`
+      : item.year;
+  if (!decadeMap.has(label)) {
+    decadeMap.set(label, []);
+    decadeOrder.push(label);
+  }
+  decadeMap.get(label)!.push(item);
+}
+const decades = decadeOrder.map((label) => ({ label, items: decadeMap.get(label)! }));
+
+// Sectors + distribution centres for the Today section (factual constants
+// already embedded in sectorsP.text — extracted here as semantic arrays).
+const sectors = ['Water Supply', 'Irrigation', 'Infrastructure', 'Energy'];
+const distributionCentres = ['Austria', 'Russia', 'Lebanon'];
+
+// Map the 5 original product labels to their local catalog routes.
+// Keys match the strings in `productList.items` verbatim.
+const productLinks: Record<string, string> = {
+  'Drippers':              '/catalog/micro-irrigation-and-sprinklers/',
+  'Sprinklers':            '/catalog/micro-irrigation-and-sprinklers/',
+  'Compression fittings':  '/catalog/compression-fittings/',
+  'Saddles':               '/catalog/saddles/',
+  'Threaded fittings':     '/catalog/hydraulic-fittings/',
+};
+
 const desc =
   aboutUsHistory.metaDescription ??
   intro1?.text?.slice(0, 160) ??
   aboutUsHistory.title;
 ---
-<BaseLayout title={aboutUsHistory.title} description={desc} padForHeader={false}>
-  <AboutHero
-    eyebrow={`${aboutUsHistory.eyebrow} · Established 1979`}
-    title={aboutUsHistory.title}
-    subtitle={aboutUsHistory.subtitle}
-    watermark="1979"
-    stats={[
-      { label: 'Founded', value: '1979' },
-      { label: 'Markets', value: '65' },
-      { label: 'Sectors', value: '4' },
-    ]}
-  />
+<BaseLayout title={`${aboutUsHistory.title} — DEMO`} description={desc} padForHeader={false}>
+
+  {/* Scroll-progress bar — thin brand-green line at top, scales 0 → 1 as page scrolls */}
+  <div aria-hidden="true" data-scroll-progress class="fixed top-0 left-0 right-0 h-[2px] bg-brand-500 z-50 origin-left pointer-events-none" style="transform: scaleX(0);"></div>
+
+  {/* ===== COVER HERO — full-bleed founder image with brand wash ===== */}
+  <section class="relative min-h-[88vh] flex items-end text-surface overflow-hidden">
+    <img
+      data-hero-parallax
+      src="/images/about/founder-vintage.jpg"
+      alt="Founder Antonis Protopapas in an early Elysée greenhouse"
+      class="absolute inset-0 w-full h-full object-cover will-change-transform"
+    />
+    <div aria-hidden="true" class="absolute inset-0 bg-gradient-to-b from-ink/45 via-ink/15 to-ink/75"></div>
+    <div aria-hidden="true" class="absolute inset-0 bg-brand-500/25"></div>
+
+    <Container size="xl" class="relative pt-40 md:pt-48 pb-16 md:pb-24 w-full">
+      <p data-reveal class="text-[11px] md:text-xs uppercase tracking-[0.4em] text-surface/85 mb-8">
+        {aboutUsHistory.eyebrow} · Heritage · Since 1979
+      </p>
+      <h1 data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[0.92] tracking-tight text-surface" style="font-size: clamp(3rem, 9vw, 8rem); max-width: 14ch;">
+        Built one decade at a time.
+      </h1>
+      <p data-reveal data-reveal-delay="240" class="mt-8 max-w-2xl text-base md:text-lg text-surface/85 leading-relaxed">
+        From a Cypriot greenhouse in the 1970s to a piping and irrigation manufacturer shipping to 65 destinations — the story of Elysée Irrigation, founded 16 April 1979.
+      </p>
+      <div data-reveal data-reveal-delay="360" class="mt-14 md:mt-20 flex items-center gap-4 text-[11px] uppercase tracking-[0.3em] text-surface/70">
+        <span aria-hidden="true" class="h-px w-12 bg-surface/50"></span>
+        <span>{aboutUsHistory.title}</span>
+      </div>
+    </Container>
+  </section>
 
   <AboutSubNav currentPath={Astro.url.pathname} />
 
-  {/* ===== CHAPTER 01 — ORIGINS (centered header + editorial 2-column body) ===== */}
-  <Section bg="default" spacing="lg">
-    <Container size="lg">
-      <AboutChapterHeader
-        number="01"
-        label="1979 · Chapter One"
-        title="Origins"
-        variant="centered"
-      />
+  {/* ===== STAT BAND — dedicated, animated counters ===== */}
+  {stats && (
+    <section class="bg-surface border-b border-ink/10">
+      <Container size="xl" class="py-16 md:py-24">
+        <p data-reveal class="text-[11px] md:text-xs uppercase tracking-[0.3em] text-brand-500 mb-10 md:mb-14">By the numbers</p>
+        <dl class="grid grid-cols-2 md:grid-cols-4 gap-px bg-ink/10 border border-ink/10">
+          {stats.items.map((s) => (
+            <div class="bg-surface p-8 md:p-10">
+              <dd data-counter={s.value} class="font-display font-heavy leading-none tracking-tight text-brand-500" style="font-size: clamp(2.5rem, 6vw, 5rem);">{s.value}</dd>
+              <dt class="mt-4 md:mt-5 text-[10px] md:text-xs uppercase tracking-[0.25em] text-ink/60">{s.label}</dt>
+            </div>
+          ))}
+        </dl>
+      </Container>
+    </section>
+  )}
 
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 max-w-6xl mx-auto">
+  {/* ===== ORIGINS — three editorial moments: lead, story+image, facts ribbon ===== */}
+  {intro1 && (
+    <Section bg="alt" spacing="lg">
+      <Container size="xl">
 
-        {/* Prose column — magazine layout with drop cap on lead */}
-        <div class="lg:col-span-8 space-y-6 md:space-y-7">
-          {intro1 && (
-            <p
-              data-reveal
-              class="text-lg md:text-xl text-ink leading-[1.7] font-light
-                     first-letter:font-display first-letter:font-heavy
-                     first-letter:text-7xl md:first-letter:text-8xl
-                     first-letter:float-left first-letter:mr-3 first-letter:mt-1
-                     first-letter:leading-[0.85] first-letter:text-brand-500"
-            >
-              {intro1.text}
+        {/* 1. LEAD MOMENT — eyebrow + display pull-quote + italic tail */}
+        <header class="max-w-5xl mb-14 md:mb-20">
+          <p data-reveal class="text-[11px] uppercase tracking-[0.4em] text-brand-500 mb-6 md:mb-8">Origins · 1979</p>
+          <h2 data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[1.02] tracking-tight text-ink" style="font-size: clamp(2rem, 5vw, 4.5rem);">
+            {originsHeadline}
+          </h2>
+          {originsTail && (
+            <p data-reveal data-reveal-delay="240" class="mt-6 md:mt-8 max-w-2xl text-base md:text-lg text-ink/65 italic">
+              {originsTail}
             </p>
           )}
-          {intro2 && (
-            <p data-reveal data-reveal-delay="80" class="text-base md:text-lg text-ink/80 leading-relaxed">
-              {intro2.text}
-            </p>
-          )}
-          {intro3 && (
-            <p data-reveal data-reveal-delay="160" class="text-base md:text-lg text-ink/80 leading-relaxed">
-              {intro3.text}
-            </p>
-          )}
+        </header>
+
+        {/* 2. STORY + IMAGE — 2-col split, prose with drop-cap left, photo right */}
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-start">
+          <div class="lg:col-span-5 order-2 lg:order-1 space-y-6 md:space-y-7">
+            {originsBody && (
+              <p data-reveal class="text-base md:text-lg text-ink/85 leading-[1.75] first-letter:font-heavy first-letter:float-left first-letter:mr-3 first-letter:mt-2 first-letter:text-6xl md:first-letter:text-7xl first-letter:leading-[0.85] first-letter:text-brand-500">
+                {originsBody}
+              </p>
+            )}
+            {intro2 && (
+              <p data-reveal data-reveal-delay="80" class="text-base md:text-lg text-ink/80 leading-[1.75]">{intro2.text}</p>
+            )}
+            {intro3 && (
+              <p data-reveal data-reveal-delay="160" class="text-base md:text-lg text-ink/80 leading-[1.75]">{intro3.text}</p>
+            )}
+          </div>
+
+          <figure data-reveal data-reveal-delay="180" class="lg:col-span-7 order-1 lg:order-2 relative aspect-[3/2] overflow-hidden">
+            <img
+              src="/images/about/pipes-warehouse.jpg"
+              alt="Stacked pipes — the early Elysée product line"
+              class="absolute inset-0 w-full h-full object-cover"
+            />
+            <div aria-hidden="true" class="absolute inset-0 bg-gradient-to-t from-ink/55 via-ink/10 to-transparent"></div>
+            <figcaption class="absolute bottom-6 md:bottom-8 left-6 md:left-8 right-6 md:right-8 text-surface">
+              <p class="text-[10px] uppercase tracking-[0.3em] text-surface/80">From the workshop</p>
+              <p class="mt-2 font-display font-heavy text-lg md:text-2xl leading-tight">Drippers, sprinklers, fittings</p>
+            </figcaption>
+          </figure>
         </div>
 
-        {/* Sticky Origin Record card */}
-        <aside class="lg:col-span-4">
-          <div
-            data-reveal
-            data-reveal-delay="120"
-            class="lg:sticky lg:top-32 bg-surface-alt border-l-4 border-brand-500 p-6 md:p-8"
-          >
-            <div class="flex items-center gap-2 mb-6">
-              <span aria-hidden="true" class="inline-block w-2 h-2 bg-brand-500 rounded-full"></span>
-              <p class="text-[10px] uppercase tracking-[0.3em] text-brand-500 font-semibold">
-                Origin Record
-              </p>
-            </div>
-
-            <dl class="space-y-5">
-              <div data-reveal data-reveal-delay="200">
-                <dt class="text-[10px] uppercase tracking-[0.25em] text-ink/55 mb-1.5">Founded</dt>
-                <dd class="font-display font-heavy text-lg md:text-xl text-ink leading-tight">
-                  16 April 1979
-                </dd>
-              </div>
-              <div data-reveal data-reveal-delay="260" class="border-t border-ink/10 pt-5">
-                <dt class="text-[10px] uppercase tracking-[0.25em] text-ink/55 mb-1.5">Founder</dt>
-                <dd class="font-display font-heavy text-lg md:text-xl text-ink leading-tight">
-                  Antonis Protopapas
-                </dd>
-              </div>
-              <div data-reveal data-reveal-delay="320" class="border-t border-ink/10 pt-5">
-                <dt class="text-[10px] uppercase tracking-[0.25em] text-ink/55 mb-1.5">Place</dt>
-                <dd class="font-display font-heavy text-lg md:text-xl text-ink leading-tight">
-                  Nicosia, Cyprus
-                </dd>
-              </div>
-              <div data-reveal data-reveal-delay="380" class="border-t border-ink/10 pt-5">
-                <dt class="text-[10px] uppercase tracking-[0.25em] text-ink/55 mb-1.5">First venture</dt>
-                <dd class="font-display font-heavy text-lg md:text-xl text-ink leading-tight">
-                  Elysée Irrigation
-                </dd>
-              </div>
-            </dl>
-
-            <div data-reveal data-reveal-delay="440" class="mt-8 pt-6 border-t border-ink/10">
-              <p class="text-xs text-ink/60 leading-relaxed italic">
-                "Streaming water, streaming life" — a phrase that would later become the company's founding conviction.
-              </p>
-            </div>
+        {/* 3. FOUNDING FACTS RIBBON — bigger, scannable, primary + secondary text per tile */}
+        <dl data-reveal class="mt-16 md:mt-24 grid grid-cols-1 sm:grid-cols-3 gap-px bg-ink/15 border border-ink/15">
+          <div class="bg-surface p-6 md:p-8">
+            <dt class="text-[10px] uppercase tracking-[0.3em] text-ink/55">Founded</dt>
+            <dd class="mt-3 font-display font-heavy text-2xl md:text-3xl text-ink leading-tight">16 April 1979</dd>
+            <p class="mt-2 text-xs text-ink/60">Nicosia, Cyprus</p>
           </div>
-        </aside>
+          <div class="bg-surface p-6 md:p-8">
+            <dt class="text-[10px] uppercase tracking-[0.3em] text-ink/55">Founder</dt>
+            <dd class="mt-3 font-display font-heavy text-2xl md:text-3xl text-ink leading-tight">Antonis Protopapas</dd>
+            <p class="mt-2 text-xs text-ink/60">Agriculture &amp; physics</p>
+          </div>
+          <div class="bg-surface p-6 md:p-8">
+            <dt class="text-[10px] uppercase tracking-[0.3em] text-ink/55">Original venture</dt>
+            <dd class="mt-3 font-display font-heavy text-2xl md:text-3xl text-ink leading-tight">Flowers</dd>
+            <p class="mt-2 text-xs text-ink/60">for the Middle East</p>
+          </div>
+        </dl>
+
+      </Container>
+    </Section>
+  )}
+
+  {/* ===== MILESTONES — decade-grouped scroll experience ===== */}
+  {timeline && (
+    <section class="bg-surface relative overflow-hidden">
+      <div aria-hidden="true" class="absolute inset-0 opacity-[0.05]" style="background-image: radial-gradient(circle at center, #000 1px, transparent 1px); background-size: 28px 28px;"></div>
+      <Container size="lg" class="relative py-24 md:py-36">
+        <div class="max-w-3xl mb-16 md:mb-24">
+          <p data-reveal class="text-[11px] uppercase tracking-[0.3em] text-brand-500 mb-6">A timeline of forty-seven years</p>
+          <h2 data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[0.95] tracking-tight text-ink" style="font-size: clamp(2.25rem, 5.5vw, 4.5rem);">
+            Milestones, by the decade.
+          </h2>
+        </div>
+
+        <div class="space-y-0">
+          {decades.map((d, di) => (
+            <div data-decade-group class="grid grid-cols-12 gap-6 md:gap-12 border-t border-ink/15 py-10 md:py-16 first:border-t-0 first:pt-0">
+              {/* Sticky decade label — colour brightens when its group is the active reading zone */}
+              <header class="col-span-12 md:col-span-3">
+                <div data-decade-label class="md:sticky md:top-44">
+                  <p data-reveal class="text-[10px] uppercase tracking-[0.3em] text-ink/55 mb-2">Decade {String(di + 1).padStart(2, '0')}</p>
+                  <h3
+                    data-reveal
+                    data-reveal-delay="80"
+                    class={`decade-mark font-display font-heavy leading-none tracking-tight ${d.label === 'Today' ? 'is-today' : ''}`}
+                    style="font-size: clamp(2.5rem, 4.5vw, 4rem);"
+                  >
+                    {d.label}
+                  </h3>
+                  <p data-reveal data-reveal-delay="160" class="mt-3 text-xs text-ink/55">{d.items.length} milestone{d.items.length === 1 ? '' : 's'}</p>
+                </div>
+              </header>
+
+              {/* Milestones within the decade */}
+              <ol class="col-span-12 md:col-span-9 space-y-10 md:space-y-12">
+                {d.items.map((item, i) => {
+                  const img = getTimelineImage(item.year);
+                  return (
+                    <li
+                      data-reveal
+                      data-reveal-delay={String(i * 60)}
+                      data-timeline-trigger
+                      data-timeline-year={item.year}
+                      data-timeline-image={img?.src ?? ''}
+                      data-timeline-image-alt={img?.alt ?? ''}
+                      class="group cursor-default"
+                    >
+                      <div class="flex items-baseline gap-4 mb-3">
+                        <span class="font-display font-heavy text-2xl md:text-3xl text-brand-500 tracking-tight">
+                          {item.year}
+                        </span>
+                        <span aria-hidden="true" class="flex-1 h-px bg-ink/15"></span>
+                      </div>
+                      {item.title && (
+                        <h4 class="font-display font-heavy text-lg md:text-xl text-ink mb-2 max-w-2xl">{item.title}</h4>
+                      )}
+                      <p class="text-base md:text-lg text-ink/80 leading-[1.7] max-w-2xl">{item.body}</p>
+                    </li>
+                  );
+                })}
+              </ol>
+            </div>
+          ))}
+        </div>
+      </Container>
+
+      {/* ===== Hover image tooltip (desktop only, fixed-positioned, GSAP-driven) ===== */}
+      <div
+        data-timeline-tooltip
+        aria-hidden="true"
+        class="pointer-events-none fixed z-50 hidden lg:block"
+        style="width: 280px; height: 210px;"
+      >
+        <div class="relative h-full w-full overflow-hidden rounded-[14px] bg-surface shadow-[0_16px_40px_rgba(0,0,0,0.18)] ring-1 ring-black/10">
+          <img
+            data-timeline-tooltip-img
+            src=""
+            alt=""
+            loading="lazy"
+            decoding="async"
+            class="absolute inset-0 h-full w-full object-cover"
+          />
+        </div>
+      </div>
+    </section>
+  )}
+
+  {/* ===== FOUNDING CONVICTION — full-bleed cinematic moment ===== */}
+  {callout && (
+    <section class="relative min-h-[70vh] flex items-center text-surface overflow-hidden">
+      <img
+        src="/images/about/water-flowing.jpg"
+        alt=""
+        aria-hidden="true"
+        class="absolute inset-0 w-full h-full object-cover"
+      />
+      <div aria-hidden="true" class="absolute inset-0 bg-ink/65"></div>
+      <div aria-hidden="true" class="absolute inset-0 bg-brand-500/30 mix-blend-multiply"></div>
+      <Container size="lg" class="relative py-24 md:py-36 w-full">
+        <div class="max-w-4xl mx-auto text-center">
+          <p data-reveal class="text-[11px] md:text-xs uppercase tracking-[0.4em] text-surface/70 mb-10">Our founding conviction</p>
+          <blockquote data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[1.02] tracking-tight" style="font-size: clamp(2.5rem, 7vw, 6rem);">
+            <span aria-hidden="true" class="text-surface/60">&ldquo;</span>{callout.title}<span aria-hidden="true" class="text-surface/60">&rdquo;</span>
+          </blockquote>
+          <p data-reveal data-reveal-delay="240" class="mt-10 md:mt-14 mx-auto max-w-2xl text-base md:text-lg text-surface/85 leading-relaxed">{callout.body}</p>
+        </div>
+      </Container>
+    </section>
+  )}
+
+  {/* ===== TODAY — sectors + distribution centres ===== */}
+  <Section bg="alt" spacing="lg">
+    <Container size="lg">
+      <div class="max-w-4xl mb-12 md:mb-16">
+        <p data-reveal class="text-[11px] uppercase tracking-[0.3em] text-brand-500 mb-6">Today</p>
+        <h2 data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[1.05] tracking-tight text-ink" style="font-size: clamp(1.75rem, 4vw, 3.25rem);">
+          65 markets. Four sectors. Three distribution hubs.
+        </h2>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-px bg-ink/15 border border-ink/15">
+        {/* Sectors */}
+        <div class="bg-surface p-8 md:p-10">
+          <p data-reveal class="text-[10px] uppercase tracking-[0.3em] text-ink/55 mb-6">Sectors served</p>
+          <ul class="space-y-3">
+            {sectors.map((s, i) => (
+              <li data-reveal data-reveal-delay={String(i * 60)} class="flex items-baseline gap-4">
+                <span class="font-display font-heavy text-[11px] uppercase tracking-[0.25em] text-brand-500">{String(i + 1).padStart(2, '0')}</span>
+                <span class="font-display font-heavy text-lg md:text-xl text-ink">{s}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        {/* Distribution centres */}
+        <div class="bg-surface p-8 md:p-10">
+          <p data-reveal class="text-[10px] uppercase tracking-[0.3em] text-ink/55 mb-6">Distribution centres</p>
+          <ul class="space-y-3">
+            {distributionCentres.map((c, i) => (
+              <li data-reveal data-reveal-delay={String(i * 60)} class="flex items-baseline gap-4">
+                <span class="font-display font-heavy text-[11px] uppercase tracking-[0.25em] text-brand-500">{String(i + 1).padStart(2, '0')}</span>
+                <span class="font-display font-heavy text-lg md:text-xl text-ink">{c}</span>
+              </li>
+            ))}
+          </ul>
+          <p data-reveal class="mt-8 text-sm text-ink/60 leading-relaxed border-t border-ink/15 pt-5">
+            Plus a network of local agents and sales representatives across all 65 markets.
+          </p>
+        </div>
       </div>
     </Container>
   </Section>
 
-  <AboutFigure
-    index={1}
-    src="/images/about/founder-vintage.jpg"
-    alt="Man tending young plants inside a commercial greenhouse"
-    caption="Founder Antonis Protopapas — early days of Elysée Irrigation, Nicosia."
-  />
-
-  {/* ===== CALLOUT — FOUNDING CONVICTION ===== */}
-  {callout && (
-    <Section bg="brand" spacing="lg">
-      <Container size="lg">
-        <div class="mx-auto max-w-3xl text-center">
-          <p data-reveal class="text-[11px] md:text-xs uppercase tracking-[0.3em] text-surface/70 mb-8">Our Founding Conviction</p>
-          <blockquote data-reveal data-reveal-delay="80" class="font-display font-heavy leading-[1.05] tracking-tight text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-surface">
-            <span aria-hidden="true" class="text-surface/50">&ldquo;</span>{callout.title}<span aria-hidden="true" class="text-surface/50">&rdquo;</span>
-          </blockquote>
-          <p data-reveal data-reveal-delay="160" class="mt-8 md:mt-10 text-base md:text-lg text-surface/90 leading-relaxed">{callout.body}</p>
-        </div>
-      </Container>
-    </Section>
-  )}
-
-  {/* ===== CHAPTER 02 — MILESTONES ===== */}
-  {timeline && (
-    <Section bg="default" spacing="lg">
-      <Container size="lg">
-        <AboutChapterHeader number="02" label="1989–2009 · Chapter Two" title="Milestones" variant="centered" />
-        <ol class="border-t border-ink/15">
-          {timeline.items.map((item, i) => {
-            const isLast = i === timeline.items.length - 1;
-            return (
-              <li data-reveal data-reveal-delay={String(i * 60)} class="grid grid-cols-12 gap-4 md:gap-8 py-8 md:py-10 border-b border-ink/15">
-                <div class="col-span-12 md:col-span-3">
-                  <div
-                    class={`font-display font-heavy leading-none tracking-tight text-3xl md:text-4xl lg:text-5xl ${
-                      isLast ? 'text-accent' : 'text-brand-500'
-                    }`}
-                  >{item.year}</div>
-                </div>
-                <div class="col-span-12 md:col-span-9 max-w-2xl">
-                  {item.title && (
-                    <h3 class="font-display font-heavy text-lg md:text-xl text-ink mb-2">{item.title}</h3>
-                  )}
-                  <p class="text-base md:text-lg text-ink/80 leading-relaxed">{item.body}</p>
-                </div>
-              </li>
-            );
-          })}
-        </ol>
-      </Container>
-    </Section>
-  )}
-
-  <AboutFigure
-    index={2}
-    src="/images/about/facility-exterior.jpg"
-    alt="Aerial view of a large industrial building complex in daylight"
-    caption="Ergates Industrial Area — Elysée manufacturing facility, in operation since 1989."
-  />
-
-  {/* ===== CHAPTER 03 — WHERE WE ARE TODAY ===== */}
-  {stats && (
-    <Section bg="alt" spacing="lg">
-      <Container size="lg">
-        <AboutChapterHeader number="03" label="Today · Chapter Three" title="Where we are today" variant="centered" />
-        <dl class="grid grid-cols-2 md:grid-cols-4 gap-y-12 gap-x-6 md:gap-x-10 border-y border-ink/15 py-12 md:py-16">
-          {stats.items.map((s, i) => (
-            <div data-reveal data-reveal-delay={String(i * 60)}>
-              <dd data-counter={s.value} class="font-display font-heavy leading-none tracking-tight text-5xl md:text-6xl lg:text-7xl text-brand-500">{s.value}</dd>
-              <dt class="mt-4 text-[10px] md:text-xs uppercase tracking-[0.25em] text-ink/60">{s.label}</dt>
-            </div>
-          ))}
-        </dl>
-        {sectorsP && (
-          <p data-reveal class="mt-12 md:mt-16 max-w-3xl text-lg md:text-xl text-ink/80 leading-relaxed">{sectorsP.text}</p>
-        )}
-      </Container>
-    </Section>
-  )}
-
-  {/* ===== CHAPTER 04 — WHERE IT STARTED ===== */}
+  {/* ===== WHERE IT STARTED — original products poster strip ===== */}
   {productList && (
     <Section bg="default" spacing="lg">
       <Container size="lg">
-        <AboutChapterHeader number="04" label="The original line · Chapter Four" title="Where it started" lead={productsLeadP?.text} variant="centered" />
-        <ul class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-px bg-ink/15 border border-ink/15">
-          {productList.items.map((p, i) => (
-            <li data-reveal data-reveal-delay={String(i * 60)} class="bg-surface p-6 md:p-8 min-h-[180px] flex flex-col justify-between">
-              <span class="font-display font-heavy text-[11px] uppercase tracking-[0.25em] text-brand-500">{String(i + 1).padStart(2, '0')}</span>
-              <span class="mt-8 font-display font-heavy leading-tight text-xl md:text-2xl text-ink">{p}</span>
-            </li>
-          ))}
+        <header class="max-w-3xl mb-14 md:mb-20">
+          <p data-reveal class="text-[11px] uppercase tracking-[0.3em] text-brand-500 mb-6">Where it started</p>
+          <h2 data-reveal data-reveal-delay="120" class="font-display font-heavy leading-tight tracking-tight text-ink" style="font-size: clamp(2rem, 5vw, 4rem);">
+            The original line.
+          </h2>
+          {productsLeadP && (
+            <p data-reveal data-reveal-delay="240" class="mt-6 text-base md:text-lg text-ink/75 leading-relaxed">{productsLeadP.text}</p>
+          )}
+        </header>
+        <ul class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2 md:gap-3">
+          {productList.items.map((p, i) => {
+            const href = productLinks[p];
+            return (
+              <li data-reveal data-reveal-delay={String(i * 60)}>
+                <a
+                  href={href ?? '#'}
+                  aria-label={`Browse the ${p} catalog`}
+                  class="group relative block bg-surface border border-ink/15 px-4 py-4 md:px-5 md:py-5 flex flex-col items-center justify-center text-center gap-2 overflow-hidden transition-[background-color,border-color,color,transform] duration-300 ease-out hover:bg-brand-500 hover:text-surface hover:border-brand-500 hover:-translate-y-0.5 cursor-pointer"
+                >
+                  <span class="font-display font-heavy text-[10px] uppercase tracking-[0.3em] text-brand-500 group-hover:text-surface/80 transition-colors duration-300">
+                    {String(i + 1).padStart(2, '0')}
+                  </span>
+                  <span class="font-display font-heavy leading-tight tracking-tight text-sm md:text-base">{p}</span>
+                </a>
+              </li>
+            );
+          })}
         </ul>
       </Container>
     </Section>
   )}
 
-  {closingP && <AboutClosingCta text={closingP.text} />}
+  {/* ===== CLOSING CTA — light green band ===== */}
+  {closingP && (
+    <section class="bg-brand-500/10">
+      <Container size="lg" class="py-16 md:py-20">
+        <div class="mx-auto max-w-2xl text-center">
+          <p data-reveal class="text-base md:text-lg text-ink/80 leading-relaxed">{closingP.text}</p>
+          <a
+            data-reveal
+            data-reveal-delay="160"
+            href="/contact/local/"
+            class="group cursor-pointer mt-8 md:mt-10 inline-flex items-center gap-3 px-6 py-3 border border-ink/40 hover:bg-ink hover:border-ink hover:text-surface text-ink text-[11px] md:text-xs uppercase tracking-[0.25em] transition-colors duration-200"
+          >
+            <span>Contact our network</span>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M5 12h14" />
+              <path d="m12 5 7 7-7 7" />
+            </svg>
+          </a>
+        </div>
+      </Container>
+    </section>
+  )}
+
+  {/* ===== SCROLL-DRIVEN ANIMATION LAYER ===== */}
+  <style is:inline>
+    /* Decade scroll-spy — labels start faded, brighten when their group is the active reading zone */
+    .decade-mark {
+      color: rgb(76 104 48 / 0.3);
+      transition: color 500ms cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .decade-mark.is-today { color: rgb(0 0 0 / 0.3); }
+    [data-decade-label][data-active] .decade-mark { color: rgb(76 104 48); }
+    [data-decade-label][data-active] .decade-mark.is-today { color: rgb(0 0 0); }
+  </style>
+  <script>
+    import { animate, scroll } from 'motion';
+
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!reduce) {
+      // 1. Scroll-progress bar — scaleX bound to page scroll
+      const bar = document.querySelector('[data-scroll-progress]') as HTMLElement | null;
+      if (bar) {
+        scroll(animate(bar, { transform: ['scaleX(0)', 'scaleX(1)'] }, { ease: 'linear' }));
+      }
+
+      // 2. Hero parallax — image translates slower than the page (gives depth on first scroll)
+      const heroImg = document.querySelector('[data-hero-parallax]') as HTMLElement | null;
+      const heroSection = heroImg?.closest('section') as HTMLElement | null;
+      if (heroImg && heroSection) {
+        scroll(
+          animate(heroImg, { transform: ['translateY(0)', 'translateY(15%)'] }, { ease: 'linear' }),
+          { target: heroSection, offset: ['start start', 'end start'] },
+        );
+      }
+
+      // 3. Figure zoom-in — every editorial figure image starts at scale(1.08) and eases to 1 when it enters view
+      const figureImgs = document.querySelectorAll('figure[data-reveal] img') as NodeListOf<HTMLImageElement>;
+      for (const img of figureImgs) {
+        img.style.transform = 'scale(1.08)';
+        img.style.transition = 'transform 1400ms cubic-bezier(0.22, 1, 0.36, 1)';
+      }
+      if (figureImgs.length > 0) {
+        const figObs = new IntersectionObserver(
+          (entries) => {
+            for (const e of entries) {
+              if (e.isIntersecting) {
+                (e.target as HTMLImageElement).style.transform = 'scale(1)';
+                figObs.unobserve(e.target);
+              }
+            }
+          },
+          { threshold: 0.2 },
+        );
+        figureImgs.forEach((img) => figObs.observe(img));
+      }
+
+      // 4. Decade scroll-spy — toggle data-active on the sticky label whose group is the active reading band
+      const decadeGroups = document.querySelectorAll('[data-decade-group]');
+      if (decadeGroups.length > 0) {
+        const decadeObs = new IntersectionObserver(
+          (entries) => {
+            for (const e of entries) {
+              const label = e.target.querySelector('[data-decade-label]') as HTMLElement | null;
+              if (!label) continue;
+              if (e.isIntersecting) label.dataset.active = 'true';
+              else delete label.dataset.active;
+            }
+          },
+          { threshold: 0, rootMargin: '-180px 0px -55% 0px' },
+        );
+        decadeGroups.forEach((g) => decadeObs.observe(g));
+      }
+    }
+  </script>
+
+  <script>
+    import '../../../scripts/history-timeline-hover.client';
+  </script>
 </BaseLayout>

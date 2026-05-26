@@ -3,22 +3,65 @@ import BaseLayout from '../../../layouts/BaseLayout.astro';
 import Container from '../../../components/Container.astro';
 import Section from '../../../components/Section.astro';
 import AboutSubNav from '../../../components/about/AboutSubNav.astro';
-import AboutHero from '../../../components/about/AboutHero.astro';
-import AboutFigure from '../../../components/about/AboutFigure.astro';
-import AboutChapterHeader from '../../../components/about/AboutChapterHeader.astro';
-import AboutClosingCta from '../../../components/about/AboutClosingCta.astro';
 import { aboutUsCompanyStructure } from '../../../data/site-content';
 
 const blocks = aboutUsCompanyStructure.blocks;
 const paragraphs = blocks.filter((b): b is Extract<typeof b, { kind: 'paragraph' }> => b.kind === 'paragraph');
-const callout = blocks.find((b): b is Extract<typeof b, { kind: 'callout' }> => b.kind === 'callout');
-const h3Headings = blocks.filter((b): b is Extract<typeof b, { kind: 'heading' }> => b.kind === 'heading' && b.level === 3);
-
 const [teamP1, teamP2, teamP3, divisionsLeadP, fittingsP, pipesP, qaP] = paragraphs;
-const divisionData = h3Headings.map((h, i) => {
-  const body = [fittingsP, pipesP, qaP][i];
-  return { title: h.text, body: body?.text ?? '' };
-});
+const callout = blocks.find((b): b is Extract<typeof b, { kind: 'callout' }> => b.kind === 'callout');
+
+// Reframe the three "Efficient Team" paragraphs as three operating principles
+// that read scannable. Titles are editorial paraphrases of each paragraph's
+// core idea — body text stays verbatim from the source.
+const teamAttributes = [
+  {
+    title: 'Flexible by design',
+    body:
+      teamP1?.text ??
+      'With flexible organizational structure, Elysée ensures a quick response to customer enquiries, orders and opportunities for collaboration. New products are developed every year and we regularly upgrade existing products to create a constantly growing range.',
+  },
+  {
+    title: 'Engineering at the front desk',
+    body:
+      teamP2?.text ??
+      "Our team of expert engineers and technical consultants is constantly available to offer technical advice to our clients on the use of Elysée's fittings and piping systems.",
+  },
+  {
+    title: 'Quality covers both sides',
+    body:
+      teamP3?.text ??
+      "We at Elysée realize that from a customer's perspective, the term \"quality\" covers both the product and the service. Our ever growing customer list reflects our determination to settle for nothing less.",
+  },
+];
+
+// Division cards — pair each h3 description paragraph with its image and a
+// click-through target so the section becomes navigable, not just decorative.
+const divisions = [
+  {
+    title: 'Fittings Division',
+    body: fittingsP?.text ?? '',
+    src: '/images/about/company-structure/fittings-division.jpg',
+    alt: 'Operator inspecting injection-moulded fittings on the production floor',
+    href: '/catalog/compression-fittings/',
+    label: 'Explore Fittings',
+  },
+  {
+    title: 'Pipes Division',
+    body: pipesP?.text ?? '',
+    src: '/images/about/company-structure/pipes-division.jpg',
+    alt: 'PVC and PE pipe stock arranged for outbound delivery',
+    href: '/catalog/polyethylene-pipes/',
+    label: 'Explore Pipes',
+  },
+  {
+    title: 'Quality Assurance Division',
+    body: qaP?.text ?? '',
+    src: '/images/about/company-structure/quality-assurance.jpg',
+    alt: 'Quality-control technician operating laboratory test equipment',
+    href: '/about-us/quality-certifications/',
+    label: 'See certifications',
+  },
+];
 
 const desc =
   aboutUsCompanyStructure.metaDescription ??
@@ -26,88 +69,301 @@ const desc =
   aboutUsCompanyStructure.title;
 ---
 <BaseLayout title={aboutUsCompanyStructure.title} description={desc} padForHeader={false}>
-  <AboutHero
-    eyebrow={`${aboutUsCompanyStructure.eyebrow} · Built for Quality`}
-    title={aboutUsCompanyStructure.title}
-    subtitle={aboutUsCompanyStructure.subtitle}
-    watermark="STRUCTURE"
-    stats={[
-      { label: 'Divisions', value: '3' },
-      { label: 'Items Produced', value: '1000+' },
-      { label: 'Pipe Range', value: '5–315mm' },
-    ]}
-  />
+
+  {/* Scroll-progress bar */}
+  <div aria-hidden="true" data-scroll-progress class="fixed top-0 left-0 right-0 h-[2px] bg-brand-500 z-50 origin-left pointer-events-none" style="transform: scaleX(0);"></div>
+
+  {/* ===== COVER HERO — full-bleed facility image with brand wash ===== */}
+  <section class="relative min-h-[88vh] flex items-end text-surface overflow-hidden">
+    <img
+      data-hero-parallax
+      src="/images/about/facility-exterior.jpg"
+      alt="Aerial view of the Elysée manufacturing facility, Ergates Industrial Area, Cyprus"
+      class="absolute inset-0 w-full h-full object-cover will-change-transform"
+    />
+    <div aria-hidden="true" class="absolute inset-0 bg-gradient-to-b from-ink/45 via-ink/15 to-ink/75"></div>
+    <div aria-hidden="true" class="absolute inset-0 bg-brand-500/25"></div>
+
+    <Container size="xl" class="relative pt-40 md:pt-48 pb-16 md:pb-24 w-full">
+      <p data-reveal class="text-[11px] md:text-xs uppercase tracking-[0.4em] text-surface/85 mb-8">
+        {aboutUsCompanyStructure.eyebrow} · Operations · Built for Quality
+      </p>
+      <h1 data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[0.92] tracking-tight text-surface" style="font-size: clamp(3rem, 9vw, 8rem); max-width: 14ch;">
+        An efficient team.<br/>A clear structure.
+      </h1>
+      <p data-reveal data-reveal-delay="240" class="mt-8 max-w-2xl text-base md:text-lg text-surface/85 leading-relaxed">
+        Three divisions, one workshop in Cyprus — engineered around quick response, certified quality, and a growing product range.
+      </p>
+      <div data-reveal data-reveal-delay="360" class="mt-14 md:mt-20 flex items-center gap-4 text-[11px] uppercase tracking-[0.3em] text-surface/70">
+        <span aria-hidden="true" class="h-px w-12 bg-surface/50"></span>
+        <span>{aboutUsCompanyStructure.title}</span>
+      </div>
+    </Container>
+  </section>
 
   <AboutSubNav currentPath={Astro.url.pathname} />
 
-  {/* ===== CHAPTER 01 — AN EFFICIENT TEAM (right variant) ===== */}
-  <Section bg="default" spacing="lg">
-    <Container size="lg">
-      <AboutChapterHeader
-        number="01"
-        label="Chapter One"
-        title="An Efficient Team"
-        variant="right"
-        maxWidth="wide"
-      />
-      <div class="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-16">
-        <div class="md:col-span-8 space-y-6 md:space-y-7">
-          {teamP1 && <p data-reveal class="text-lg md:text-xl text-ink leading-relaxed font-light">{teamP1.text}</p>}
-          {teamP2 && <p data-reveal data-reveal-delay="80" class="text-base md:text-lg text-ink/80 leading-relaxed">{teamP2.text}</p>}
-          {teamP3 && <p data-reveal data-reveal-delay="160" class="text-base md:text-lg text-ink/80 leading-relaxed">{teamP3.text}</p>}
+  {/* ===== STAT BAND — animated counters ===== */}
+  <section class="bg-surface border-b border-ink/10">
+    <Container size="xl" class="py-16 md:py-24">
+      <p data-reveal class="text-[11px] md:text-xs uppercase tracking-[0.3em] text-brand-500 mb-10 md:mb-14">By the numbers</p>
+      <dl class="grid grid-cols-2 md:grid-cols-4 gap-px bg-ink/10 border border-ink/10">
+        <div class="bg-surface p-8 md:p-10">
+          <dd data-counter="3" class="font-display font-heavy leading-none tracking-tight text-brand-500" style="font-size: clamp(2.5rem, 6vw, 5rem);">3</dd>
+          <dt class="mt-4 md:mt-5 text-[10px] md:text-xs uppercase tracking-[0.25em] text-ink/60">Production divisions</dt>
         </div>
-      </div>
+        <div class="bg-surface p-8 md:p-10">
+          <dd data-counter="1000+" class="font-display font-heavy leading-none tracking-tight text-brand-500" style="font-size: clamp(2.5rem, 6vw, 5rem);">1000+</dd>
+          <dt class="mt-4 md:mt-5 text-[10px] md:text-xs uppercase tracking-[0.25em] text-ink/60">Fittings catalogued</dt>
+        </div>
+        <div class="bg-surface p-8 md:p-10">
+          <dd class="font-display font-heavy leading-none tracking-tight text-brand-500" style="font-size: clamp(2.5rem, 6vw, 5rem);">5–315<span class="text-2xl md:text-3xl ml-1">mm</span></dd>
+          <dt class="mt-4 md:mt-5 text-[10px] md:text-xs uppercase tracking-[0.25em] text-ink/60">Pipe diameter range</dt>
+        </div>
+        <div class="bg-surface p-8 md:p-10">
+          <dd data-counter="1998" class="font-display font-heavy leading-none tracking-tight text-brand-500" style="font-size: clamp(2.5rem, 6vw, 5rem);">1998</dd>
+          <dt class="mt-4 md:mt-5 text-[10px] md:text-xs uppercase tracking-[0.25em] text-ink/60">ISO 9001 since</dt>
+        </div>
+      </dl>
     </Container>
-  </Section>
+  </section>
 
-  <AboutFigure
-    index={1}
-    src="/images/about/engineers-meeting.jpg"
-    alt="Group of professionals gathered around a laptop in an office setting"
-    caption="Elysée engineers and technical consultants — collaborative product development on the Ergates site."
-  />
+  {/* ===== AN EFFICIENT TEAM — sticky portrait + numbered principle cards ===== */}
+  {teamP1 && (
+    <Section bg="alt" spacing="lg">
+      <Container size="xl">
 
-  {/* ===== CALLOUT — GREEN OPERATIONS (ink variant) ===== */}
-  {callout && (
-    <Section bg="ink" spacing="lg">
-      <Container size="lg">
-        <div class="mx-auto max-w-3xl text-center">
-          <p data-reveal class="text-[11px] md:text-xs uppercase tracking-[0.3em] text-accent mb-8">Our Operating Principle</p>
-          <blockquote data-reveal data-reveal-delay="80" class="font-display font-heavy leading-[1.05] tracking-tight text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-surface">
-            <span aria-hidden="true" class="text-brand-500">&ldquo;</span>{callout.title}<span aria-hidden="true" class="text-brand-500">&rdquo;</span>
-          </blockquote>
-          <p data-reveal data-reveal-delay="160" class="mt-8 md:mt-10 text-base md:text-lg text-surface/80 leading-relaxed">{callout.body}</p>
+        <header class="max-w-3xl mb-12 md:mb-16">
+          <p data-reveal class="text-[11px] uppercase tracking-[0.4em] text-brand-500 mb-6 md:mb-8">An efficient team</p>
+          <h2 data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[1.02] tracking-tight text-ink" style="font-size: clamp(2.25rem, 5.5vw, 4.5rem);">
+            Built for the customer's call.
+          </h2>
+          <p data-reveal data-reveal-delay="240" class="mt-6 md:mt-8 text-base md:text-lg text-ink/70 leading-relaxed">
+            Three operating principles that keep our workshop in step with the people we ship to — from a first phone call through a custom order to a long-term partnership.
+          </p>
+        </header>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-start">
+
+          <figure data-reveal="right" class="lg:col-span-5 relative aspect-[4/5] overflow-hidden lg:sticky lg:top-32">
+            <img
+              data-img-zoom
+              src="/images/about/engineers-meeting.jpg"
+              alt="Elysée engineers and technical consultants reviewing plans"
+              loading="lazy"
+              decoding="async"
+              class="absolute inset-0 w-full h-full object-cover"
+            />
+            <div aria-hidden="true" class="absolute inset-0 bg-gradient-to-t from-ink/65 via-ink/10 to-transparent"></div>
+            <figcaption class="absolute bottom-6 md:bottom-8 left-6 md:left-8 right-6 md:right-8 text-surface">
+              <p class="text-[10px] uppercase tracking-[0.3em] text-surface/80">From the floor</p>
+              <p class="mt-2 font-display font-heavy text-xl md:text-2xl leading-tight">Engineers, consultants, makers</p>
+              <div aria-hidden="true" class="mt-4 h-px w-12 bg-surface/50"></div>
+              <p class="mt-3 text-xs md:text-sm text-surface/80 leading-relaxed max-w-xs">
+                Three principles. One workshop in Ergates.
+              </p>
+            </figcaption>
+          </figure>
+
+          <ol class="lg:col-span-7 space-y-4 md:space-y-5">
+            {teamAttributes.map((a, i) => {
+              const num = String(i + 1).padStart(2, '0');
+              return (
+                <li data-reveal="left" data-reveal-delay={String(i * 120)}>
+                  <article class="group relative bg-surface border border-ink/15 p-6 md:p-8 transition-[border-color,transform,box-shadow] duration-300 ease-out hover:-translate-y-0.5 hover:border-brand-500 hover:shadow-[0_8px_24px_-12px_rgba(0,0,0,0.15)]">
+                    <div class="flex items-start gap-5 md:gap-8">
+                      <span
+                        aria-hidden="true"
+                        class="shrink-0 font-display font-heavy text-brand-500/25 group-hover:text-brand-500 transition-colors duration-300 leading-none tracking-tight"
+                        style="font-size: clamp(2.5rem, 4.5vw, 4rem);"
+                      >
+                        {num}
+                      </span>
+                      <div class="flex-1 min-w-0">
+                        <p class="text-[10px] md:text-[11px] uppercase tracking-[0.25em] text-ink/55">Principle {num}</p>
+                        <h3 class="mt-2 font-display font-heavy text-xl md:text-2xl text-ink leading-tight">{a.title}</h3>
+                        <div aria-hidden="true" class="mt-4 h-px w-10 bg-brand-500 transition-[width] duration-500 ease-out group-hover:w-20"></div>
+                        <p class="mt-4 md:mt-5 text-base text-ink/80 leading-[1.7]">{a.body}</p>
+                      </div>
+                    </div>
+                  </article>
+                </li>
+              );
+            })}
+          </ol>
         </div>
+
       </Container>
     </Section>
   )}
 
-  {/* ===== CHAPTER 02 — OUR DIVISIONS ===== */}
-  <Section bg="alt" spacing="lg">
-    <Container size="lg">
-      <AboutChapterHeader number="02" label="Chapter Two" title="Our Divisions" lead={divisionsLeadP?.text} maxWidth="wide" variant="right" />
-      <ol class="grid grid-cols-1 md:grid-cols-3 gap-px bg-ink/15 border border-ink/15">
-        {divisionData.map((d, i) => {
-          const accentClass = ['border-t-brand-500', 'border-t-brand-light', 'border-t-accent'][i] || 'border-t-brand-500';
+  {/* ===== GREEN OPERATIONS — full-bleed cinematic moment ===== */}
+  {callout && (
+    <section class="relative min-h-[70vh] flex items-center text-surface overflow-hidden">
+      <img
+        src="/images/about/pipe-stack.jpg"
+        alt=""
+        aria-hidden="true"
+        class="absolute inset-0 w-full h-full object-cover"
+      />
+      <div aria-hidden="true" class="absolute inset-0 bg-ink/65"></div>
+      <div aria-hidden="true" class="absolute inset-0 bg-brand-500/30 mix-blend-multiply"></div>
+      <Container size="lg" class="relative py-24 md:py-36 w-full">
+        <div class="max-w-4xl mx-auto text-center">
+          <p data-reveal class="text-[11px] md:text-xs uppercase tracking-[0.4em] text-surface/70 mb-10">Our operating principle</p>
+          <blockquote data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[1.02] tracking-tight" style="font-size: clamp(2.5rem, 7vw, 6rem);">
+            <span aria-hidden="true" class="text-surface/60">&ldquo;</span>{callout.title}<span aria-hidden="true" class="text-surface/60">&rdquo;</span>
+          </blockquote>
+          <p data-reveal data-reveal-delay="240" class="mt-10 md:mt-14 mx-auto max-w-2xl text-base md:text-lg text-surface/85 leading-relaxed">{callout.body}</p>
+        </div>
+      </Container>
+    </section>
+  )}
+
+  {/* ===== OUR DIVISIONS — alternating editorial rows ===== */}
+  <section class="bg-surface relative overflow-hidden">
+    <Container size="xl" class="relative py-24 md:py-36">
+      <div class="max-w-3xl mb-16 md:mb-24">
+        <p data-reveal class="text-[11px] uppercase tracking-[0.3em] text-brand-500 mb-6">Our divisions</p>
+        <h2 data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[0.95] tracking-tight text-ink" style="font-size: clamp(2.25rem, 5.5vw, 4.5rem);">
+          Three teams, one workshop.
+        </h2>
+        {divisionsLeadP && (
+          <p data-reveal data-reveal-delay="240" class="mt-6 md:mt-8 text-base md:text-lg text-ink/75 leading-relaxed">{divisionsLeadP.text}</p>
+        )}
+      </div>
+
+      <ol class="space-y-20 md:space-y-28">
+        {divisions.map((d, i) => {
+          const reverse = i % 2 === 1;
+          const num = String(i + 1).padStart(2, '0');
+          // Figure enters from the side it lives on (left for non-reversed rows,
+          // right for reversed rows). Content enters from the opposite side.
+          // data-reveal="right" = element TRAVELS rightward, i.e. appears FROM THE LEFT.
+          // data-reveal="left"  = element TRAVELS leftward,  i.e. appears FROM THE RIGHT.
+          const figureDir = reverse ? 'left' : 'right';
+          const contentDir = reverse ? 'right' : 'left';
           return (
-            <li data-reveal data-reveal-delay={String(i * 60)} class={`bg-surface p-8 md:p-10 min-h-[280px] flex flex-col border-t-4 ${accentClass}`}>
-              <span class="font-display font-heavy text-[11px] uppercase tracking-[0.25em] text-brand-500">Division {String(i + 1).padStart(2, '0')}</span>
-              <h3 class="mt-6 md:mt-8 font-display font-heavy leading-tight text-2xl md:text-3xl text-ink">{d.title}</h3>
-              <div aria-hidden="true" class="mt-4 h-px w-12 bg-accent"></div>
-              <p class="mt-5 text-base md:text-lg text-ink/80 leading-relaxed flex-1">{d.body}</p>
+            <li class="border-t border-ink/10 pt-16 md:pt-24 first:border-t-0 first:pt-0">
+              <a
+                href={d.href}
+                aria-label={`${d.label} — ${d.title}`}
+                class="group grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 items-center cursor-pointer"
+              >
+                <figure
+                  data-reveal={figureDir}
+                  class={`relative aspect-[4/3] overflow-hidden lg:col-span-7 ${reverse ? 'lg:order-2' : ''}`}
+                >
+                  <img
+                    data-img-zoom
+                    src={d.src}
+                    alt={d.alt}
+                    loading="lazy"
+                    decoding="async"
+                    class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
+                  />
+                  <div aria-hidden="true" class="absolute inset-0 bg-gradient-to-tr from-ink/30 via-transparent to-transparent transition-opacity duration-500 group-hover:opacity-60"></div>
+                </figure>
+
+                <div
+                  data-reveal={contentDir}
+                  data-reveal-delay="120"
+                  class={`lg:col-span-5 relative ${reverse ? 'lg:order-1' : ''}`}
+                >
+                  <span
+                    aria-hidden="true"
+                    class="pointer-events-none absolute -top-10 -left-3 lg:left-0 font-display font-heavy text-brand-500/10 leading-none select-none transition-colors duration-500 group-hover:text-brand-500/25"
+                    style="font-size: clamp(8rem, 14vw, 14rem);"
+                  >
+                    {num}
+                  </span>
+                  <p class="relative text-[11px] uppercase tracking-[0.3em] text-brand-500">Division {num}</p>
+                  <h3 class="relative mt-4 font-display font-heavy text-3xl md:text-4xl text-ink leading-[1.05] tracking-tight">{d.title}</h3>
+                  <div aria-hidden="true" class="relative mt-5 h-px w-12 bg-brand-500 transition-[width] duration-500 ease-out group-hover:w-24"></div>
+                  <p class="relative mt-6 text-base md:text-lg text-ink/80 leading-[1.65]">{d.body}</p>
+                  <span class="relative mt-8 inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.25em] text-ink transition-colors duration-300 group-hover:text-brand-500">
+                    <span class="font-heavy">{d.label}</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <path d="M5 12h14" />
+                      <path d="m12 5 7 7-7 7" />
+                    </svg>
+                  </span>
+                </div>
+              </a>
             </li>
           );
         })}
       </ol>
     </Container>
-  </Section>
+  </section>
 
-  <AboutFigure
-    index={2}
-    src="/images/about/pipes-warehouse.jpg"
-    alt="Large stack of metal pipes arranged in rows in an outdoor yard"
-    caption="Fittings and Pipes — over 1,000 items manufactured on-site at the Ergates Industrial Area facility."
-  />
+  {/* ===== CLOSING CTA — light green band ===== */}
+  <section class="bg-brand-500/10">
+    <Container size="lg" class="py-16 md:py-20">
+      <div class="mx-auto max-w-2xl text-center">
+        <p data-reveal class="text-base md:text-lg text-ink/80 leading-relaxed">
+          Want to discuss a specific application, a custom OEM run, or a project specification? Our engineers and technical consultants are available to advise.
+        </p>
+        <a
+          data-reveal
+          data-reveal-delay="160"
+          href="/contact/local/"
+          class="group cursor-pointer mt-8 md:mt-10 inline-flex items-center gap-3 px-6 py-3 border border-ink/40 hover:bg-ink hover:border-ink hover:text-surface text-ink text-[11px] md:text-xs uppercase tracking-[0.25em] transition-colors duration-200"
+        >
+          <span>Contact our network</span>
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M5 12h14" />
+            <path d="m12 5 7 7-7 7" />
+          </svg>
+        </a>
+      </div>
+    </Container>
+  </section>
 
-  <AboutClosingCta text="Want to discuss a specific application, a custom OEM run, or a project specification? Our engineers and technical consultants are available to advise." />
+  {/* ===== SCROLL-DRIVEN ANIMATION LAYER ===== */}
+  <script>
+    import { animate, scroll } from 'motion';
+
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!reduce) {
+      // 1. Scroll-progress bar
+      const bar = document.querySelector('[data-scroll-progress]') as HTMLElement | null;
+      if (bar) {
+        scroll(animate(bar, { transform: ['scaleX(0)', 'scaleX(1)'] }, { ease: 'linear' }));
+      }
+
+      // 2. Hero parallax
+      const heroImg = document.querySelector('[data-hero-parallax]') as HTMLElement | null;
+      const heroSection = heroImg?.closest('section') as HTMLElement | null;
+      if (heroImg && heroSection) {
+        scroll(
+          animate(heroImg, { transform: ['translateY(0)', 'translateY(15%)'] }, { ease: 'linear' }),
+          { target: heroSection, offset: ['start start', 'end start'] },
+        );
+      }
+
+      // 3. Figure zoom-in — for the editorial spread figure and the division thumbnails
+      const zoomImgs = document.querySelectorAll('figure[data-reveal] img, [data-img-zoom]') as NodeListOf<HTMLImageElement>;
+      for (const img of zoomImgs) {
+        // Skip the hero (handled by parallax, not zoom)
+        if (img.dataset.heroParallax !== undefined) continue;
+        img.style.transform = 'scale(1.08)';
+        img.style.transition = 'transform 1400ms cubic-bezier(0.22, 1, 0.36, 1)';
+      }
+      if (zoomImgs.length > 0) {
+        const figObs = new IntersectionObserver(
+          (entries) => {
+            for (const e of entries) {
+              if (e.isIntersecting) {
+                (e.target as HTMLImageElement).style.transform = 'scale(1)';
+                figObs.unobserve(e.target);
+              }
+            }
+          },
+          { threshold: 0.2 },
+        );
+        zoomImgs.forEach((img) => figObs.observe(img));
+      }
+    }
+  </script>
 </BaseLayout>
