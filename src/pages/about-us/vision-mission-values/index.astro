@@ -1,12 +1,26 @@
 ---
+/**
+ * Vision · Mission · Values.
+ *
+ * URL: /about-us/vision-mission-values/
+ * Source of truth content: `aboutUsVisionMissionValues` from src/data/site-content.ts.
+ *
+ * Design mirrors the elaborate company-structure / history templates:
+ *   - Scroll-progress bar at the very top (motion scroll(animate(...)))
+ *   - Cover hero with parallax background image + brand wash
+ *   - AboutSubNav
+ *   - Framework section — sticky intro + GSAP-driven vertical cascade
+ *   - Editorial intro ("Why we exist") with sticky aside + drop-cap prose
+ *   - Cinematic VISION moment (full-bleed bg, brand wash, large quote)
+ *   - W·I·S·E acronym strip — GSAP-driven letter-by-letter reveal
+ *   - MISSION section with sticky portrait + numbered principle cards (5)
+ *   - VALUES section — 3×2 editorial grid (6 cards)
+ *   - Closing CTA on light brand wash
+ */
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import Container from '../../../components/Container.astro';
 import Section from '../../../components/Section.astro';
 import AboutSubNav from '../../../components/about/AboutSubNav.astro';
-import AboutHero from '../../../components/about/AboutHero.astro';
-import AboutFigure from '../../../components/about/AboutFigure.astro';
-import AboutChapterHeader from '../../../components/about/AboutChapterHeader.astro';
-import AboutClosingCta from '../../../components/about/AboutClosingCta.astro';
 import { aboutUsVisionMissionValues } from '../../../data/site-content';
 
 const blocks = aboutUsVisionMissionValues.blocks;
@@ -15,117 +29,564 @@ const [introP, visionP] = paragraphs;
 const missionList = blocks.find((b): b is Extract<typeof b, { kind: 'list' }> => b.kind === 'list');
 const valueList = blocks.find((b): b is Extract<typeof b, { kind: 'valuelist' }> => b.kind === 'valuelist');
 
+// Editorial paraphrase + image for each of the 5 mission pillars. Body text
+// stays verbatim from the source.
+const missionPillars = (missionList?.items ?? []).map((body, i) => {
+  const meta = [
+    { title: 'Preserve water for future generations', src: '/images/about/water-flowing.jpg', alt: 'Macro photo of two water droplets mid-splash' },
+    { title: 'Give partners a competitive edge',       src: '/images/about/engineers-meeting.jpg', alt: 'Elysée engineers and consultants reviewing plans' },
+    { title: 'Lead our people to full potential',      src: '/images/about/pipes-warehouse.jpg', alt: 'PE and PVC pipe stock at the Ergates facility' },
+    { title: 'Sustainable, profitable growth',          src: '/images/about/hq-aerial.jpg', alt: 'Aerial view of Ergates Industrial Area' },
+    { title: 'Better Earth, better society',            src: '/images/about/qa-lab.jpg', alt: 'Quality-assurance technician in the laboratory' },
+  ][i] ?? { title: '', src: '/images/about/facility-exterior.jpg', alt: '' };
+  return { ...meta, body };
+});
+
+// 6 values — labels from the source; one-line meaning added in-page.
+const valueMeanings: Record<string, string> = {
+  'Business-driven innovation':                   'Every new product starts with a real-world problem we have heard from customers.',
+  'Green thinking':                               'Sustainability lives in our procurement, our process and our packaging.',
+  'Customer commitment and value creation':       'Long-term partnerships beat one-off transactions, every time.',
+  'Quality and continuous improvement':           'ISO 9001 since 1998. Improvement is a daily practice, not a target.',
+  'Respect each other and win as a team':         'Three generations of family business — built on accountability.',
+  'Promote personal and professional growth':     'We invest in the people who build, ship and back our products.',
+};
+
+const wiseLetters = [
+  { letter: 'W', word: 'Worldwide',  meaning: 'Engineered for 65 destinations across four sectors.' },
+  { letter: 'I', word: 'Innovative', meaning: 'Forty years of R&D, six EU-funded research programmes.' },
+  { letter: 'S', word: 'Smart',      meaning: 'Designed for easy install, low maintenance, long life.' },
+  { letter: 'E', word: 'Easy-to-Use', meaning: 'Field-proven fittings, intuitive systems, technical advice on call.' },
+];
+
 const desc =
   aboutUsVisionMissionValues.metaDescription ??
   introP?.text?.slice(0, 160) ??
   aboutUsVisionMissionValues.title;
 ---
 <BaseLayout title={aboutUsVisionMissionValues.title} description={desc} padForHeader={false}>
-  <AboutHero
-    eyebrow={`${aboutUsVisionMissionValues.eyebrow} · What Drives Us`}
-    title="Vision, Mission & Values"
-    subtitle={aboutUsVisionMissionValues.subtitle}
-    watermark="WISE"
-    stats={[
-      { label: 'Vision', value: '01' },
-      { label: 'Mission Pillars', value: '05' },
-      { label: 'Core Values', value: '06' },
-    ]}
-  />
+
+  {/* Scroll-progress bar */}
+  <div aria-hidden="true" data-scroll-progress class="fixed top-0 left-0 right-0 h-[2px] bg-brand-500 z-50 origin-left pointer-events-none" style="transform: scaleX(0);"></div>
+
+  {/* ===== COVER HERO — full-bleed water image + brand wash ===== */}
+  <section class="relative min-h-[88vh] flex items-end text-surface overflow-hidden">
+    <img
+      data-hero-parallax
+      src="/images/about/water-flowing.jpg"
+      alt="Streaming water — Elysée brand image used as the Vision, Mission & Values opener"
+      class="absolute inset-0 w-full h-full object-cover will-change-transform"
+    />
+    <div aria-hidden="true" class="absolute inset-0 bg-gradient-to-b from-ink/45 via-ink/20 to-ink/80"></div>
+    <div aria-hidden="true" class="absolute inset-0 bg-brand-500/30"></div>
+
+    <Container size="xl" class="relative pt-40 md:pt-48 pb-16 md:pb-24 w-full">
+      <p data-reveal class="text-[11px] md:text-xs uppercase tracking-[0.4em] text-surface/85 mb-8">
+        {aboutUsVisionMissionValues.eyebrow} · What drives us
+      </p>
+      <h1 data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[0.92] tracking-tight text-surface" style="font-size: clamp(3rem, 9vw, 8rem); max-width: 14ch;">
+        Vision, Mission<br/>&amp; Values.
+      </h1>
+      <p data-reveal data-reveal-delay="240" class="mt-8 max-w-2xl text-base md:text-lg text-surface/85 leading-relaxed">
+        {aboutUsVisionMissionValues.subtitle} A one-vision, five-mission, six-value framework — and the W·I·S·E acronym that ties them together.
+      </p>
+      <div data-reveal data-reveal-delay="360" class="mt-14 md:mt-20 flex items-center gap-4 text-[11px] uppercase tracking-[0.3em] text-surface/70">
+        <span aria-hidden="true" class="h-px w-12 bg-surface/50"></span>
+        <span>{aboutUsVisionMissionValues.title}</span>
+      </div>
+    </Container>
+  </section>
 
   <AboutSubNav currentPath={Astro.url.pathname} />
 
-  {/* ===== INTRO — CUSTOMER-FIRST PHILOSOPHY ===== */}
+  {/* ===== FRAMEWORK — sticky intro + scroll-drawn vertical cascade =====
+       Reads as a hierarchy (Vision → Mission → Values → W·I·S·E) rather
+       than four equal stat tiles. The vertical line on the right column
+       fills in via GSAP ScrollTrigger as the user scrolls through. */}
+  <section class="bg-surface border-b border-ink/10">
+    <Container size="xl" class="py-20 md:py-28">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16">
+
+        {/* Left — sticky editorial intro */}
+        <aside class="lg:col-span-5">
+          <div class="lg:sticky lg:top-32">
+            <p data-reveal class="text-[11px] uppercase tracking-[0.4em] text-brand-500 mb-6 md:mb-8">By the framework</p>
+            <h2 data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[1.02] tracking-tight text-ink" style="font-size: clamp(2rem, 4.5vw, 3.5rem);">
+              One vision. Five pillars. Six values.
+            </h2>
+            <div aria-hidden="true" class="mt-8 h-px w-12 bg-brand-500"></div>
+            <p data-reveal data-reveal-delay="240" class="mt-6 max-w-sm text-base md:text-lg text-ink/70 leading-[1.7]">
+              Vision sets the destination. Mission sets the pace. Values set the tone. The W·I·S·E framework is the test we hold every product, every process and every partnership to.
+            </p>
+            <dl data-reveal data-reveal-delay="360" class="mt-10 grid grid-cols-3 gap-4 max-w-sm">
+              <div class="border-t border-ink/15 pt-3">
+                <dt class="text-[10px] uppercase tracking-[0.25em] text-ink/55">Reads</dt>
+                <dd class="mt-1 text-sm font-display font-heavy text-ink">Top → bottom</dd>
+              </div>
+              <div class="border-t border-ink/15 pt-3">
+                <dt class="text-[10px] uppercase tracking-[0.25em] text-ink/55">Anchor</dt>
+                <dd class="mt-1 text-sm font-display font-heavy text-brand-500">W·I·S·E</dd>
+              </div>
+              <div class="border-t border-ink/15 pt-3">
+                <dt class="text-[10px] uppercase tracking-[0.25em] text-ink/55">Updated</dt>
+                <dd class="mt-1 text-sm font-display font-heavy text-ink">2026</dd>
+              </div>
+            </dl>
+          </div>
+        </aside>
+
+        {/* Right — vertical framework cascade */}
+        <div class="lg:col-span-7 relative">
+
+          {/* Connector rail — light background line + brand fill that scales-Y on scroll (GSAP) */}
+          <div aria-hidden="true" class="absolute left-[14px] top-3 bottom-3 w-px bg-ink/10 hidden sm:block">
+            <div data-framework-rail class="absolute inset-0 bg-brand-500 origin-top" style="transform: scaleY(0);"></div>
+          </div>
+
+          <ol class="space-y-10 md:space-y-14">
+
+            {/* Step 01 — Vision */}
+            <li data-framework-step class="relative sm:pl-12">
+              <span
+                data-framework-dot
+                aria-hidden="true"
+                class="absolute left-0 top-1.5 hidden sm:flex w-[30px] h-[30px] rounded-full bg-surface border-2 border-brand-500 text-brand-500 text-[10px] font-bold items-center justify-center"
+              >01</span>
+              <p class="text-[10px] uppercase tracking-[0.3em] text-ink/55">Chapter One · Destination</p>
+              <div class="mt-2 flex items-baseline gap-4 md:gap-5">
+                <span data-counter="1" class="font-display font-heavy leading-none tracking-tight text-brand-500" style="font-size: clamp(3rem, 7vw, 5.5rem);">1</span>
+                <h3 class="font-display font-heavy text-2xl md:text-3xl text-ink leading-tight">Vision</h3>
+              </div>
+              <p class="mt-4 text-base md:text-lg text-ink/75 leading-[1.65] max-w-lg">
+                A single statement of where Elysée is heading — green leadership worldwide through W·I·S·E piping systems.
+              </p>
+            </li>
+
+            {/* Step 02 — Mission */}
+            <li data-framework-step class="relative sm:pl-12">
+              <span
+                data-framework-dot
+                aria-hidden="true"
+                class="absolute left-0 top-1.5 hidden sm:flex w-[30px] h-[30px] rounded-full bg-surface border-2 border-brand-500 text-brand-500 text-[10px] font-bold items-center justify-center"
+              >02</span>
+              <p class="text-[10px] uppercase tracking-[0.3em] text-ink/55">Chapter Two · Pace</p>
+              <div class="mt-2 flex items-baseline gap-4 md:gap-5">
+                <span data-counter="5" class="font-display font-heavy leading-none tracking-tight text-brand-500" style="font-size: clamp(3rem, 7vw, 5.5rem);">5</span>
+                <h3 class="font-display font-heavy text-2xl md:text-3xl text-ink leading-tight">Mission pillars</h3>
+              </div>
+              <p class="mt-4 text-base md:text-lg text-ink/75 leading-[1.65] max-w-lg">
+                Five commitments that translate the Vision into day-to-day priorities — for customers, people, growth and the planet.
+              </p>
+            </li>
+
+            {/* Step 03 — Values */}
+            <li data-framework-step class="relative sm:pl-12">
+              <span
+                data-framework-dot
+                aria-hidden="true"
+                class="absolute left-0 top-1.5 hidden sm:flex w-[30px] h-[30px] rounded-full bg-surface border-2 border-brand-500 text-brand-500 text-[10px] font-bold items-center justify-center"
+              >03</span>
+              <p class="text-[10px] uppercase tracking-[0.3em] text-ink/55">Chapter Three · Tone</p>
+              <div class="mt-2 flex items-baseline gap-4 md:gap-5">
+                <span data-counter="6" class="font-display font-heavy leading-none tracking-tight text-brand-500" style="font-size: clamp(3rem, 7vw, 5.5rem);">6</span>
+                <h3 class="font-display font-heavy text-2xl md:text-3xl text-ink leading-tight">Core values</h3>
+              </div>
+              <p class="mt-4 text-base md:text-lg text-ink/75 leading-[1.65] max-w-lg">
+                Six principles that guide how we work with each other, with our customers and with the environment we operate in.
+              </p>
+            </li>
+
+            {/* Step 04 — Framework anchor (filled dot — visually distinct) */}
+            <li data-framework-step class="relative sm:pl-12">
+              <span
+                data-framework-dot
+                aria-hidden="true"
+                class="absolute left-0 top-1.5 hidden sm:flex w-[30px] h-[30px] rounded-full bg-brand-500 text-surface text-[10px] font-bold items-center justify-center shadow-[0_0_0_4px_var(--color-surface)]"
+              >★</span>
+              <p class="text-[10px] uppercase tracking-[0.3em] text-brand-500">Anchor · The test</p>
+              <div class="mt-2 flex items-baseline gap-4 md:gap-5 flex-wrap">
+                <span class="font-display font-heavy leading-none tracking-tight text-brand-500 whitespace-nowrap" style="font-size: clamp(2.5rem, 6vw, 4.5rem);">W·I·S·E</span>
+                <h3 class="font-display font-heavy text-2xl md:text-3xl text-ink leading-tight">Framework</h3>
+              </div>
+              <p class="mt-4 text-base md:text-lg text-ink/75 leading-[1.65] max-w-lg">
+                Worldwide. Innovative. Smart. Easy-to-Use. The four words we test every product, process and partnership against.
+              </p>
+            </li>
+          </ol>
+        </div>
+      </div>
+    </Container>
+  </section>
+
+  {/* ===== WHY WE EXIST — sticky label + drop-cap prose ===== */}
   {introP && (
-    <Section bg="default" spacing="lg">
-      <Container size="lg">
-        <div class="mx-auto max-w-3xl">
-          <p data-reveal class="text-[11px] md:text-xs uppercase tracking-[0.3em] text-ink/60 mb-6">Why we exist</p>
-          <p data-reveal data-reveal-delay="80" class="font-display font-heavy leading-[1.15] tracking-tight text-2xl md:text-3xl lg:text-4xl text-ink">
-            {introP.text}
-          </p>
-        </div>
-      </Container>
-    </Section>
-  )}
-
-  {/* ===== CHAPTER 01 — VISION (full-bleed brand band) ===== */}
-  {visionP && (
-    <Section bg="brand" spacing="lg">
-      <Container size="lg">
-        <div class="mx-auto max-w-3xl text-center">
-          <p data-reveal class="text-[11px] md:text-xs uppercase tracking-[0.3em] text-surface/70 mb-6">Chapter One · Our Vision</p>
-          <blockquote data-reveal data-reveal-delay="80" class="font-display font-heavy leading-[1.05] tracking-tight text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-surface">
-            <span aria-hidden="true" class="text-surface/50">&ldquo;</span>{visionP.text.replace(/\.$/, '')}<span aria-hidden="true" class="text-surface/50">.&rdquo;</span>
-          </blockquote>
-          <p data-reveal data-reveal-delay="160" class="mt-8 md:mt-10 text-sm md:text-base text-surface/80 uppercase tracking-[0.3em]">
-            W · I · S · E — Worldwide · Innovative · Smart · Easy-to-Use
-          </p>
-        </div>
-      </Container>
-    </Section>
-  )}
-
-  <AboutFigure
-    index={1}
-    src="/images/about/water-flowing.jpg"
-    alt="Macro photograph of two colliding water droplets mid-splash"
-    caption="Streaming Water, Streaming Life — Elysée's brand promise translated into product design and operating practice."
-  />
-
-  {/* ===== CHAPTER 02 — MISSION ===== */}
-  {missionList && (
-    <Section bg="default" spacing="lg">
-      <Container size="lg">
-        <AboutChapterHeader
-          number="02"
-          label="Chapter Two"
-          title="Our Mission"
-          lead="Five commitments that translate the Vision into day-to-day priorities — for our customers, our people, our growth, and the planet."
-          maxWidth="wide"
-          variant="inline"
-        />
-        <ol class="border-t border-ink/15">
-          {missionList.items.map((item, i) => (
-            <li data-reveal data-reveal-delay={String(i * 60)} class="grid grid-cols-12 gap-4 md:gap-8 py-8 md:py-10 border-b border-ink/15">
-              <div class="col-span-12 md:col-span-2">
-                <div class="font-display font-heavy leading-none tracking-tight text-4xl md:text-5xl text-brand-500">
-                  {String(i + 1).padStart(2, '0')}
-                </div>
-              </div>
-              <div class="col-span-12 md:col-span-10 max-w-3xl">
-                <p class="text-lg md:text-xl text-ink leading-relaxed">{item}</p>
-              </div>
-            </li>
-          ))}
-        </ol>
-      </Container>
-    </Section>
-  )}
-
-  {/* ===== CHAPTER 03 — VALUES ===== */}
-  {valueList && (
     <Section bg="alt" spacing="lg">
-      <Container size="lg">
-        <AboutChapterHeader
-          number="03"
-          label="Chapter Three"
-          title="Our Values"
-          lead="Six principles that guide how we work — with each other, with our customers, and with the environment we operate in."
-          maxWidth="wide"
-          variant="inline"
-        />
-        <ul class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px bg-ink/15 border border-ink/15">
-          {valueList.items.map((item, i) => (
-            <li data-reveal data-reveal-delay={String(i * 60)} class="bg-surface p-8 md:p-10 min-h-[180px] flex flex-col justify-between">
-              <span class="font-display font-heavy text-[11px] uppercase tracking-[0.25em] text-brand-500">Value {String(i + 1).padStart(2, '0')}</span>
-              <span class="mt-6 md:mt-8 font-display font-heavy leading-tight text-xl md:text-2xl text-ink">{item.label}</span>
-            </li>
-          ))}
+      <Container size="xl">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16">
+          <aside class="lg:col-span-4">
+            <div class="lg:sticky lg:top-32">
+              <p data-reveal class="text-[11px] uppercase tracking-[0.4em] text-brand-500 mb-6 md:mb-8">Why we exist</p>
+              <h2 data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[1.02] tracking-tight text-ink" style="font-size: clamp(2rem, 4.5vw, 3.5rem);">
+                Customer-first, by design.
+              </h2>
+              <div aria-hidden="true" class="mt-8 h-px w-12 bg-brand-500"></div>
+              <p data-reveal data-reveal-delay="240" class="mt-6 max-w-xs text-sm text-ink/60 leading-relaxed">
+                Three sentences that set the operating philosophy for the entire company.
+              </p>
+            </div>
+          </aside>
+          <div class="lg:col-span-8 lg:pt-2">
+            <p
+              data-reveal
+              data-reveal-delay="160"
+              class="text-lg md:text-xl text-ink leading-[1.65]
+                     first-letter:font-display first-letter:font-heavy
+                     first-letter:text-7xl md:first-letter:text-8xl
+                     first-letter:float-left first-letter:mr-3 first-letter:mt-1
+                     first-letter:leading-[0.85] first-letter:text-brand-500"
+            >
+              {introP.text}
+            </p>
+          </div>
+        </div>
+      </Container>
+    </Section>
+  )}
+
+  {/* ===== VISION — cinematic full-bleed moment ===== */}
+  {visionP && (
+    <section class="relative min-h-[75vh] flex items-center text-surface overflow-hidden">
+      <img
+        src="/images/about/facility-exterior.jpg"
+        alt=""
+        aria-hidden="true"
+        class="absolute inset-0 w-full h-full object-cover"
+      />
+      <div aria-hidden="true" class="absolute inset-0 bg-ink/65"></div>
+      <div aria-hidden="true" class="absolute inset-0 bg-brand-500/35 mix-blend-multiply"></div>
+      <Container size="lg" class="relative py-24 md:py-36 w-full">
+        <div class="max-w-4xl mx-auto text-center">
+          <p data-reveal class="text-[11px] md:text-xs uppercase tracking-[0.4em] text-surface/75 mb-10">Chapter One · Our Vision</p>
+          <blockquote data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[1.02] tracking-tight" style="font-size: clamp(2.5rem, 7vw, 6rem);">
+            <span aria-hidden="true" class="text-surface/55">&ldquo;</span>{visionP.text.replace(/\.$/, '')}<span aria-hidden="true" class="text-surface/55">.&rdquo;</span>
+          </blockquote>
+          <p data-reveal data-reveal-delay="240" class="mt-10 md:mt-14 text-sm md:text-base text-surface/80 uppercase tracking-[0.35em]">
+            W · I · S · E
+          </p>
+        </div>
+      </Container>
+    </section>
+  )}
+
+  {/* ===== W·I·S·E ACRONYM STRIP — GSAP letter-by-letter reveal ===== */}
+  <section class="bg-surface border-b border-ink/10">
+    <Container size="xl" class="py-20 md:py-28">
+      <header class="max-w-3xl mb-12 md:mb-16">
+        <p data-reveal class="text-[11px] uppercase tracking-[0.4em] text-brand-500 mb-6 md:mb-8">The W·I·S·E framework</p>
+        <h2 data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[1.02] tracking-tight text-ink" style="font-size: clamp(2rem, 5vw, 4rem);">
+          Four letters, one operating philosophy.
+        </h2>
+        <p data-reveal data-reveal-delay="240" class="mt-6 md:mt-8 text-base md:text-lg text-ink/70 leading-relaxed">
+          Every product, every process, every partnership is tested against four words. They appear together as W·I·S·E — and they precede the Vision, the Mission, and every Value below.
+        </p>
+      </header>
+      <div data-wise-row class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-px bg-ink/10 border border-ink/10">
+        {wiseLetters.map((w, i) => (
+          <article data-wise-card class="bg-surface p-8 md:p-10 flex flex-col gap-5 min-h-[260px]">
+            <span
+              data-wise-letter
+              aria-hidden="true"
+              class="font-display font-heavy leading-none tracking-tighter text-brand-500"
+              style="font-size: clamp(4.5rem, 9vw, 7rem);"
+            >
+              {w.letter}
+            </span>
+            <div>
+              <p class="text-[10px] uppercase tracking-[0.3em] text-ink/55">Letter {String(i + 1).padStart(2, '0')}</p>
+              <h3 class="mt-2 font-display font-heavy text-xl md:text-2xl text-ink leading-tight">{w.word}</h3>
+              <div aria-hidden="true" class="mt-4 h-px w-10 bg-brand-500"></div>
+              <p class="mt-4 text-sm md:text-base text-ink/75 leading-[1.6]">{w.meaning}</p>
+            </div>
+          </article>
+        ))}
+      </div>
+    </Container>
+  </section>
+
+  {/* ===== MISSION — sticky portrait + numbered principle cards ===== */}
+  {missionList && (
+    <Section bg="alt" spacing="lg">
+      <Container size="xl">
+        <header class="max-w-3xl mb-12 md:mb-16">
+          <p data-reveal class="text-[11px] uppercase tracking-[0.4em] text-brand-500 mb-6 md:mb-8">Chapter Two · Our Mission</p>
+          <h2 data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[1.02] tracking-tight text-ink" style="font-size: clamp(2.25rem, 5.5vw, 4.5rem);">
+            Five commitments. One workshop.
+          </h2>
+          <p data-reveal data-reveal-delay="240" class="mt-6 md:mt-8 text-base md:text-lg text-ink/70 leading-relaxed">
+            Five commitments translate the Vision into day-to-day priorities — for our customers, our people, our growth, and the planet.
+          </p>
+        </header>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-start">
+
+          <figure data-reveal="right" class="lg:col-span-5 relative aspect-[4/5] overflow-hidden lg:sticky lg:top-32">
+            <img
+              data-img-zoom
+              src="/images/about/water-flowing.jpg"
+              alt="Streaming water — Elysée's founding image"
+              loading="lazy"
+              decoding="async"
+              class="absolute inset-0 w-full h-full object-cover"
+            />
+            <div aria-hidden="true" class="absolute inset-0 bg-gradient-to-t from-ink/70 via-ink/15 to-transparent"></div>
+            <figcaption class="absolute bottom-6 md:bottom-8 left-6 md:left-8 right-6 md:right-8 text-surface">
+              <p class="text-[10px] uppercase tracking-[0.3em] text-surface/80">Mission anchor</p>
+              <p class="mt-2 font-display font-heavy text-xl md:text-2xl leading-tight">Streaming water, streaming life</p>
+              <div aria-hidden="true" class="mt-4 h-px w-12 bg-surface/50"></div>
+              <p class="mt-3 text-xs md:text-sm text-surface/80 leading-relaxed max-w-xs">
+                Five pillars that turn the brand promise into practice.
+              </p>
+            </figcaption>
+          </figure>
+
+          <ol class="lg:col-span-7 space-y-4 md:space-y-5">
+            {missionPillars.map((m, i) => {
+              const num = String(i + 1).padStart(2, '0');
+              return (
+                <li data-reveal="left" data-reveal-delay={String(i * 100)}>
+                  <article class="group relative bg-surface border border-ink/15 p-6 md:p-8 transition-[border-color,transform,box-shadow] duration-300 ease-out hover:-translate-y-0.5 hover:border-brand-500 hover:shadow-[0_8px_24px_-12px_rgba(0,0,0,0.15)]">
+                    <div class="flex items-start gap-5 md:gap-8">
+                      <span
+                        aria-hidden="true"
+                        class="shrink-0 font-display font-heavy text-brand-500/25 group-hover:text-brand-500 transition-colors duration-300 leading-none tracking-tight"
+                        style="font-size: clamp(2.5rem, 4.5vw, 4rem);"
+                      >
+                        {num}
+                      </span>
+                      <div class="flex-1 min-w-0">
+                        <p class="text-[10px] md:text-[11px] uppercase tracking-[0.25em] text-ink/55">Pillar {num}</p>
+                        <h3 class="mt-2 font-display font-heavy text-xl md:text-2xl text-ink leading-tight">{m.title}</h3>
+                        <div aria-hidden="true" class="mt-4 h-px w-10 bg-brand-500 transition-[width] duration-500 ease-out group-hover:w-20"></div>
+                        <p class="mt-4 md:mt-5 text-base text-ink/80 leading-[1.7]">{m.body}</p>
+                      </div>
+                    </div>
+                  </article>
+                </li>
+              );
+            })}
+          </ol>
+        </div>
+      </Container>
+    </Section>
+  )}
+
+  {/* ===== VALUES — 3×2 editorial grid ===== */}
+  {valueList && (
+    <section class="bg-surface relative overflow-hidden">
+      <Container size="xl" class="relative py-24 md:py-36">
+        <div class="max-w-3xl mb-16 md:mb-20">
+          <p data-reveal class="text-[11px] uppercase tracking-[0.3em] text-brand-500 mb-6">Chapter Three · Our Values</p>
+          <h2 data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[0.95] tracking-tight text-ink" style="font-size: clamp(2.25rem, 5.5vw, 4.5rem);">
+            Six principles, not posters.
+          </h2>
+          <p data-reveal data-reveal-delay="240" class="mt-6 md:mt-8 text-base md:text-lg text-ink/75 leading-relaxed">
+            Six principles that guide how we work — with each other, with our customers and with the environment we operate in.
+          </p>
+        </div>
+
+        <ul class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px bg-ink/10 border border-ink/10">
+          {valueList.items.map((v, i) => {
+            const num = String(i + 1).padStart(2, '0');
+            const meaning = valueMeanings[v.label] ?? '';
+            return (
+              <li data-reveal data-reveal-delay={String(i * 80)}>
+                <article class="group relative bg-surface p-8 md:p-10 min-h-[280px] flex flex-col transition-[background-color] duration-300 hover:bg-surface-alt">
+                  <span
+                    aria-hidden="true"
+                    class="pointer-events-none absolute -top-2 right-4 font-display font-heavy text-brand-500/10 leading-none select-none transition-colors duration-500 group-hover:text-brand-500/25"
+                    style="font-size: clamp(5rem, 8vw, 8rem);"
+                  >
+                    {num}
+                  </span>
+                  <p class="relative text-[10px] uppercase tracking-[0.3em] text-brand-500">Value {num}</p>
+                  <h3 class="relative mt-6 font-display font-heavy text-xl md:text-2xl text-ink leading-tight">{v.label}</h3>
+                  <div aria-hidden="true" class="relative mt-4 h-px w-10 bg-brand-500 transition-[width] duration-500 ease-out group-hover:w-20"></div>
+                  <p class="relative mt-5 text-sm md:text-base text-ink/75 leading-[1.65] flex-1">{meaning}</p>
+                </article>
+              </li>
+            );
+          })}
         </ul>
       </Container>
-    </Section>
+    </section>
   )}
 
-  <AboutClosingCta text="Our Vision, Mission and Values are not posters on a wall — they shape every decision we make, from product design to customer service. Talk to us about how we put them into practice." />
+  {/* ===== CLOSING CTA — light green band ===== */}
+  <section class="bg-brand-500/10">
+    <Container size="lg" class="py-16 md:py-20">
+      <div class="mx-auto max-w-2xl text-center">
+        <p data-reveal class="text-base md:text-lg text-ink/80 leading-relaxed">
+          Our Vision, Mission and Values are not posters on a wall — they shape every decision we make, from product design to customer service. Talk to us about how we put them into practice.
+        </p>
+        <a
+          data-reveal
+          data-reveal-delay="160"
+          href="/contact/local/"
+          class="group cursor-pointer mt-8 md:mt-10 inline-flex items-center gap-3 px-6 py-3 border border-ink/40 hover:bg-ink hover:border-ink hover:text-surface text-ink text-[11px] md:text-xs uppercase tracking-[0.25em] transition-colors duration-200"
+        >
+          <span>Contact our network</span>
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M5 12h14" />
+            <path d="m12 5 7 7-7 7" />
+          </svg>
+        </a>
+      </div>
+    </Container>
+  </section>
+
+  {/* ===== SCROLL-DRIVEN ANIMATION LAYER (motion vanilla — matches other About pages) ===== */}
+  <script>
+    import { animate, scroll } from 'motion';
+
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!reduce) {
+      // 1. Scroll-progress bar
+      const bar = document.querySelector('[data-scroll-progress]') as HTMLElement | null;
+      if (bar) {
+        scroll(animate(bar, { transform: ['scaleX(0)', 'scaleX(1)'] }, { ease: 'linear' }));
+      }
+
+      // 2. Hero parallax
+      const heroImg = document.querySelector('[data-hero-parallax]') as HTMLElement | null;
+      const heroSection = heroImg?.closest('section') as HTMLElement | null;
+      if (heroImg && heroSection) {
+        scroll(
+          animate(heroImg, { transform: ['translateY(0)', 'translateY(15%)'] }, { ease: 'linear' }),
+          { target: heroSection, offset: ['start start', 'end start'] },
+        );
+      }
+
+      // 3. Figure zoom-in for sticky portrait + any data-img-zoom images
+      const zoomImgs = document.querySelectorAll('figure[data-reveal] img, [data-img-zoom]') as NodeListOf<HTMLImageElement>;
+      for (const img of zoomImgs) {
+        if (img.dataset.heroParallax !== undefined) continue;
+        img.style.transform = 'scale(1.08)';
+        img.style.transition = 'transform 1400ms cubic-bezier(0.22, 1, 0.36, 1)';
+      }
+      if (zoomImgs.length > 0) {
+        const figObs = new IntersectionObserver(
+          (entries) => {
+            for (const e of entries) {
+              if (e.isIntersecting) {
+                (e.target as HTMLImageElement).style.transform = 'scale(1)';
+                figObs.unobserve(e.target);
+              }
+            }
+          },
+          { threshold: 0.2 },
+        );
+        zoomImgs.forEach((img) => figObs.observe(img));
+      }
+    }
+  </script>
+
+  {/* ===== GSAP — Framework rail cascade + W·I·S·E letter reveal ===== */}
+  <script>
+    import { gsap } from 'gsap';
+    import { ScrollTrigger } from 'gsap/ScrollTrigger';
+    gsap.registerPlugin(ScrollTrigger);
+
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // === Framework cascade — vertical rail fills as the section enters view,
+    //     each dot pops when the rail reaches it, each step slides up in turn.
+    const rail = document.querySelector('[data-framework-rail]') as HTMLElement | null;
+    const steps = Array.from(document.querySelectorAll('[data-framework-step]')) as HTMLElement[];
+    const dots = Array.from(document.querySelectorAll('[data-framework-dot]')) as HTMLElement[];
+    if (rail && steps.length > 0 && !reduce) {
+      gsap.set(steps, { y: 24, opacity: 0 });
+      gsap.set(dots, { scale: 0 });
+
+      const railTrigger = rail.closest('section');
+      gsap.fromTo(
+        rail,
+        { scaleY: 0 },
+        {
+          scaleY: 1,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: railTrigger,
+            start: 'top 75%',
+            end: 'bottom 70%',
+            scrub: 0.6,
+          },
+        },
+      );
+      steps.forEach((step, i) => {
+        gsap.to(step, {
+          y: 0,
+          opacity: 1,
+          duration: 0.6,
+          ease: 'power3.out',
+          scrollTrigger: { trigger: step, start: 'top 80%', once: true },
+        });
+        const dot = dots[i];
+        if (dot) {
+          gsap.to(dot, {
+            scale: 1,
+            duration: 0.55,
+            ease: 'back.out(2.2)',
+            scrollTrigger: { trigger: step, start: 'top 78%', once: true },
+          });
+        }
+      });
+    } else if (rail && steps.length > 0 && reduce) {
+      rail.style.transform = 'scaleY(1)';
+      steps.forEach((s) => { s.style.opacity = '1'; s.style.transform = 'none'; });
+      dots.forEach((d) => { d.style.transform = 'scale(1)'; });
+    }
+
+    const row = document.querySelector('[data-wise-row]');
+    if (row && !reduce) {
+      const letters = row.querySelectorAll('[data-wise-letter]');
+      const cards = row.querySelectorAll('[data-wise-card]');
+
+      gsap.set(letters, { y: 80, opacity: 0, scale: 0.7 });
+      gsap.set(cards, { y: 24, opacity: 0 });
+
+      ScrollTrigger.create({
+        trigger: row,
+        start: 'top 75%',
+        once: true,
+        onEnter: () => {
+          gsap.to(cards, {
+            y: 0,
+            opacity: 1,
+            duration: 0.6,
+            ease: 'power3.out',
+            stagger: 0.08,
+          });
+          gsap.to(letters, {
+            y: 0,
+            opacity: 1,
+            scale: 1,
+            duration: 1.1,
+            ease: 'elastic.out(1, 0.55)',
+            stagger: 0.12,
+            delay: 0.15,
+          });
+        },
+      });
+
+      letters.forEach((el) => {
+        const node = el as HTMLElement;
+        node.addEventListener('mouseenter', () => {
+          gsap.to(node, { y: -6, scale: 1.05, duration: 0.3, ease: 'power2.out' });
+        });
+        node.addEventListener('mouseleave', () => {
+          gsap.to(node, { y: 0, scale: 1, duration: 0.4, ease: 'power2.out' });
+        });
+      });
+    }
+  </script>
 </BaseLayout>
