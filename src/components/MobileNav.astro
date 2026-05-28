@@ -1,5 +1,23 @@
 ---
-import { navGroups } from '../data/navigation';
+import { getCollection } from 'astro:content';
+import { navGroups, type NavItem } from '../data/navigation';
 import MobileMegaNav from './nav/MobileMegaNav.tsx';
+
+// Same pattern as PrimaryNav.astro — inject the 13 product categories into
+// the Products group so the mobile accordion shows all of them with images.
+const productItems: NavItem[] = (await getCollection('categories'))
+  .sort((a, b) => a.data.order - b.data.order)
+  .map((c) => ({
+    label: c.data.name,
+    // `?country=ask` forces the country picker to open even if a country is
+    // already stored — see the entry script in src/pages/catalog/[category]/index.astro.
+    href: `/catalog/${c.data.slug ?? c.id}/?country=ask`,
+    image: c.data.image,
+    caption: c.data.blurb,
+  }));
+
+const groupsForNav = navGroups.map((g) =>
+  g.title === 'Products' ? { ...g, items: productItems } : g,
+);
 ---
-<MobileMegaNav client:load groups={navGroups} />
+<MobileMegaNav client:load groups={groupsForNav} />

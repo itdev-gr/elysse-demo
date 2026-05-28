@@ -118,13 +118,29 @@ const productsJson = JSON.stringify(products);
       if (empty) return;
       const parts = window.location.pathname.split('/').filter(Boolean);
       const category = parts[1];
+
+      // `?country=ask` is appended by the Products mega-nav so the picker opens
+      // every time the user enters a category from there — even if a country is
+      // already stored. The param is stripped from the URL after a pick so a
+      // refresh or shared link doesn't re-fire the modal.
+      const params = new URLSearchParams(window.location.search);
+      const forceAsk = params.get('country') === 'ask';
+      const cleanUrl = () => {
+        if (!forceAsk) return;
+        const url = new URL(window.location.href);
+        url.searchParams.delete('country');
+        const search = url.searchParams.toString();
+        history.replaceState({}, '', url.pathname + (search ? `?${search}` : '') + url.hash);
+      };
+
       const stored = readCountry();
-      if (stored) {
+      if (stored && !forceAsk) {
         initCatalogPage(stored, category as any);
         return;
       }
       openCountryModal((picked) => {
         writeCountry(picked);
+        cleanUrl();
         initCatalogPage(picked, category as any);
       });
     }
