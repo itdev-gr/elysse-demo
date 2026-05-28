@@ -2,14 +2,12 @@ import { useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import type { MegaGroup } from '../../data/navigation';
 import MegaPanel from './MegaPanel';
-import ProductsMegaPanel, { type ProductCategoryCard } from './ProductsMegaPanel';
 
 type Props = {
   groups: MegaGroup[];
-  productCategories?: ProductCategoryCard[];
 };
 
-export default function MegaNav({ groups, productCategories = [] }: Props) {
+export default function MegaNav({ groups }: Props) {
   const [active, setActive] = useState<number | null>(null);
   const [headerH, setHeaderH] = useState<number>(80);
   const closeTimer = useRef<number | null>(null);
@@ -47,6 +45,16 @@ export default function MegaNav({ groups, productCategories = [] }: Props) {
     };
     document.addEventListener('keydown', onKey);
     return () => document.removeEventListener('keydown', onKey);
+  }, [active]);
+
+  // Announce open/close so other DOM islands (the Astro header script) can
+  // react without us coupling to a specific selector. The header listens for
+  // this and folds the open state into its opaque/transparent decision so the
+  // bar matches the panel surface while hovered.
+  useEffect(() => {
+    document.dispatchEvent(
+      new CustomEvent('meganav:state', { detail: { open: active !== null } }),
+    );
   }, [active]);
 
   const activeGroup = active !== null ? groups[active] : null;
@@ -118,22 +126,14 @@ export default function MegaNav({ groups, productCategories = [] }: Props) {
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: reduce ? 0.01 : 0.22, ease: [0.16, 1, 0.3, 1] }}
             style={{ top: headerH }}
-            className={`fixed inset-x-0 z-30 text-ink ${
-              activeGroup.variant === 'pill-tabs'
-                ? 'pt-4'
-                : 'bg-surface shadow-lg border-t border-ink/5'
-            }`}
+            className="fixed inset-x-0 z-30 text-ink bg-surface shadow-lg border-t border-ink/5"
             onMouseEnter={cancelClose}
             onMouseLeave={scheduleClose}
             role="region"
             aria-label={`${activeGroup.title} menu`}
           >
             <AnimatePresence mode="wait">
-              {activeGroup.variant === 'pill-tabs' ? (
-                <ProductsMegaPanel key={activeGroup.title} group={activeGroup} categories={productCategories} />
-              ) : (
-                <MegaPanel key={activeGroup.title} group={activeGroup} />
-              )}
+              <MegaPanel key={activeGroup.title} group={activeGroup} />
             </AnimatePresence>
           </motion.div>
         )}

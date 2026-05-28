@@ -3,14 +3,12 @@ import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import type { MegaGroup, NavItem } from '../../data/navigation';
 import { drawerVariants, backdropVariants, accordionVariants, EASE_OUT } from './megaAnim';
 import MegaThumb from './MegaThumb';
-import type { ProductCategoryCard } from './ProductsMegaPanel';
 
 type Props = {
   groups: MegaGroup[];
-  productCategories?: ProductCategoryCard[];
 };
 
-export default function MobileMegaNav({ groups, productCategories = [] }: Props) {
+export default function MobileMegaNav({ groups }: Props) {
   const [open, setOpen] = useState(false);
   const [expanded, setExpanded] = useState<number | null>(null);
   const triggerRef = useRef<HTMLButtonElement | null>(null);
@@ -140,63 +138,21 @@ export default function MobileMegaNav({ groups, productCategories = [] }: Props)
                               exit="closed"
                               className="overflow-hidden"
                             >
-                              {group.variant === 'pill-tabs' ? (
-                                <div className="px-4 pb-4">
-                                  {group.href && (
+                              <ul className="px-4 pb-4 space-y-3">
+                                {group.href && (
+                                  <li>
                                     <a
                                       href={group.href}
                                       className="block py-1 text-sm font-medium text-ink/90 hover:text-brand-500 transition-colors duration-fast"
                                     >
                                       {group.title} home
                                     </a>
-                                  )}
-                                  <ul className="mt-3 flex flex-col gap-2">
-                                    {productCategories.map((cat) => (
-                                      <li key={cat.slug}>
-                                        <a
-                                          href={`/catalog/${cat.slug}/`}
-                                          className="text-sm font-medium text-ink hover:text-brand-accent transition-colors duration-fast"
-                                        >
-                                          {cat.name}
-                                        </a>
-                                      </li>
-                                    ))}
-                                  </ul>
-                                  <ul className="mt-4 border-t border-ink/10 pt-3 flex flex-col gap-2">
-                                    {group.items.map((it) => {
-                                      const external = /^https?:\/\//.test(it.href);
-                                      return (
-                                        <li key={it.href}>
-                                          <a
-                                            href={it.href}
-                                            target={external ? '_blank' : undefined}
-                                            rel={external ? 'noopener noreferrer' : undefined}
-                                            className="text-xs uppercase tracking-wide text-ink/65 hover:text-brand-accent transition-colors duration-fast"
-                                          >
-                                            {it.label}
-                                          </a>
-                                        </li>
-                                      );
-                                    })}
-                                  </ul>
-                                </div>
-                              ) : (
-                                <ul className="px-4 pb-4 space-y-3">
-                                  {group.href && (
-                                    <li>
-                                      <a
-                                        href={group.href}
-                                        className="block py-1 text-sm font-medium text-ink/90 hover:text-brand-500 transition-colors duration-fast"
-                                      >
-                                        {group.title} home
-                                      </a>
-                                    </li>
-                                  )}
-                                  {group.items.map((it) => (
-                                    <MobileItem key={it.href} item={it} />
-                                  ))}
-                                </ul>
-                              )}
+                                  </li>
+                                )}
+                                {group.items.map((it) => (
+                                  <MobileItem key={it.href} item={it} />
+                                ))}
+                              </ul>
                             </motion.div>
                           )}
                         </AnimatePresence>

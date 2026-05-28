@@ -19,6 +19,8 @@ interface Props {
   height?: 'sm' | 'md' | 'lg' | 'screen';
   /** If true, render headline + sub overlaid on the image with a darkening scrim. */
   overlay?: boolean;
+  /** If true, let the sub paragraph span wider than max-w-prose and stay on one line at lg+. */
+  wideSub?: boolean;
 }
 const {
   id,
@@ -33,6 +35,7 @@ const {
   align = 'left',
   height = 'lg',
   overlay = true,
+  wideSub = false,
 } = Astro.props;
 
 const hasMedia = Boolean(video || image);
@@ -74,16 +77,16 @@ const aligns = {
   {hasMedia && overlay && (
     <div class="absolute inset-0 bg-gradient-to-t from-ink/70 via-ink/30 to-transparent" aria-hidden="true"></div>
   )}
-  <Container size="xl" class="relative z-10 pb-16 md:pb-24">
-    <div class={`flex flex-col ${aligns[align]} max-w-3xl ${align === 'center' ? 'mx-auto' : ''}`}>
+  <Container size="xl" class="relative z-10 pb-6 md:pb-10">
+    <div class={`flex flex-col ${aligns[align]} ${wideSub ? 'max-w-3xl lg:max-w-none' : 'max-w-3xl'} ${align === 'center' ? 'mx-auto' : ''}`}>
       {eyebrow && (
         <p class={`text-xs md:text-sm uppercase tracking-widest mb-3 md:mb-4 ${hasMedia && overlay ? 'text-surface/80' : 'text-ink/60'}`}>{eyebrow}</p>
       )}
-      <h1 data-reveal class={`font-display leading-tight ${hasMedia && overlay ? 'text-surface' : 'text-ink'} text-4xl sm:text-5xl md:text-6xl lg:text-7xl`}>
+      <h1 data-reveal class={`font-display leading-tight ${hasMedia && overlay ? 'text-surface' : 'text-ink'} text-3xl sm:text-4xl md:text-5xl lg:text-5xl`}>
         {headline}
       </h1>
       {sub && (
-        <p data-reveal data-reveal-delay="100" class={`mt-4 md:mt-6 max-w-prose text-base md:text-lg ${hasMedia && overlay ? 'text-surface/90' : 'text-ink/70'}`}>
+        <p data-reveal data-reveal-delay="100" class={`mt-4 md:mt-6 ${wideSub ? 'lg:whitespace-nowrap' : 'max-w-prose'} text-base md:text-lg ${hasMedia && overlay ? 'text-surface/90' : 'text-ink/70'}`}>
           {sub}
         </p>
       )}

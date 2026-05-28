@@ -14,6 +14,16 @@ if (header) {
 
   const isSnapPage = document.documentElement.hasAttribute('data-snap-page');
 
+  // Derived state: header is opaque if EITHER condition is true.
+  //   overLightPanel — user has scrolled into a [data-light-bg] snap panel
+  //   megaOpen       — the desktop mega-nav panel is currently hovered/open
+  // Non-snap pages keep their existing "always opaque" behaviour; the recompute
+  // path still works because both flags being false on a non-snap page is
+  // irrelevant — we set opaque(true) up-front and never recompute there.
+  let overLightPanel = false;
+  let megaOpen = false;
+  const recompute = () => setOpaque(overLightPanel || megaOpen);
+
   if (isSnapPage) {
     // Snap pages: panels are full-bleed under the header. Stay transparent
     // over dark panels; flip opaque over any [data-light-bg] panel so logo/menu
@@ -30,7 +40,8 @@ if (header) {
             if (e.isIntersecting) visible.add(e.target);
             else visible.delete(e.target);
           }
-          setOpaque(visible.size > 0);
+          overLightPanel = visible.size > 0;
+          recompute();
         },
         // Only count as "visible" once a light panel reaches the top 40% of the
         // viewport — i.e. it's the panel currently being snapped to.
@@ -38,6 +49,14 @@ if (header) {
       );
       for (const p of lightPanels) observer.observe(p);
     }
+
+    // Mega-nav: when the panel is open over a transparent (dark-hero) section
+    // the header bar would otherwise float above a different surface. Flip it
+    // opaque while the panel is open so the bar and panel read as one block.
+    document.addEventListener('meganav:state', (e) => {
+      megaOpen = (e as CustomEvent<{ open: boolean }>).detail.open;
+      recompute();
+    });
   } else {
     // Non-snap pages: opaque from the start (no transparent hero behind the
     // header, so transparency would just show the white body color).

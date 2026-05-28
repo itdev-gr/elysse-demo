@@ -8,8 +8,6 @@ export interface NavItem {
   caption?: string;
   /** Placeholder icon key for items without an image (matches `MegaThumb` icon registry). */
   icon?: 'sparkles' | 'chart' | 'lightbulb' | 'handshake' | 'newspaper' | 'pencil' | 'marquee' | 'play' | 'book' | 'pin' | 'globe' | 'dot';
-  /** Mega-panel variant. Defaults to the standard `MegaPanel`. */
-  variant?: 'pill-tabs';
 }
 
 /**
@@ -54,7 +52,6 @@ export const primaryNav: NavItem[] = [
   {
     label: 'Products',
     href: '/products/',
-    variant: 'pill-tabs',
     children: [
       { label: 'Categories', href: '/products/' },
       { label: 'Catalogues & Leaflets', href: '/products/catalogues/' },
@@ -89,8 +86,6 @@ export interface MegaGroup {
   title: string;
   href?: string;
   items: NavItem[];
-  /** Optional variant flag matching `NavItem.variant`. */
-  variant?: 'pill-tabs';
 }
 
 /** Tuple shape: [column 1 groups, column 2 groups, column 3 groups] */
@@ -142,7 +137,6 @@ export const megaNav: MegaColumns = [
     {
       title: 'Products',
       href: '/products/',
-      variant: 'pill-tabs',
       items: [
         { label: 'Categories', href: '/products/', image: '/images/products/epsilon-hero.svg', caption: 'Browse the full catalogue' },
         { label: 'Catalogues & Leaflets', href: '/products/catalogues/', image: '/images/products/coupling-transition.svg', caption: 'Downloadable PDFs' },

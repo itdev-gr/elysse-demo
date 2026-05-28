@@ -9,28 +9,24 @@ const year = new Date().getFullYear();
   {/* ===== White section ===== */}
   <Container size="xl" class="pt-12 md:pt-16 pb-6">
 
-    {/* ===== Brand row: logo + tagline (full-width, dedicated row at the top) ===== */}
-    <div class="pb-8 md:pb-10">
-      <a href="/" class="inline-block" aria-label="Elysée Group — home">
-        <img
-          src={logo.src}
-          alt="Elysée"
-          width={logo.width}
-          height={logo.height}
-          class="h-10 md:h-12 w-auto"
-          loading="lazy"
-        />
-      </a>
-      <p class="mt-4 font-display font-heavy leading-tight text-xl md:text-2xl text-ink">
-        {companyContact.tagline}
-      </p>
-    </div>
+    {/* ===== Brand + Contact + Newsletter row ===== */}
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 pt-2 md:pt-4 pb-5 md:pb-6 border-b border-ink/10">
 
-    {/* ===== Contact + Newsletter row ===== */}
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 pb-10 md:pb-12 border-b border-ink/10">
-
-      {/* Contact block */}
-      <div class="lg:col-span-6">
+      {/* Brand + Contact block */}
+      <div class="lg:col-span-6 lg:self-start">
+        <a href="/" class="inline-block" aria-label="Elysée Group — home">
+          <img
+            src={logo.src}
+            alt="Elysée"
+            width={logo.width}
+            height={logo.height}
+            class="h-10 md:h-12 w-auto"
+            loading="lazy"
+          />
+        </a>
+        <p class="mt-4 mb-6 font-display font-heavy leading-tight text-xl md:text-2xl text-ink">
+          {companyContact.tagline}
+        </p>
         <address class="not-italic text-sm text-ink/75 leading-relaxed">
           {companyContact.address.line1}<br />
           {companyContact.address.line2}<br />
@@ -120,7 +116,7 @@ const year = new Date().getFullYear();
     </div>
 
     {/* ===== Link columns row ===== */}
-    <div class="py-10 md:py-12 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8 md:gap-6">
+    <div class="py-6 md:py-8 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8 md:gap-6">
       {footerNav.map((col) => (
         <div>
           <h2 class="text-[11px] font-semibold uppercase tracking-[0.25em] text-brand-500">{col.title}</h2>

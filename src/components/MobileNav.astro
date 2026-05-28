@@ -1,14 +1,5 @@
 ---
-import { getCollection } from 'astro:content';
 import { navGroups } from '../data/navigation';
 import MobileMegaNav from './nav/MobileMegaNav.tsx';
-
-const productCategories = (await getCollection('categories'))
-  .sort((a, b) => a.data.order - b.data.order)
-  .map((c) => ({
-    name: c.data.name,
-    slug: c.data.slug ?? c.id,
-    image: c.data.image,
-  }));
 ---
-<MobileMegaNav client:load groups={navGroups} productCategories={productCategories} />
+<MobileMegaNav client:load groups={navGroups} />

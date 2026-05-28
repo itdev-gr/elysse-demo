@@ -193,7 +193,7 @@ export const homePage: PageContent = {
   },
   hero: {
     headline: 'The leading green company',
-    sub: 'With innovative & smart piping & fitting systems for water supply, irrigation, sewerage and energy.',
+    sub: 'With innovative and smart piping and fitting systems for water supply, irrigation, sewerage and energy.',
     image: heroHome,
     video: '/media/hero-elysee.mp4',
     cta: { label: 'discover Elysée', href: '/about-us/' },

@@ -1,12 +1,25 @@
 ---
+/**
+ * Quality & Certifications.
+ *
+ * URL: /about-us/quality-certifications/
+ * Source of truth content: `aboutUsQualityCertifications` from src/data/site-content.ts.
+ *
+ * Design mirrors the elaborate VMV / history / company-structure templates:
+ *   - Scroll-progress bar at the top (motion scroll(animate(...)))
+ *   - Cover hero with parallax (qa-lab.jpg) + brand wash
+ *   - AboutSubNav
+ *   - Stat band with 4 animated counters (1998 · 27 · 6+ · 100%)
+ *   - "A matter of principle" editorial intro (sticky aside + drop-cap prose)
+ *   - Cinematic ISO 9001 callout (full-bleed bg + brand wash)
+ *   - "How we verify" 4-step process strip — GSAP rail cascade
+ *   - 6 certification category badges grid — GSAP stamp-in effect
+ *   - Closing CTA on light brand wash
+ */
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import Container from '../../../components/Container.astro';
 import Section from '../../../components/Section.astro';
 import AboutSubNav from '../../../components/about/AboutSubNav.astro';
-import AboutHero from '../../../components/about/AboutHero.astro';
-import AboutFigure from '../../../components/about/AboutFigure.astro';
-import AboutChapterHeader from '../../../components/about/AboutChapterHeader.astro';
-import AboutClosingCta from '../../../components/about/AboutClosingCta.astro';
 import { aboutUsQualityCertifications } from '../../../data/site-content';
 
 const blocks = aboutUsQualityCertifications.blocks;
@@ -15,16 +28,39 @@ const [intro1, intro2, certsLeadP] = paragraphs;
 const callout = blocks.find((b): b is Extract<typeof b, { kind: 'callout' }> => b.kind === 'callout');
 const categories = blocks.find((b): b is Extract<typeof b, { kind: 'pillars' }> => b.kind === 'pillars');
 
-// Per-category thumbnails — mirrored from the live elysee.com.cy page. Keyed by
-// pillar number so the order in the data export stays the single source of truth.
-const categoryImages: Record<number, { src: string; alt: string }> = {
-  1: { src: '/images/certifications/categories/management-system.png',  alt: 'Quality management systems certificate marks' },
-  2: { src: '/images/certifications/categories/general.png',            alt: 'General product certification marks' },
-  3: { src: '/images/certifications/categories/compression-fittings.png', alt: 'Compression fittings certification marks' },
-  4: { src: '/images/certifications/categories/pe-pipes.png',           alt: 'Polyethylene (PE) pipe certification marks' },
-  5: { src: '/images/certifications/categories/pvc-pipes.png',          alt: 'PVC pipe certification marks' },
-  6: { src: '/images/certifications/categories/green-elysee.jpg',       alt: 'Green Elysée sustainability certification marks' },
+// Per-category badge image — mirrored from the live elysee.com.cy page.
+const categoryImages: Record<number, { src: string; alt: string; tag: string }> = {
+  1: { src: '/images/certifications/categories/management-system.png',     alt: 'Quality management system certificate marks',   tag: 'MGMT' },
+  2: { src: '/images/certifications/categories/general.png',               alt: 'General product certification marks',           tag: 'GEN'  },
+  3: { src: '/images/certifications/categories/compression-fittings.png',  alt: 'Compression fittings certification marks',      tag: 'CF'   },
+  4: { src: '/images/certifications/categories/pe-pipes.png',              alt: 'Polyethylene (PE) pipe certification marks',    tag: 'PE'   },
+  5: { src: '/images/certifications/categories/pvc-pipes.png',             alt: 'PVC pipe certification marks',                  tag: 'PVC'  },
+  6: { src: '/images/certifications/categories/green-elysee.jpg',          alt: 'Green Elysée sustainability certification marks', tag: 'GRN' },
 };
+
+// 4-step verification process — semantic strip used between callout and grid.
+const verifySteps = [
+  {
+    label: 'Step One · Material',
+    title: 'Material check',
+    body:  'Every incoming PE and PVC resin batch is tested against our internal spec sheet before it enters production.',
+  },
+  {
+    label: 'Step Two · Process',
+    title: 'In-process QC',
+    body:  'Continuous in-line monitoring during extrusion and moulding flags drift before it ever reaches a finished part.',
+  },
+  {
+    label: 'Step Three · Product',
+    title: 'Batch testing',
+    body:  'Finished batches are sampled against ISO and EN test methods — burst, impact, environmental and dimensional.',
+  },
+  {
+    label: 'Step Four · Certificate',
+    title: 'Documented release',
+    body:  'Every shipment ships with traceable documentation — request a certificate for any tender or specification.',
+  },
+];
 
 const desc =
   aboutUsQualityCertifications.metaDescription ??
@@ -32,94 +68,247 @@ const desc =
   aboutUsQualityCertifications.title;
 ---
 <BaseLayout title={aboutUsQualityCertifications.title} description={desc} padForHeader={false}>
-  <AboutHero
-    eyebrow={`${aboutUsQualityCertifications.eyebrow} · ISO 9001 since 1998`}
-    title="Quality & Certifications"
-    subtitle={aboutUsQualityCertifications.subtitle}
-    watermark="1998"
-    stats={[
-      { label: 'ISO 9001 since', value: '1998' },
-      { label: 'Certificate Bodies', value: '6+' },
-      { label: 'Markets Served', value: '65' },
-    ]}
-  />
+
+  {/* Scroll-progress bar */}
+  <div aria-hidden="true" data-scroll-progress class="fixed top-0 left-0 right-0 h-[2px] bg-brand-500 z-50 origin-left pointer-events-none" style="transform: scaleX(0);"></div>
+
+  {/* ===== COVER HERO — full-bleed lab image + brand wash ===== */}
+  <section class="relative min-h-[88vh] flex items-end text-surface overflow-hidden">
+    <img
+      data-hero-parallax
+      src="/images/about/qa-lab.jpg"
+      alt="Quality Assurance laboratory at the Elysée Ergates facility — measurement and verification bench"
+      class="absolute inset-0 w-full h-full object-cover will-change-transform"
+    />
+    <div aria-hidden="true" class="absolute inset-0 bg-gradient-to-b from-ink/45 via-ink/20 to-ink/80"></div>
+    <div aria-hidden="true" class="absolute inset-0 bg-brand-500/30"></div>
+
+    <Container size="xl" class="relative pt-40 md:pt-48 pb-16 md:pb-24 w-full">
+      <p data-reveal class="text-[11px] md:text-xs uppercase tracking-[0.4em] text-surface/85 mb-8">
+        {aboutUsQualityCertifications.eyebrow} · Certified · ISO 9001 since 1998
+      </p>
+      <h1 data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[0.92] tracking-tight text-surface" style="font-size: clamp(3rem, 9vw, 8rem); max-width: 14ch;">
+        Quality, by certificate.
+      </h1>
+      <p data-reveal data-reveal-delay="240" class="mt-8 max-w-2xl text-base md:text-lg text-surface/85 leading-relaxed">
+        {aboutUsQualityCertifications.subtitle} Six certified product families, an ISO 9001 management system since 1998, and verification on every batch we ship.
+      </p>
+      <div data-reveal data-reveal-delay="360" class="mt-14 md:mt-20 flex items-center gap-4 text-[11px] uppercase tracking-[0.3em] text-surface/70">
+        <span aria-hidden="true" class="h-px w-12 bg-surface/50"></span>
+        <span>{aboutUsQualityCertifications.title}</span>
+      </div>
+    </Container>
+  </section>
 
   <AboutSubNav currentPath={Astro.url.pathname} />
 
-  {/* ===== CHAPTER 01 — QUALITY PRINCIPLE (lead-first variant) ===== */}
-  <Section bg="default" spacing="lg">
-    <Container size="lg">
-      <div class="max-w-3xl">
-        {intro1 && <p data-reveal class="text-lg md:text-xl text-ink leading-relaxed font-light mb-10 md:mb-12">{intro1.text}</p>}
-        <div data-reveal data-reveal-delay="80" aria-hidden="true" class="h-px w-16 bg-accent mb-8"></div>
-        <div data-reveal data-reveal-delay="160" aria-hidden="true" class="font-display font-heavy leading-none text-7xl md:text-8xl text-brand-500/15 tracking-tighter">01</div>
-        <p data-reveal data-reveal-delay="240" class="mt-4 text-[11px] md:text-xs uppercase tracking-[0.3em] text-ink/60">Chapter One</p>
-        <h2 data-reveal data-reveal-delay="320" class="mt-5 font-display font-heavy leading-tight text-3xl md:text-4xl lg:text-5xl text-ink">A Matter of Principle</h2>
-        {intro2 && <p data-reveal data-reveal-delay="400" class="mt-8 text-base md:text-lg text-ink/80 leading-relaxed">{intro2.text}</p>}
-      </div>
+  {/* ===== STAT BAND — 4 animated counters ===== */}
+  <section class="bg-surface border-b border-ink/10">
+    <Container size="xl" class="py-16 md:py-24">
+      <p data-reveal class="text-[11px] md:text-xs uppercase tracking-[0.3em] text-brand-500 mb-10 md:mb-14">By the numbers</p>
+      <dl class="grid grid-cols-2 md:grid-cols-4 gap-px bg-ink/10 border border-ink/10">
+        <div class="bg-surface p-8 md:p-10">
+          <dd data-counter="1998" class="font-display font-heavy leading-none tracking-tight text-brand-500" style="font-size: clamp(2.5rem, 6vw, 5rem);">1998</dd>
+          <dt class="mt-4 md:mt-5 text-[10px] md:text-xs uppercase tracking-[0.25em] text-ink/60">ISO 9001 since</dt>
+        </div>
+        <div class="bg-surface p-8 md:p-10">
+          <dd data-counter="27" class="font-display font-heavy leading-none tracking-tight text-brand-500" style="font-size: clamp(2.5rem, 6vw, 5rem);">27</dd>
+          <dt class="mt-4 md:mt-5 text-[10px] md:text-xs uppercase tracking-[0.25em] text-ink/60">Years accredited</dt>
+        </div>
+        <div class="bg-surface p-8 md:p-10">
+          <dd data-counter="6+" class="font-display font-heavy leading-none tracking-tight text-brand-500" style="font-size: clamp(2.5rem, 6vw, 5rem);">6+</dd>
+          <dt class="mt-4 md:mt-5 text-[10px] md:text-xs uppercase tracking-[0.25em] text-ink/60">Certificate bodies</dt>
+        </div>
+        <div class="bg-surface p-8 md:p-10">
+          <dd data-counter="100%" class="font-display font-heavy leading-none tracking-tight text-brand-500" style="font-size: clamp(2.5rem, 6vw, 5rem);">100%</dd>
+          <dt class="mt-4 md:mt-5 text-[10px] md:text-xs uppercase tracking-[0.25em] text-ink/60">Batches certified</dt>
+        </div>
+      </dl>
     </Container>
-  </Section>
+  </section>
 
-  {/* ===== CALLOUT — ISO 9001 (alt variant — light) ===== */}
-  {callout && (
+  {/* ===== A MATTER OF PRINCIPLE — sticky aside + drop-cap prose ===== */}
+  {intro1 && (
     <Section bg="alt" spacing="lg">
-      <Container size="lg">
-        <div class="mx-auto max-w-3xl text-center">
-          <p data-reveal class="text-[11px] md:text-xs uppercase tracking-[0.3em] text-brand-500 mb-8">Cornerstone Certification</p>
-          <blockquote data-reveal data-reveal-delay="80" class="font-display font-heavy leading-[1.05] tracking-tight text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-ink">
-            <span aria-hidden="true" class="text-brand-500">&ldquo;</span>{callout.title}<span aria-hidden="true" class="text-brand-500">&rdquo;</span>
-          </blockquote>
-          <p data-reveal data-reveal-delay="160" class="mt-8 md:mt-10 text-base md:text-lg text-ink/80 leading-relaxed">{callout.body}</p>
+      <Container size="xl">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16">
+          <aside class="lg:col-span-4">
+            <div class="lg:sticky lg:top-32">
+              <p data-reveal class="text-[11px] uppercase tracking-[0.4em] text-brand-500 mb-6 md:mb-8">A matter of principle</p>
+              <h2 data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[1.02] tracking-tight text-ink" style="font-size: clamp(2rem, 4.5vw, 3.5rem);">
+                Patented, engineered, certified.
+              </h2>
+              <div aria-hidden="true" class="mt-8 h-px w-12 bg-brand-500"></div>
+              <p data-reveal data-reveal-delay="240" class="mt-6 max-w-xs text-sm text-ink/60 leading-relaxed">
+                Two paragraphs that anchor everything we do — from the resin we accept to the certificate we ship with every order.
+              </p>
+            </div>
+          </aside>
+          <div class="lg:col-span-8 lg:pt-2 space-y-7 md:space-y-8">
+            <p
+              data-reveal
+              data-reveal-delay="160"
+              class="text-lg md:text-xl text-ink leading-[1.65]
+                     first-letter:font-display first-letter:font-heavy
+                     first-letter:text-7xl md:first-letter:text-8xl
+                     first-letter:float-left first-letter:mr-3 first-letter:mt-1
+                     first-letter:leading-[0.85] first-letter:text-brand-500"
+            >
+              {intro1.text}
+            </p>
+            {intro2 && (
+              <p data-reveal data-reveal-delay="280" class="text-base md:text-lg text-ink/80 leading-relaxed">
+                {intro2.text}
+              </p>
+            )}
+          </div>
         </div>
       </Container>
     </Section>
   )}
 
-  <AboutFigure
-    index={1}
-    src="/images/about/qa-lab.jpg"
-    alt="Laboratory technician in white lab coat working at a bench in a cleanroom"
-    caption="Quality Assurance Division — measurement and verification equipment used to certify every batch."
-  />
+  {/* ===== CINEMATIC ISO 9001 CALLOUT — full-bleed moment ===== */}
+  {callout && (
+    <section class="relative min-h-[70vh] flex items-center text-surface overflow-hidden">
+      <img
+        src="/images/about/pipes-warehouse.jpg"
+        alt=""
+        aria-hidden="true"
+        class="absolute inset-0 w-full h-full object-cover"
+      />
+      <div aria-hidden="true" class="absolute inset-0 bg-ink/65"></div>
+      <div aria-hidden="true" class="absolute inset-0 bg-brand-500/35 mix-blend-multiply"></div>
+      <Container size="lg" class="relative py-24 md:py-36 w-full">
+        <div class="max-w-4xl mx-auto text-center">
+          <p data-reveal class="text-[11px] md:text-xs uppercase tracking-[0.4em] text-surface/75 mb-10">Cornerstone certification</p>
+          <blockquote data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[1.02] tracking-tight" style="font-size: clamp(2.5rem, 7vw, 6rem);">
+            <span aria-hidden="true" class="text-surface/55">&ldquo;</span>{callout.title}<span aria-hidden="true" class="text-surface/55">&rdquo;</span>
+          </blockquote>
+          <p data-reveal data-reveal-delay="240" class="mt-10 md:mt-14 mx-auto max-w-2xl text-base md:text-lg text-surface/85 leading-relaxed">
+            {callout.body}
+          </p>
+        </div>
+      </Container>
+    </section>
+  )}
 
-  {/* ===== CHAPTER 02 — OUR CERTIFICATIONS ===== */}
+  {/* ===== HOW WE VERIFY — sticky intro + GSAP rail cascade =====
+       Matches the VMV framework section pattern: vertical brand-green
+       rail that scrolls in, with 4 numbered dots that pop on entry. */}
+  <section class="bg-surface border-b border-ink/10">
+    <Container size="xl" class="py-20 md:py-28">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16">
+
+        <aside class="lg:col-span-5">
+          <div class="lg:sticky lg:top-32">
+            <p data-reveal class="text-[11px] uppercase tracking-[0.4em] text-brand-500 mb-6 md:mb-8">How we verify</p>
+            <h2 data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[1.02] tracking-tight text-ink" style="font-size: clamp(2rem, 4.5vw, 3.5rem);">
+              Four steps. Every batch. Every time.
+            </h2>
+            <div aria-hidden="true" class="mt-8 h-px w-12 bg-brand-500"></div>
+            <p data-reveal data-reveal-delay="240" class="mt-6 max-w-sm text-base md:text-lg text-ink/70 leading-[1.7]">
+              The same four checks happen on every shipment: incoming material, in-process QC, finished batch sampling and a traceable certificate.
+            </p>
+            <dl data-reveal data-reveal-delay="360" class="mt-10 grid grid-cols-2 gap-4 max-w-sm">
+              <div class="border-t border-ink/15 pt-3">
+                <dt class="text-[10px] uppercase tracking-[0.25em] text-ink/55">Cadence</dt>
+                <dd class="mt-1 text-sm font-display font-heavy text-ink">Every batch</dd>
+              </div>
+              <div class="border-t border-ink/15 pt-3">
+                <dt class="text-[10px] uppercase tracking-[0.25em] text-ink/55">Standard</dt>
+                <dd class="mt-1 text-sm font-display font-heavy text-brand-500">ISO 9001:2015</dd>
+              </div>
+            </dl>
+          </div>
+        </aside>
+
+        <div class="lg:col-span-7 relative">
+
+          {/* Connector rail — light bg + brand fill that scales-Y on scroll (GSAP) */}
+          <div aria-hidden="true" class="absolute left-[14px] top-3 bottom-3 w-px bg-ink/10 hidden sm:block">
+            <div data-framework-rail class="absolute inset-0 bg-brand-500 origin-top" style="transform: scaleY(0);"></div>
+          </div>
+
+          <ol class="space-y-10 md:space-y-14">
+            {verifySteps.map((s, i) => (
+              <li data-framework-step class="relative sm:pl-12">
+                <span
+                  data-framework-dot
+                  aria-hidden="true"
+                  class="absolute left-0 top-1.5 hidden sm:flex w-[30px] h-[30px] rounded-full bg-surface border-2 border-brand-500 text-brand-500 text-[10px] font-bold items-center justify-center"
+                >{String(i + 1).padStart(2, '0')}</span>
+                <p class="text-[10px] uppercase tracking-[0.3em] text-ink/55">{s.label}</p>
+                <div class="mt-2 flex items-baseline gap-4 md:gap-5">
+                  <span class="font-display font-heavy leading-none tracking-tight text-brand-500" style="font-size: clamp(2.5rem, 5vw, 4rem);">
+                    {String(i + 1).padStart(2, '0')}
+                  </span>
+                  <h3 class="font-display font-heavy text-2xl md:text-3xl text-ink leading-tight">{s.title}</h3>
+                </div>
+                <p class="mt-4 text-base md:text-lg text-ink/75 leading-[1.65] max-w-lg">{s.body}</p>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </div>
+    </Container>
+  </section>
+
+  {/* ===== SIX CATEGORIES — image-card grid with GSAP stamp-in effect ===== */}
   {categories && (
     <Section bg="alt" spacing="lg">
-      <Container size="lg">
-        <AboutChapterHeader
-          number="02"
-          label="Chapter Two"
-          title="Our Certifications"
-          lead={certsLeadP?.text}
-          maxWidth="wide"
-          variant="lead-first"
-        />
-        <ol class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px bg-ink/15 border border-ink/15">
+      <Container size="xl">
+
+        <header class="max-w-3xl mb-12 md:mb-16">
+          <p data-reveal class="text-[11px] uppercase tracking-[0.4em] text-brand-500 mb-6 md:mb-8">Our certifications</p>
+          <h2 data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[1.02] tracking-tight text-ink" style="font-size: clamp(2.25rem, 5.5vw, 4.5rem);">
+            Six categories of certificate.
+          </h2>
+          {certsLeadP && (
+            <p data-reveal data-reveal-delay="240" class="mt-6 md:mt-8 text-base md:text-lg text-ink/70 leading-relaxed">{certsLeadP.text}</p>
+          )}
+        </header>
+
+        <ol data-cert-grid class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px bg-ink/10 border border-ink/10">
           {categories.items.map((cat, i) => {
             const img = categoryImages[cat.number];
+            const num = String(cat.number).padStart(2, '0');
             return (
-              <li data-reveal data-reveal-delay={String(i * 60)} class="group bg-surface flex flex-col">
+              <li data-cert-card class="group relative bg-surface flex flex-col overflow-hidden">
+                {/* Corner numeral — appears on hover */}
+                <span
+                  aria-hidden="true"
+                  class="pointer-events-none absolute -top-3 right-3 font-display font-heavy text-brand-500/10 leading-none select-none transition-colors duration-500 group-hover:text-brand-500/30 z-10"
+                  style="font-size: clamp(4.5rem, 7vw, 7rem);"
+                >
+                  {num}
+                </span>
+
                 {img && (
-                  <div class="bg-surface-alt border-b border-ink/10 aspect-[4/3] flex items-center justify-center p-6 md:p-8">
+                  <div class="bg-surface-alt border-b border-ink/10 aspect-[4/3] flex items-center justify-center p-6 md:p-8 overflow-hidden">
                     <img
+                      data-cert-badge
                       src={img.src}
                       alt={img.alt}
                       width="434"
                       height="434"
                       loading="lazy"
                       decoding="async"
-                      class="max-h-full max-w-full w-auto h-auto object-contain"
+                      class="max-h-full max-w-full w-auto h-auto object-contain transition-transform duration-500 ease-out group-hover:scale-105"
                     />
                   </div>
                 )}
-                <div class="p-8 md:p-10 flex-1 flex flex-col">
-                  <span class="font-display font-heavy text-[11px] uppercase tracking-[0.25em] text-brand-500">Category {String(cat.number).padStart(2, '0')}</span>
-                  <h3 class="mt-6 md:mt-7 font-display font-heavy leading-tight text-xl md:text-2xl text-ink">{cat.title}</h3>
-                  <div aria-hidden="true" class="mt-4 h-px w-12 bg-accent"></div>
-                  <p class="mt-5 text-base text-ink/75 leading-relaxed flex-1">{cat.body}</p>
+
+                <div class="relative p-7 md:p-9 flex-1 flex flex-col">
+                  <div class="flex items-center justify-between">
+                    <span class="font-mono text-[10px] uppercase tracking-[0.2em] text-ink/55">Cat.{num} · {img?.tag ?? '—'}</span>
+                    <span aria-hidden="true" class="inline-block w-1.5 h-1.5 rounded-full bg-brand-500"></span>
+                  </div>
+                  <h3 class="mt-5 md:mt-6 font-display font-heavy leading-tight text-xl md:text-2xl text-ink">{cat.title}</h3>
+                  <div aria-hidden="true" class="mt-4 h-px w-10 bg-brand-500 transition-[width] duration-500 ease-out group-hover:w-20"></div>
+                  <p class="mt-5 text-base text-ink/75 leading-[1.6] flex-1">{cat.body}</p>
                   <a
                     href="/about-us/quality-certifications/"
-                    class="cursor-pointer mt-6 inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.25em] text-ink hover:text-brand-500 transition-colors duration-200"
+                    class="mt-6 inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.25em] text-ink hover:text-brand-500 transition-colors duration-200 cursor-pointer"
                     aria-label={`View ${cat.title} certificates`}
                   >
                     <span>View certificates</span>
@@ -137,9 +326,147 @@ const desc =
     </Section>
   )}
 
-  <AboutClosingCta
-    text="Need a specific certificate for a tender, regulatory submission, or specification document? Our team can provide it on request."
-    ctaLabel="Request a certificate"
-    ctaHref="/contact/local/"
-  />
+  {/* ===== CLOSING CTA — light brand band ===== */}
+  <section class="bg-brand-500/10">
+    <Container size="lg" class="py-16 md:py-20">
+      <div class="mx-auto max-w-2xl text-center">
+        <p data-reveal class="text-base md:text-lg text-ink/80 leading-relaxed">
+          Need a specific certificate for a tender, regulatory submission, or specification document? Our team can provide it on request.
+        </p>
+        <a
+          data-reveal
+          data-reveal-delay="160"
+          href="/contact/local/"
+          class="group cursor-pointer mt-8 md:mt-10 inline-flex items-center gap-3 px-6 py-3 border border-ink/40 hover:bg-ink hover:border-ink hover:text-surface text-ink text-[11px] md:text-xs uppercase tracking-[0.25em] transition-colors duration-200"
+        >
+          <span>Request a certificate</span>
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M5 12h14" />
+            <path d="m12 5 7 7-7 7" />
+          </svg>
+        </a>
+      </div>
+    </Container>
+  </section>
+
+  {/* ===== SCROLL-DRIVEN ANIMATION LAYER (motion vanilla — matches other About pages) ===== */}
+  <script>
+    import { animate, scroll } from 'motion';
+
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!reduce) {
+      // 1. Scroll-progress bar
+      const bar = document.querySelector('[data-scroll-progress]') as HTMLElement | null;
+      if (bar) {
+        scroll(animate(bar, { transform: ['scaleX(0)', 'scaleX(1)'] }, { ease: 'linear' }));
+      }
+
+      // 2. Hero parallax
+      const heroImg = document.querySelector('[data-hero-parallax]') as HTMLElement | null;
+      const heroSection = heroImg?.closest('section') as HTMLElement | null;
+      if (heroImg && heroSection) {
+        scroll(
+          animate(heroImg, { transform: ['translateY(0)', 'translateY(15%)'] }, { ease: 'linear' }),
+          { target: heroSection, offset: ['start start', 'end start'] },
+        );
+      }
+    }
+  </script>
+
+  {/* ===== GSAP — verify-rail cascade + certification badge stamp-in ===== */}
+  <script>
+    import { gsap } from 'gsap';
+    import { ScrollTrigger } from 'gsap/ScrollTrigger';
+    gsap.registerPlugin(ScrollTrigger);
+
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // === Verify cascade — vertical rail fills as section enters view,
+    //     each dot pops, each step slides up in turn.
+    const rail = document.querySelector('[data-framework-rail]') as HTMLElement | null;
+    const steps = Array.from(document.querySelectorAll('[data-framework-step]')) as HTMLElement[];
+    const dots = Array.from(document.querySelectorAll('[data-framework-dot]')) as HTMLElement[];
+    if (rail && steps.length > 0 && !reduce) {
+      gsap.set(steps, { y: 24, opacity: 0 });
+      gsap.set(dots, { scale: 0 });
+
+      const railTrigger = rail.closest('section');
+      gsap.fromTo(
+        rail,
+        { scaleY: 0 },
+        {
+          scaleY: 1,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: railTrigger,
+            start: 'top 75%',
+            end: 'bottom 70%',
+            scrub: 0.6,
+          },
+        },
+      );
+      steps.forEach((step, i) => {
+        gsap.to(step, {
+          y: 0,
+          opacity: 1,
+          duration: 0.6,
+          ease: 'power3.out',
+          scrollTrigger: { trigger: step, start: 'top 80%', once: true },
+        });
+        const dot = dots[i];
+        if (dot) {
+          gsap.to(dot, {
+            scale: 1,
+            duration: 0.55,
+            ease: 'back.out(2.2)',
+            scrollTrigger: { trigger: step, start: 'top 78%', once: true },
+          });
+        }
+      });
+    } else if (rail && steps.length > 0 && reduce) {
+      rail.style.transform = 'scaleY(1)';
+      steps.forEach((s) => { s.style.opacity = '1'; s.style.transform = 'none'; });
+      dots.forEach((d) => { d.style.transform = 'scale(1)'; });
+    }
+
+    // === Certification grid — badges arrive with a "stamp" effect (rotate-in
+    //     + overshoot) so each card feels like a notarised mark landing on
+    //     paper. Cards themselves fade up in a soft stagger.
+    const grid = document.querySelector('[data-cert-grid]');
+    if (grid && !reduce) {
+      const cards = Array.from(grid.querySelectorAll('[data-cert-card]')) as HTMLElement[];
+      const badges = Array.from(grid.querySelectorAll('[data-cert-badge]')) as HTMLElement[];
+
+      gsap.set(cards,  { y: 32, opacity: 0 });
+      gsap.set(badges, { rotate: -8, scale: 0.85, opacity: 0, transformOrigin: '50% 50%' });
+
+      ScrollTrigger.create({
+        trigger: grid,
+        start: 'top 78%',
+        once: true,
+        onEnter: () => {
+          gsap.to(cards, {
+            y: 0,
+            opacity: 1,
+            duration: 0.6,
+            ease: 'power3.out',
+            stagger: 0.08,
+          });
+          gsap.to(badges, {
+            rotate: 0,
+            scale: 1,
+            opacity: 1,
+            duration: 0.9,
+            ease: 'back.out(2.4)',
+            stagger: 0.1,
+            delay: 0.15,
+          });
+        },
+      });
+    } else if (grid && reduce) {
+      // Reduced motion — show everything statically.
+      (grid.querySelectorAll('[data-cert-card]') as NodeListOf<HTMLElement>).forEach((c) => { c.style.opacity = '1'; c.style.transform = 'none'; });
+      (grid.querySelectorAll('[data-cert-badge]') as NodeListOf<HTMLElement>).forEach((b) => { b.style.opacity = '1'; b.style.transform = 'none'; });
+    }
+  </script>
 </BaseLayout>
