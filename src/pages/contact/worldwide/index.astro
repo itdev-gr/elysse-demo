@@ -1,10 +1,254 @@
 ---
-import DirectoryPageLayout from '../../../layouts/DirectoryPageLayout.astro';
+/**
+ * Contact — Worldwide Network.
+ *
+ * URL: /contact/worldwide/
+ * Source: `worldwideOffices` (Export Department) + 65-country reach.
+ */
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Container from '../../../components/Container.astro';
+import Section from '../../../components/Section.astro';
+import ContactSubNav from '../../../components/contact/ContactSubNav.astro';
+import WorldwideExplorer from '../../../components/contact/WorldwideExplorer.tsx';
 import { worldwideOffices } from '../../../data/site-content';
+
+const [exportDept] = worldwideOffices;
+
+const continents = [
+  { name: 'Europe',  blurb: 'EU, UK and the Balkans — Elysée\'s primary export market, served from Cyprus and the Austrian hub.' },
+  { name: 'Asia',    blurb: 'From the Levant and the Gulf through to Japan — distributors across the Middle East, South-East and East Asia.' },
+  { name: 'Africa',  blurb: 'North Africa via the Egyptian PRIME plant, plus selected partners reaching down to South Africa.' },
+  { name: 'Oceania', blurb: 'Australia and New Zealand — Elysée products on the other side of the world.' },
+];
 ---
-<DirectoryPageLayout
-  title="Worldwide Network"
-  eyebrow="Contact Us"
-  subtitle="Elysée distributors and representatives across more than 65 countries."
-  offices={worldwideOffices}
-/>
+<BaseLayout
+  title="Worldwide Network — Contact — Elysée"
+  description="Elysée distributors and representatives across more than 65 countries — coordinated from the Cyprus export hub."
+  padForHeader={false}
+>
+
+  <div aria-hidden="true" data-scroll-progress class="fixed top-0 left-0 right-0 h-[2px] bg-brand-500 z-50 origin-left pointer-events-none" style="transform: scaleX(0);"></div>
+
+  {/* ===== COVER HERO ===== */}
+  <section class="relative min-h-[88vh] flex items-end text-surface overflow-hidden">
+    <img
+      data-hero-parallax
+      src="/images/about/hq-aerial.jpg"
+      alt="Aerial view of the Elysée headquarters at the Ergates Industrial Area, Cyprus — global export hub"
+      class="absolute inset-0 w-full h-full object-cover will-change-transform"
+    />
+    <div aria-hidden="true" class="absolute inset-0 bg-gradient-to-b from-ink/45 via-ink/20 to-ink/80"></div>
+    <div aria-hidden="true" class="absolute inset-0 bg-brand-500/30"></div>
+
+    <Container size="xl" class="relative pt-40 md:pt-48 pb-16 md:pb-24 w-full">
+      <p data-reveal class="text-[11px] md:text-xs uppercase tracking-[0.4em] text-surface/85 mb-8">
+        Contact Us · Export hub
+      </p>
+      <h1 data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[0.92] tracking-tight text-surface" style="font-size: clamp(3rem, 9vw, 8rem); max-width: 14ch;">
+        Worldwide Network.
+      </h1>
+      <p data-reveal data-reveal-delay="240" class="mt-8 max-w-2xl text-base md:text-lg text-surface/85 leading-relaxed">
+        Elysée ships to more than 65 destinations from a single export hub in Cyprus — coordinated through a network of distributors and representatives across four world regions.
+      </p>
+      <div data-reveal data-reveal-delay="360" class="mt-14 md:mt-20 flex items-center gap-4 text-[11px] uppercase tracking-[0.3em] text-surface/70">
+        <span aria-hidden="true" class="h-px w-12 bg-surface/50"></span>
+        <span>Worldwide Network</span>
+      </div>
+    </Container>
+  </section>
+
+  <ContactSubNav currentPath={Astro.url.pathname} />
+
+  {/* ===== STAT BAND ===== */}
+  <section class="bg-surface border-b border-ink/10">
+    <Container size="xl" class="py-16 md:py-24">
+      <p data-reveal class="text-[11px] md:text-xs uppercase tracking-[0.3em] text-brand-500 mb-10 md:mb-14">By the reach</p>
+      <dl class="grid grid-cols-2 md:grid-cols-4 gap-px bg-ink/10 border border-ink/10">
+        <div class="bg-surface p-8 md:p-10">
+          <dd data-counter="65" class="font-display font-heavy leading-none tracking-tight text-brand-500" style="font-size: clamp(2.5rem, 6vw, 5rem);">65+</dd>
+          <dt class="mt-4 md:mt-5 text-[10px] md:text-xs uppercase tracking-[0.25em] text-ink/60">Destinations</dt>
+        </div>
+        <div class="bg-surface p-8 md:p-10">
+          <dd data-counter="4" class="font-display font-heavy leading-none tracking-tight text-brand-500" style="font-size: clamp(2.5rem, 6vw, 5rem);">4</dd>
+          <dt class="mt-4 md:mt-5 text-[10px] md:text-xs uppercase tracking-[0.25em] text-ink/60">Continents reached</dt>
+        </div>
+        <div class="bg-surface p-8 md:p-10">
+          <dd data-counter="1979" class="font-display font-heavy leading-none tracking-tight text-brand-500" style="font-size: clamp(2.5rem, 6vw, 5rem);">1979</dd>
+          <dt class="mt-4 md:mt-5 text-[10px] md:text-xs uppercase tracking-[0.25em] text-ink/60">Exporting since</dt>
+        </div>
+        <div class="bg-surface p-8 md:p-10">
+          <dd data-counter="1" class="font-display font-heavy leading-none tracking-tight text-brand-500" style="font-size: clamp(2.5rem, 6vw, 5rem);">1</dd>
+          <dt class="mt-4 md:mt-5 text-[10px] md:text-xs uppercase tracking-[0.25em] text-ink/60">Export hub · Cyprus</dt>
+        </div>
+      </dl>
+    </Container>
+  </section>
+
+  {/* ===== EXPORT INTRO — sticky aside + drop-cap prose ===== */}
+  <Section bg="alt" spacing="lg">
+    <Container size="xl">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16">
+        <aside class="lg:col-span-4">
+          <div class="lg:sticky lg:top-32">
+            <p data-reveal class="text-[11px] uppercase tracking-[0.4em] text-brand-500 mb-6 md:mb-8">Why one hub</p>
+            <h2 data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[1.02] tracking-tight text-ink" style="font-size: clamp(2rem, 4.5vw, 3.5rem);">
+              One workshop. Sixty-five destinations.
+            </h2>
+            <div aria-hidden="true" class="mt-8 h-px w-12 bg-brand-500"></div>
+            <p data-reveal data-reveal-delay="240" class="mt-6 max-w-xs text-sm text-ink/60 leading-relaxed">
+              Everything ships out of Ergates, Cyprus — at the crossroads of three continents.
+            </p>
+          </div>
+        </aside>
+        <div class="lg:col-span-8 lg:pt-2 space-y-7 md:space-y-8">
+          <p
+            data-reveal
+            data-reveal-delay="160"
+            class="text-lg md:text-xl text-ink leading-[1.65]
+                   first-letter:font-display first-letter:font-heavy
+                   first-letter:text-7xl md:first-letter:text-8xl
+                   first-letter:float-left first-letter:mr-3 first-letter:mt-1
+                   first-letter:leading-[0.85] first-letter:text-brand-500"
+          >
+            Every Elysée pipe, fitting and irrigation product is manufactured under one ISO 9001 management system in Ergates, Cyprus — then shipped through a network of distributors and representatives covering Europe, the Middle East, Africa and Asia-Pacific.
+          </p>
+          <p data-reveal data-reveal-delay="280" class="text-base md:text-lg text-ink/80 leading-relaxed">
+            For territory enquiries, tender support and OEM programmes, route through the Export Department below — they'll connect you to the right partner in your region.
+          </p>
+        </div>
+      </div>
+    </Container>
+  </Section>
+
+  {/* ===== EXPORT MANAGER CARD ===== */}
+  {exportDept && (
+    <section class="bg-surface">
+      <Container size="xl" class="py-20 md:py-24">
+        <header class="max-w-3xl mb-12 md:mb-14">
+          <p data-reveal class="text-[11px] uppercase tracking-[0.4em] text-brand-500 mb-6">First point of contact</p>
+          <h2 data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[1.02] tracking-tight text-ink" style="font-size: clamp(2rem, 4.5vw, 3.5rem);">
+            Export Department.
+          </h2>
+        </header>
+        <div data-reveal data-reveal-delay="240" class="max-w-4xl bg-surface border-l-4 border-brand-500 bg-surface-alt/40 p-8 md:p-10">
+          <p class="text-[10px] uppercase tracking-[0.3em] text-brand-500 font-semibold mb-6">{exportDept.name} · {exportDept.region}</p>
+          <dl class="grid grid-cols-1 sm:grid-cols-2 gap-x-10 gap-y-6">
+            {exportDept.phone && (
+              <div>
+                <dt class="text-[10px] uppercase tracking-[0.25em] text-ink/55 mb-1.5">Phone</dt>
+                <dd class="font-display font-heavy text-lg text-ink leading-snug">
+                  <a href={`tel:${exportDept.phone.replace(/[^+\d]/g, '')}`} class="hover:text-brand-500 transition-colors duration-200">{exportDept.phone}</a>
+                </dd>
+              </div>
+            )}
+            {exportDept.email && (
+              <div>
+                <dt class="text-[10px] uppercase tracking-[0.25em] text-ink/55 mb-1.5">Email</dt>
+                <dd class="font-display font-heavy text-lg text-ink leading-snug">
+                  <a href={`mailto:${exportDept.email}`} class="hover:text-brand-500 transition-colors duration-200">{exportDept.email}</a>
+                </dd>
+              </div>
+            )}
+            {exportDept.notes && (
+              <div class="sm:col-span-2 border-t border-ink/10 pt-6">
+                <dt class="text-[10px] uppercase tracking-[0.25em] text-ink/55 mb-1.5">Also</dt>
+                <dd class="text-base text-ink/85 leading-relaxed">{exportDept.notes}</dd>
+              </div>
+            )}
+          </dl>
+        </div>
+      </Container>
+    </section>
+  )}
+
+  {/* ===== 4 CONTINENTS ===== */}
+  <Section bg="alt" spacing="lg">
+    <Container size="xl">
+      <header class="max-w-3xl mb-12 md:mb-16">
+        <p data-reveal class="text-[11px] uppercase tracking-[0.4em] text-brand-500 mb-6 md:mb-8">Coverage</p>
+        <h2 data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[1.02] tracking-tight text-ink" style="font-size: clamp(2.25rem, 5.5vw, 4.5rem);">
+          Four continents.
+        </h2>
+        <p data-reveal data-reveal-delay="240" class="mt-6 md:mt-8 text-base md:text-lg text-ink/70 leading-relaxed">
+          The Export Department routes enquiries through the closest local partner. Tell us your continent and we'll connect you.
+        </p>
+      </header>
+      <ol class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-px bg-ink/10 border border-ink/10">
+        {continents.map((c, i) => {
+          const num = String(i + 1).padStart(2, '0');
+          return (
+            <li data-reveal data-reveal-delay={String(i * 80)}>
+              <article class="group relative bg-surface p-8 md:p-10 min-h-[220px] h-full flex flex-col transition-[background-color] duration-300 hover:bg-surface-alt">
+                <span aria-hidden="true" class="pointer-events-none absolute -top-2 right-4 font-display font-heavy text-brand-500/10 leading-none select-none transition-colors duration-500 group-hover:text-brand-500/25" style="font-size: clamp(4.5rem, 7vw, 7rem);">{num}</span>
+                <p class="relative text-[10px] uppercase tracking-[0.3em] text-brand-500">Continent {num}</p>
+                <h3 class="relative mt-5 font-display font-heavy leading-tight text-xl md:text-2xl text-ink">{c.name}</h3>
+                <div aria-hidden="true" class="relative mt-4 h-px w-10 bg-brand-500 transition-[width] duration-500 ease-out group-hover:w-20"></div>
+                <p class="relative mt-5 text-sm md:text-base text-ink/75 leading-[1.6] flex-1">{c.blurb}</p>
+              </article>
+            </li>
+          );
+        })}
+      </ol>
+    </Container>
+  </Section>
+
+  {/* ===== 3D GLOBE + INTERACTIVE CONTACT =====
+       The explorer wraps the globe and a contact panel — when the user
+       clicks a country marker, the right column populates with that
+       country's address and the message field gets a country-specific
+       starter line. Lazy-hydrated to defer the Three.js bundle. */}
+  <section class="bg-surface">
+    <Container size="xl" class="py-20 md:py-28">
+      <header class="max-w-3xl mb-12 md:mb-16">
+        <p data-reveal class="text-[11px] uppercase tracking-[0.4em] text-brand-500 mb-6">Where we ship</p>
+        <h2 data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[1.02] tracking-tight text-ink" style="font-size: clamp(2rem, 4.5vw, 3.5rem);">
+          Sixty-five destinations.
+        </h2>
+        <p data-reveal data-reveal-delay="240" class="mt-6 max-w-2xl text-base md:text-lg text-ink/70 leading-relaxed">
+          Tap any marker — Elysée's four subsidiaries or any of the partner countries — and the panel on the right fills with the local contact and a pre-written message.
+        </p>
+      </header>
+      <WorldwideExplorer client:visible />
+    </Container>
+  </section>
+
+  {/* ===== CLOSING CTA ===== */}
+  <section class="bg-brand-500/10">
+    <Container size="lg" class="py-16 md:py-20">
+      <div class="mx-auto max-w-2xl text-center">
+        <p data-reveal class="text-base md:text-lg text-ink/80 leading-relaxed">
+          Looking for one of our regional manufacturing subsidiaries? Visit Elysée WISE in Lebanon, PRIME in Egypt, or Rohrsysteme in Austria.
+        </p>
+        <a
+          data-reveal
+          data-reveal-delay="160"
+          href="/contact/wise/"
+          class="group cursor-pointer mt-8 md:mt-10 inline-flex items-center gap-3 px-6 py-3 border border-ink/40 hover:bg-ink hover:border-ink hover:text-surface text-ink text-[11px] md:text-xs uppercase tracking-[0.25em] transition-colors duration-200"
+        >
+          <span>Visit Elysée WISE</span>
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M5 12h14" />
+            <path d="m12 5 7 7-7 7" />
+          </svg>
+        </a>
+      </div>
+    </Container>
+  </section>
+
+  <script>
+    import { animate, scroll } from 'motion';
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!reduce) {
+      const bar = document.querySelector('[data-scroll-progress]') as HTMLElement | null;
+      if (bar) scroll(animate(bar, { transform: ['scaleX(0)', 'scaleX(1)'] }, { ease: 'linear' }));
+      const heroImg = document.querySelector('[data-hero-parallax]') as HTMLElement | null;
+      const heroSection = heroImg?.closest('section') as HTMLElement | null;
+      if (heroImg && heroSection) {
+        scroll(
+          animate(heroImg, { transform: ['translateY(0)', 'translateY(15%)'] }, { ease: 'linear' }),
+          { target: heroSection, offset: ['start start', 'end start'] },
+        );
+      }
+    }
+  </script>
+</BaseLayout>
