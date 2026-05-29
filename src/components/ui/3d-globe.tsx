@@ -138,7 +138,7 @@ function Marker({
 
   // Top of the line (where the image is) - positioned further out to prevent going inside globe
   const topPosition = useMemo(() => {
-    return latLngToVector3(marker.lat, marker.lng, radius * 1.04);
+    return latLngToVector3(marker.lat, marker.lng, radius * 1.18);
   }, [marker.lat, marker.lng, radius]);
 
   const lineHeight = topPosition.distanceTo(surfacePosition);
