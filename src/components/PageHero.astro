@@ -3,17 +3,70 @@ interface Props {
   title: string;
   eyebrow?: string;
   subtitle?: string;
+  /** Optional full-bleed background image. When set, the hero switches from
+   * the flat brand band to a cinematic cover with parallax + brand wash. */
+  image?: string;
+  /** Alt text for the background image. Falls back to an empty string
+   * (image becomes decorative) if omitted but `image` is set. */
+  imageAlt?: string;
 }
-const { title, eyebrow, subtitle } = Astro.props;
+const { title, eyebrow, subtitle, image, imageAlt } = Astro.props;
 ---
-<section class="pt-32 md:pt-40 pb-12 md:pb-16 bg-brand-500 text-surface">
-  <div class="mx-auto max-w-screen-xl px-4 md:px-8">
-    {eyebrow && (
-      <p class="text-xs md:text-sm uppercase tracking-widest font-medium text-surface/80 mb-3">{eyebrow}</p>
-    )}
-    <h1 class="text-3xl md:text-5xl lg:text-6xl font-sans font-heavy">{title}</h1>
-    {subtitle && (
-      <p class="mt-4 text-base md:text-lg text-surface/90 max-w-3xl">{subtitle}</p>
-    )}
-  </div>
-</section>
+{image ? (
+  <section class="relative min-h-[72vh] md:min-h-[80vh] flex items-end text-surface overflow-hidden">
+    <img
+      data-page-hero-parallax
+      src={image}
+      alt={imageAlt ?? ''}
+      class="absolute inset-0 w-full h-full object-cover will-change-transform"
+    />
+    <div aria-hidden="true" class="absolute inset-0 bg-gradient-to-b from-ink/45 via-ink/20 to-ink/80"></div>
+    <div aria-hidden="true" class="absolute inset-0 bg-brand-500/30"></div>
+
+    <div class="relative mx-auto max-w-screen-xl w-full px-4 md:px-8 pt-40 md:pt-48 pb-16 md:pb-20">
+      {eyebrow && (
+        <p data-reveal class="text-[11px] md:text-xs uppercase tracking-[0.4em] text-surface/85 mb-6 md:mb-8">{eyebrow}</p>
+      )}
+      <h1
+        data-reveal
+        data-reveal-delay="120"
+        class="font-display font-heavy leading-[0.92] tracking-tight text-surface"
+        style="font-size: clamp(2.5rem, 8vw, 6.5rem); max-width: 16ch;"
+      >{title}</h1>
+      {subtitle && (
+        <p data-reveal data-reveal-delay="240" class="mt-6 md:mt-8 max-w-2xl text-base md:text-lg text-surface/90 leading-relaxed">{subtitle}</p>
+      )}
+      <div data-reveal data-reveal-delay="360" class="mt-12 md:mt-16 flex items-center gap-4 text-[11px] uppercase tracking-[0.3em] text-surface/70">
+        <span aria-hidden="true" class="h-px w-12 bg-surface/50"></span>
+        <span>{eyebrow ?? title}</span>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    import { animate, scroll } from 'motion';
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!reduce) {
+      const heroImg = document.querySelector('[data-page-hero-parallax]') as HTMLElement | null;
+      const heroSection = heroImg?.closest('section') as HTMLElement | null;
+      if (heroImg && heroSection) {
+        scroll(
+          animate(heroImg, { transform: ['translateY(0)', 'translateY(15%)'] }, { ease: 'linear' }),
+          { target: heroSection, offset: ['start start', 'end start'] },
+        );
+      }
+    }
+  </script>
+) : (
+  <section class="pt-32 md:pt-40 pb-12 md:pb-16 bg-brand-500 text-surface">
+    <div class="mx-auto max-w-screen-xl px-4 md:px-8">
+      {eyebrow && (
+        <p class="text-xs md:text-sm uppercase tracking-widest font-medium text-surface/80 mb-3">{eyebrow}</p>
+      )}
+      <h1 class="text-3xl md:text-5xl lg:text-6xl font-sans font-heavy">{title}</h1>
+      {subtitle && (
+        <p class="mt-4 text-base md:text-lg text-surface/90 max-w-3xl">{subtitle}</p>
+      )}
+    </div>
+  </section>
+)}

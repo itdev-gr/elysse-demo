@@ -49,6 +49,63 @@ export interface ValueListBlock {
   items: { label: string; body?: string }[];
 }
 
+export interface ImageBlock {
+  kind: 'image';
+  src: string;
+  alt: string;
+  caption?: string;
+  ratio?: '4/3' | '16/9' | '1/1';
+}
+
+export interface ImageGridBlock {
+  kind: 'imagegrid';
+  intro?: string;
+  columns?: 2 | 3 | 4;
+  items: {
+    title: string;
+    body?: string;
+    bullets?: string[];
+    image: string;
+    alt: string;
+  }[];
+}
+
+export interface ProcessIconsBlock {
+  kind: 'process-icons';
+  items: { step: number; title: string; image: string; alt: string }[];
+}
+
+export interface PartnersBlock {
+  kind: 'partners';
+  items: { name: string; logo: string }[];
+  cta?: { label: string; href: string };
+}
+
+export interface ProjectsBlock {
+  kind: 'projects';
+  heading?: string;
+  items: {
+    name: string;
+    status: 'Ongoing' | 'Completed';
+    duration: string;
+    totalFunding: string;
+    elyseeFunding?: string;
+    description?: string;
+    image: string;
+    href?: string;
+  }[];
+}
+
+export interface IdeaFormBlock {
+  kind: 'idea-form';
+  intro?: string;
+  heroImage?: string;
+  confidentialityTitle?: string;
+  confidentialityBody?: string;
+  generalSubmissionLabel?: string;
+  generalSubmissionHref?: string;
+}
+
 export type ContentBlock =
   | HeadingBlock
   | RichBlock
@@ -57,7 +114,13 @@ export type ContentBlock =
   | StatBlock
   | TimelineBlock
   | PillarsBlock
-  | ValueListBlock;
+  | ValueListBlock
+  | ImageBlock
+  | ImageGridBlock
+  | ProcessIconsBlock
+  | PartnersBlock
+  | ProjectsBlock
+  | IdeaFormBlock;
 
 export interface ContentPage {
   /** Browser title + h1 source. */
@@ -70,6 +133,11 @@ export interface ContentPage {
   blocks: ContentBlock[];
   /** Meta description for <head>. Defaults to first paragraph if absent. */
   metaDescription?: string;
+  /** Optional path under /public — when set, the hero switches from the
+   * flat brand band to a full-bleed cover image with parallax + wash. */
+  heroImage?: string;
+  /** Alt text paired with heroImage. */
+  heroImageAlt?: string;
 }
 
 /** Office shape used by DirectoryPageLayout (contact pages). */
@@ -413,6 +481,62 @@ export const greenElyseeAbout: ContentPage = {
   ],
 };
 
+export interface GreenCertification {
+  name: string;
+  description: string;
+  /** Path under /public for the local SVG badge. */
+  logo: string;
+  /** PDF download URL on elysee.com.cy. */
+  href: string;
+  /** Optional pull-quote shown on the certification card. */
+  scope?: string;
+}
+
+export const greenCertificationItems: GreenCertification[] = [
+  {
+    name: 'ISO 14001',
+    description: 'Environmental Management System',
+    logo: '/images/certifications/iso-14001.svg',
+    href: 'https://elysee.com.cy/uploads/originals/249/cys-en-iso-14001-eng-P3D42.pdf',
+    scope: 'Systematic management of environmental responsibilities across all operations.',
+  },
+  {
+    name: 'ISCC PLUS',
+    description: 'International Sustainability and Carbon Certification',
+    logo: '/images/certifications/iscc-plus.svg',
+    href: 'https://elysee.com.cy/uploads/originals/249/certificate-2025.pdf',
+    scope: 'Traceability of sustainable and recycled raw materials through the supply chain.',
+  },
+  {
+    name: 'ISO 14064-3:2019',
+    description: 'Greenhouse Gas Validation and Verification',
+    logo: '/images/certifications/iso-14064-3.svg',
+    href: 'https://elysee.com.cy/uploads/originals/249/iso14064-year-2024-qZNLq.pdf',
+    scope: 'Independent verification of greenhouse-gas emission statements.',
+  },
+  {
+    name: 'EMAS 2024',
+    description: 'EU Eco-Management and Audit Scheme',
+    logo: '/images/certifications/emas.svg',
+    href: 'https://elysee.com.cy/uploads/originals/249/emas-2024-2020122026-agglika-id-394469.pdf',
+    scope: 'Public environmental statement audited under EU EMAS Regulation.',
+  },
+  {
+    name: 'CYS EN ISO 50001:2018',
+    description: 'Energy Management System',
+    logo: '/images/certifications/iso-50001.svg',
+    href: 'https://elysee.com.cy/uploads/originals/249/cys-en-iso-5000132018-2020122026-agglika-id-394473.pdf',
+    scope: 'Continual improvement of energy performance across production sites.',
+  },
+  {
+    name: 'Environmental Declaration 2024',
+    description: 'Annual environmental performance report',
+    logo: '/images/certifications/environmental-declaration.svg',
+    href: 'https://elysee.com.cy/uploads/originals/249/enviromental-declaration-2024-11WmU.pdf',
+    scope: 'Annual disclosure of environmental performance, audited and published.',
+  },
+];
+
 export const greenElyseeCertifications: ContentPage = {
   title: 'Certifications',
   eyebrow: 'Green Elysée',
@@ -423,50 +547,78 @@ export const greenElyseeCertifications: ContentPage = {
       text:
         'Elysée proudly holds internationally recognized certificates, a testimony of commitment to drive life in a Green future, and its efforts to be as Green as it gets in all of its operations.',
     },
-    { kind: 'heading', level: 2, text: 'Our Green Certifications' },
     {
-      kind: 'list',
-      items: [
-        'ISO 14001 — Environmental Management System',
-        'ISCC PLUS — International Sustainability and Carbon Certification',
-        'ISO 14064-3:2019 — Greenhouse Gas Validation and Verification',
-        'EMAS 2024 — EU Eco-Management and Audit Scheme',
-        'CYS EN ISO 50001:2018 — Energy Management System',
-        'Environmental Declaration 2024',
-      ],
+      kind: 'paragraph',
+      text:
+        'Six independently audited standards cover the full Green Elysée programme — environmental management, energy, sustainability of raw materials, greenhouse-gas accounting, and the annual public Environmental Declaration. Every certificate is downloadable below.',
     },
   ],
 };
+
+export interface GreenReport {
+  title: string;
+  section?: string;
+  year: string;
+  description: string;
+  /** Local PNG/JPG cover image in /public. */
+  cover: string;
+  /** Direct PDF download URL. */
+  href: string;
+}
+
+export interface GreenEbook {
+  title: string;
+  year: string;
+  description: string;
+  /** Bullet contents shown on the ebook card. */
+  contents: string[];
+  /** Local cover image in /public. */
+  cover: string;
+  /** Optional link to a dedicated landing page on elysee.com.cy. */
+  href?: string;
+}
+
+export const greenReportItems: GreenReport[] = [
+  {
+    title: 'Environmental Report 2024',
+    section: '4.6 Green Policy',
+    year: '2024',
+    description:
+      'Our Environmental Report 2024 documents progress against the "4.6 Green Policy" strategic direction — emissions offsetting, energy intensity reductions, and green policy implementation across all Elysée operations.',
+    cover: '/images/green-elysee/environmental-report-2024-cover.png',
+    href: 'https://elysee.com.cy/pdf/503130/download',
+  },
+];
+
+export const greenEbookItems: GreenEbook[] = [
+  {
+    title: 'Green Elysée: Yearly Report 2021',
+    year: '2021',
+    description:
+      'A comprehensive introduction to the Green Elysée pillar and Vision50 — structured around the six strategic components of Pillar 4: Carbon Footprint, Green Energy, Zero Waste, Circular Economy, Green Circular Products & Technologies, and Green Policy.',
+    contents: [
+      'Introduction to the Green Elysée pillar and Vision50',
+      'Carbon Footprint quantification methodology and results',
+      'Green Energy renewable-investment progress',
+      'Zero Waste: achieving zero-waste-to-landfill and diverting piping waste',
+      'Circular Economy philosophy and practical initiatives',
+      'Green Circular Products and Technologies development',
+      'Green Policy and emissions-offsetting projects',
+    ],
+    cover: '/images/green-elysee/yearly-report-2021-cover.jpg',
+    href: 'https://elysee.com.cy/green-elysee-yearly-report-2021',
+  },
+];
 
 export const greenElyseeReports: ContentPage = {
   title: 'Reports & eBooks',
   eyebrow: 'Green Elysée',
   subtitle: 'Transparency through our published environmental reports.',
   blocks: [
-    { kind: 'heading', level: 2, text: 'Environmental Report 2024' },
     {
       kind: 'paragraph',
       text:
-        'Our Environmental Report 2024 covers the "4.6 Green Policy" strategic direction — documenting Elysée\'s progress on emissions offsetting and green policy implementation across all operations.',
-    },
-    { kind: 'heading', level: 2, text: 'Green Elysée Yearly Report 2021' },
-    {
-      kind: 'paragraph',
-      text:
-        'The Green Elysée Yearly Report 2021 provides a comprehensive overview of our green journey, structured around the six strategic components of Pillar 4 of our Vision50 strategy.',
-    },
-    {
-      kind: 'list',
-      items: [
-        'Introduction to the "Green Elysée" pillar and Vision50',
-        '"Guiding Life on a green path" — our founding principle',
-        'Carbon Footprint quantification methodology and results',
-        'Green Energy investments and renewable energy progress',
-        'Zero Waste initiatives and waste-to-landfill reduction',
-        'Circular Economy philosophy and practical initiatives',
-        'Green Circular Products and Technologies development',
-        'Green Policy and emissions-offsetting projects',
-      ],
+        'Elysée publishes its environmental performance annually. The Environmental Report covers our progress against the six strategic components of Pillar 4 — Carbon Footprint, Green Energy, Zero Waste, Circular Economy, Green Circular Products, and Green Policy.',
     },
   ],
 };
@@ -477,13 +629,15 @@ export interface InsightItem {
   excerpt?: string;
   href?: string;
   image?: string;
+  category?: 'Innovation News' | 'Success Stories' | 'Activities';
 }
 
 export const greenElyseeInsightsItems: InsightItem[] = [
   {
     title: 'Our journey to becoming a Green leader',
     excerpt:
-      'The circular economy concept aims at reducing waste as much as possible and, in effect, a product\'s life cycle is extended to the maximum.',
+      'The circular economy concept aims at reducing waste as much as possible — and, in effect, a product\'s life cycle is extended to the maximum. Our journey from compression fittings in 1979 to a six-pillar Green programme in 2026 is one of constant compounding: every certificate, every audit, every recycled tonne of resin earns the next.',
+    image: '/images/green-elysee/journey-to-green-leader.jpg',
     href: '/press-room/news/',
   },
 ];
@@ -491,28 +645,45 @@ export const greenElyseeInsightsItems: InsightItem[] = [
 export const innovationInsightsItems: InsightItem[] = [
   {
     title: 'Industry 4.0 and Injection Molding Manufacturing Process',
+    category: 'Innovation News',
+    image: '/images/innovation/insights/industry-40.png',
     excerpt:
       'Injection molding, despite its long industrial history, continues to evolve towards improved dimensional accuracy, reduced energy consumption, and shorter production cycles. As one of the largest manufacturing sectors, it increasingly adopts Industry 4.0 technologies such as the Industrial Internet of Things (IIoT), machine learning, optimization techniques, and digital twins.',
   },
   {
     title: 'Success Entrepreneur Stories',
+    category: 'Success Stories',
+    image: '/images/innovation/insights/success-stories.jpg',
     excerpt:
       'In 2007 was teaching students how to use a computer aided design software, while she was studying in Perth, Australia.',
   },
   {
     title: 'Overmolding Injection Molding Process',
+    category: 'Innovation News',
+    image: '/images/innovation/insights/overmolding.jpg',
     excerpt:
       'Overmolding is often called two-shot injection molding since it consists of molding of one material over other(s) forming a multilayer part.',
   },
   {
     title: 'Micro Injection Molding',
+    category: 'Innovation News',
+    image: '/images/innovation/insights/micro-injection.jpg',
     excerpt:
       'Micro injection molding is a very accurate injection molding technique that is employed for the construction of very small parts.',
   },
   {
     title: 'Gas-assisted Injection Molding',
+    category: 'Innovation News',
+    image: '/images/innovation/insights/gas-assisted.jpg',
     excerpt:
-      'Gas-assisted injection molding was first proposed in 1970s, but it didn\'t gain commercial acceptance until 1990s.',
+      "Gas-assisted injection molding was first proposed in 1970s, but it didn't gain commercial acceptance until 1990s.",
+  },
+  {
+    title: 'Exploiting AI Quality Control for Injection Molding Process Optimization',
+    category: 'Innovation News',
+    image: '/images/innovation/insights/ai-processes.jpg',
+    excerpt:
+      'Automatic in-line quality control is essential for the optimization of injection molding regarding the efficiency of the process and the quality of the produced parts.',
   },
 ];
 
@@ -524,6 +695,9 @@ export const innovationWhy: ContentPage = {
   title: 'Why Innovation',
   eyebrow: 'Innovation',
   subtitle: 'Innovation Matters',
+  heroImage: '/images/innovation/why-innovation-hero.jpg',
+  heroImageAlt:
+    'Shafts of sunlight breaking through a corrugated industrial roof — the directional, forward-looking mood behind Elysée\'s innovation programme.',
   blocks: [
     {
       kind: 'paragraph',
@@ -535,6 +709,11 @@ export const innovationWhy: ContentPage = {
       text:
         'The company is strategically looking for new ways to innovate and bring new solutions to the market suitable for improving the end-user experience. By being innovative, we act dynamically for the national economy, achieving our business leadership. Inventiveness — the key component of innovation — fosters monadic ideas.',
     },
+    {
+      kind: 'callout',
+      body:
+        'For an idea to be innovative, it must also be serviceable. Creative notions do not always drive innovation. The key is to find viable solutions to problems through inventive ideas.',
+    },
     { kind: 'heading', level: 2, text: 'What is innovation?' },
     {
       kind: 'paragraph',
@@ -542,33 +721,46 @@ export const innovationWhy: ContentPage = {
         "Innovation can be a product, service, business model, or strategy that's both inventive and serviceable in the end. The innovation strategy aims for breakthroughs in technology or new business models, as well as straightforward upgrades to customer service or modern features added to existing products.",
     },
     { kind: 'heading', level: 2, text: 'The importance of innovation' },
-    { kind: 'heading', level: 3, text: 'Innovation in Business' },
     {
-      kind: 'list',
+      kind: 'imagegrid',
+      columns: 3,
       items: [
-        'Ensure success',
-        'Safeguard existing position in the market',
-        'Pursue essential growth',
-        'Improve competitive positioning',
+        {
+          title: 'Innovation in Business',
+          image: '/images/innovation/why/innovation-in-business.png',
+          alt: 'Innovation in business illustration',
+          bullets: [
+            'Ensure success',
+            'Safeguard existing position in the market',
+            'Pursue essential growth',
+            'Improve competitive positioning',
+          ],
+        },
+        {
+          title: 'Disruptive',
+          image: '/images/innovation/why/disruptive.png',
+          alt: 'Disruptive innovation illustration',
+          body:
+            "Creation of additional market segments to serve a customer base the existing market doesn't reach. New-market disruption is always a challenge for Elysée.",
+        },
+        {
+          title: 'Sustaining',
+          image: '/images/innovation/why/sustaining.png',
+          alt: 'Sustaining innovation illustration',
+          body:
+            'Improvement of processes and technologies of product lines. Elysée wants to stay atop its market.',
+        },
       ],
-    },
-    { kind: 'heading', level: 3, text: 'Disruptive' },
-    {
-      kind: 'paragraph',
-      text:
-        "Creation of additional market segments to serve a customer base the existing market doesn't reach. New-market disruption is always a challenge for Elysée.",
-    },
-    { kind: 'heading', level: 3, text: 'Sustaining' },
-    {
-      kind: 'paragraph',
-      text:
-        'Improvement of processes and technologies of product lines. Elysée wants to stay atop its market.',
     },
     { kind: 'heading', level: 2, text: 'Our four-step process' },
     {
-      kind: 'list',
-      ordered: true,
-      items: ['Clarify', 'Ideate', 'Develop', 'Execute'],
+      kind: 'process-icons',
+      items: [
+        { step: 1, title: 'Clarify', image: '/images/innovation/why/clarify.png', alt: 'Clarify icon' },
+        { step: 2, title: 'Ideate', image: '/images/innovation/why/ideate.png', alt: 'Ideate icon' },
+        { step: 3, title: 'Develop', image: '/images/innovation/why/develop.png', alt: 'Develop icon' },
+        { step: 4, title: 'Execute', image: '/images/innovation/why/execute.png', alt: 'Execute icon' },
+      ],
     },
   ],
 };
@@ -577,6 +769,9 @@ export const innovationRD: ContentPage = {
   title: 'Research & Development',
   eyebrow: 'Innovation',
   subtitle: 'Investing in Research & Development.',
+  heroImage: '/images/innovation/research-development-hero.jpg',
+  heroImageAlt:
+    'Additive manufacturing in progress — a 3D printer running alongside an on-screen CAD model, illustrating Elysée\'s prototyping and concept-development workflow.',
   blocks: [
     {
       kind: 'paragraph',
@@ -584,77 +779,95 @@ export const innovationRD: ContentPage = {
         'The R&D team contributes to the enhancement of all production stages, assuring productivity, design and development of products, procedure implementation and operational efficiency.',
     },
     { kind: 'heading', level: 2, text: 'Our R&D Disciplines' },
-    { kind: 'heading', level: 3, text: 'Product Design and Development' },
     {
-      kind: 'paragraph',
-      text:
-        'Given our position as "Green Leaders", our R&D department investigates new ideas for the development for our products. Our product development process follows a cyclical, multi-step process. Starting from conceptualization to the product deployment, the main goal of the process is to develop products according to customer requirements by covering current design and development issues. Such considerations include the identification of customer needs, design for manufacturing, prototyping and industrial design.',
-    },
-    { kind: 'heading', level: 3, text: 'Market Research' },
-    {
-      kind: 'paragraph',
-      text:
-        'The viability of new services or products is validated partly through close cooperation with potential customers. Inputs regarding market trends and needs are provided to the R&D team from the company\'s marketing department. These include consumer demands, purchasing methods, product sales and the existence and development of technology across relevant markets.',
-    },
-    { kind: 'heading', level: 3, text: 'Project Management' },
-    {
-      kind: 'paragraph',
-      text:
-        'Our project management system is made up of several frameworks and methods for organizing and monitoring a project\'s different stages. Our project management approach includes leading and collaborating with the team to complete the project on time and within budget. Usually, early in the development phase, the project documentation will include a description of this information. The three basic restrictions are budget, time, and scope.',
-    },
-    { kind: 'heading', level: 3, text: 'IP Procedure, Patent Attorneys' },
-    {
-      kind: 'paragraph',
-      text:
-        'Upon coming up with unique idea, we consult specialist attorneys to determine if there are conflicts with existing IP. Assuming there are no conflicts, all necessary steps are taken with the support of legal specialists in order to filing for a patent with the relevant intellectual property offices.',
-    },
-    { kind: 'heading', level: 3, text: 'Feasibility Studies' },
-    {
-      kind: 'paragraph',
-      text:
-        'Thorough feasibility studies provide detailed evaluations, which take into account all critical factors of our projects, forecasting their chances of being successful.',
-    },
-    { kind: 'heading', level: 3, text: 'Concept Generation' },
-    {
-      kind: 'paragraph',
-      text:
-        'Idea generation often involves a collaborative effort after gathering all relevant information, such as user, marketing, and competition research. The methods for generating ideas appear. Such a process is brainstorming, a group problem-solving technique that encourages the unplanned development of original ideas and solutions.',
-    },
-    { kind: 'heading', level: 3, text: 'Concept Evaluation' },
-    {
-      kind: 'paragraph',
-      text:
-        'Concept evaluation is a crucial phase in the R&D process, during which the customers\' perceptions of a potential new product are analysed.',
-    },
-    { kind: 'heading', level: 3, text: 'Concept Development' },
-    {
-      kind: 'paragraph',
-      text:
-        'Concept development and testing are both important phases, particularly for new items. It occurs at the very beginning of our projects to aid in the identification of problems and the development of our concepts by taking into consideration the important perceptions, user demands, and needs related to the product.',
-    },
-    { kind: 'heading', level: 3, text: 'Proof of Concept' },
-    {
-      kind: 'paragraph',
-      text:
-        'Following the Proof of Concept (PoC) methodology validates the viability and potential of innovative ideas to support the case for further development, with the end-goal of reaching full-scale production. Our robust PoC process enables us to identify potential technical and logistical issues which may hinder success.',
-    },
-    { kind: 'heading', level: 3, text: 'Prototyping' },
-    {
-      kind: 'paragraph',
-      text:
-        'Creating functional prototypes of new components and testing processes with conventional machining and additive manufacturing methods to ensure that functional requirements and technical standards are satisfied.',
-    },
-    { kind: 'heading', level: 3, text: 'Advanced Metrology Systems' },
-    {
-      kind: 'paragraph',
-      text:
-        '3D scanners, reverse engineering and smart measuring devices are used for the detailed measurement and analysis of our existing products and tooling, whether this involves the complete virtual 3D model reproduction of physical objects or simple measurements. This enables us to carry out corrective and improvement modifications to our existing products with a high degree of precision and accuracy, or design new products which are better than their predecessors.',
-    },
-    { kind: 'heading', level: 3, text: 'Verification & Validation Through Testing' },
-    {
-      kind: 'paragraph',
-      text:
-        'Upon materialising a new product, initial samples are verified and validated in close coordination with our QC department, in order to approve its production. During the production, checks by the QC team ensure products are produced to a high standard and superior quality.',
+      kind: 'imagegrid',
+      columns: 3,
+      items: [
+        {
+          title: 'Product Design and Development',
+          image: '/images/innovation/rd/product-design-and-development.jpg',
+          alt: 'Product design and development',
+          body:
+            'Given our position as "Green Leaders", our R&D department investigates new ideas for the development for our products. Our product development process follows a cyclical, multi-step process. Starting from conceptualization to the product deployment, the main goal of the process is to develop products according to customer requirements by covering current design and development issues. Such considerations include the identification of customer needs, design for manufacturing, prototyping and industrial design.',
+        },
+        {
+          title: 'Market Research',
+          image: '/images/innovation/rd/market-research.jpg',
+          alt: 'Market research',
+          body:
+            "The viability of new services or products is validated partly through close cooperation with potential customers. Inputs regarding market trends and needs are provided to the R&D team from the company's marketing department. These include consumer demands, purchasing methods, product sales and the existence and development of technology across relevant markets.",
+        },
+        {
+          title: 'Project Management',
+          image: '/images/innovation/rd/project-management.jpg',
+          alt: 'Project management',
+          body:
+            "Our project management system is made up of several frameworks and methods for organizing and monitoring a project's different stages. Our project management approach includes leading and collaborating with the team to complete the project on time and within budget. Usually, early in the development phase, the project documentation will include a description of this information. The three basic restrictions are budget, time, and scope.",
+        },
+        {
+          title: 'IP Procedure, Patent Attorneys',
+          image: '/images/innovation/rd/ip-procedure-patent-attorneys.jpg',
+          alt: 'IP procedure and patent attorneys',
+          body:
+            'Upon coming up with unique idea, we consult specialist attorneys to determine if there are conflicts with existing IP. Assuming there are no conflicts, all necessary steps are taken with the support of legal specialists in order to filing for a patent with the relevant intellectual property offices.',
+        },
+        {
+          title: 'Feasibility Studies',
+          image: '/images/innovation/rd/feasibility-studies.jpg',
+          alt: 'Feasibility studies',
+          body:
+            'Thorough feasibility studies provide detailed evaluations, which take into account all critical factors of our projects, forecasting their chances of being successful.',
+        },
+        {
+          title: 'Concept Generation',
+          image: '/images/innovation/rd/concept-generation.jpg',
+          alt: 'Concept generation',
+          body:
+            'Idea generation often involves a collaborative effort after gathering all relevant information, such as user, marketing, and competition research. The methods for generating ideas appear. Such a process is brainstorming, a group problem-solving technique that encourages the unplanned development of original ideas and solutions.',
+        },
+        {
+          title: 'Concept Evaluation',
+          image: '/images/innovation/rd/concept-evaluation.jpg',
+          alt: 'Concept evaluation',
+          body:
+            "Concept evaluation is a crucial phase in the R&D process, during which the customers' perceptions of a potential new product are analysed.",
+        },
+        {
+          title: 'Concept Development',
+          image: '/images/innovation/rd/concept-development.jpg',
+          alt: 'Concept development',
+          body:
+            'Concept development and testing are both important phases, particularly for new items. It occurs at the very beginning of our projects to aid in the identification of problems and the development of our concepts by taking into consideration the important perceptions, user demands, and needs related to the product.',
+        },
+        {
+          title: 'Proof of Concept',
+          image: '/images/innovation/rd/proof-of-concept.jpg',
+          alt: 'Proof of concept',
+          body:
+            'Following the Proof of Concept (PoC) methodology validates the viability and potential of innovative ideas to support the case for further development, with the end-goal of reaching full-scale production. Our robust PoC process enables us to identify potential technical and logistical issues which may hinder success.',
+        },
+        {
+          title: 'Prototyping',
+          image: '/images/innovation/rd/prototyping.jpg',
+          alt: 'Prototyping',
+          body:
+            'Creating functional prototypes of new components and testing processes with conventional machining and additive manufacturing methods to ensure that functional requirements and technical standards are satisfied.',
+        },
+        {
+          title: 'Advanced Metrology Systems',
+          image: '/images/innovation/rd/advanced-metrology-systems.jpg',
+          alt: 'Advanced metrology systems',
+          body:
+            '3D scanners, reverse engineering and smart measuring devices are used for the detailed measurement and analysis of our existing products and tooling, whether this involves the complete virtual 3D model reproduction of physical objects or simple measurements. This enables us to carry out corrective and improvement modifications to our existing products with a high degree of precision and accuracy, or design new products which are better than their predecessors.',
+        },
+        {
+          title: 'Verification & Validation Through Testing',
+          image: '/images/innovation/rd/verification-validation-through-testing.jpg',
+          alt: 'Verification and validation through testing',
+          body:
+            'Upon materialising a new product, initial samples are verified and validated in close coordination with our QC department, in order to approve its production. During the production, checks by the QC team ensure products are produced to a high standard and superior quality.',
+        },
+      ],
     },
   ],
 };
@@ -663,31 +876,57 @@ export const innovationFundedProjects: ContentPage = {
   title: 'Funded Research Projects',
   eyebrow: 'Innovation',
   subtitle: 'Advancing knowledge through collaborative research funding.',
+  heroImage: '/images/innovation/funded-research-projects-hero.jpg',
+  heroImageAlt:
+    'A research laboratory bench laid out with scientific equipment — representing the academic and industrial collaborations behind Elysée\'s funded research projects.',
   blocks: [
-    { kind: 'heading', level: 2, text: 'About Research Funding Activities' },
     {
       kind: 'paragraph',
       text:
-        'Elysée actively participates in funded research projects in collaboration with academic institutions and industry partners, driving innovation and contributing to scientific advancement in our field.',
+        'Elysée maintains an active portfolio of funded research initiatives in collaboration with academic institutions and industry partners, driving innovation and contributing to scientific advancement in our field.',
     },
-    { kind: 'heading', level: 2, text: 'Active & Recent Projects' },
-    { kind: 'heading', level: 3, text: 'Innova' },
     {
-      kind: 'paragraph',
-      text:
-        'Duration: 1 August 2025 – 30 April 2026. Total Funding: €196,125.',
+      kind: 'projects',
+      heading: 'Ongoing Projects',
+      items: [
+        {
+          name: 'Innova',
+          status: 'Ongoing',
+          duration: '1/8/2025 – 30/4/2026',
+          totalFunding: '€196,125',
+          image: '/images/innovation/projects/innova.png',
+          description: "Active research initiative under Elysée's 2025–2026 portfolio.",
+          href: '#',
+        },
+        {
+          name: 'AgReCOMPOSITES',
+          status: 'Ongoing',
+          duration: '2/5/2024 – 1/5/2026',
+          totalFunding: '€598,046',
+          elyseeFunding: '€221,130',
+          image: '/images/innovation/projects/agrecomposites.png',
+          description:
+            "Falls under the Pillar I 'Smart Growth' that constitutes one of the three strategy pillars of the Restart 2016-2020 Programmes.",
+          href: '#',
+        },
+      ],
     },
-    { kind: 'heading', level: 3, text: 'AgReCOMPOSITES' },
     {
-      kind: 'paragraph',
-      text:
-        'Duration: 2 May 2024 – 1 May 2026. Total Funding: €598,046 | Elysée Funding: €221,130. The project AgReCOMPOSITES falls under the Pillar I "Smart Growth" that constitutes one of the three strategy pillars of the Restart 2016-2020 Programmes.',
-    },
-    { kind: 'heading', level: 3, text: 'PlantNGreen' },
-    {
-      kind: 'paragraph',
-      text:
-        'Duration: 1 February 2023 – 31 January 2025. Total Funding: €574,142.25 | Elysée Funding: €222,878.25. Development of green-tech functionalized, biodegradable fibrous plant nursery bags in ecological seedlings cultivation.',
+      kind: 'projects',
+      heading: 'Completed Projects',
+      items: [
+        {
+          name: 'PlantNGreen',
+          status: 'Completed',
+          duration: '01/02/2023 – 31/01/2025',
+          totalFunding: '€574,142.25',
+          elyseeFunding: '€222,878.25',
+          image: '/images/innovation/projects/plantngreen.png',
+          description:
+            'Development of green-tech functionalized, biodegradable fibrous plant nursery bags in ecological seedlings cultivation.',
+          href: '#',
+        },
+      ],
     },
   ],
 };
@@ -696,6 +935,9 @@ export const innovationNetworkPartners: ContentPage = {
   title: 'Network & Partners',
   eyebrow: 'Innovation',
   subtitle: 'Building strong partnerships in academic and industrial sectors.',
+  heroImage: '/images/innovation/network-partners-hero.jpg',
+  heroImageAlt:
+    'Modern research-building facade with transparent glazing — symbolising the open academic and industrial network that supports Elysée\'s innovation programme.',
   blocks: [
     {
       kind: 'paragraph',
@@ -709,33 +951,28 @@ export const innovationNetworkPartners: ContentPage = {
     },
     { kind: 'heading', level: 2, text: 'Our Partners' },
     {
-      kind: 'list',
+      kind: 'partners',
+      cta: { label: 'Join our Network & Become a Partner', href: '/innovation/innovate-with-us/' },
       items: [
-        'University of Cyprus',
-        'Cyprus University of Technology',
-        'Frederick University',
-        'Frederick Research Center',
-        'Department of Environment',
-        'CYS — Cyprus Organisation for Standardisation',
-        'OEB — Cyprus Employers and Industrialists Federation',
-        'Agriculture Research Institute',
-        'Department of Forests',
-        'Water Board of Nicosia',
-        'KIOS Research and Innovation Center of Excellence',
-        'CyRIC — Cyprus Research and Innovation Center',
-        'Simlead',
-        'CNE',
-        'S.E.R.G',
-        'AmaDema',
-        'KTV Green Enterprises',
-        'AgroTech Innovations',
+        { name: 'University of Cyprus', logo: '/images/innovation/partners/university-of-cyprus.png' },
+        { name: 'Cyprus University of Technology', logo: '/images/innovation/partners/cyprus-university-of-technology.png' },
+        { name: 'Frederick University', logo: '/images/innovation/partners/frederick-university.png' },
+        { name: 'Frederick Research Center', logo: '/images/innovation/partners/frederick-research-center.png' },
+        { name: 'Department of Environment', logo: '/images/innovation/partners/department-of-environment.png' },
+        { name: 'CYS — Cyprus Organisation for Standardisation', logo: '/images/innovation/partners/cys.png' },
+        { name: 'OEB — Cyprus Employers and Industrialists Federation', logo: '/images/innovation/partners/oeb.png' },
+        { name: 'Agriculture Research Institute', logo: '/images/innovation/partners/agriculture-research-institute.png' },
+        { name: 'Department of Forests', logo: '/images/innovation/partners/department-of-forests.png' },
+        { name: 'Water Board of Nicosia', logo: '/images/innovation/partners/water-board-of-nicosia.png' },
+        { name: 'KIOS Research and Innovation Center of Excellence', logo: '/images/innovation/partners/kios.png' },
+        { name: 'CyRIC', logo: '/images/innovation/partners/cyric.jpg' },
+        { name: 'Simlead', logo: '/images/innovation/partners/simlead.png' },
+        { name: 'CNE', logo: '/images/innovation/partners/cne.png' },
+        { name: 'S.E.R.G', logo: '/images/innovation/partners/serg.png' },
+        { name: 'AmaDema', logo: '/images/innovation/partners/amadema.png' },
+        { name: 'KTV Green Enterprises', logo: '/images/innovation/partners/ktv-green-enterprises.png' },
+        { name: 'AgroTech Innovations', logo: '/images/innovation/partners/agrotech-innovations.png' },
       ],
-    },
-    {
-      kind: 'callout',
-      title: 'Join our Network & Become a Partner',
-      body:
-        'We are always looking to expand our network of partners. If you are interested in collaborating with Elysée on research, technological development, or innovation initiatives, we invite you to get in touch.',
     },
   ],
 };
@@ -941,37 +1178,26 @@ export const insightsEbooksItems: InsightItem[] = [
 ];
 
 export const innovationInnovateWithUs: ContentPage = {
-  title: 'Innovate with Us',
+  title: 'Innovate with us',
   eyebrow: 'Innovation',
   subtitle: 'Ready for your exceptional ideas.',
+  heroImage: '/images/innovation/innovate-with-us-hero.jpg',
+  heroImageAlt:
+    'A hand sketching a concept on paper — the first step of any idea Elysée co-develops with external inventors and partners.',
   blocks: [
     {
       kind: 'paragraph',
       text:
-        'We innovate with partners, concentrating on exceptional ideas related to disruptive technologies. Are you working on something valuable that could match our field? Let\'s join forces to turn your breakthrough concept into a market-ready reality. Reach out to our team with a brief overview of your project and let\'s explore how we can shape the future together.',
+        "We innovate with partners, concentrating on exceptional ideas related to disruptive technologies. Are you working on something valuable that could match our field? Let's join forces to turn your breakthrough concept into a market-ready reality. Reach out to our team with a brief overview of your project and let's explore how we can shape the future together.",
     },
     {
-      kind: 'callout',
-      title: 'Confidentiality',
-      body:
+      kind: 'idea-form',
+      heroImage: '/images/innovation/innovate/hero-illustration.png',
+      confidentialityTitle: 'Confidentiality',
+      confidentialityBody:
         'We only need basic information in your initial submission and will not ask for any details that compromise confidentiality. We could establish a separate confidentiality agreement with you before asking you to share any confidential information.',
-    },
-    { kind: 'heading', level: 2, text: 'How to submit your idea' },
-    {
-      kind: 'list',
-      ordered: true,
-      items: [
-        'Prepare a brief overview of your project or technology.',
-        'Submit your idea using the contact form or via email.',
-        'Our team will review your submission and respond confidentially.',
-        'If there is a mutual fit, we will discuss next steps and, where needed, establish a confidentiality agreement.',
-      ],
-    },
-    {
-      kind: 'callout',
-      title: 'Get in touch',
-      body:
-        'Ready to innovate together? Contact us at info@elysee.com.cy to submit your idea or request more information about collaboration opportunities.',
+      generalSubmissionLabel: 'Make a general technical submission',
+      generalSubmissionHref: 'mailto:info@elysee.com.cy?subject=General%20technical%20submission',
     },
   ],
 };

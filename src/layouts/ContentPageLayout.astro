@@ -5,6 +5,11 @@ import StatGrid from '../components/StatGrid.astro';
 import Timeline from '../components/Timeline.astro';
 import ValueList from '../components/ValueList.astro';
 import StrategyPillars from '../components/StrategyPillars.astro';
+import ImageGrid from '../components/innovation/ImageGrid.astro';
+import ProcessIcons from '../components/innovation/ProcessIcons.astro';
+import PartnersWall from '../components/innovation/PartnersWall.astro';
+import ProjectsList from '../components/innovation/ProjectsList.astro';
+import IdeaForm from '../components/innovation/IdeaForm.tsx';
 import type { ContentPage } from '../data/site-content';
 
 interface Props { content: ContentPage; }
@@ -12,21 +17,30 @@ const { content } = Astro.props;
 const desc = content.metaDescription
   ?? content.blocks.find((b) => b.kind === 'paragraph')?.text?.slice(0, 160)
   ?? content.title;
+
+const wideKinds = ['imagegrid', 'partners', 'projects', 'process-icons', 'idea-form'] as const;
+const wide = content.blocks.some((b) => (wideKinds as readonly string[]).includes(b.kind));
 ---
 <BaseLayout title={content.title} description={desc}>
-  <PageHero title={content.title} eyebrow={content.eyebrow} subtitle={content.subtitle} />
-  <article class="mx-auto max-w-screen-md px-4 md:px-8 py-12 md:py-16 space-y-6">
+  <PageHero
+    title={content.title}
+    eyebrow={content.eyebrow}
+    subtitle={content.subtitle}
+    image={content.heroImage}
+    imageAlt={content.heroImageAlt}
+  />
+  <article class={`mx-auto px-4 md:px-8 py-12 md:py-16 space-y-6 ${wide ? 'max-w-screen-xl' : 'max-w-screen-md'}`}>
     {content.blocks.map((b) => {
       if (b.kind === 'heading' && b.level === 2) return <h2 class="text-2xl md:text-3xl font-heavy text-ink mt-8 first:mt-0">{b.text}</h2>;
       if (b.kind === 'heading' && b.level === 3) return <h3 class="text-xl font-heavy text-ink mt-6">{b.text}</h3>;
-      if (b.kind === 'paragraph') return <p class="text-base md:text-lg text-ink/85 leading-relaxed">{b.text}</p>;
+      if (b.kind === 'paragraph') return <p class="text-base md:text-lg text-ink/85 leading-relaxed max-w-screen-md">{b.text}</p>;
       if (b.kind === 'list') {
         const Tag = b.ordered ? 'ol' : 'ul';
         const cls = b.ordered ? 'list-decimal' : 'list-disc';
-        return <Tag class={`${cls} pl-6 space-y-2 text-base md:text-lg text-ink/85`}>{b.items.map((i) => <li>{i}</li>)}</Tag>;
+        return <Tag class={`${cls} pl-6 space-y-2 text-base md:text-lg text-ink/85 max-w-screen-md`}>{b.items.map((i) => <li>{i}</li>)}</Tag>;
       }
       if (b.kind === 'callout') return (
-        <aside class="p-6 md:p-8 bg-brand-500/5 border-l-4 border-brand-500 rounded-sm">
+        <aside class="p-6 md:p-8 bg-brand-500/5 border-l-4 border-brand-500 rounded-sm max-w-screen-md">
           {b.title && <h3 class="text-lg font-heavy text-brand-500 mb-2">{b.title}</h3>}
           <p class="text-base md:text-lg text-ink/85">{b.body}</p>
         </aside>
@@ -35,6 +49,28 @@ const desc = content.metaDescription
       if (b.kind === 'timeline') return <Timeline items={b.items} />;
       if (b.kind === 'pillars') return <StrategyPillars intro={b.intro} items={b.items} />;
       if (b.kind === 'valuelist') return <ValueList items={b.items} />;
+      if (b.kind === 'image') return (
+        <figure class="my-8">
+          <div class={`overflow-hidden bg-brand-500/5 ${b.ratio === '16/9' ? 'aspect-video' : b.ratio === '1/1' ? 'aspect-square' : 'aspect-[4/3]'}`}>
+            <img src={b.src} alt={b.alt} loading="lazy" class="w-full h-full object-cover" />
+          </div>
+          {b.caption && <figcaption class="mt-2 text-sm text-ink/65">{b.caption}</figcaption>}
+        </figure>
+      );
+      if (b.kind === 'imagegrid') return <ImageGrid intro={b.intro} columns={b.columns} items={b.items} />;
+      if (b.kind === 'process-icons') return <ProcessIcons items={b.items} />;
+      if (b.kind === 'partners') return <PartnersWall items={b.items} cta={b.cta} />;
+      if (b.kind === 'projects') return <ProjectsList heading={b.heading} items={b.items} />;
+      if (b.kind === 'idea-form') return (
+        <IdeaForm
+          client:visible
+          heroImage={b.heroImage}
+          confidentialityTitle={b.confidentialityTitle}
+          confidentialityBody={b.confidentialityBody}
+          generalSubmissionLabel={b.generalSubmissionLabel}
+          generalSubmissionHref={b.generalSubmissionHref}
+        />
+      );
       return null;
     })}
   </article>

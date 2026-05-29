@@ -42,6 +42,12 @@ import imgShipInfographic from '../assets/images/ship-infographic.jpg';
 import imgSustainableBiomass from '../assets/images/sustainable-biomass.jpg';
 import imgEnergyPrice from '../assets/images/energy-price.jpg';
 
+// Homepage services panel — one image per sector card.
+import imgServiceAgriculture from '../assets/images/services-agriculture.jpg';
+import imgServiceLandscape from '../assets/images/services-landscape.jpg';
+import imgServiceBuilding from '../assets/images/services-building-infrastructure.jpg';
+import imgServiceIndustry from '../assets/images/services-industry.jpg';
+
 // ---------- shared types ----------
 
 export interface CTA {
@@ -155,21 +161,25 @@ export const servicesCards: {
     label: 'Agriculture',
     href: '/our-services/agriculture/',
     blurb: 'Reliable irrigation systems from the pump to the plant — main, sub-main and laterals.',
+    image: imgServiceAgriculture,
   },
   {
     label: 'Landscape',
     href: '/our-services/landscape/',
     blurb: 'Specialist support for parks, campuses, and grounds — irrigation, turf, and ongoing care.',
+    image: imgServiceLandscape,
   },
   {
     label: 'Building & Infrastructure',
     href: '/our-services/building-infrastructure/',
     blurb: 'Pipe and fitting systems for water supply, sewerage and drainage on construction projects of every scale.',
+    image: imgServiceBuilding,
   },
   {
     label: 'Industry',
     href: '/our-services/industry/',
     blurb: 'Industrial-grade plastic piping, valves, and fittings engineered for plant uptime and regulatory compliance.',
+    image: imgServiceIndustry,
   },
 ];
 
@@ -190,6 +200,14 @@ export const contactSiblings: { label: string; href: string }[] = [
   { label: 'Elysée PRIME', href: '/contact/prime/' },
   { label: 'Elysée Rohrsysteme', href: '/contact/rohrsysteme/' },
   { label: 'Careers', href: '/contact/careers/' },
+];
+
+/** Sibling lists for the Green Elysée sub-nav. */
+export const greenElyseeSiblings: { label: string; href: string }[] = [
+  { label: 'About Green Elysée', href: '/green-elysee/' },
+  { label: 'Certifications', href: '/green-elysee/certifications/' },
+  { label: 'Reports', href: '/green-elysee/reports/' },
+  { label: 'Insights', href: '/green-elysee/insights/' },
 ];
 
 // ---------- per-page content ----------

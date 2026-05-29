@@ -1,10 +1,21 @@
 ---
-import ListPageLayout from '../../../layouts/ListPageLayout.astro';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import PageHero from '../../../components/PageHero.astro';
+import InsightsFilter from '../../../components/innovation/InsightsFilter.tsx';
 import { innovationInsightsItems } from '../../../data/site-content';
 ---
-<ListPageLayout
+<BaseLayout
   title="Innovation Insights"
-  eyebrow="Innovation"
-  subtitle="Research findings, success stories, and innovation news from Elysée."
-  items={innovationInsightsItems}
-/>
+  description="Research findings, success stories, and innovation news from Elysée."
+>
+  <PageHero
+    title="Innovation Insights"
+    eyebrow="Innovation"
+    subtitle="Research findings, success stories, and innovation news from Elysée."
+    image="/images/innovation/insights-hero.jpg"
+    imageAlt="Wide view of an automated manufacturing facility — the kind of Industry 4.0 environment behind Elysée's injection-molding research and innovation insights."
+  />
+  <section class="mx-auto max-w-screen-xl px-4 md:px-8 py-12 md:py-16">
+    <InsightsFilter client:visible items={innovationInsightsItems} />
+  </section>
+</BaseLayout>

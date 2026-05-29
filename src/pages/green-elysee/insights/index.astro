@@ -1,10 +1,286 @@
 ---
-import ListPageLayout from '../../../layouts/ListPageLayout.astro';
+/**
+ * Green Elysée — Insights.
+ *
+ * URL: /green-elysee/insights/
+ * Source: `greenElyseeInsightsItems` from src/data/site-content.ts.
+ *
+ * Same cinematic chassis. The body presents a single featured article
+ * (the published "Our journey to becoming a Green leader" story) as a
+ * full-bleed hero card with a "Continue reading" CTA into Press Room.
+ * Designed to scale gracefully when more entries are added later — the
+ * grid switches from 1 featured card to a featured + tile layout once
+ * `greenElyseeInsightsItems.length > 1`.
+ */
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Container from '../../../components/Container.astro';
+import Section from '../../../components/Section.astro';
+import GreenElyseeSubNav from '../../../components/green-elysee/GreenElyseeSubNav.astro';
 import { greenElyseeInsightsItems } from '../../../data/site-content';
+
+const [featured, ...rest] = greenElyseeInsightsItems;
+const desc =
+  featured?.excerpt?.slice(0, 160) ??
+  'Stories and articles from the Green Elysée programme — from circular-economy thinking to the people behind the certificates.';
 ---
-<ListPageLayout
-  title="Insights"
-  eyebrow="Green Elysée"
-  subtitle="Stories and articles from our green journey."
-  items={greenElyseeInsightsItems}
-/>
+<BaseLayout
+  title="Insights — Green Elysée"
+  description={desc}
+  padForHeader={false}
+>
+
+  <div aria-hidden="true" data-scroll-progress class="fixed top-0 left-0 right-0 h-[2px] bg-brand-500 z-50 origin-left pointer-events-none" style="transform: scaleX(0);"></div>
+
+  {/* ===== COVER HERO ===== */}
+  <section class="relative min-h-[88vh] flex items-end text-surface overflow-hidden">
+    <img
+      data-hero-parallax
+      src={featured?.image ?? '/images/about/water-flowing.jpg'}
+      alt="Featured Green Elysée insight — stories from the journey to becoming a Green leader"
+      class="absolute inset-0 w-full h-full object-cover will-change-transform"
+    />
+    <div aria-hidden="true" class="absolute inset-0 bg-gradient-to-b from-ink/45 via-ink/20 to-ink/80"></div>
+    <div aria-hidden="true" class="absolute inset-0 bg-brand-500/30"></div>
+
+    <Container size="xl" class="relative pt-40 md:pt-48 pb-16 md:pb-24 w-full">
+      <p data-reveal class="text-[11px] md:text-xs uppercase tracking-[0.4em] text-surface/85 mb-8">
+        Green Elysée · Stories
+      </p>
+      <h1 data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[0.92] tracking-tight text-surface" style="font-size: clamp(3rem, 9vw, 8rem); max-width: 14ch;">
+        Insights.
+      </h1>
+      <p data-reveal data-reveal-delay="240" class="mt-8 max-w-2xl text-base md:text-lg text-surface/85 leading-relaxed">
+        Stories and articles from our green journey — from circular-economy thinking to the people behind the certificates.
+      </p>
+      <div data-reveal data-reveal-delay="360" class="mt-14 md:mt-20 flex items-center gap-4 text-[11px] uppercase tracking-[0.3em] text-surface/70">
+        <span aria-hidden="true" class="h-px w-12 bg-surface/50"></span>
+        <span>From the programme</span>
+      </div>
+    </Container>
+  </section>
+
+  <GreenElyseeSubNav currentPath={Astro.url.pathname} />
+
+  {/* ===== STAT BAND ===== */}
+  <section class="bg-surface border-b border-ink/10">
+    <Container size="xl" class="py-16 md:py-24">
+      <p data-reveal class="text-[11px] md:text-xs uppercase tracking-[0.3em] text-brand-500 mb-10 md:mb-14">The story so far</p>
+      <dl class="grid grid-cols-2 md:grid-cols-4 gap-px bg-ink/10 border border-ink/10">
+        <div class="bg-surface p-8 md:p-10">
+          <dd data-counter="1979" class="font-display font-heavy leading-none tracking-tight text-brand-500" style="font-size: clamp(2.5rem, 6vw, 5rem);">1979</dd>
+          <dt class="mt-4 md:mt-5 text-[10px] md:text-xs uppercase tracking-[0.25em] text-ink/60">Journey started</dt>
+        </div>
+        <div class="bg-surface p-8 md:p-10">
+          <dd data-counter="6" class="font-display font-heavy leading-none tracking-tight text-brand-500" style="font-size: clamp(2.5rem, 6vw, 5rem);">6</dd>
+          <dt class="mt-4 md:mt-5 text-[10px] md:text-xs uppercase tracking-[0.25em] text-ink/60">Strategic pillars</dt>
+        </div>
+        <div class="bg-surface p-8 md:p-10">
+          <dd class="font-display font-heavy leading-none tracking-tight text-brand-500" style="font-size: clamp(2rem, 5vw, 4rem);">Circular</dd>
+          <dt class="mt-4 md:mt-5 text-[10px] md:text-xs uppercase tracking-[0.25em] text-ink/60">Economy model</dt>
+        </div>
+        <div class="bg-surface p-8 md:p-10">
+          <dd data-counter="2029" class="font-display font-heavy leading-none tracking-tight text-brand-500" style="font-size: clamp(2.5rem, 6vw, 5rem);">2029</dd>
+          <dt class="mt-4 md:mt-5 text-[10px] md:text-xs uppercase tracking-[0.25em] text-ink/60">Vision50 target</dt>
+        </div>
+      </dl>
+    </Container>
+  </section>
+
+  {/* ===== EDITORIAL INTRO ===== */}
+  <Section bg="alt" spacing="lg">
+    <Container size="xl">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16">
+        <aside class="lg:col-span-4">
+          <div class="lg:sticky lg:top-32">
+            <p data-reveal class="text-[11px] uppercase tracking-[0.4em] text-brand-500 mb-6 md:mb-8">Why we tell these stories</p>
+            <h2 data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[1.02] tracking-tight text-ink" style="font-size: clamp(2rem, 4.5vw, 3.5rem);">
+              The people behind the certificates.
+            </h2>
+            <div aria-hidden="true" class="mt-8 h-px w-12 bg-brand-500"></div>
+            <p data-reveal data-reveal-delay="240" class="mt-6 max-w-xs text-sm text-ink/60 leading-relaxed">
+              Every audit, every recycled tonne of resin, every Pillar-4 project has a face and a story.
+            </p>
+          </div>
+        </aside>
+        <div class="lg:col-span-8 lg:pt-2 space-y-7 md:space-y-8">
+          <p
+            data-reveal
+            data-reveal-delay="160"
+            class="text-lg md:text-xl text-ink leading-[1.65]
+                   first-letter:font-display first-letter:font-heavy
+                   first-letter:text-7xl md:first-letter:text-8xl
+                   first-letter:float-left first-letter:mr-3 first-letter:mt-1
+                   first-letter:leading-[0.85] first-letter:text-brand-500"
+          >Certificates and reports document where we are. Insights tell you how we got here — and where we're going. Read the articles, profiles and field stories that sit behind the Green Elysée programme.</p>
+        </div>
+      </div>
+    </Container>
+  </Section>
+
+  {/* ===== FEATURED ARTICLE — full-bleed image card ===== */}
+  {featured && (
+    <Section bg="default" spacing="lg">
+      <Container size="xl">
+        <header class="max-w-3xl mb-10 md:mb-12">
+          <p data-reveal class="text-[11px] uppercase tracking-[0.4em] text-brand-500 mb-6">Featured</p>
+        </header>
+
+        <article data-green-insight-featured class="group relative grid grid-cols-1 lg:grid-cols-12 gap-0 border border-ink/10 overflow-hidden">
+          <a href={featured.href ?? '#'} class="lg:col-span-7 block aspect-[16/10] lg:aspect-auto bg-surface-alt overflow-hidden">
+            {featured.image ? (
+              <img
+                src={featured.image}
+                alt={`Featured insight — ${featured.title}`}
+                width="1239"
+                height="837"
+                loading="eager"
+                decoding="async"
+                class="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+              />
+            ) : (
+              <div aria-hidden="true" class="w-full h-full bg-brand-500/10"></div>
+            )}
+          </a>
+          <div class="lg:col-span-5 bg-surface p-8 md:p-12 flex flex-col justify-center">
+            <span class="font-mono text-[10px] uppercase tracking-[0.25em] text-ink/55">Article · Green Elysée</span>
+            <h3 class="mt-5 font-display font-heavy text-2xl md:text-4xl lg:text-3xl xl:text-4xl text-ink leading-tight">{featured.title}</h3>
+            <div aria-hidden="true" class="mt-5 h-px w-12 bg-brand-500"></div>
+            {featured.excerpt && (
+              <p class="mt-6 text-base md:text-lg text-ink/75 leading-[1.65]">{featured.excerpt}</p>
+            )}
+            {featured.href && (
+              <a
+                href={featured.href}
+                class="mt-8 inline-flex items-center gap-3 self-start px-6 py-3 bg-brand-500 text-surface hover:bg-brand-700 text-[11px] md:text-xs uppercase tracking-[0.25em] transition-colors duration-200 cursor-pointer"
+              >
+                <span>Continue reading</span>
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+              </a>
+            )}
+          </div>
+        </article>
+      </Container>
+    </Section>
+  )}
+
+  {/* ===== MORE STORIES — tile grid (only renders when there are more) ===== */}
+  {rest.length > 0 && (
+    <Section bg="alt" spacing="lg">
+      <Container size="xl">
+        <header class="max-w-3xl mb-12 md:mb-16">
+          <p data-reveal class="text-[11px] uppercase tracking-[0.4em] text-brand-500 mb-6">More stories</p>
+          <h2 data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[1.02] tracking-tight text-ink" style="font-size: clamp(2rem, 4.5vw, 3.5rem);">
+            From the Green programme.
+          </h2>
+        </header>
+        <ol data-green-insight-grid class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px bg-ink/10 border border-ink/10">
+          {rest.map((it) => (
+            <li data-green-insight-tile class="bg-surface flex flex-col group">
+              {it.image && (
+                <a href={it.href ?? '#'} class="block aspect-[16/10] bg-surface-alt overflow-hidden border-b border-ink/10">
+                  <img src={it.image} alt={`${it.title} — preview`} loading="lazy" decoding="async" class="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.04]" />
+                </a>
+              )}
+              <div class="p-6 md:p-7 flex-1 flex flex-col">
+                {it.date && <span class="font-mono text-[10px] uppercase tracking-[0.25em] text-ink/55">{it.date}</span>}
+                <h3 class="mt-3 font-display font-heavy text-lg md:text-xl text-ink leading-tight">{it.title}</h3>
+                {it.excerpt && <p class="mt-3 text-sm text-ink/70 leading-relaxed flex-1">{it.excerpt}</p>}
+                {it.href && (
+                  <a href={it.href} class="mt-5 inline-flex items-center gap-2 self-start text-[11px] uppercase tracking-[0.25em] text-ink hover:text-brand-500 transition-colors duration-200 cursor-pointer">
+                    <span>Read story</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 transition-transform duration-200 group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                  </a>
+                )}
+              </div>
+            </li>
+          ))}
+        </ol>
+      </Container>
+    </Section>
+  )}
+
+  {/* ===== CLOSING CTA ===== */}
+  <section class="bg-brand-500/10">
+    <Container size="lg" class="py-16 md:py-20">
+      <div class="mx-auto max-w-2xl text-center">
+        <p data-reveal class="text-base md:text-lg text-ink/80 leading-relaxed">
+          Have a story idea, or want to feature the Green Elysée programme in your publication? Press inquiries and partnership requests are welcome.
+        </p>
+        <div data-reveal data-reveal-delay="160" class="mt-8 md:mt-10 flex flex-wrap items-center justify-center gap-3">
+          <a
+            href="/press-room/news/"
+            class="group cursor-pointer inline-flex items-center gap-3 px-6 py-3 bg-brand-500 text-surface hover:bg-brand-700 text-[11px] md:text-xs uppercase tracking-[0.25em] transition-colors duration-200"
+          >
+            <span>Browse the Press Room</span>
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+          </a>
+          <a
+            href="/contact/local/"
+            class="group cursor-pointer inline-flex items-center gap-3 px-6 py-3 border border-ink/40 hover:bg-ink hover:border-ink hover:text-surface text-ink text-[11px] md:text-xs uppercase tracking-[0.25em] transition-colors duration-200"
+          >
+            <span>Pitch a story</span>
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+          </a>
+        </div>
+      </div>
+    </Container>
+  </section>
+
+  {/* ===== motion ===== */}
+  <script>
+    import { animate, scroll } from 'motion';
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!reduce) {
+      const bar = document.querySelector('[data-scroll-progress]') as HTMLElement | null;
+      if (bar) scroll(animate(bar, { transform: ['scaleX(0)', 'scaleX(1)'] }, { ease: 'linear' }));
+      const heroImg = document.querySelector('[data-hero-parallax]') as HTMLElement | null;
+      const heroSection = heroImg?.closest('section') as HTMLElement | null;
+      if (heroImg && heroSection) {
+        scroll(
+          animate(heroImg, { transform: ['translateY(0)', 'translateY(15%)'] }, { ease: 'linear' }),
+          { target: heroSection, offset: ['start start', 'end start'] },
+        );
+      }
+    }
+  </script>
+
+  {/* ===== GSAP — featured card subtle reveal + tile stagger ===== */}
+  <script>
+    import { gsap } from 'gsap';
+    import { ScrollTrigger } from 'gsap/ScrollTrigger';
+    gsap.registerPlugin(ScrollTrigger);
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    const featured = document.querySelector('[data-green-insight-featured]') as HTMLElement | null;
+    if (featured && !reduce) {
+      gsap.set(featured, { y: 40, opacity: 0 });
+      ScrollTrigger.create({
+        trigger: featured,
+        start: 'top 80%',
+        once: true,
+        onEnter: () => gsap.to(featured, { y: 0, opacity: 1, duration: 0.8, ease: 'power3.out' }),
+      });
+    } else if (featured && reduce) {
+      featured.style.opacity = '1';
+      featured.style.transform = 'none';
+    }
+
+    const grid = document.querySelector('[data-green-insight-grid]');
+    if (grid) {
+      const tiles = Array.from(grid.querySelectorAll('[data-green-insight-tile]')) as HTMLElement[];
+      if (tiles.length > 0) {
+        if (reduce) {
+          tiles.forEach((t) => { t.style.opacity = '1'; t.style.transform = 'none'; });
+        } else {
+          gsap.set(tiles, { y: 28, opacity: 0 });
+          ScrollTrigger.create({
+            trigger: grid,
+            start: 'top 80%',
+            once: true,
+            onEnter: () => gsap.to(tiles, { y: 0, opacity: 1, duration: 0.6, ease: 'power3.out', stagger: 0.1 }),
+          });
+        }
+      }
+    }
+  </script>
+</BaseLayout>
