@@ -182,6 +182,15 @@ export const aboutSiblings: { label: string; href: string }[] = [
   { label: 'Quality & Certifications', href: '/about-us/quality-certifications/' },
 ];
 
+/** Siblings used by the Contact sub-nav (mirrors aboutSiblings). */
+export const contactSiblings: { label: string; href: string }[] = [
+  { label: 'Local Network', href: '/contact/local/' },
+  { label: 'Worldwide Network', href: '/contact/worldwide/' },
+  { label: 'Elysée WISE', href: '/contact/wise/' },
+  { label: 'Elysée PRIME', href: '/contact/prime/' },
+  { label: 'Elysée Rohrsysteme', href: '/contact/rohrsysteme/' },
+];
+
 // ---------- per-page content ----------
 
 export const homePage: PageContent = {

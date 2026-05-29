@@ -165,7 +165,7 @@ export const megaNav: MegaColumns = [
         { label: 'Worldwide Network', href: '/contact/worldwide/', icon: 'globe', caption: 'Export representatives' },
         { label: 'Elysée WISE', href: '/contact/wise/', icon: 'dot', caption: 'Smart-water solutions' },
         { label: 'Elysée PRIME', href: '/contact/prime/', icon: 'dot', caption: 'Premium product line' },
-        { label: 'Elysée Rohrsysteme', href: '/contact/rohrsysteme/', icon: 'dot', caption: 'German subsidiary' },
+        { label: 'Elysée Rohrsysteme', href: '/contact/rohrsysteme/', icon: 'dot', caption: 'Austrian subsidiary' },
       ],
     },
   ],

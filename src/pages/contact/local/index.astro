@@ -1,16 +1,249 @@
 ---
-import DirectoryPageLayout from '../../../layouts/DirectoryPageLayout.astro';
+/**
+ * Contact — Local Network (Cyprus).
+ *
+ * URL: /contact/local/
+ * Source: `localOffices` from src/data/site-content.ts.
+ *
+ * Design mirrors the elaborate quality-certifications template:
+ *   - Scroll-progress bar
+ *   - Cover hero with parallax (facility-exterior.jpg) + brand wash
+ *   - ContactSubNav (sticky tabs to the 5 contact pages)
+ *   - Stat band — 4 animated counters
+ *   - Head-office detail card + business-hours strip
+ *   - 6 shop cards (Strovolos / Ergates / Larnaca / Frenaros / Limassol / Paphos)
+ *   - "Send us a message" ContactForm
+ *   - Closing CTA on light brand wash
+ */
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Container from '../../../components/Container.astro';
+import Section from '../../../components/Section.astro';
+import ContactSubNav from '../../../components/contact/ContactSubNav.astro';
 import ContactForm from '../../../components/ContactForm.astro';
 import { localOffices } from '../../../data/site-content';
+
+// The first office is the Strovolos head office (full contact + hours);
+// the remaining 5 are the satellite shops shown as a card grid below.
+const [headOffice, ...satelliteShops] = localOffices;
 ---
-<DirectoryPageLayout
-  title="Local Network"
-  eyebrow="Contact Us"
-  subtitle="Find your nearest Elysée shop in Cyprus."
-  offices={localOffices}
+<BaseLayout
+  title="Local Network — Contact — Elysée"
+  description="Find your nearest Elysée shop in Cyprus. Six locations across Nicosia, Larnaca, Limassol, Famagusta district and Paphos."
+  padForHeader={false}
 >
-  <ContactForm
-    title="Send us a message"
-    subtitle="Prefer to write instead of visit? Drop us a line and we'll route your enquiry to the right Cyprus location."
-  />
-</DirectoryPageLayout>
+
+  {/* Scroll-progress bar */}
+  <div aria-hidden="true" data-scroll-progress class="fixed top-0 left-0 right-0 h-[2px] bg-brand-500 z-50 origin-left pointer-events-none" style="transform: scaleX(0);"></div>
+
+  {/* ===== COVER HERO — full-bleed facility image + brand wash ===== */}
+  <section class="relative min-h-[88vh] flex items-end text-surface overflow-hidden">
+    <img
+      data-hero-parallax
+      src="/images/about/facility-exterior.jpg"
+      alt="Aerial view of the Elysée Ergates Industrial Area facility, Cyprus"
+      class="absolute inset-0 w-full h-full object-cover will-change-transform"
+    />
+    <div aria-hidden="true" class="absolute inset-0 bg-gradient-to-b from-ink/45 via-ink/20 to-ink/80"></div>
+    <div aria-hidden="true" class="absolute inset-0 bg-brand-500/30"></div>
+
+    <Container size="xl" class="relative pt-40 md:pt-48 pb-16 md:pb-24 w-full">
+      <p data-reveal class="text-[11px] md:text-xs uppercase tracking-[0.4em] text-surface/85 mb-8">
+        Contact Us · Cyprus
+      </p>
+      <h1 data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[0.92] tracking-tight text-surface" style="font-size: clamp(3rem, 9vw, 8rem); max-width: 14ch;">
+        Local Network.
+      </h1>
+      <p data-reveal data-reveal-delay="240" class="mt-8 max-w-2xl text-base md:text-lg text-surface/85 leading-relaxed">
+        Six shops across the island plus the Ergates head office. Drop in, give us a call, or send a message — we'll route your enquiry to the closest Elysée location.
+      </p>
+      <div data-reveal data-reveal-delay="360" class="mt-14 md:mt-20 flex items-center gap-4 text-[11px] uppercase tracking-[0.3em] text-surface/70">
+        <span aria-hidden="true" class="h-px w-12 bg-surface/50"></span>
+        <span>Local Network</span>
+      </div>
+    </Container>
+  </section>
+
+  <ContactSubNav currentPath={Astro.url.pathname} />
+
+  {/* ===== STAT BAND ===== */}
+  <section class="bg-surface border-b border-ink/10">
+    <Container size="xl" class="py-16 md:py-24">
+      <p data-reveal class="text-[11px] md:text-xs uppercase tracking-[0.3em] text-brand-500 mb-10 md:mb-14">By the network</p>
+      <dl class="grid grid-cols-2 md:grid-cols-4 gap-px bg-ink/10 border border-ink/10">
+        <div class="bg-surface p-8 md:p-10">
+          <dd data-counter="6" class="font-display font-heavy leading-none tracking-tight text-brand-500" style="font-size: clamp(2.5rem, 6vw, 5rem);">6</dd>
+          <dt class="mt-4 md:mt-5 text-[10px] md:text-xs uppercase tracking-[0.25em] text-ink/60">Shops island-wide</dt>
+        </div>
+        <div class="bg-surface p-8 md:p-10">
+          <dd data-counter="6" class="font-display font-heavy leading-none tracking-tight text-brand-500" style="font-size: clamp(2.5rem, 6vw, 5rem);">6</dd>
+          <dt class="mt-4 md:mt-5 text-[10px] md:text-xs uppercase tracking-[0.25em] text-ink/60">Cities covered</dt>
+        </div>
+        <div class="bg-surface p-8 md:p-10">
+          <dd data-counter="1979" class="font-display font-heavy leading-none tracking-tight text-brand-500" style="font-size: clamp(2.5rem, 6vw, 5rem);">1979</dd>
+          <dt class="mt-4 md:mt-5 text-[10px] md:text-xs uppercase tracking-[0.25em] text-ink/60">Cyprus since</dt>
+        </div>
+        <div class="bg-surface p-8 md:p-10">
+          <dd data-counter="45+" class="font-display font-heavy leading-none tracking-tight text-brand-500" style="font-size: clamp(2.5rem, 6vw, 5rem);">45+</dd>
+          <dt class="mt-4 md:mt-5 text-[10px] md:text-xs uppercase tracking-[0.25em] text-ink/60">Years on the island</dt>
+        </div>
+      </dl>
+    </Container>
+  </section>
+
+  {/* ===== HEAD OFFICE — sticky aside + details ===== */}
+  {headOffice && (
+    <Section bg="alt" spacing="lg">
+      <Container size="xl">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16">
+          <aside class="lg:col-span-4">
+            <div class="lg:sticky lg:top-32">
+              <p data-reveal class="text-[11px] uppercase tracking-[0.4em] text-brand-500 mb-6 md:mb-8">Head office</p>
+              <h2 data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[1.02] tracking-tight text-ink" style="font-size: clamp(2rem, 4.5vw, 3.5rem);">
+                {headOffice.region}, Cyprus.
+              </h2>
+              <div aria-hidden="true" class="mt-8 h-px w-12 bg-brand-500"></div>
+              <p data-reveal data-reveal-delay="240" class="mt-6 max-w-xs text-sm text-ink/60 leading-relaxed">
+                Visit, call, or send a message. The head office routes enquiries to the right shop.
+              </p>
+            </div>
+          </aside>
+          <div class="lg:col-span-8 lg:pt-2">
+            <div data-reveal data-reveal-delay="160" class="bg-surface border-l-4 border-brand-500 p-8 md:p-10">
+              <p class="text-[10px] uppercase tracking-[0.3em] text-brand-500 font-semibold mb-6">{headOffice.name}</p>
+              <dl class="grid grid-cols-1 sm:grid-cols-2 gap-x-10 gap-y-6">
+                {headOffice.address && (
+                  <div>
+                    <dt class="text-[10px] uppercase tracking-[0.25em] text-ink/55 mb-1.5">Address</dt>
+                    <dd class="font-display font-heavy text-lg text-ink leading-snug">{headOffice.address}</dd>
+                  </div>
+                )}
+                {headOffice.phone && (
+                  <div>
+                    <dt class="text-[10px] uppercase tracking-[0.25em] text-ink/55 mb-1.5">Phone</dt>
+                    <dd class="font-display font-heavy text-lg text-ink leading-snug">
+                      <a href={`tel:${headOffice.phone.replace(/[^+\d]/g, '')}`} class="hover:text-brand-500 transition-colors duration-200">{headOffice.phone}</a>
+                    </dd>
+                  </div>
+                )}
+                {headOffice.hours && (
+                  <div class="sm:col-span-2 border-t border-ink/10 pt-6">
+                    <dt class="text-[10px] uppercase tracking-[0.25em] text-ink/55 mb-1.5">Hours</dt>
+                    <dd class="text-base text-ink/85 leading-relaxed whitespace-pre-line">{headOffice.hours}</dd>
+                  </div>
+                )}
+                {headOffice.notes && (
+                  <div class="sm:col-span-2 border-t border-ink/10 pt-6">
+                    <dt class="text-[10px] uppercase tracking-[0.25em] text-ink/55 mb-1.5">Also</dt>
+                    <dd class="text-base text-ink/85 leading-relaxed">{headOffice.notes}</dd>
+                  </div>
+                )}
+              </dl>
+            </div>
+          </div>
+        </div>
+      </Container>
+    </Section>
+  )}
+
+  {/* ===== 6 SHOP CARDS ===== */}
+  {satelliteShops.length > 0 && (
+    <section class="bg-surface relative overflow-hidden">
+      <Container size="xl" class="relative py-24 md:py-32">
+        <header class="max-w-3xl mb-12 md:mb-16">
+          <p data-reveal class="text-[11px] uppercase tracking-[0.4em] text-brand-500 mb-6 md:mb-8">Across the island</p>
+          <h2 data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[1.02] tracking-tight text-ink" style="font-size: clamp(2.25rem, 5.5vw, 4.5rem);">
+            Find your nearest shop.
+          </h2>
+          <p data-reveal data-reveal-delay="240" class="mt-6 md:mt-8 text-base md:text-lg text-ink/70 leading-relaxed">
+            Six Elysée locations covering Nicosia, Larnaca, Limassol, Famagusta district and Paphos.
+          </p>
+        </header>
+
+        <ol class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px bg-ink/10 border border-ink/10">
+          {satelliteShops.map((shop, i) => {
+            const num = String(i + 2).padStart(2, '0');
+            return (
+              <li data-reveal data-reveal-delay={String(i * 70)}>
+                <article class="group relative bg-surface p-8 md:p-10 min-h-[240px] h-full flex flex-col transition-[background-color] duration-300 hover:bg-surface-alt">
+                  <span
+                    aria-hidden="true"
+                    class="pointer-events-none absolute -top-2 right-4 font-display font-heavy text-brand-500/10 leading-none select-none transition-colors duration-500 group-hover:text-brand-500/25"
+                    style="font-size: clamp(4.5rem, 7vw, 7rem);"
+                  >
+                    {num}
+                  </span>
+                  <p class="relative text-[10px] uppercase tracking-[0.3em] text-brand-500">Shop {num}</p>
+                  <h3 class="relative mt-5 font-display font-heavy leading-tight text-xl md:text-2xl text-ink">{shop.name}</h3>
+                  {shop.region && (
+                    <p class="relative mt-2 text-sm text-ink/65">{shop.region}</p>
+                  )}
+                  <div aria-hidden="true" class="relative mt-4 h-px w-10 bg-brand-500 transition-[width] duration-500 ease-out group-hover:w-20"></div>
+                  {shop.notes && (
+                    <p class="relative mt-5 text-sm text-ink/70 leading-relaxed flex-1">{shop.notes}</p>
+                  )}
+                </article>
+              </li>
+            );
+          })}
+        </ol>
+      </Container>
+    </section>
+  )}
+
+  {/* ===== CONTACT FORM ===== */}
+  <Section bg="alt" spacing="lg">
+    <Container size="lg">
+      <header class="max-w-2xl mx-auto text-center mb-10 md:mb-12">
+        <p data-reveal class="text-[11px] uppercase tracking-[0.4em] text-brand-500 mb-6">Prefer to write?</p>
+        <h2 data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[1.02] tracking-tight text-ink" style="font-size: clamp(2rem, 4.5vw, 3.5rem);">
+          Send us a message.
+        </h2>
+      </header>
+      <div data-reveal data-reveal-delay="240" class="max-w-3xl mx-auto">
+        <ContactForm
+          subtitle="Drop us a line and we'll route your enquiry to the right Cyprus location."
+        />
+      </div>
+    </Container>
+  </Section>
+
+  {/* ===== CLOSING CTA ===== */}
+  <section class="bg-brand-500/10">
+    <Container size="lg" class="py-16 md:py-20">
+      <div class="mx-auto max-w-2xl text-center">
+        <p data-reveal class="text-base md:text-lg text-ink/80 leading-relaxed">
+          Looking for export, technical advice, or one of our international subsidiaries? Continue to the Worldwide Network.
+        </p>
+        <a
+          data-reveal
+          data-reveal-delay="160"
+          href="/contact/worldwide/"
+          class="group cursor-pointer mt-8 md:mt-10 inline-flex items-center gap-3 px-6 py-3 border border-ink/40 hover:bg-ink hover:border-ink hover:text-surface text-ink text-[11px] md:text-xs uppercase tracking-[0.25em] transition-colors duration-200"
+        >
+          <span>Worldwide Network</span>
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M5 12h14" />
+            <path d="m12 5 7 7-7 7" />
+          </svg>
+        </a>
+      </div>
+    </Container>
+  </section>
+
+  <script>
+    import { animate, scroll } from 'motion';
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!reduce) {
+      const bar = document.querySelector('[data-scroll-progress]') as HTMLElement | null;
+      if (bar) scroll(animate(bar, { transform: ['scaleX(0)', 'scaleX(1)'] }, { ease: 'linear' }));
+      const heroImg = document.querySelector('[data-hero-parallax]') as HTMLElement | null;
+      const heroSection = heroImg?.closest('section') as HTMLElement | null;
+      if (heroImg && heroSection) {
+        scroll(
+          animate(heroImg, { transform: ['translateY(0)', 'translateY(15%)'] }, { ease: 'linear' }),
+          { target: heroSection, offset: ['start start', 'end start'] },
+        );
+      }
+    }
+  </script>
+</BaseLayout>
