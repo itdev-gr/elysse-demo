@@ -189,6 +189,7 @@ export const contactSiblings: { label: string; href: string }[] = [
   { label: 'Elysée WISE', href: '/contact/wise/' },
   { label: 'Elysée PRIME', href: '/contact/prime/' },
   { label: 'Elysée Rohrsysteme', href: '/contact/rohrsysteme/' },
+  { label: 'Careers', href: '/contact/careers/' },
 ];
 
 // ---------- per-page content ----------

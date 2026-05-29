@@ -1084,3 +1084,29 @@ export const subBrandRohrsysteme: ContentPage = {
     },
   ],
 };
+
+export const contactCareers: ContentPage = {
+  title: 'Careers',
+  eyebrow: 'Contact Us',
+  subtitle:
+    'Build your career with Elysée — engineering, manufacturing, R&D, and commercial roles across Cyprus, Lebanon, Egypt and Austria.',
+  blocks: [
+    {
+      kind: 'paragraph',
+      text:
+        'Since 1968 Elysée has grown from a single Cypriot workshop into a four-country group of piping and irrigation specialists. The people behind that growth — engineers, machine operators, quality technicians, sales managers, R&D scientists — are what we hire for, not the seat we put them in.',
+    },
+    { kind: 'heading', level: 2, text: 'Why Elysée' },
+    {
+      kind: 'paragraph',
+      text:
+        'We invest in long careers, not short stints. Joining the group means working alongside materials labs in Strovolos, hose extrusion lines in the 10th of Ramadan, distribution teams in Ennsdorf, and PE manufacturing in Byblos — with internal moves between subsidiaries treated as a feature, not an exception.',
+    },
+    {
+      kind: 'callout',
+      title: 'How to apply',
+      body:
+        'Address: 7 Vasileos Konstantinou, 2008 Strovolos, Nicosia, Cyprus\nPhone: +357 22 462 462\nEmail: careers@elysee.com.cy\nWebsite: www.elysee.com.cy',
+    },
+  ],
+};
