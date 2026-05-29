@@ -136,9 +136,7 @@ function Marker({
     return latLngToVector3(marker.lat, marker.lng, radius * 1.001);
   }, [marker.lat, marker.lng, radius]);
 
-  // Anchor point for the flag image — kept close to the surface (4% of radius)
-  // to avoid visible float at the silhouette. The decorative pin line + cone
-  // will be removed in a follow-up; for now they render as a small stub.
+  // Top of the line (where the image is) - positioned further out to prevent going inside globe
   const topPosition = useMemo(() => {
     return latLngToVector3(marker.lat, marker.lng, radius * 1.04);
   }, [marker.lat, marker.lng, radius]);
