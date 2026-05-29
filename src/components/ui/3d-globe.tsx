@@ -161,7 +161,7 @@ function Marker({
     const dot = markerDirection.dot(cameraDirection);
 
     // Show marker only if it's facing the camera (stricter threshold)
-    setIsVisible(dot > 0.1);
+    setIsVisible(dot > 0.2);
   });
 
   const handlePointerEnter = useCallback(() => {
@@ -214,10 +214,11 @@ function Marker({
           transform
           center
           sprite
+          occlude="blending"
           distanceFactor={10}
           style={{
             pointerEvents: isVisible ? "auto" : "none",
-            opacity: isVisible ? 1 : 0,
+            visibility: isVisible ? "visible" : "hidden",
             transition: "opacity 0.15s ease-out",
           }}
         >
