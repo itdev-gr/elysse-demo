@@ -127,7 +127,6 @@ function Marker({
 }: MarkerProps) {
   const [hovered, setHovered] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
-  const groupRef = useRef<THREE.Group>(null);
   const imageGroupRef = useRef<THREE.Group>(null);
   const { camera } = useThree();
 
@@ -173,7 +172,7 @@ function Marker({
   }, [marker, onClick]);
 
   return (
-    <group ref={groupRef} visible={isVisible}>
+    <group visible={isVisible}>
       {/* Circular image at the top */}
       <group ref={imageGroupRef} position={topPosition}>
         <Html
