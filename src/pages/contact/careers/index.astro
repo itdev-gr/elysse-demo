@@ -1,19 +1,19 @@
 ---
 /**
- * Contact — Elysée Rohrsysteme (Austrian subsidiary, European distribution).
+ * Contact — Careers (group-wide).
  *
- * URL: /contact/rohrsysteme/
- * Source: `subBrandRohrsysteme` from src/data/site-content.ts.
+ * URL: /contact/careers/
+ * Source: `contactCareers` from src/data/site-content.ts.
  */
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import Container from '../../../components/Container.astro';
 import Section from '../../../components/Section.astro';
 import ContactSubNav from '../../../components/contact/ContactSubNav.astro';
-import { subBrandRohrsysteme } from '../../../data/site-content';
+import { contactCareers } from '../../../data/site-content';
 
-const paragraphs = subBrandRohrsysteme.blocks.filter((b): b is Extract<typeof b, { kind: 'paragraph' }> => b.kind === 'paragraph');
+const paragraphs = contactCareers.blocks.filter((b): b is Extract<typeof b, { kind: 'paragraph' }> => b.kind === 'paragraph');
 const [intro1, intro2] = paragraphs;
-const callout = subBrandRohrsysteme.blocks.find((b): b is Extract<typeof b, { kind: 'callout' }> => b.kind === 'callout');
+const callout = contactCareers.blocks.find((b): b is Extract<typeof b, { kind: 'callout' }> => b.kind === 'callout');
 
 const contactLines = (callout?.body ?? '').split('\n').map((l) => {
   const m = l.match(/^([^:]+):\s*(.+)$/);
@@ -21,8 +21,8 @@ const contactLines = (callout?.body ?? '').split('\n').map((l) => {
 }).filter((x): x is { label: string; value: string } => Boolean(x));
 ---
 <BaseLayout
-  title={`${subBrandRohrsysteme.title} — Contact — Elysée`}
-  description={subBrandRohrsysteme.subtitle}
+  title={`${contactCareers.title} — Contact — Elysée`}
+  description={contactCareers.subtitle}
   padForHeader={false}
 >
 
@@ -32,8 +32,8 @@ const contactLines = (callout?.body ?? '').split('\n').map((l) => {
   <section class="relative min-h-[88vh] flex items-end text-surface overflow-hidden">
     <img
       data-hero-parallax
-      src="/images/about/pipe-stack.jpg"
-      alt="Stacked pipes — Elysée Rohrsysteme distributes piping systems across Europe from Ennsdorf bei Enns, Austria"
+      src="/images/about/engineers-meeting.jpg"
+      alt="Elysée engineers in a working session — the group hires engineers, technicians, and commercial staff across Cyprus, Lebanon, Egypt and Austria"
       class="absolute inset-0 w-full h-full object-cover will-change-transform"
     />
     <div aria-hidden="true" class="absolute inset-0 bg-gradient-to-b from-ink/45 via-ink/20 to-ink/80"></div>
@@ -41,17 +41,17 @@ const contactLines = (callout?.body ?? '').split('\n').map((l) => {
 
     <Container size="xl" class="relative pt-40 md:pt-48 pb-16 md:pb-24 w-full">
       <p data-reveal class="text-[11px] md:text-xs uppercase tracking-[0.4em] text-surface/85 mb-8">
-        Contact Us · Austria
+        Contact Us · Group-wide
       </p>
       <h1 data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[0.92] tracking-tight text-surface" style="font-size: clamp(3rem, 9vw, 8rem); max-width: 14ch;">
-        Elysée Rohrsysteme.
+        Careers.
       </h1>
       <p data-reveal data-reveal-delay="240" class="mt-8 max-w-2xl text-base md:text-lg text-surface/85 leading-relaxed">
-        {subBrandRohrsysteme.subtitle}
+        {contactCareers.subtitle}
       </p>
       <div data-reveal data-reveal-delay="360" class="mt-14 md:mt-20 flex items-center gap-4 text-[11px] uppercase tracking-[0.3em] text-surface/70">
         <span aria-hidden="true" class="h-px w-12 bg-surface/50"></span>
-        <span>Elysée Rohrsysteme</span>
+        <span>Join Elysée</span>
       </div>
     </Container>
   </section>
@@ -61,23 +61,23 @@ const contactLines = (callout?.body ?? '').split('\n').map((l) => {
   {/* ===== STAT BAND ===== */}
   <section class="bg-surface border-b border-ink/10">
     <Container size="xl" class="py-16 md:py-24">
-      <p data-reveal class="text-[11px] md:text-xs uppercase tracking-[0.3em] text-brand-500 mb-10 md:mb-14">By the subsidiary</p>
+      <p data-reveal class="text-[11px] md:text-xs uppercase tracking-[0.3em] text-brand-500 mb-10 md:mb-14">By the group</p>
       <dl class="grid grid-cols-2 md:grid-cols-4 gap-px bg-ink/10 border border-ink/10">
         <div class="bg-surface p-8 md:p-10">
-          <dd class="font-display font-heavy leading-none tracking-tight text-brand-500" style="font-size: clamp(2rem, 5vw, 4rem);">Austria</dd>
-          <dt class="mt-4 md:mt-5 text-[10px] md:text-xs uppercase tracking-[0.25em] text-ink/60">Country</dt>
+          <dd data-counter="1968" class="font-display font-heavy leading-none tracking-tight text-brand-500" style="font-size: clamp(2.5rem, 6vw, 5rem);">1968</dd>
+          <dt class="mt-4 md:mt-5 text-[10px] md:text-xs uppercase tracking-[0.25em] text-ink/60">Family-owned since</dt>
         </div>
         <div class="bg-surface p-8 md:p-10">
-          <dd class="font-display font-heavy leading-none tracking-tight text-brand-500" style="font-size: clamp(2rem, 5vw, 4rem);">Europe</dd>
-          <dt class="mt-4 md:mt-5 text-[10px] md:text-xs uppercase tracking-[0.25em] text-ink/60">Distribution market</dt>
+          <dd data-counter="4" class="font-display font-heavy leading-none tracking-tight text-brand-500" style="font-size: clamp(2.5rem, 6vw, 5rem);">4</dd>
+          <dt class="mt-4 md:mt-5 text-[10px] md:text-xs uppercase tracking-[0.25em] text-ink/60">Countries we hire from</dt>
         </div>
         <div class="bg-surface p-8 md:p-10">
-          <dd class="font-display font-heavy leading-none tracking-tight text-brand-500 whitespace-nowrap" style="font-size: clamp(1.5rem, 3.5vw, 2.5rem);">Ennsdorf</dd>
-          <dt class="mt-4 md:mt-5 text-[10px] md:text-xs uppercase tracking-[0.25em] text-ink/60">Office location</dt>
+          <dd class="font-display font-heavy leading-none tracking-tight text-brand-500" style="font-size: clamp(2rem, 5vw, 4rem);">Engineering</dd>
+          <dt class="mt-4 md:mt-5 text-[10px] md:text-xs uppercase tracking-[0.25em] text-ink/60">Core disciplines</dt>
         </div>
         <div class="bg-surface p-8 md:p-10">
-          <dd data-counter="3" class="font-display font-heavy leading-none tracking-tight text-brand-500" style="font-size: clamp(2.5rem, 6vw, 5rem);">3</dd>
-          <dt class="mt-4 md:mt-5 text-[10px] md:text-xs uppercase tracking-[0.25em] text-ink/60">Of three subsidiaries</dt>
+          <dd class="font-display font-heavy leading-none tracking-tight text-brand-500" style="font-size: clamp(2rem, 5vw, 4rem);">Year-round</dd>
+          <dt class="mt-4 md:mt-5 text-[10px] md:text-xs uppercase tracking-[0.25em] text-ink/60">Applications open</dt>
         </div>
       </dl>
     </Container>
@@ -89,13 +89,13 @@ const contactLines = (callout?.body ?? '').split('\n').map((l) => {
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16">
         <aside class="lg:col-span-4">
           <div class="lg:sticky lg:top-32">
-            <p data-reveal class="text-[11px] uppercase tracking-[0.4em] text-brand-500 mb-6 md:mb-8">About Elysée Rohrsysteme</p>
+            <p data-reveal class="text-[11px] uppercase tracking-[0.4em] text-brand-500 mb-6 md:mb-8">About Careers at Elysée</p>
             <h2 data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[1.02] tracking-tight text-ink" style="font-size: clamp(2rem, 4.5vw, 3.5rem);">
-              The Austrian hub.
+              Long careers, four countries.
             </h2>
             <div aria-hidden="true" class="mt-8 h-px w-12 bg-brand-500"></div>
             <p data-reveal data-reveal-delay="240" class="mt-6 max-w-xs text-sm text-ink/60 leading-relaxed">
-              Distribution and representation across European markets.
+              Engineering, manufacturing, R&D and commercial roles across the group.
             </p>
           </div>
         </aside>
@@ -124,7 +124,7 @@ const contactLines = (callout?.body ?? '').split('\n').map((l) => {
   {/* ===== CINEMATIC MOMENT ===== */}
   <section class="relative min-h-[55vh] flex items-center text-surface overflow-hidden">
     <img
-      src="/images/about/hq-aerial.jpg"
+      src="/images/about/qa-lab.jpg"
       alt=""
       aria-hidden="true"
       class="absolute inset-0 w-full h-full object-cover"
@@ -133,9 +133,9 @@ const contactLines = (callout?.body ?? '').split('\n').map((l) => {
     <div aria-hidden="true" class="absolute inset-0 bg-brand-500/35 mix-blend-multiply"></div>
     <Container size="lg" class="relative py-20 md:py-28 w-full">
       <div class="max-w-4xl mx-auto text-center">
-        <p data-reveal class="text-[11px] md:text-xs uppercase tracking-[0.4em] text-surface/75 mb-8">Subsidiary · 03 of 03</p>
+        <p data-reveal class="text-[11px] md:text-xs uppercase tracking-[0.4em] text-surface/75 mb-8">Join the group</p>
         <blockquote data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[1.05] tracking-tight" style="font-size: clamp(2rem, 5vw, 4.5rem);">
-          <span aria-hidden="true" class="text-surface/55">&ldquo;</span>Distribution across Europe, from Ennsdorf bei Enns.<span aria-hidden="true" class="text-surface/55">&rdquo;</span>
+          <span aria-hidden="true" class="text-surface/55">&ldquo;</span>We hire people, not seats.<span aria-hidden="true" class="text-surface/55">&rdquo;</span>
         </blockquote>
       </div>
     </Container>
@@ -146,9 +146,9 @@ const contactLines = (callout?.body ?? '').split('\n').map((l) => {
     <Section bg="alt" spacing="lg">
       <Container size="xl">
         <header class="max-w-3xl mb-10 md:mb-12">
-          <p data-reveal class="text-[11px] uppercase tracking-[0.4em] text-brand-500 mb-6">Get in touch</p>
+          <p data-reveal class="text-[11px] uppercase tracking-[0.4em] text-brand-500 mb-6">How to apply</p>
           <h2 data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[1.02] tracking-tight text-ink" style="font-size: clamp(2rem, 4.5vw, 3.5rem);">
-            Elysée Rohrsysteme · Austria.
+            Send us your CV.
           </h2>
         </header>
         <div data-reveal data-reveal-delay="240" class="max-w-4xl bg-surface border-l-4 border-brand-500 p-8 md:p-10">
@@ -186,23 +186,21 @@ const contactLines = (callout?.body ?? '').split('\n').map((l) => {
     <Container size="lg" class="py-16 md:py-20">
       <div class="mx-auto max-w-2xl text-center">
         <p data-reveal class="text-base md:text-lg text-ink/80 leading-relaxed">
-          Visit the full Elysée Rohrsysteme site for European product distribution, or return to the Cyprus Local Network.
+          Prefer to start a conversation in person? Visit the Cyprus head office on the Local Network page, or step back to the group's worldwide subsidiaries.
         </p>
         <div data-reveal data-reveal-delay="160" class="mt-8 md:mt-10 flex flex-wrap items-center justify-center gap-3">
           <a
-            href="https://www.elysee-rohrsysteme.com"
-            target="_blank"
-            rel="noopener noreferrer"
+            href="mailto:careers@elysee.com.cy"
             class="group cursor-pointer inline-flex items-center gap-3 px-6 py-3 bg-brand-500 text-surface hover:bg-brand-700 text-[11px] md:text-xs uppercase tracking-[0.25em] transition-colors duration-200"
           >
-            <span>Visit elysee-rohrsysteme.com</span>
+            <span>Email careers@elysee.com.cy</span>
             <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
           </a>
           <a
-            href="/contact/careers/"
+            href="/contact/local/"
             class="group cursor-pointer inline-flex items-center gap-3 px-6 py-3 border border-ink/40 hover:bg-ink hover:border-ink hover:text-surface text-ink text-[11px] md:text-xs uppercase tracking-[0.25em] transition-colors duration-200"
           >
-            <span>Next · Careers</span>
+            <span>Back to Local Network</span>
             <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
           </a>
         </div>
