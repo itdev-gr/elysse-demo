@@ -131,19 +131,11 @@ function Marker({
   const imageGroupRef = useRef<THREE.Group>(null);
   const { camera } = useThree();
 
-  // Surface position (where the line starts)
-  const surfacePosition = useMemo(() => {
-    return latLngToVector3(marker.lat, marker.lng, radius * 1.001);
-  }, [marker.lat, marker.lng, radius]);
-
   // Anchor point for the flag image — kept close to the surface (4% of radius)
-  // to avoid visible float at the silhouette. The decorative pin line + cone
-  // will be removed in a follow-up; for now they render as a small stub.
+  // to avoid visible float at the silhouette.
   const topPosition = useMemo(() => {
     return latLngToVector3(marker.lat, marker.lng, radius * 1.04);
   }, [marker.lat, marker.lng, radius]);
-
-  const lineHeight = topPosition.distanceTo(surfacePosition);
 
   // Check if marker is facing the camera
   useFrame(() => {
@@ -180,36 +172,8 @@ function Marker({
     onClick?.(marker);
   }, [marker, onClick]);
 
-  // Calculate line center and orientation
-  const { lineCenter, lineQuaternion } = useMemo(() => {
-    const center = surfacePosition.clone().lerp(topPosition, 0.5);
-
-    // Calculate rotation to align cylinder with the direction from surface to top
-    const direction = topPosition.clone().sub(surfacePosition).normalize();
-    const quaternion = new THREE.Quaternion();
-    quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), direction);
-
-    return { lineCenter: center, lineQuaternion: quaternion };
-  }, [surfacePosition, topPosition]);
-
   return (
     <group ref={groupRef} visible={isVisible}>
-      {/* Pin line from surface to image - properly oriented */}
-      <mesh position={lineCenter} quaternion={lineQuaternion}>
-        <cylinderGeometry args={[0.003, 0.003, lineHeight, 8]} />
-        <meshBasicMaterial
-          color={hovered ? "#ffffff" : "#94a3b8"}
-          transparent
-          opacity={hovered ? 0.9 : 0.6}
-        />
-      </mesh>
-
-      {/* Pin point at the surface */}
-      <mesh position={surfacePosition} quaternion={lineQuaternion}>
-        <coneGeometry args={[0.015, 0.04, 8]} />
-        <meshBasicMaterial color={hovered ? "#f97316" : "#ef4444"} />
-      </mesh>
-
       {/* Circular image at the top */}
       <group ref={imageGroupRef} position={topPosition}>
         <Html
