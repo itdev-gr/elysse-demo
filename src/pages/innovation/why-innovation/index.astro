@@ -1,5 +1,28 @@
 ---
-import ContentPageLayout from '../../../layouts/ContentPageLayout.astro';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import WhyHero from '../../../components/innovation/why/WhyHero.astro';
+import WhyManifesto from '../../../components/innovation/why/WhyManifesto.astro';
+import WhyDefinition from '../../../components/innovation/why/WhyDefinition.tsx';
 import { innovationWhy } from '../../../data/site-content';
+
+const paragraphs = innovationWhy.blocks
+  .filter((b): b is Extract<typeof b, { kind: 'paragraph' }> => b.kind === 'paragraph');
+const callout = innovationWhy.blocks
+  .find((b): b is Extract<typeof b, { kind: 'callout' }> => b.kind === 'callout')?.body;
+
+// The "What is innovation?" heading is the first H2 in the block list; the
+// paragraph immediately after it is the definition body.
+const definitionHeadingIdx = innovationWhy.blocks.findIndex((b) => b.kind === 'heading' && b.text === 'What is innovation?');
+const definitionBody = (innovationWhy.blocks[definitionHeadingIdx + 1] as { kind: 'paragraph'; text: string } | undefined)?.text ?? '';
 ---
-<ContentPageLayout content={innovationWhy} />
+<BaseLayout title={innovationWhy.title} description={innovationWhy.subtitle ?? ''} padForHeader={false}>
+  <WhyHero eyebrow={innovationWhy.eyebrow} title={innovationWhy.title} subtitle={innovationWhy.subtitle} />
+  <WhyManifesto
+    eyebrow="Why innovation"
+    heading="Innovation is how we stay ahead."
+    summary="From R&D bench to factory floor — invention only counts when it ships."
+    paragraphs={paragraphs.slice(0, 2).map((b) => b.text)}
+    callout={callout}
+  />
+  <WhyDefinition client:visible heading="What is innovation?" body={definitionBody} />
+</BaseLayout>

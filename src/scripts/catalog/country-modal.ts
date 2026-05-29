@@ -17,19 +17,26 @@ export function openCountryModal(onPick: (country: Country) => void): void {
 
   modal.removeAttribute('hidden');
 
-  const buttons = modal.querySelectorAll<HTMLButtonElement>('button[data-country]');
-  buttons.forEach(btn => {
-    btn.addEventListener('click', () => {
-      const c = btn.dataset.country as Country | undefined;
-      if (!c) return;
-      closeCountryModal();
-      onPick(c);
-    }, { once: true });
-  });
+  const select = modal.querySelector<HTMLSelectElement>('[data-country-select]');
+  const submit = modal.querySelector<HTMLButtonElement>('[data-country-submit]');
+  if (!select || !submit) return;
 
-  // Focus the first button.
-  const first = modal.querySelector<HTMLElement>(FOCUSABLE);
-  first?.focus();
+  // Reset state on each open so a previous pick doesn't carry over.
+  select.value = '';
+  submit.disabled = true;
+
+  const onChange = () => { submit.disabled = !select.value; };
+  const onSubmit = () => {
+    const c = select.value as Country | '';
+    if (!c) return;
+    closeCountryModal();
+    onPick(c);
+  };
+  select.addEventListener('change', onChange);
+  submit.addEventListener('click', onSubmit, { once: true });
+
+  // Focus the select so the user can use the keyboard immediately.
+  select.focus();
 
   // Focus trap + block Escape.
   activeKeydown = (e: KeyboardEvent) => {

@@ -98,16 +98,35 @@ const navItems: SnapNavItem[] = [
 
           <div class="mt-8 md:mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
             {servicesCards.map((c, ci) => (
-              <Card
-                title={c.label}
+              <a
                 href={c.href}
-                image={c.image}
-                class="bg-surface/95 text-ink backdrop-blur-sm"
                 data-reveal
                 data-reveal-delay={String(240 + ci * 60)}
+                class="group relative block overflow-hidden aspect-[4/3] text-surface focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2 focus-visible:ring-offset-ink"
               >
-                {c.blurb}
-              </Card>
+                {c.image && (
+                  <Image
+                    src={c.image}
+                    alt={c.label}
+                    widths={[480, 720, 960]}
+                    sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
+                    class="absolute inset-0 h-full w-full object-cover transition-transform duration-slow ease-out-quint group-hover:scale-[1.05]"
+                  />
+                )}
+                <div
+                  aria-hidden="true"
+                  class="absolute inset-0 transition-opacity duration-base ease-out-quint"
+                  style="background: linear-gradient(180deg, rgba(10,10,10,0.05) 0%, rgba(10,10,10,0.35) 55%, rgba(10,10,10,0.85) 100%);"
+                ></div>
+                <div class="relative z-10 flex h-full flex-col justify-end p-5 md:p-6">
+                  <h3 class="font-display leading-tight text-xl md:text-2xl">{c.label}</h3>
+                  <p class="mt-2 text-sm text-surface/85 leading-relaxed line-clamp-3">{c.blurb}</p>
+                  <span class="mt-4 inline-flex items-center gap-1 text-xs uppercase tracking-[0.25em] font-medium text-surface group-hover:text-brand-500 transition-colors duration-fast">
+                    Learn more
+                    <span aria-hidden="true" class="transition-transform duration-fast group-hover:translate-x-1">&rarr;</span>
+                  </span>
+                </div>
+              </a>
             ))}
           </div>
         </Container>

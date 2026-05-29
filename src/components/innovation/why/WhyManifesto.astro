@@ -1,0 +1,59 @@
+---
+/**
+ * Editorial intro section for Why Innovation. Mirrors the "One workshop.
+ * Sixty-five destinations." pattern from the worldwide contact page:
+ * a sticky brand-eyebrow + summary on the left, drop-cap prose on the right,
+ * followed by a brand-accent callout.
+ */
+import Container from '../../Container.astro';
+import Section from '../../Section.astro';
+
+interface Props {
+  eyebrow?: string;
+  heading: string;
+  summary?: string;
+  paragraphs: string[];
+  callout?: string;
+}
+const { eyebrow = 'Why innovation', heading, summary, paragraphs, callout } = Astro.props;
+---
+<Section bg="alt" spacing="lg">
+  <Container size="xl">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16">
+      <aside class="lg:col-span-4">
+        <div class="lg:sticky lg:top-32">
+          <p data-reveal class="text-[11px] uppercase tracking-[0.4em] text-brand-500 mb-6 md:mb-8">{eyebrow}</p>
+          <h2 data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[1.02] tracking-tight text-ink" style="font-size: clamp(2rem, 4.5vw, 3.5rem);">
+            {heading}
+          </h2>
+          <div aria-hidden="true" class="mt-8 h-px w-12 bg-brand-500"></div>
+          {summary && (
+            <p data-reveal data-reveal-delay="240" class="mt-6 max-w-xs text-sm text-ink/60 leading-relaxed">{summary}</p>
+          )}
+        </div>
+      </aside>
+
+      <div class="lg:col-span-8 lg:pt-2 space-y-7 md:space-y-8">
+        {paragraphs.map((p, i) => (
+          <p
+            data-reveal
+            data-reveal-delay={String(160 + i * 120)}
+            class={
+              i === 0
+                ? "text-lg md:text-xl text-ink leading-[1.65] first-letter:font-display first-letter:font-heavy first-letter:text-7xl md:first-letter:text-8xl first-letter:float-left first-letter:mr-3 first-letter:mt-1 first-letter:leading-[0.85] first-letter:text-brand-500"
+                : "text-base md:text-lg text-ink/80 leading-relaxed"
+            }
+          >
+            {p}
+          </p>
+        ))}
+
+        {callout && (
+          <aside data-reveal data-reveal-delay="500" class="mt-10 md:mt-12 p-6 md:p-8 bg-brand-500/5 border-l-4 border-brand-500">
+            <p class="text-base md:text-lg text-ink/90 leading-relaxed italic">{callout}</p>
+          </aside>
+        )}
+      </div>
+    </div>
+  </Container>
+</Section>

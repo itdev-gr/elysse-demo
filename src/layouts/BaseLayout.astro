@@ -60,9 +60,11 @@ const fullTitle = title === titleSuffix ? title : `${title} — ${titleSuffix}`;
     {description && <meta name="twitter:description" content={description} />}
     <meta name="twitter:image" content={fullOgImage} />
 
-    {/* Icons */}
+    {/* Icons — Elysée brand mark */}
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="alternate icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" href="/favicon.svg" />
+    <meta name="theme-color" content="#708a41" />
 
     {/* Fonts — Roboto (Effra fallback per Elysée brand guidelines) per src/data/fonts.ts */}
     {fontLinks.map((f) => (

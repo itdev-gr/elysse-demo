@@ -11,7 +11,7 @@ const { categories } = Astro.props;
 <ul class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 my-10">
   {categories.map((cat) => (
     <li class="border border-ink/10 rounded-sm overflow-hidden bg-surface">
-      <a href={`/catalog/${cat.slug}/`} class="block aspect-[4/3] bg-brand-500/5">
+      <a href={`/catalog/${cat.slug}/?country=ask`} class="block aspect-[4/3] bg-brand-500/5">
         {cat.image ? (
           <img
             src={cat.image}
@@ -27,7 +27,7 @@ const { categories } = Astro.props;
       <div class="p-5">
         <h3 class="text-lg font-heavy text-ink">{cat.name}</h3>
         <div class="mt-4 flex items-center gap-3">
-          <a href={`/catalog/${cat.slug}/`} class="text-xs uppercase tracking-widest font-medium text-brand-500 hover:text-brand-accent transition-colors duration-fast">View Products →</a>
+          <a href={`/catalog/${cat.slug}/?country=ask`} class="text-xs uppercase tracking-widest font-medium text-brand-500 hover:text-brand-accent transition-colors duration-fast">View Products →</a>
           {cat.pdf && (
             <a href={cat.pdf} class="text-xs uppercase tracking-widest font-medium text-ink/60 hover:text-brand-500 transition-colors duration-fast">PDF</a>
           )}

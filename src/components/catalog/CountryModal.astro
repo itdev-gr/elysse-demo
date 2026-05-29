@@ -1,6 +1,16 @@
 ---
-import { countriesByRegion } from '../../data/catalog-countries';
-const groups = countriesByRegion();
+import { COUNTRIES } from '../../data/catalog-countries';
+
+const TOP_CODES = ['cy', 'at', 'de', 'gr', 'fr'] as const;
+type TopCode = (typeof TOP_CODES)[number];
+const codeOrder = (code: string) => TOP_CODES.indexOf(code as TopCode);
+const topCountries = TOP_CODES
+  .map((code) => COUNTRIES.find((c) => c.code === code))
+  .filter((c): c is (typeof COUNTRIES)[number] => Boolean(c));
+const otherCountries = COUNTRIES
+  .filter((c) => codeOrder(c.code) === -1)
+  .slice()
+  .sort((a, b) => a.label.localeCompare(b.label));
 ---
 <div
   class="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center px-4"
@@ -11,30 +21,31 @@ const groups = countriesByRegion();
   aria-labelledby="country-modal-title"
 >
   <div class="absolute inset-0" aria-hidden="true"></div>
-  <div class="relative bg-surface text-ink rounded-md shadow-xl max-w-2xl w-full max-h-[85vh] overflow-y-auto p-6 md:p-8">
+  <div class="relative bg-surface text-ink rounded-md shadow-xl max-w-md w-full p-6 md:p-8">
     <h2 id="country-modal-title" class="text-2xl font-heavy text-ink">Select your country</h2>
     <p class="text-sm text-ink/70 mt-2">Product availability varies by region. Choose your country to browse the catalog.</p>
 
-    <div class="mt-6 space-y-6">
-      {groups.map((g) => (
-        <section>
-          <h3 class="text-xs uppercase tracking-widest font-medium text-brand-500 mb-3">{g.region.label}</h3>
-          <ul class="grid grid-cols-2 sm:grid-cols-3 gap-2">
-            {g.countries.map((c) => (
-              <li>
-                <button
-                  type="button"
-                  data-country={c.code}
-                  class="w-full text-left px-3 py-2 rounded-sm border border-ink/10 text-sm text-ink hover:border-brand-500 hover:text-brand-500 hover:bg-brand-500/5 transition-colors duration-fast"
-                >
-                  {c.label}
-                </button>
-              </li>
-            ))}
-          </ul>
-        </section>
-      ))}
-    </div>
+    <label for="country-select" class="sr-only">Country</label>
+    <select
+      id="country-select"
+      data-country-select
+      class="mt-6 block w-full bg-surface border border-ink/20 rounded-sm px-3 py-3 text-sm text-ink focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/30 transition-colors duration-fast"
+    >
+      <option value="" disabled selected>Choose your country…</option>
+      {topCountries.map((c) => <option value={c.code}>{c.label}</option>)}
+      <option disabled>──────────</option>
+      {otherCountries.map((c) => <option value={c.code}>{c.label}</option>)}
+    </select>
+
+    <button
+      type="button"
+      data-country-submit
+      disabled
+      class="mt-6 w-full inline-flex items-center justify-center gap-3 px-6 py-3 bg-brand-500 text-surface text-[11px] md:text-xs uppercase tracking-[0.25em] font-medium hover:bg-brand-700 transition-colors duration-200 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-brand-500"
+    >
+      <span>Continue</span>
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+    </button>
   </div>
 </div>
 <noscript>

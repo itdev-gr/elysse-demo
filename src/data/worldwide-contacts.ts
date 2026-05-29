@@ -5,8 +5,7 @@
  * email pulled from src/data/site-content.ts. Partner countries route through
  * the Cyprus export desk (pulled from `worldwideOffices[0]`).
  *
- * Country codes are ISO 3166-1 alpha-2, lowercase, matching the flagcdn URLs
- * we already use as marker images in ElyseeGlobe.tsx.
+ * Country codes are ISO 3166-1 alpha-2, lowercase.
  */
 
 export interface CountryContact {

@@ -1,0 +1,66 @@
+---
+/**
+ * Cinematic full-bleed hero for /innovation/why-innovation/.
+ * Editorial intensity (88vh, larger clamp, heavier washes) — divergent
+ * from the standard PageHero.astro by intent. Parallax is bound by the
+ * co-located <script> below, mirroring PageHero.astro's pattern.
+ */
+import Container from '../../Container.astro';
+import heroImg from '../../../assets/images/background-6-new.jpg';
+
+interface Props {
+  eyebrow?: string;
+  title: string;
+  subtitle?: string;
+}
+const { eyebrow, title, subtitle } = Astro.props;
+---
+<section class="relative min-h-[88vh] flex items-end text-surface overflow-hidden">
+  <img
+    data-hero-parallax
+    src={heroImg.src}
+    alt=""
+    aria-hidden="true"
+    class="absolute inset-0 w-full h-full object-cover will-change-transform"
+  />
+  <div aria-hidden="true" class="absolute inset-0 bg-gradient-to-b from-ink/45 via-ink/20 to-ink/85"></div>
+  <div aria-hidden="true" class="absolute inset-0 bg-brand-500/25"></div>
+
+  <Container size="xl" class="relative pt-40 md:pt-48 pb-16 md:pb-24 w-full">
+    {eyebrow && (
+      <p data-reveal class="text-[11px] md:text-xs uppercase tracking-[0.4em] text-surface/85 mb-8">{eyebrow}</p>
+    )}
+    <h1
+      data-reveal
+      data-reveal-delay="120"
+      class="font-display font-heavy leading-[0.92] tracking-tight text-surface"
+      style="font-size: clamp(3rem, 9vw, 8rem); max-width: 14ch;"
+    >
+      {title}
+    </h1>
+    {subtitle && (
+      <p data-reveal data-reveal-delay="240" class="mt-8 max-w-2xl text-base md:text-lg text-surface/85 leading-relaxed">
+        {subtitle}
+      </p>
+    )}
+    <div data-reveal data-reveal-delay="360" class="mt-14 md:mt-20 flex items-center gap-4 text-[11px] uppercase tracking-[0.3em] text-surface/70">
+      <span aria-hidden="true" class="h-px w-12 bg-surface/50"></span>
+      <span>Scroll to read</span>
+    </div>
+  </Container>
+</section>
+
+<script>
+  import { animate, scroll } from 'motion';
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (!reduce) {
+    const heroImg = document.querySelector('[data-hero-parallax]') as HTMLElement | null;
+    const heroSection = heroImg?.closest('section') as HTMLElement | null;
+    if (heroImg && heroSection) {
+      scroll(
+        animate(heroImg, { transform: ['translateY(0)', 'translateY(15%)'] }, { ease: 'linear' }),
+        { target: heroSection, offset: ['start start', 'end start'] },
+      );
+    }
+  }
+</script>

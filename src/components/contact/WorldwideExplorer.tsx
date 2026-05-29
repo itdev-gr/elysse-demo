@@ -1,14 +1,14 @@
 'use client';
 /**
- * Side-by-side globe + contact form for /contact/worldwide/.
+ * Side-by-side world map + contact form for /contact/worldwide/.
  *
- * State flow: ElyseeGlobe -> onCountrySelect(code) -> WorldwideExplorer
+ * State flow: ElyseeWorldMap -> onCountrySelect(code) -> WorldwideExplorer
  * state.selectedCode -> details card (address/phone/email) + form fields
  * (country, prefilled message). Default state: no country picked, the
  * right column shows a small instruction card.
  */
 import { useState } from 'react';
-import ElyseeGlobe from './ElyseeGlobe';
+import ElyseeWorldMap from './ElyseeWorldMap';
 import { worldwideContacts, type CountryContact } from '@/data/worldwide-contacts';
 
 export default function WorldwideExplorer() {
@@ -30,9 +30,9 @@ export default function WorldwideExplorer() {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-start">
 
-      {/* Globe (left) */}
+      {/* Map (left) */}
       <div className="lg:col-span-7">
-        <ElyseeGlobe onCountrySelect={handleSelect} />
+        <ElyseeWorldMap onCountrySelect={handleSelect} selectedCode={code} />
       </div>
 
       {/* Details + form (right) */}
@@ -41,7 +41,7 @@ export default function WorldwideExplorer() {
           <div className="bg-surface-alt border-l-4 border-brand-500/40 p-6 md:p-8">
             <p className="text-[10px] uppercase tracking-[0.3em] text-brand-500 font-semibold mb-3">Tap any country</p>
             <p className="text-base text-ink/75 leading-relaxed">
-              Pick a marker on the globe to see local contact details and start a message —
+              Pick a marker on the map to see local contact details and start a message —
               we will route it to the closest Elysée office or partner.
             </p>
           </div>
