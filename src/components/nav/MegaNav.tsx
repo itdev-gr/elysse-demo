@@ -66,6 +66,13 @@ export default function MegaNav({ groups }: Props) {
       onMouseEnter={cancelClose}
     >
       <nav aria-label="Primary" className="flex items-stretch gap-1">
+        <a
+          href="/"
+          onMouseEnter={() => setActive(null)}
+          className="inline-flex items-center px-3 py-2 text-xs uppercase tracking-widest font-medium hover:text-brand-accent transition-colors duration-fast"
+        >
+          Home
+        </a>
         {groups.map((group, idx) => {
           const hasItems = group.items.length > 0;
           const isOpen = active === idx;

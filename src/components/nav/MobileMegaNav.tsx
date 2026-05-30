@@ -99,6 +99,15 @@ export default function MobileMegaNav({ groups }: Props) {
 
               <nav aria-label="Mobile primary" className="px-2 py-2">
                 <ul>
+                  <li className="border-b border-ink/5">
+                    <a
+                      href="/"
+                      onClick={closeDrawer}
+                      className="block px-4 py-3 text-sm uppercase tracking-widest font-medium text-ink hover:text-brand-500 transition-colors duration-fast"
+                    >
+                      Home
+                    </a>
+                  </li>
                   {groups.map((group, idx) => {
                     const hasItems = group.items.length > 0;
                     const isExpanded = expanded === idx;
