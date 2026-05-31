@@ -36,6 +36,10 @@ describe('getApplyHref', () => {
     expect(getApplyHref(baseJob))
       .toEqual({ href: 'mailto:careers@elysee.com.cy', external: false });
   });
+  it('treats whitespace-only apply_url as absent', () => {
+    expect(getApplyHref({ ...baseJob, apply_url: '   ' }))
+      .toEqual({ href: 'mailto:careers@elysee.com.cy', external: false });
+  });
 });
 
 describe('isDeadlineExpired', () => {
@@ -81,5 +85,15 @@ describe('renderJobDescription', () => {
     const html = renderJobDescription('[link](https://example.com)');
     expect(html).toContain('rel="noopener noreferrer"');
     expect(html).toContain('target="_blank"');
+  });
+  it('does not duplicate rel/target if the input already has them', () => {
+    const html = renderJobDescription('<a href="https://x.io" rel="noopener" target="_self">x</a>');
+    // exactly one rel and one target on the anchor
+    const matches = html.match(/<a\s[^>]*>/) ?? [];
+    const anchorTag = matches[0] ?? '';
+    expect((anchorTag.match(/rel=/g) ?? []).length).toBe(1);
+    expect((anchorTag.match(/target=/g) ?? []).length).toBe(1);
+    expect(anchorTag).toContain('rel="noopener noreferrer"');
+    expect(anchorTag).toContain('target="_blank"');
   });
 });

@@ -38,9 +38,13 @@ export function renderJobDescription(markdown: string): string {
     ALLOWED_TAGS: ['p', 'br', 'strong', 'em', 'ul', 'ol', 'li', 'a'],
     ALLOWED_ATTR: ['href', 'rel', 'target'],
   });
-  // Force safe link attrs on any surviving anchor.
+  // Force safe link attrs on any surviving anchor, stripping any existing
+  // rel/target first so they are never duplicated.
   return sanitized.replace(
     /<a\s+([^>]*?)>/g,
-    (_m, attrs) => `<a ${attrs} rel="noopener noreferrer" target="_blank">`,
+    (_m, attrs) => {
+      const clean = attrs.replace(/\s*(rel|target)="[^"]*"/g, '').trim();
+      return `<a ${clean} rel="noopener noreferrer" target="_blank">`;
+    },
   );
 }
