@@ -1,0 +1,12 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import AdminApp from '../../components/admin/AdminApp.tsx';
+---
+<BaseLayout
+  title="Admin — Elysée"
+  description="Internal admin dashboard."
+  padForHeader={false}
+>
+  <meta slot="head" name="robots" content="noindex, nofollow" />
+  <AdminApp client:only="react" />
+</BaseLayout>
