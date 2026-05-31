@@ -9,6 +9,8 @@ if (!url || !anonKey) {
   console.error('Supabase env vars missing. Set PUBLIC_SUPABASE_URL and PUBLIC_SUPABASE_ANON_KEY.');
 }
 
-export const supabase = createClient(url ?? '', anonKey ?? '', {
-  auth: { persistSession: true, autoRefreshToken: true },
-});
+// Guard against SSG prerendering when env vars are absent — `client:visible` components
+// only run in the browser where the vars will be present.
+export const supabase = (url && anonKey)
+  ? createClient(url, anonKey, { auth: { persistSession: true, autoRefreshToken: true } })
+  : (null as unknown as ReturnType<typeof createClient>);

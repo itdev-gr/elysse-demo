@@ -10,6 +10,7 @@ import Container from '../../../components/Container.astro';
 import Section from '../../../components/Section.astro';
 import ContactSubNav from '../../../components/contact/ContactSubNav.astro';
 import { contactCareers } from '../../../data/site-content';
+import JobsList from '../../../components/careers/JobsList.tsx';
 
 const paragraphs = contactCareers.blocks.filter((b): b is Extract<typeof b, { kind: 'paragraph' }> => b.kind === 'paragraph');
 const [intro1, intro2] = paragraphs;
@@ -140,6 +141,22 @@ const contactLines = (callout?.body ?? '').split('\n').map((l) => {
       </div>
     </Container>
   </section>
+
+  {/* ===== OPEN POSITIONS ===== */}
+  <Section bg="surface" spacing="lg">
+    <Container size="xl">
+      <header class="max-w-3xl mb-12 md:mb-16">
+        <p data-reveal class="text-[11px] uppercase tracking-[0.4em] text-brand-500 mb-6 md:mb-8">Now hiring</p>
+        <h2 data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[1.02] tracking-tight text-ink" style="font-size: clamp(2rem, 4.5vw, 3.5rem);">
+          Open positions.
+        </h2>
+        <p data-reveal data-reveal-delay="240" class="mt-6 max-w-2xl text-base md:text-lg text-ink/70 leading-relaxed">
+          Current roles across the group — engineering, manufacturing, R&D and commercial. Tap a card to read the full role.
+        </p>
+      </header>
+      <JobsList client:visible />
+    </Container>
+  </Section>
 
   {/* ===== CONTACT CARD ===== */}
   {callout && (
