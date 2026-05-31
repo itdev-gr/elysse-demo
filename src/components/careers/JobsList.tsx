@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { supabase } from '../../lib/supabase';
+import { supabase, isSupabaseConfigured } from '../../lib/supabase';
 import type { Job } from '../../types/job';
 import JobCard from './JobCard';
 
@@ -15,6 +15,10 @@ export default function JobsList() {
   useEffect(() => {
     let cancelled = false;
     (async () => {
+      if (!isSupabaseConfigured) {
+        setState({ kind: 'error', message: 'Supabase not configured' });
+        return;
+      }
       // RLS already enforces these — the explicit filters here are defence-in-depth.
       const today = new Date().toISOString().slice(0, 10);
       const { data, error } = await supabase
