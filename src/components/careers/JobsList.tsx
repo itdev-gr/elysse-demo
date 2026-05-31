@@ -15,9 +15,13 @@ export default function JobsList() {
   useEffect(() => {
     let cancelled = false;
     (async () => {
+      // RLS already enforces these — the explicit filters here are defence-in-depth.
+      const today = new Date().toISOString().slice(0, 10);
       const { data, error } = await supabase
         .from('jobs')
         .select('*')
+        .eq('is_published', true)
+        .or(`deadline.is.null,deadline.gte.${today}`)
         .order('created_at', { ascending: false });
 
       if (cancelled) return;
