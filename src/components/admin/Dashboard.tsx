@@ -2,8 +2,15 @@ import { useState } from 'react';
 import { supabase } from '../../lib/supabase';
 import JobsTab from './JobsTab';
 import PostsTab from './PostsTab';
+import CountriesTab from './CountriesTab';
 
-type Tab = 'jobs' | 'posts';
+type Tab = 'jobs' | 'posts' | 'countries';
+
+const HEADINGS: Record<Tab, string> = {
+  jobs: 'Jobs.',
+  posts: 'Posts.',
+  countries: 'Countries.',
+};
 
 export default function Dashboard() {
   const [tab, setTab] = useState<Tab>('jobs');
@@ -26,7 +33,7 @@ export default function Dashboard() {
           <div>
             <p className="text-[10px] uppercase tracking-[0.3em] text-brand-500 font-semibold mb-2">Admin</p>
             <h1 className="font-display font-heavy text-2xl md:text-3xl text-ink">
-              {tab === 'jobs' ? 'Jobs.' : 'Posts.'}
+              {HEADINGS[tab]}
             </h1>
           </div>
           <button
@@ -45,9 +52,14 @@ export default function Dashboard() {
           <button type="button" onClick={() => setTab('posts')} className={tabClass('posts')}>
             Posts
           </button>
+          <button type="button" onClick={() => setTab('countries')} className={tabClass('countries')}>
+            Countries
+          </button>
         </nav>
 
-        {tab === 'jobs' ? <JobsTab /> : <PostsTab />}
+        {tab === 'jobs' && <JobsTab />}
+        {tab === 'posts' && <PostsTab />}
+        {tab === 'countries' && <CountriesTab />}
       </div>
     </div>
   );
