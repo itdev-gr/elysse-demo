@@ -1063,44 +1063,6 @@ export const insightsNewsItems: InsightItem[] = [
   },
 ];
 
-export const insightsBlogItems: InsightItem[] = [
-  {
-    title: 'The Ultimate Solution for Pool Plumbing: ZEEFLEX fittings',
-    excerpt:
-      'ZEEFLEX fittings by Elysée offer a reliable, leak-free solution for connecting flexible PVC pool hoses. Designed for 50 mm and 63 mm hoses, they combine easy installation with exceptional durability in demanding pool environments.',
-    href: undefined,
-    image: undefined,
-  },
-  {
-    title: 'Meet the New and Improved Elysée Zero Force Range',
-    excerpt:
-      'The new Elysée Zero Force range (75mm–110mm) has been upgraded with refined technology designed to make pipe installation faster, easier and more efficient. Its innovative semi push-fit system allows installers to insert pipes with zero insertion force after loosening the cap just one turn.',
-    href: undefined,
-    image: undefined,
-  },
-  {
-    title: 'The Ultimate Connection: Why the Elysée Global Transition Range is a Game-Changer!',
-    excerpt:
-      'The Elysée Global Transition Range offers a universal solution for connecting different pipe materials, eliminating the need for multiple adapters and simplifying installations.',
-    href: undefined,
-    image: undefined,
-  },
-  {
-    title: 'PVC Fittings and Pipes for Waste and Soil Systems',
-    excerpt:
-      'Elysée Piping offers a comprehensive range of uPVC pipes and fittings designed for safe, hygienic and long-lasting soil and waste disposal systems. Manufactured from lead-free PVC-U and fully compliant with European standards EN 1329 and EN 1401.',
-    href: undefined,
-    image: undefined,
-  },
-  {
-    title: 'Elysée Irrigation Certified as a Great Place To Work®',
-    excerpt:
-      'Elysée Irrigation was certified as a Great Place To Work®, confirming its commitment to creating a modern, safe, and people-centered working environment, where trust, respect, and the development of its people are at the core.',
-    href: undefined,
-    image: undefined,
-  },
-];
-
 export const insightsExhibitionsItems: InsightItem[] = [
   {
     title: 'Elysée at EIMA International 2026: Meet Us in Bologna!',

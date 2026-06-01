@@ -1,10 +1,31 @@
 ---
-import ListPageLayout from '../../../layouts/ListPageLayout.astro';
-import { insightsBlogItems } from '../../../data/site-content';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Container from '../../../components/Container.astro';
+import Section from '../../../components/Section.astro';
+import BlogList from '../../../components/blog/BlogList.tsx';
 ---
-<ListPageLayout
-  title="Blog"
-  eyebrow="Insights"
-  subtitle="In-depth articles on piping technology, installation best practices, and sustainable solutions."
-  items={insightsBlogItems}
-/>
+<BaseLayout
+  title="Blog — Insights — Elysée"
+  description="In-depth articles on piping technology, installation best practices, and sustainable solutions."
+  padForHeader={false}
+>
+  <section class="relative min-h-[60vh] flex items-end text-surface overflow-hidden bg-ink">
+    <Container size="xl" class="relative pt-40 md:pt-48 pb-16 md:pb-24 w-full">
+      <p class="text-[11px] md:text-xs uppercase tracking-[0.4em] text-surface/85 mb-8">
+        Insights · Blog
+      </p>
+      <h1 class="font-display font-heavy leading-[0.92] tracking-tight text-surface" style="font-size: clamp(3rem, 9vw, 8rem); max-width: 14ch;">
+        Blog.
+      </h1>
+      <p class="mt-8 max-w-2xl text-base md:text-lg text-surface/85 leading-relaxed">
+        In-depth articles on piping technology, installation best practices, and sustainable solutions.
+      </p>
+    </Container>
+  </section>
+
+  <Section bg="default" spacing="lg">
+    <Container size="xl">
+      <BlogList client:visible />
+    </Container>
+  </Section>
+</BaseLayout>
