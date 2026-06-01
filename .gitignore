@@ -20,6 +20,9 @@ recon/assets/**
 /*.png
 .playwright-mcp/
 
+# Local Claude Code tooling (project-scoped settings + scheduled task locks)
+.claude/
+
 # Added by Astro scaffold
 .env.production
 .idea/
