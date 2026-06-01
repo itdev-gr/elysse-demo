@@ -2,34 +2,77 @@
 /**
  * World map + contact form for /contact/worldwide/.
  *
- * Desktop layout: map (left) + form (right, sticky). When a country is
- * picked, its details card appears UNDER the map on the left column.
- * Mobile: stacks map -> details -> form.
- *
- * State flow: ElyseeWorldMap -> onCountrySelect(code) -> selectedCode ->
- * details card (address/phone/email) + form fields (country, prefilled
- * message + mailto target).
+ * Fetches all active countries from Supabase on mount and passes the
+ * resulting marker list to ElyseeWorldMap. When the user clicks a marker
+ * the matching row is used to populate the details card and the form.
  */
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import ElyseeWorldMap from './ElyseeWorldMap';
-import { worldwideContacts, type CountryContact } from '@/data/worldwide-contacts';
+import { supabase, isSupabaseConfigured } from '../../lib/supabase';
+import type { Country } from '../../types/country';
 
 const FALLBACK_EMAIL = 'yerolemos@elysee.com.cy';
 
-export default function WorldwideExplorer() {
-  const [code, setCode] = useState<string | null>(null);
-  const contact: CountryContact | null = code ? worldwideContacts[code] ?? null : null;
+type State =
+  | { kind: 'loading' }
+  | { kind: 'error'; message: string }
+  | { kind: 'ready'; countries: Country[] };
 
-  // Controlled form state — name & email are user input; message starts as
-  // the country's prefilledMessage and resets every time a new country is picked.
+export default function WorldwideExplorer() {
+  const [state, setState] = useState<State>({ kind: 'loading' });
+  const [code, setCode] = useState<string | null>(null);
+
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
 
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      if (!isSupabaseConfigured) {
+        setState({ kind: 'error', message: 'Supabase not configured' });
+        return;
+      }
+      const { data, error } = await supabase
+        .from('countries')
+        .select('*')
+        .eq('is_active', true);
+      if (cancelled) return;
+      if (error) {
+        setState({ kind: 'error', message: error.message });
+        return;
+      }
+      setState({ kind: 'ready', countries: (data ?? []) as Country[] });
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const markers = useMemo(() => {
+    if (state.kind !== 'ready') return [];
+    return state.countries.map((c) => ({
+      code: c.code,
+      lat: c.lat,
+      lng: c.lng,
+      kind: c.kind,
+      nudge: c.nudge_x != null && c.nudge_y != null
+        ? { x: c.nudge_x, y: c.nudge_y }
+        : undefined,
+    }));
+  }, [state]);
+
+  const contact: Country | null = useMemo(() => {
+    if (state.kind !== 'ready' || code === null) return null;
+    return state.countries.find((c) => c.code === code) ?? null;
+  }, [state, code]);
+
   const handleSelect = (next: string) => {
     setCode(next);
-    const c = worldwideContacts[next];
-    if (c) setMessage(c.prefilledMessage);
+    if (state.kind === 'ready') {
+      const c = state.countries.find((row) => row.code === next);
+      if (c) setMessage(c.prefilled_message);
+    }
   };
 
   const formTarget = contact?.email ?? FALLBACK_EMAIL;
@@ -40,7 +83,19 @@ export default function WorldwideExplorer() {
 
       {/* Map + country details (left) */}
       <div className="lg:col-span-7">
-        <ElyseeWorldMap onCountrySelect={handleSelect} selectedCode={code} />
+        {state.kind === 'loading' && (
+          <div className="aspect-[16/9] bg-surface-alt border-l-4 border-brand-500/40 animate-pulse"></div>
+        )}
+
+        {state.kind === 'error' && (
+          <div className="aspect-[16/9] bg-surface-alt border-l-4 border-brand-500/40 flex items-center justify-center">
+            <p className="text-[11px] uppercase tracking-[0.25em] text-ink/60">Map temporarily unavailable</p>
+          </div>
+        )}
+
+        {state.kind === 'ready' && (
+          <ElyseeWorldMap markers={markers} onCountrySelect={handleSelect} selectedCode={code} />
+        )}
 
         {/* Country details — appears under the map when a country is picked */}
         <div className="mt-8 md:mt-10">
@@ -94,7 +149,7 @@ export default function WorldwideExplorer() {
         </div>
       </div>
 
-      {/* Contact form (right) — always visible, sticky on desktop */}
+      {/* Contact form (right) */}
       <aside className="lg:col-span-5 lg:sticky lg:top-32">
         <form
           action={`mailto:${formTarget}`}

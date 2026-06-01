@@ -1,7 +1,6 @@
 'use client';
 import { useState, useRef, useCallback, useEffect } from 'react';
 import { cn } from '@/lib/utils';
-import { worldwideContacts } from '@/data/worldwide-contacts';
 
 /**
  * Flat 2D world map for /contact/worldwide/. Each marker fires
@@ -33,29 +32,6 @@ type Marker = {
   nudge?: { x: number; y: number };
 };
 
-const markers: Marker[] = [
-  // Subsidiaries
-  { code: 'cy', lat: 35.0717, lng: 33.4136, kind: 'subsidiary' },
-  { code: 'lb', lat: 34.1230, lng: 35.6519, kind: 'subsidiary', nudge: { x:  2.0, y:  0.5 } },
-  { code: 'eg', lat: 30.3082, lng: 31.7426, kind: 'subsidiary', nudge: { x: -0.5, y:  2.5 } },
-  { code: 'at', lat: 48.2189, lng: 14.5408, kind: 'subsidiary' },
-  // Europe partners
-  { code: 'gb', lat: 51.5074, lng: -0.1278, kind: 'partner' },
-  { code: 'de', lat: 52.5200, lng: 13.4050, kind: 'partner' },
-  { code: 'fr', lat: 48.8566, lng: 2.3522,  kind: 'partner' },
-  { code: 'it', lat: 41.9028, lng: 12.4964, kind: 'partner' },
-  { code: 'gr', lat: 37.9838, lng: 23.7275, kind: 'partner', nudge: { x: -1.5, y: -0.5 } },
-  // MENA / Asia partners
-  { code: 'ae', lat: 25.2048, lng: 55.2708, kind: 'partner' },
-  { code: 'sa', lat: 24.7136, lng: 46.6753, kind: 'partner' },
-  { code: 'tr', lat: 41.0082, lng: 28.9784, kind: 'partner', nudge: { x:  0,   y: -1.5 } },
-  { code: 'jp', lat: 35.6762, lng: 139.6503, kind: 'partner' },
-  // Africa
-  { code: 'za', lat: -26.2041, lng: 28.0473, kind: 'partner' },
-  // Oceania
-  { code: 'au', lat: -33.8688, lng: 151.2093, kind: 'partner' },
-  { code: 'nz', lat: -41.2865, lng: 174.7762, kind: 'partner' },
-];
 
 const project = (m: Marker) => {
   const baseX = ((m.lng + 180) / 360) * 100;
@@ -72,13 +48,15 @@ const ZOOM_STEP = 1.5;
 const PAN_THRESHOLD = 5; // px — anything more is a drag, not a click
 
 type Props = {
+  /** All markers to render. */
+  markers: Marker[];
   /** Fires with the ISO alpha-2 country code when a marker is clicked. */
   onCountrySelect?: (code: string) => void;
   /** ISO alpha-2 code of the currently selected country, if any. */
   selectedCode?: string | null;
 };
 
-export default function ElyseeWorldMap({ onCountrySelect, selectedCode = null }: Props) {
+export default function ElyseeWorldMap({ markers, onCountrySelect, selectedCode = null }: Props) {
   const [hoverCode, setHoverCode] = useState<string | null>(null);
   const [zoom, setZoom] = useState(1);
   const [pan, setPan] = useState({ x: 0, y: 0 });
@@ -268,7 +246,6 @@ export default function ElyseeWorldMap({ onCountrySelect, selectedCode = null }:
             .sort((a, b) => (a.kind === 'subsidiary' ? 1 : 0) - (b.kind === 'subsidiary' ? 1 : 0))
             .map((m) => {
               const pos = project(m);
-              const contact = worldwideContacts[m.code];
               const isSelected = selectedCode === m.code;
               const isHovered = hoverCode === m.code;
               const isSubsidiary = m.kind === 'subsidiary';
@@ -285,7 +262,7 @@ export default function ElyseeWorldMap({ onCountrySelect, selectedCode = null }:
                   onMouseLeave={() => setHoverCode(null)}
                   onFocus={() => setHoverCode(m.code)}
                   onBlur={() => setHoverCode(null)}
-                  aria-label={contact?.label ?? m.code.toUpperCase()}
+                  aria-label={m.code.toUpperCase()}
                   aria-pressed={isSelected}
                   style={pos}
                   className={cn(
@@ -333,7 +310,7 @@ export default function ElyseeWorldMap({ onCountrySelect, selectedCode = null }:
                         isHovered || isSelected ? 'opacity-100' : 'opacity-0',
                       )}
                     >
-                      {contact?.country ?? m.code.toUpperCase()}
+                      {m.code.toUpperCase()}
                     </span>
                   </span>
                 </button>
