@@ -1,0 +1,29 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import BlogPostView from '../../../components/blog/BlogPostView.tsx';
+
+export async function getStaticPaths() {
+  const url = import.meta.env.PUBLIC_SUPABASE_URL;
+  const anon = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
+  if (!url || !anon) {
+    // Build without env vars: emit no paths; list page still works at runtime.
+    return [];
+  }
+  const { createClient } = await import('@supabase/supabase-js');
+  const sb = createClient(url, anon);
+  const { data } = await sb
+    .from('posts')
+    .select('slug')
+    .eq('is_published', true);
+  return (data ?? []).map((row) => ({ params: { slug: row.slug as string } }));
+}
+
+const { slug } = Astro.params;
+---
+<BaseLayout
+  title="Article — Elysée"
+  description=""
+  padForHeader={false}
+>
+  <BlogPostView slug={slug ?? ''} client:load />
+</BaseLayout>
