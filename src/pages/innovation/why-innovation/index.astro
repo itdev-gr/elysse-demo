@@ -2,27 +2,58 @@
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import WhyHero from '../../../components/innovation/why/WhyHero.astro';
 import WhyManifesto from '../../../components/innovation/why/WhyManifesto.astro';
-import WhyDefinition from '../../../components/innovation/why/WhyDefinition.tsx';
+import WhyDefinition from '../../../components/innovation/why/WhyDefinition.astro';
+import WhyImportance from '../../../components/innovation/why/WhyImportance.astro';
+import WhyProcess from '../../../components/innovation/why/WhyProcess.tsx';
+import WhyClosing from '../../../components/innovation/why/WhyClosing.astro';
 import { innovationWhy } from '../../../data/site-content';
 
 const paragraphs = innovationWhy.blocks
-  .filter((b): b is Extract<typeof b, { kind: 'paragraph' }> => b.kind === 'paragraph');
+  .filter((b): b is Extract<typeof b, { kind: 'paragraph' }> => b.kind === 'paragraph')
+  .map((b) => b.text);
 const callout = innovationWhy.blocks
   .find((b): b is Extract<typeof b, { kind: 'callout' }> => b.kind === 'callout')?.body;
 
-// The "What is innovation?" heading is the first H2 in the block list; the
-// paragraph immediately after it is the definition body.
-const definitionHeadingIdx = innovationWhy.blocks.findIndex((b) => b.kind === 'heading' && b.text === 'What is innovation?');
-const definitionBody = (innovationWhy.blocks[definitionHeadingIdx + 1] as { kind: 'paragraph'; text: string } | undefined)?.text ?? '';
+const definitionHeadingIdx = innovationWhy.blocks.findIndex(
+  (b) => b.kind === 'heading' && b.text === 'What is innovation?',
+);
+const definitionBody =
+  (innovationWhy.blocks[definitionHeadingIdx + 1] as { kind: 'paragraph'; text: string } | undefined)?.text ?? '';
+
+const importanceBlock = innovationWhy.blocks.find(
+  (b): b is Extract<typeof b, { kind: 'imagegrid' }> => b.kind === 'imagegrid',
+);
+const processBlock = innovationWhy.blocks.find(
+  (b): b is Extract<typeof b, { kind: 'process-icons' }> => b.kind === 'process-icons',
+);
 ---
 <BaseLayout title={innovationWhy.title} description={innovationWhy.subtitle ?? ''} padForHeader={false}>
   <WhyHero eyebrow={innovationWhy.eyebrow} title={innovationWhy.title} subtitle={innovationWhy.subtitle} />
+
   <WhyManifesto
     eyebrow="Why innovation"
     heading="Innovation is how we stay ahead."
     summary="From R&D bench to factory floor — invention only counts when it ships."
-    paragraphs={paragraphs.slice(0, 2).map((b) => b.text)}
+    paragraphs={paragraphs.slice(0, 2)}
     callout={callout}
   />
-  <WhyDefinition client:visible heading="What is innovation?" body={definitionBody} />
+
+  <WhyDefinition heading="What is innovation?" body={definitionBody} />
+
+  {importanceBlock && (
+    <WhyImportance
+      heading="The importance of innovation"
+      items={importanceBlock.items}
+    />
+  )}
+
+  {processBlock && (
+    <WhyProcess
+      client:visible
+      heading="Our four-step process"
+      items={processBlock.items}
+    />
+  )}
+
+  <WhyClosing />
 </BaseLayout>

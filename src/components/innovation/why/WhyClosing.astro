@@ -1,0 +1,40 @@
+---
+/**
+ * Closing band for /innovation/why-innovation/ — mirrors the closing
+ * pattern on /contact/worldwide/ (bg-brand-500/10 wash, centered
+ * heading + supporting line + CTA buttons).
+ */
+import Container from '../../Container.astro';
+---
+<section class="bg-brand-500/10">
+  <Container size="lg" class="py-16 md:py-20">
+    <div class="mx-auto max-w-2xl text-center">
+      <p data-reveal class="text-[11px] uppercase tracking-[0.4em] text-brand-500 mb-6">Keep going</p>
+      <h2 data-reveal data-reveal-delay="120" class="font-display font-heavy leading-tight tracking-tight text-ink" style="font-size: clamp(1.5rem, 3.5vw, 2.5rem);">
+        See how the process plays out in the lab — or bring us your idea.
+      </h2>
+      <div data-reveal data-reveal-delay="240" class="mt-10 flex flex-col sm:flex-row items-center justify-center gap-3">
+        <a
+          href="/innovation/research-development/"
+          class="group cursor-pointer inline-flex items-center justify-center gap-2 bg-brand-500 text-surface px-6 py-3 text-[11px] uppercase tracking-[0.25em] font-medium hover:bg-brand-700 transition-colors duration-200"
+        >
+          <span>Visit R&amp;D</span>
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M5 12h14" />
+            <path d="m12 5 7 7-7 7" />
+          </svg>
+        </a>
+        <a
+          href="/innovation/innovate-with-us/"
+          class="group cursor-pointer inline-flex items-center justify-center gap-2 border border-ink/40 text-ink px-6 py-3 text-[11px] uppercase tracking-[0.25em] font-medium hover:bg-ink hover:text-surface hover:border-ink transition-colors duration-200"
+        >
+          <span>Submit an idea</span>
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M5 12h14" />
+            <path d="m12 5 7 7-7 7" />
+          </svg>
+        </a>
+      </div>
+    </div>
+  </Container>
+</section>
