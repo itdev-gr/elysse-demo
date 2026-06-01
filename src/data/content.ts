@@ -844,6 +844,72 @@ export const termsOfUsagePage: PageContent = {
   ],
 };
 
+export const termsOfSupplyPage: PageContent = {
+  slug: '/legal/terms-of-supply/',
+  meta: {
+    title: 'Terms of Supply — Elysse Group',
+    description:
+      'The terms and conditions governing the supply of Elysée products to customers and distributors worldwide.',
+  },
+  hero: {
+    eyebrow: 'Legal',
+    headline: 'Terms of Supply',
+    image: heroPrivacy,
+  },
+  sections: [
+    {
+      kind: 'text',
+      heading: '1. Application',
+      body: 'These Terms of Supply ("Terms") govern every quotation, order and supply of products manufactured or distributed by Elysée Group and its subsidiaries (collectively, "Elysée"). Acceptance of a quotation or placement of an order constitutes acceptance of these Terms in full. Any terms proposed by the customer that conflict with these Terms are excluded unless expressly agreed in writing by an authorised representative of Elysée.',
+    },
+    {
+      kind: 'text',
+      heading: '2. Orders, prices and quotations',
+      body: 'Prices in published price lists and on the Elysée Web site are indicative and may be revised without notice. Binding prices are those stated in a written quotation issued by Elysée. Quotations remain valid for thirty (30) days unless a different validity is stated. Orders are accepted only on confirmation of stock availability and credit terms.',
+    },
+    {
+      kind: 'text',
+      heading: '3. Delivery and risk',
+      body: 'Unless otherwise agreed, deliveries are made on an Ex Works (EXW Ergates, Cyprus) basis per Incoterms 2020. Title passes to the customer on full payment of the invoice; risk passes at the point of delivery or collection. Delivery dates are estimates and are not of the essence of the contract. Elysée is not liable for delays caused by events outside its reasonable control.',
+    },
+    {
+      kind: 'text',
+      heading: '4. Payment',
+      body: 'Payment terms are stated on each invoice. Unless otherwise agreed in writing, invoices are payable within thirty (30) days from the invoice date. Overdue amounts accrue interest at the statutory commercial rate. Elysée reserves the right to suspend further deliveries while any invoice is overdue.',
+    },
+    {
+      kind: 'text',
+      heading: '5. Inspection and claims',
+      body: 'The customer must inspect products on receipt. Visible damage, shortages or non-conforming items must be notified to Elysée in writing within seven (7) days of delivery, with photographic evidence where applicable. Latent defects must be notified within thirty (30) days of discovery. Claims raised outside these periods will not be accepted.',
+    },
+    {
+      kind: 'text',
+      heading: '6. Warranty',
+      body: 'Elysée warrants that products supplied conform to the published technical specifications at the point of delivery and are free from defects in materials and workmanship under normal use. The warranty period for piping and fitting products is twenty-four (24) months from delivery unless an extended period is stated in the product documentation. The warranty is limited, at Elysée\'s option, to the repair, replacement or refund of the affected products. Installation, handling outside the published guidelines, modification, or use outside the rated pressure, temperature or chemical envelope voids the warranty.',
+    },
+    {
+      kind: 'text',
+      heading: '7. Limitation of liability',
+      body: 'Elysée\'s aggregate liability under or in connection with a contract of supply is limited to the invoice value of the affected products. Elysée is not liable for any indirect, incidental, consequential, special or punitive damages, including loss of profit, loss of business, loss of data or downstream installation costs. Nothing in these Terms limits liability for fraud, death or personal injury caused by negligence, or any other liability that cannot be limited under applicable law.',
+    },
+    {
+      kind: 'text',
+      heading: '8. Compliance and export control',
+      body: 'The customer is responsible for ensuring that the use, import and re-export of the products complies with all applicable laws and regulations, including EU dual-use export controls, sanctions and end-user restrictions. The customer warrants that it will not knowingly resell or re-export the products to any sanctioned destination or restricted end-user.',
+    },
+    {
+      kind: 'text',
+      heading: '9. Governing law and jurisdiction',
+      body: 'These Terms and any contract of supply formed under them are governed by the laws of the Republic of Cyprus, without regard to its conflict-of-laws rules. The courts of Nicosia, Cyprus have exclusive jurisdiction over any dispute, except that Elysée may bring proceedings in the courts of the customer\'s place of business where necessary to enforce its rights.',
+    },
+    {
+      kind: 'text',
+      heading: '10. Updates to these Terms',
+      body: 'Elysée may update these Terms from time to time. The version in force at the date of order acceptance applies to that order. The current version is always published at this URL.',
+    },
+  ],
+};
+
 // ---------- registry ----------
 
 export const allPages: Record<string, PageContent> = {
@@ -858,4 +924,5 @@ export const allPages: Record<string, PageContent> = {
   '/press-room/news/': newsIndexPage,
   '/legal/privacy-policy/': privacyPolicyPage,
   '/legal/terms-of-use/': termsOfUsagePage,
+  '/legal/terms-of-supply/': termsOfSupplyPage,
 };
