@@ -9,6 +9,7 @@ import BaseLayout from '../../../layouts/BaseLayout.astro';
 import Container from '../../../components/Container.astro';
 import Section from '../../../components/Section.astro';
 import ContactSubNav from '../../../components/contact/ContactSubNav.astro';
+import EnquiryForm from '../../../components/contact/EnquiryForm.tsx';
 import { subBrandWise } from '../../../data/site-content';
 
 const paragraphs = subBrandWise.blocks.filter((b): b is Extract<typeof b, { kind: 'paragraph' }> => b.kind === 'paragraph');
@@ -184,6 +185,20 @@ const contactLines = (callout?.body ?? '').split('\n').map((l) => {
       </Container>
     </Section>
   )}
+
+  {/* ===== ENQUIRY FORM — submissions land in the dashboard (source: wise) ===== */}
+  <Section bg="alt" spacing="lg">
+    <Container size="lg">
+      <div data-reveal class="mx-auto max-w-3xl bg-surface p-6 md:p-8 border border-ink/10">
+        <EnquiryForm
+          client:visible
+          source="wise"
+          title="Contact Elysée WISE"
+          subtitle="Send us a message and the Elysée WISE team will get back to you."
+        />
+      </div>
+    </Container>
+  </Section>
 
   {/* ===== CLOSING CTA ===== */}
   <section class="bg-brand-500/10">

@@ -20,6 +20,7 @@ import BaseLayout from '../../../layouts/BaseLayout.astro';
 import Container from '../../../components/Container.astro';
 import Section from '../../../components/Section.astro';
 import AboutSubNav from '../../../components/about/AboutSubNav.astro';
+import CertificationsGrid from '../../../components/certifications/CertificationsGrid.tsx';
 import { aboutUsQualityCertifications } from '../../../data/site-content';
 
 const blocks = aboutUsQualityCertifications.blocks;
@@ -37,6 +38,18 @@ const categoryImages: Record<number, { src: string; alt: string; tag: string }> 
   5: { src: '/images/certifications/categories/pvc-pipes.png',             alt: 'PVC pipe certification marks',                  tag: 'PVC'  },
   6: { src: '/images/certifications/categories/green-elysee.jpg',          alt: 'Green Elysée sustainability certification marks', tag: 'GRN' },
 };
+
+// Server-rendered fallback for the island when Supabase is unreachable.
+// Live data comes from the `certifications` table (cert_group='quality'),
+// managed in the admin dashboard.
+const certFallback = (categories?.items ?? []).map((cat) => ({
+  name: cat.title,
+  description: cat.body,
+  scope: null,
+  tag: categoryImages[cat.number]?.tag ?? null,
+  logo: categoryImages[cat.number]?.src ?? null,
+  pdf_url: null,
+}));
 
 // 4-step verification process — semantic strip used between callout and grid.
 const verifySteps = [
@@ -261,67 +274,15 @@ const desc =
         <header class="max-w-3xl mb-12 md:mb-16">
           <p data-reveal class="text-[11px] uppercase tracking-[0.4em] text-brand-500 mb-6 md:mb-8">Our certifications</p>
           <h2 data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[1.02] tracking-tight text-ink" style="font-size: clamp(2.25rem, 5.5vw, 4.5rem);">
-            Six categories of certificate.
+            <span data-cert-count>6</span> categories of certificate.
           </h2>
           {certsLeadP && (
             <p data-reveal data-reveal-delay="240" class="mt-6 md:mt-8 text-base md:text-lg text-ink/70 leading-relaxed">{certsLeadP.text}</p>
           )}
         </header>
 
-        <ol data-cert-grid class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px bg-ink/10 border border-ink/10">
-          {categories.items.map((cat, i) => {
-            const img = categoryImages[cat.number];
-            const num = String(cat.number).padStart(2, '0');
-            return (
-              <li data-cert-card class="group relative bg-surface flex flex-col overflow-hidden">
-                {/* Corner numeral — appears on hover */}
-                <span
-                  aria-hidden="true"
-                  class="pointer-events-none absolute -top-3 right-3 font-display font-heavy text-brand-500/10 leading-none select-none transition-colors duration-500 group-hover:text-brand-500/30 z-10"
-                  style="font-size: clamp(4.5rem, 7vw, 7rem);"
-                >
-                  {num}
-                </span>
-
-                {img && (
-                  <div class="bg-surface-alt border-b border-ink/10 aspect-[4/3] flex items-center justify-center p-6 md:p-8 overflow-hidden">
-                    <img
-                      data-cert-badge
-                      src={img.src}
-                      alt={img.alt}
-                      width="434"
-                      height="434"
-                      loading="lazy"
-                      decoding="async"
-                      class="max-h-full max-w-full w-auto h-auto object-contain transition-transform duration-500 ease-out group-hover:scale-105"
-                    />
-                  </div>
-                )}
-
-                <div class="relative p-7 md:p-9 flex-1 flex flex-col">
-                  <div class="flex items-center justify-between">
-                    <span class="font-mono text-[10px] uppercase tracking-[0.2em] text-ink/55">Cat.{num} · {img?.tag ?? '—'}</span>
-                    <span aria-hidden="true" class="inline-block w-1.5 h-1.5 rounded-full bg-brand-500"></span>
-                  </div>
-                  <h3 class="mt-5 md:mt-6 font-display font-heavy leading-tight text-xl md:text-2xl text-ink">{cat.title}</h3>
-                  <div aria-hidden="true" class="mt-4 h-px w-10 bg-brand-500 transition-[width] duration-500 ease-out group-hover:w-20"></div>
-                  <p class="mt-5 text-base text-ink/75 leading-[1.6] flex-1">{cat.body}</p>
-                  <a
-                    href="/about-us/quality-certifications/"
-                    class="mt-6 inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.25em] text-ink hover:text-brand-500 transition-colors duration-200 cursor-pointer"
-                    aria-label={`View ${cat.title} certificates`}
-                  >
-                    <span>View certificates</span>
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 transition-transform duration-200 group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                      <path d="M5 12h14" />
-                      <path d="m12 5 7 7-7 7" />
-                    </svg>
-                  </a>
-                </div>
-              </li>
-            );
-          })}
-        </ol>
+        {/* Cards are managed in the admin dashboard (Certifications tab). */}
+        <CertificationsGrid client:visible group="quality" fallback={certFallback} />
       </Container>
     </Section>
   )}
@@ -429,44 +390,6 @@ const desc =
       dots.forEach((d) => { d.style.transform = 'scale(1)'; });
     }
 
-    // === Certification grid — badges arrive with a "stamp" effect (rotate-in
-    //     + overshoot) so each card feels like a notarised mark landing on
-    //     paper. Cards themselves fade up in a soft stagger.
-    const grid = document.querySelector('[data-cert-grid]');
-    if (grid && !reduce) {
-      const cards = Array.from(grid.querySelectorAll('[data-cert-card]')) as HTMLElement[];
-      const badges = Array.from(grid.querySelectorAll('[data-cert-badge]')) as HTMLElement[];
-
-      gsap.set(cards,  { y: 32, opacity: 0 });
-      gsap.set(badges, { rotate: -8, scale: 0.85, opacity: 0, transformOrigin: '50% 50%' });
-
-      ScrollTrigger.create({
-        trigger: grid,
-        start: 'top 78%',
-        once: true,
-        onEnter: () => {
-          gsap.to(cards, {
-            y: 0,
-            opacity: 1,
-            duration: 0.6,
-            ease: 'power3.out',
-            stagger: 0.08,
-          });
-          gsap.to(badges, {
-            rotate: 0,
-            scale: 1,
-            opacity: 1,
-            duration: 0.9,
-            ease: 'back.out(2.4)',
-            stagger: 0.1,
-            delay: 0.15,
-          });
-        },
-      });
-    } else if (grid && reduce) {
-      // Reduced motion — show everything statically.
-      (grid.querySelectorAll('[data-cert-card]') as NodeListOf<HTMLElement>).forEach((c) => { c.style.opacity = '1'; c.style.transform = 'none'; });
-      (grid.querySelectorAll('[data-cert-badge]') as NodeListOf<HTMLElement>).forEach((b) => { b.style.opacity = '1'; b.style.transform = 'none'; });
-    }
+    // Certification grid stamp-in animation now lives inside CertificationsGrid.
   </script>
 </BaseLayout>

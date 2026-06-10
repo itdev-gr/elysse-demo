@@ -3,13 +3,19 @@ import { supabase } from '../../lib/supabase';
 import JobsTab from './JobsTab';
 import PostsTab from './PostsTab';
 import CountriesTab from './CountriesTab';
+import CertificationsTab from './CertificationsTab';
+import MessagesTab from './MessagesTab';
+import SettingsTab from './SettingsTab';
 
-type Tab = 'jobs' | 'posts' | 'countries';
+type Tab = 'jobs' | 'posts' | 'countries' | 'certs' | 'messages' | 'settings';
 
 const HEADINGS: Record<Tab, string> = {
   jobs: 'Jobs.',
   posts: 'Posts.',
   countries: 'Countries.',
+  certs: 'Certifications.',
+  messages: 'Messages.',
+  settings: 'Settings.',
 };
 
 export default function Dashboard() {
@@ -55,11 +61,23 @@ export default function Dashboard() {
           <button type="button" onClick={() => setTab('countries')} className={tabClass('countries')}>
             Countries
           </button>
+          <button type="button" onClick={() => setTab('certs')} className={tabClass('certs')}>
+            Certifications
+          </button>
+          <button type="button" onClick={() => setTab('messages')} className={tabClass('messages')}>
+            Messages
+          </button>
+          <button type="button" onClick={() => setTab('settings')} className={tabClass('settings')}>
+            Settings
+          </button>
         </nav>
 
         {tab === 'jobs' && <JobsTab />}
         {tab === 'posts' && <PostsTab />}
         {tab === 'countries' && <CountriesTab />}
+        {tab === 'certs' && <CertificationsTab />}
+        {tab === 'messages' && <MessagesTab />}
+        {tab === 'settings' && <SettingsTab />}
       </div>
     </div>
   );

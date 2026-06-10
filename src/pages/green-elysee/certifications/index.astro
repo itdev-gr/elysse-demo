@@ -3,8 +3,10 @@
  * Green Elysée — Certifications.
  *
  * URL: /green-elysee/certifications/
- * Source of truth: `greenElyseeCertifications` + `greenCertificationItems`
- * from src/data/site-content.ts.
+ * Source of truth: the `certifications` table (cert_group='green'), managed in
+ * the admin dashboard. `greenCertificationItems` from src/data/site-content.ts
+ * remains only as the island's offline fallback. Page copy comes from
+ * `greenElyseeCertifications`.
  *
  * Mirrors the cinematic template established by
  * `/about-us/quality-certifications/`: scroll-progress, parallax hero,
@@ -16,6 +18,8 @@ import BaseLayout from '../../../layouts/BaseLayout.astro';
 import Container from '../../../components/Container.astro';
 import Section from '../../../components/Section.astro';
 import GreenElyseeSubNav from '../../../components/green-elysee/GreenElyseeSubNav.astro';
+import CertificationsGrid from '../../../components/certifications/CertificationsGrid.tsx';
+import EnquiryForm from '../../../components/contact/EnquiryForm.tsx';
 import {
   greenElyseeCertifications,
   greenCertificationItems,
@@ -31,6 +35,16 @@ const desc =
   greenElyseeCertifications.metaDescription ??
   intro1?.text?.slice(0, 160) ??
   greenElyseeCertifications.title;
+
+// Server-rendered fallback for the island when Supabase is unreachable.
+const certFallback = greenCertificationItems.map((c) => ({
+  name: c.name,
+  description: c.description,
+  scope: c.scope ?? null,
+  tag: null,
+  logo: c.logo,
+  pdf_url: c.href,
+}));
 ---
 <BaseLayout title={greenElyseeCertifications.title} description={desc} padForHeader={false}>
 
@@ -59,7 +73,7 @@ const desc =
       </p>
       <div data-reveal data-reveal-delay="360" class="mt-14 md:mt-20 flex items-center gap-4 text-[11px] uppercase tracking-[0.3em] text-surface/70">
         <span aria-hidden="true" class="h-px w-12 bg-surface/50"></span>
-        <span>Six certified standards</span>
+        <span><span data-cert-count>6</span> certified standards</span>
       </div>
     </Container>
   </section>
@@ -72,7 +86,7 @@ const desc =
       <p data-reveal class="text-[11px] md:text-xs uppercase tracking-[0.3em] text-brand-500 mb-10 md:mb-14">The Green programme</p>
       <dl class="grid grid-cols-2 md:grid-cols-4 gap-px bg-ink/10 border border-ink/10">
         <div class="bg-surface p-8 md:p-10">
-          <dd data-counter="6" class="font-display font-heavy leading-none tracking-tight text-brand-500" style="font-size: clamp(2.5rem, 6vw, 5rem);">6</dd>
+          <dd data-counter="6" data-cert-count class="font-display font-heavy leading-none tracking-tight text-brand-500" style="font-size: clamp(2.5rem, 6vw, 5rem);">6</dd>
           <dt class="mt-4 md:mt-5 text-[10px] md:text-xs uppercase tracking-[0.25em] text-ink/60">Green certifications</dt>
         </div>
         <div class="bg-surface p-8 md:p-10">
@@ -150,74 +164,46 @@ const desc =
       <header class="max-w-3xl mb-12 md:mb-16">
         <p data-reveal class="text-[11px] uppercase tracking-[0.4em] text-brand-500 mb-6 md:mb-8">Our Green Certifications</p>
         <h2 data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[1.02] tracking-tight text-ink" style="font-size: clamp(2.25rem, 5.5vw, 4.5rem);">
-          Six standards. Six PDFs.
+          <span data-cert-count>6</span> standards. <span data-cert-count>6</span> PDFs.
         </h2>
         <p data-reveal data-reveal-delay="240" class="mt-6 md:mt-8 text-base md:text-lg text-ink/70 leading-relaxed">
           Tap any badge below to download the current certificate.
         </p>
       </header>
 
-      <ol data-green-cert-grid class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px bg-ink/10 border border-ink/10">
-        {greenCertificationItems.map((c, i) => (
-          <li data-green-cert-card class="group relative bg-surface flex flex-col">
-            <span
-              aria-hidden="true"
-              class="pointer-events-none absolute -top-3 right-3 font-display font-heavy text-brand-500/10 leading-none select-none transition-colors duration-500 group-hover:text-brand-500/30 z-10"
-              style="font-size: clamp(4.5rem, 7vw, 7rem);"
-            >{String(i + 1).padStart(2, '0')}</span>
-
-            <div class="bg-surface-alt border-b border-ink/10 aspect-[4/3] flex items-center justify-center p-8 md:p-10 overflow-hidden">
-              <img
-                data-green-cert-badge
-                src={c.logo}
-                alt={`${c.name} certification badge`}
-                width="200"
-                height="200"
-                loading="lazy"
-                decoding="async"
-                class="max-h-full max-w-full w-auto h-auto object-contain transition-transform duration-500 ease-out group-hover:scale-105"
-              />
-            </div>
-
-            <div class="relative p-7 md:p-8 flex-1 flex flex-col">
-              <span class="font-mono text-[10px] uppercase tracking-[0.2em] text-ink/55">Cert.{String(i + 1).padStart(2, '0')}</span>
-              <h3 class="mt-4 font-display font-heavy leading-tight text-xl md:text-2xl text-ink">{c.name}</h3>
-              <p class="mt-1 text-sm text-ink/70 leading-snug">{c.description}</p>
-              <div aria-hidden="true" class="mt-5 h-px w-10 bg-brand-500 transition-[width] duration-500 ease-out group-hover:w-20"></div>
-              {c.scope && <p class="mt-4 text-sm text-ink/70 leading-[1.6] flex-1">{c.scope}</p>}
-              <a
-                href={c.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                class="mt-6 inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.25em] text-ink hover:text-brand-500 transition-colors duration-200 cursor-pointer"
-                aria-label={`Download ${c.name} certificate (PDF)`}
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                <span>Download PDF</span>
-              </a>
-            </div>
-          </li>
-        ))}
-      </ol>
+      {/* Cards are managed in the admin dashboard (Certifications tab). */}
+      <CertificationsGrid client:visible group="green" fallback={certFallback} />
     </Container>
   </Section>
 
-  {/* ===== CLOSING CTA ===== */}
+  {/* ===== CLOSING CTA — request a certificate ===== */}
   <section class="bg-brand-500/10">
-    <Container size="lg" class="py-16 md:py-20">
-      <div class="mx-auto max-w-2xl text-center">
-        <p data-reveal class="text-base md:text-lg text-ink/80 leading-relaxed">
-          Need an older certificate, a tender-ready bundle, or evidence for a specific product family? Our team can prepare it on request.
-        </p>
-        <a
-          data-reveal
-          data-reveal-delay="160"
-          href="/contact/local/"
-          class="group cursor-pointer mt-8 md:mt-10 inline-flex items-center gap-3 px-6 py-3 border border-ink/40 hover:bg-ink hover:border-ink hover:text-surface text-ink text-[11px] md:text-xs uppercase tracking-[0.25em] transition-colors duration-200"
-        >
-          <span>Request a certificate</span>
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-        </a>
+    <Container size="xl" class="py-16 md:py-24">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-start">
+        <div class="lg:pt-4">
+          <p data-reveal class="text-[11px] uppercase tracking-[0.4em] text-brand-500 mb-6">Request a certificate</p>
+          <p data-reveal data-reveal-delay="120" class="text-base md:text-lg text-ink/80 leading-relaxed max-w-xl">
+            Need an older certificate, a tender-ready bundle, or evidence for a specific product family? Our team can prepare it on request.
+          </p>
+          <a
+            data-reveal
+            data-reveal-delay="240"
+            href="/contact/local/"
+            class="group cursor-pointer mt-8 md:mt-10 inline-flex items-center gap-3 px-6 py-3 border border-ink/40 hover:bg-ink hover:border-ink hover:text-surface text-ink text-[11px] md:text-xs uppercase tracking-[0.25em] transition-colors duration-200"
+          >
+            <span>Contact our local network</span>
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+          </a>
+        </div>
+
+        <div data-reveal data-reveal-delay="200" class="bg-surface p-6 md:p-8 border border-ink/10">
+          <EnquiryForm
+            client:visible
+            source="green-certifications"
+            title="Request a certificate"
+            subtitle="Tell us which certificate, bundle, or product family you need evidence for — the team will prepare it."
+          />
+        </div>
       </div>
     </Container>
   </section>
@@ -240,31 +226,5 @@ const desc =
     }
   </script>
 
-  {/* ===== GSAP — certification badges stamp-in ===== */}
-  <script>
-    import { gsap } from 'gsap';
-    import { ScrollTrigger } from 'gsap/ScrollTrigger';
-    gsap.registerPlugin(ScrollTrigger);
-    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-    const grid = document.querySelector('[data-green-cert-grid]');
-    if (grid && !reduce) {
-      const cards = Array.from(grid.querySelectorAll('[data-green-cert-card]')) as HTMLElement[];
-      const badges = Array.from(grid.querySelectorAll('[data-green-cert-badge]')) as HTMLElement[];
-      gsap.set(cards,  { y: 32, opacity: 0 });
-      gsap.set(badges, { rotate: -8, scale: 0.85, opacity: 0, transformOrigin: '50% 50%' });
-      ScrollTrigger.create({
-        trigger: grid,
-        start: 'top 78%',
-        once: true,
-        onEnter: () => {
-          gsap.to(cards,  { y: 0, opacity: 1, duration: 0.6, ease: 'power3.out', stagger: 0.08 });
-          gsap.to(badges, { rotate: 0, scale: 1, opacity: 1, duration: 0.9, ease: 'back.out(2.4)', stagger: 0.1, delay: 0.15 });
-        },
-      });
-    } else if (grid && reduce) {
-      (grid.querySelectorAll('[data-green-cert-card]') as NodeListOf<HTMLElement>).forEach((c) => { c.style.opacity = '1'; c.style.transform = 'none'; });
-      (grid.querySelectorAll('[data-green-cert-badge]') as NodeListOf<HTMLElement>).forEach((b) => { b.style.opacity = '1'; b.style.transform = 'none'; });
-    }
-  </script>
+  {/* Certification grid stamp-in animation now lives inside CertificationsGrid. */}
 </BaseLayout>
