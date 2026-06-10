@@ -1,19 +1,24 @@
 import { useState, useRef } from 'react';
 import { supabase } from '../../lib/supabase';
 import { uploadCertificationAsset, validateCertificationFile } from '../../lib/certifications';
+import { QUALITY_CATEGORIES } from '../../data/quality-certificates';
 import type { Certification, CertificationDraft, CertGroup } from '../../types/certification';
 
 type Props = {
   group: CertGroup;
   initialSortOrder: number;
+  /** Pre-selected category for new quality certificates. */
+  defaultCategory?: string;
   initial?: Certification;
   onSaved: () => void;
   onCancel: () => void;
 };
 
-function emptyDraft(group: CertGroup, sortOrder: number): CertificationDraft {
+function emptyDraft(group: CertGroup, sortOrder: number, category?: string): CertificationDraft {
   return {
-    cert_group: group, name: '', description: '', scope: null, tag: null,
+    cert_group: group,
+    category: group === 'quality' ? (category ?? QUALITY_CATEGORIES[0].slug) : null,
+    name: '', description: '', scope: null, tag: null,
     logo: null, pdf_url: null, sort_order: sortOrder, is_active: true,
   };
 }
@@ -23,9 +28,9 @@ function toDraft(c: Certification): CertificationDraft {
   return rest;
 }
 
-export default function CertificationForm({ group, initialSortOrder, initial, onSaved, onCancel }: Props) {
+export default function CertificationForm({ group, initialSortOrder, defaultCategory, initial, onSaved, onCancel }: Props) {
   const [draft, setDraft] = useState<CertificationDraft>(() =>
-    initial ? toDraft(initial) : emptyDraft(group, initialSortOrder));
+    initial ? toDraft(initial) : emptyDraft(group, initialSortOrder, defaultCategory));
   const [pendingBadge, setPendingBadge] = useState<File | null>(null);
   const [pendingPdf, setPendingPdf] = useState<File | null>(null);
   const [badgePreview, setBadgePreview] = useState<string | null>(initial?.logo ?? null);
@@ -63,13 +68,15 @@ export default function CertificationForm({ group, initialSortOrder, initial, on
     try {
       const payload: CertificationDraft = {
         ...draft,
+        category: group === 'quality' ? draft.category : null,
         name: draft.name.trim(),
-        description: draft.description.trim(),
+        description: draft.description?.trim() || null,
         scope: draft.scope?.trim() || null,
         tag: draft.tag?.trim() || null,
         pdf_url: draft.pdf_url?.trim() || null,
       };
       if (!payload.name) throw new Error('Name is required.');
+      if (group === 'quality' && !payload.category) throw new Error('Category is required.');
 
       // Step 1: create/update the row first — uploads are namespaced by row id.
       let cert: Certification;
@@ -135,38 +142,42 @@ export default function CertificationForm({ group, initialSortOrder, initial, on
         />
       </Field>
 
-      <Field label="Description" required hint="Short line shown under the name.">
+      {group === 'quality' && (
+        <Field label="Category" required hint="Which certificate page this appears on.">
+          <select
+            required
+            value={draft.category ?? ''}
+            onChange={(e) => update('category', e.currentTarget.value)}
+            className={inputClass}
+          >
+            {QUALITY_CATEGORIES.map((c) => (
+              <option key={c.slug} value={c.slug}>{c.title}</option>
+            ))}
+          </select>
+        </Field>
+      )}
+
+      <Field label="Description" hint="Optional short line shown under the name.">
         <input
           type="text"
-          required
-          value={draft.description}
+          value={draft.description ?? ''}
           onChange={(e) => update('description', e.currentTarget.value)}
           className={inputClass}
         />
       </Field>
 
-      <Field label="Scope" hint="Optional longer text shown on the card.">
-        <textarea
-          rows={2}
-          value={draft.scope ?? ''}
-          onChange={(e) => update('scope', e.currentTarget.value)}
-          className={`${inputClass} resize-y`}
-        />
-      </Field>
-
-      {group === 'quality' && (
-        <Field label="Tag" hint="Short code shown on the card header, e.g. MGMT, PE, PVC.">
-          <input
-            type="text"
-            maxLength={6}
-            value={draft.tag ?? ''}
-            onChange={(e) => update('tag', e.currentTarget.value.toUpperCase())}
-            className={inputClass}
+      {group === 'green' && (
+        <Field label="Scope" hint="Optional longer text shown on the card.">
+          <textarea
+            rows={2}
+            value={draft.scope ?? ''}
+            onChange={(e) => update('scope', e.currentTarget.value)}
+            className={`${inputClass} resize-y`}
           />
         </Field>
       )}
 
-      <Field label="Badge image" hint="SVG, PNG, JPEG or WebP. Max 2 MB.">
+      <Field label="Badge image" hint="Optional. SVG, PNG, JPEG or WebP. Max 2 MB.">
         <div className="mt-2 flex items-center gap-4">
           {badgePreview ? (
             <div className="relative w-28 h-28 bg-surface-alt rounded overflow-hidden border border-ink/10 flex items-center justify-center p-2">

@@ -6,7 +6,7 @@ import type { Certification, CertGroup } from '../../types/certification';
 /** Subset of Certification needed to render a card (fallback rows use this). */
 export interface CertCard {
   name: string;
-  description: string;
+  description: string | null;
   scope: string | null;
   tag: string | null;
   logo: string | null;
@@ -152,7 +152,7 @@ export default function CertificationsGrid({ group, fallback }: Props) {
                 {prefix}{num}{c.tag ? ` · ${c.tag}` : ''}
               </span>
               <h3 className="mt-4 font-display font-heavy leading-tight text-xl md:text-2xl text-ink">{c.name}</h3>
-              <p className="mt-1 text-sm text-ink/70 leading-snug">{c.description}</p>
+              {c.description && <p className="mt-1 text-sm text-ink/70 leading-snug">{c.description}</p>}
               <div aria-hidden="true" className="mt-5 h-px w-10 bg-brand-500 transition-[width] duration-500 ease-out group-hover:w-20"></div>
               {c.scope && <p className="mt-4 text-sm text-ink/70 leading-[1.6] flex-1">{c.scope}</p>}
               {c.pdf_url && (

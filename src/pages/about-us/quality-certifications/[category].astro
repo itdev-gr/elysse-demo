@@ -1,0 +1,81 @@
+---
+/**
+ * Quality & Certifications — per-category certificate listing.
+ *
+ * URL: /about-us/quality-certifications/<category>/
+ * One page per fixed category (management-system, general,
+ * compression-fittings, pe-pipes, pvc-pipes). The Green Elysée category
+ * links to /green-elysee/certifications/ instead.
+ *
+ * Certificates come from the `certifications` table (cert_group='quality',
+ * category=<slug>) via the QualityCertificatesList island — managed in the
+ * admin dashboard. QUALITY_CERTIFICATE_SEED is the offline fallback.
+ */
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Container from '../../../components/Container.astro';
+import Section from '../../../components/Section.astro';
+import PageHero from '../../../components/PageHero.astro';
+import QualityCertificatesList from '../../../components/certifications/QualityCertificatesList.tsx';
+import {
+  QUALITY_CATEGORIES,
+  QUALITY_CERTIFICATE_SEED,
+} from '../../../data/quality-certificates';
+
+export function getStaticPaths() {
+  return QUALITY_CATEGORIES.map((c) => ({ params: { category: c.slug } }));
+}
+
+const { category } = Astro.params;
+const meta = QUALITY_CATEGORIES.find((c) => c.slug === category)!;
+const fallback = QUALITY_CERTIFICATE_SEED[meta.slug] ?? [];
+---
+<BaseLayout title={`${meta.title} — Quality & Certifications — Elysée`} description={meta.blurb}>
+  <PageHero
+    title={meta.title}
+    eyebrow="Quality & Certifications"
+    subtitle={meta.blurb}
+  />
+
+  <Section bg="alt" spacing="lg">
+    <Container size="lg">
+      <div class="max-w-3xl mx-auto">
+        <a
+          href="/about-us/quality-certifications/"
+          class="group cursor-pointer inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.25em] text-ink/60 hover:text-brand-500 transition-colors duration-200"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 transition-transform duration-200 group-hover:-translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>
+          <span>All certificate categories</span>
+        </a>
+
+        <h2 class="mt-8 font-display font-heavy leading-[1.02] tracking-tight text-ink" style="font-size: clamp(1.75rem, 4vw, 2.75rem);">
+          {meta.title} certificates
+        </h2>
+        <p class="mt-4 text-base md:text-lg text-ink/70 leading-relaxed">
+          Tap any certificate to download the current PDF.
+        </p>
+
+        <div class="mt-10">
+          <QualityCertificatesList client:visible category={meta.slug} fallback={fallback} />
+        </div>
+      </div>
+    </Container>
+  </Section>
+
+  {/* ===== CLOSING CTA ===== */}
+  <section class="bg-brand-500/10">
+    <Container size="lg" class="py-14 md:py-16">
+      <div class="mx-auto max-w-2xl text-center">
+        <p class="text-base md:text-lg text-ink/80 leading-relaxed">
+          Need this certificate for a tender, regulatory submission, or specification document? Our team can provide it on request.
+        </p>
+        <a
+          href="/contact/local/"
+          class="group cursor-pointer mt-8 inline-flex items-center gap-3 px-6 py-3 border border-ink/40 hover:bg-ink hover:border-ink hover:text-surface text-ink text-[11px] md:text-xs uppercase tracking-[0.25em] transition-colors duration-200"
+        >
+          <span>Request a certificate</span>
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </a>
+      </div>
+    </Container>
+  </section>
+</BaseLayout>

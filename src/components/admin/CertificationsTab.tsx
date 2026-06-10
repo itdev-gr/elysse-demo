@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { supabase } from '../../lib/supabase';
 import type { Certification, CertGroup } from '../../types/certification';
 import { sortCertifications, nextSortOrder } from '../../lib/certifications';
+import { QUALITY_CATEGORIES } from '../../data/quality-certificates';
 import CertificationForm from './CertificationForm';
 
 type Mode =
@@ -11,12 +12,16 @@ type Mode =
 
 const GROUPS: { value: CertGroup; label: string }[] = [
   { value: 'green', label: 'Green Elysée' },
-  { value: 'quality', label: 'Quality (About Us)' },
+  { value: 'quality', label: 'Quality certificates' },
 ];
+
+const categoryTitle = (slug: string | null) =>
+  QUALITY_CATEGORIES.find((c) => c.slug === slug)?.title ?? slug ?? '—';
 
 export default function CertificationsTab() {
   const [certs, setCerts] = useState<Certification[] | null>(null);
   const [group, setGroup] = useState<CertGroup>('green');
+  const [category, setCategory] = useState<string>('all');
   const [error, setError] = useState<string | null>(null);
   const [mode, setMode] = useState<Mode>({ kind: 'list' });
 
@@ -38,8 +43,15 @@ export default function CertificationsTab() {
   }, []);
 
   const visible = useMemo(
-    () => sortCertifications((certs ?? []).filter((c) => c.cert_group === group)),
-    [certs, group],
+    () =>
+      sortCertifications(
+        (certs ?? []).filter(
+          (c) =>
+            c.cert_group === group &&
+            (group !== 'quality' || category === 'all' || c.category === category),
+        ),
+      ),
+    [certs, group, category],
   );
 
   const toggleActive = async (cert: Certification) => {
@@ -73,10 +85,15 @@ export default function CertificationsTab() {
 
       {mode.kind === 'list' && (
         <>
-          <div className="mb-6 flex items-center justify-between gap-4 flex-wrap">
+          <div className="mb-4 flex items-center justify-between gap-4 flex-wrap">
             <div className="flex items-center gap-1 border border-ink/10">
               {GROUPS.map((g) => (
-                <button key={g.value} type="button" onClick={() => setGroup(g.value)} className={groupBtn(g.value)}>
+                <button
+                  key={g.value}
+                  type="button"
+                  onClick={() => { setGroup(g.value); setCategory('all'); }}
+                  className={groupBtn(g.value)}
+                >
                   {g.label}
                 </button>
               ))}
@@ -86,9 +103,31 @@ export default function CertificationsTab() {
               onClick={() => setMode({ kind: 'create' })}
               className="inline-flex items-center gap-2 bg-brand-500 text-surface px-5 py-2.5 text-[11px] uppercase tracking-[0.25em] font-medium hover:bg-brand-700 transition-colors duration-200 cursor-pointer"
             >
-              + New certification
+              + New certificate
             </button>
           </div>
+
+          {group === 'quality' && (
+            <div className="mb-6 flex items-center gap-2 flex-wrap text-[11px] uppercase tracking-[0.2em]">
+              <button
+                type="button"
+                onClick={() => setCategory('all')}
+                className={`px-2.5 py-1 cursor-pointer transition-colors duration-200 ${category === 'all' ? 'bg-brand-500/15 text-brand-700' : 'text-ink/55 hover:text-brand-500'}`}
+              >
+                All categories
+              </button>
+              {QUALITY_CATEGORIES.map((c) => (
+                <button
+                  key={c.slug}
+                  type="button"
+                  onClick={() => setCategory(c.slug)}
+                  className={`px-2.5 py-1 cursor-pointer transition-colors duration-200 ${category === c.slug ? 'bg-brand-500/15 text-brand-700' : 'text-ink/55 hover:text-brand-500'}`}
+                >
+                  {c.title}
+                </button>
+              ))}
+            </div>
+          )}
 
           {certs === null ? (
             <p className="text-sm text-ink/60">Loading…</p>
@@ -100,7 +139,8 @@ export default function CertificationsTab() {
                 <thead className="text-left text-[10px] uppercase tracking-[0.25em] text-ink/55 border-b border-ink/10">
                   <tr>
                     <th className="px-4 py-3">#</th>
-                    <th className="px-4 py-3">Badge</th>
+                    {group === 'quality' && <th className="px-4 py-3">Category</th>}
+                    {group === 'green' && <th className="px-4 py-3">Badge</th>}
                     <th className="px-4 py-3">Name</th>
                     <th className="px-4 py-3">PDF</th>
                     <th className="px-4 py-3">Active</th>
@@ -111,16 +151,21 @@ export default function CertificationsTab() {
                   {visible.map((c) => (
                     <tr key={c.id} className="border-b border-ink/5 last:border-b-0">
                       <td className="px-4 py-3 text-ink/60">{c.sort_order}</td>
-                      <td className="px-4 py-3">
-                        {c.logo ? (
-                          <img src={c.logo} alt="" className="w-10 h-10 object-contain" />
-                        ) : (
-                          <span className="text-ink/40">—</span>
-                        )}
-                      </td>
+                      {group === 'quality' && (
+                        <td className="px-4 py-3 text-ink/75">{categoryTitle(c.category)}</td>
+                      )}
+                      {group === 'green' && (
+                        <td className="px-4 py-3">
+                          {c.logo ? (
+                            <img src={c.logo} alt="" className="w-10 h-10 object-contain" />
+                          ) : (
+                            <span className="text-ink/40">—</span>
+                          )}
+                        </td>
+                      )}
                       <td className="px-4 py-3">
                         <span className="text-ink">{c.name}</span>
-                        <span className="block text-[11px] text-ink/55">{c.description}</span>
+                        {c.description && <span className="block text-[11px] text-ink/55">{c.description}</span>}
                       </td>
                       <td className="px-4 py-3">
                         {c.pdf_url ? (
@@ -172,6 +217,7 @@ export default function CertificationsTab() {
       {mode.kind === 'create' && (
         <CertificationForm
           group={group}
+          defaultCategory={group === 'quality' && category !== 'all' ? category : undefined}
           initialSortOrder={nextSortOrder(visible)}
           onSaved={async () => {
             setMode({ kind: 'list' });

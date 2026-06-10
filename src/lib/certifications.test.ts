@@ -7,9 +7,9 @@ import {
 import type { Certification } from '../types/certification';
 
 const cert = (over: Partial<Certification>): Certification => ({
-  id: 'x', cert_group: 'green', name: 'A', description: 'd', scope: null,
-  tag: null, logo: null, pdf_url: null, sort_order: 0, is_active: true,
-  created_at: '', updated_at: '', ...over,
+  id: 'x', cert_group: 'green', category: null, name: 'A', description: 'd',
+  scope: null, tag: null, logo: null, pdf_url: null, sort_order: 0,
+  is_active: true, created_at: '', updated_at: '', ...over,
 });
 
 describe('sortCertifications', () => {

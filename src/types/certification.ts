@@ -3,8 +3,10 @@ export type CertGroup = 'green' | 'quality';
 export interface Certification {
   id: string;
   cert_group: CertGroup;
+  /** Quality certificates belong to a fixed category; green ones do not. */
+  category: string | null;
   name: string;
-  description: string;
+  description: string | null;
   scope: string | null;
   tag: string | null;
   logo: string | null;
