@@ -114,14 +114,28 @@ const [headOffice, ...satelliteShops] = localOffices;
                 {headOffice.address && (
                   <div>
                     <dt class="text-[10px] uppercase tracking-[0.25em] text-ink/55 mb-1.5">Address</dt>
-                    <dd class="font-display font-heavy text-lg text-ink leading-snug">{headOffice.address}</dd>
+                    <dd class="font-display font-heavy text-lg text-ink leading-snug whitespace-pre-line">{headOffice.address}</dd>
                   </div>
                 )}
                 {headOffice.phone && (
                   <div>
-                    <dt class="text-[10px] uppercase tracking-[0.25em] text-ink/55 mb-1.5">Phone</dt>
+                    <dt class="text-[10px] uppercase tracking-[0.25em] text-ink/55 mb-1.5">Tel</dt>
                     <dd class="font-display font-heavy text-lg text-ink leading-snug">
                       <a href={`tel:${headOffice.phone.replace(/[^+\d]/g, '')}`} class="hover:text-brand-500 transition-colors duration-200">{headOffice.phone}</a>
+                    </dd>
+                  </div>
+                )}
+                {headOffice.fax && (
+                  <div>
+                    <dt class="text-[10px] uppercase tracking-[0.25em] text-ink/55 mb-1.5">Fax</dt>
+                    <dd class="font-display font-heavy text-lg text-ink leading-snug">{headOffice.fax}</dd>
+                  </div>
+                )}
+                {headOffice.email && (
+                  <div>
+                    <dt class="text-[10px] uppercase tracking-[0.25em] text-ink/55 mb-1.5">Email</dt>
+                    <dd class="font-display font-heavy text-lg text-ink leading-snug">
+                      <a href={`mailto:${headOffice.email}`} class="hover:text-brand-500 transition-colors duration-200">{headOffice.email}</a>
                     </dd>
                   </div>
                 )}
@@ -201,6 +215,7 @@ const [headOffice, ...satelliteShops] = localOffices;
       </header>
       <div data-reveal data-reveal-delay="240" class="max-w-3xl mx-auto">
         <ContactForm
+          source="local"
           subtitle="Drop us a line and we'll route your enquiry to the right Cyprus location."
         />
       </div>

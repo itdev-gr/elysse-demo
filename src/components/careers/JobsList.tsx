@@ -77,10 +77,10 @@ export default function JobsList() {
         <h3 className="font-display font-heavy text-xl md:text-2xl text-ink leading-tight">{heading}</h3>
         <p className="mt-4 text-base text-ink/75 leading-relaxed">{body}</p>
         <a
-          href="mailto:careers@elysee.com.cy"
+          href="mailto:recruitment@elysee.com.cy"
           className="mt-6 inline-flex items-center gap-2 bg-brand-500 text-surface px-5 py-2.5 text-[11px] uppercase tracking-[0.25em] font-medium hover:bg-brand-700 transition-colors duration-200"
         >
-          Email careers@elysee.com.cy
+          Email recruitment@elysee.com.cy
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
             <path d="M5 12h14" />
             <path d="m12 5 7 7-7 7" />

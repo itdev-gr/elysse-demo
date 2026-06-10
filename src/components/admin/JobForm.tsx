@@ -152,7 +152,7 @@ export default function JobForm({ initial, onSaved, onCancel }: Props) {
           type="email"
           value={draft.apply_email ?? ''}
           onChange={(e) => update('apply_email', e.currentTarget.value)}
-          placeholder="careers@elysee.com.cy"
+          placeholder="recruitment@elysee.com.cy"
           className={inputClass}
         />
       </Field>

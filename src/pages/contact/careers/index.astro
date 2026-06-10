@@ -11,6 +11,7 @@ import Section from '../../../components/Section.astro';
 import ContactSubNav from '../../../components/contact/ContactSubNav.astro';
 import { contactCareers } from '../../../data/site-content';
 import JobsList from '../../../components/careers/JobsList.tsx';
+import EnquiryForm from '../../../components/contact/EnquiryForm.tsx';
 
 const paragraphs = contactCareers.blocks.filter((b): b is Extract<typeof b, { kind: 'paragraph' }> => b.kind === 'paragraph');
 const [intro1, intro2] = paragraphs;
@@ -198,29 +199,48 @@ const contactLines = (callout?.body ?? '').split('\n').map((l) => {
     </Section>
   )}
 
-  {/* ===== CLOSING CTA ===== */}
+  {/* ===== CLOSING CTA + CONTACT FORM ===== */}
   <section class="bg-brand-500/10">
-    <Container size="lg" class="py-16 md:py-20">
-      <div class="mx-auto max-w-2xl text-center">
-        <p data-reveal class="text-base md:text-lg text-ink/80 leading-relaxed">
-          Prefer to start a conversation in person? Visit the Cyprus head office on the Local Network page, or step back to the group's worldwide subsidiaries.
-        </p>
-        <div data-reveal data-reveal-delay="160" class="mt-8 md:mt-10 flex flex-wrap items-center justify-center gap-3">
-          <a
-            href="mailto:careers@elysee.com.cy"
-            class="group cursor-pointer inline-flex items-center gap-3 px-6 py-3 bg-brand-500 text-surface hover:bg-brand-700 text-[11px] md:text-xs uppercase tracking-[0.25em] transition-colors duration-200"
-          >
-            <span>Email careers@elysee.com.cy</span>
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-          </a>
-          <a
-            href="/contact/local/"
-            class="group cursor-pointer inline-flex items-center gap-3 px-6 py-3 border border-ink/40 hover:bg-ink hover:border-ink hover:text-surface text-ink text-[11px] md:text-xs uppercase tracking-[0.25em] transition-colors duration-200"
-          >
-            <span>Back to Local Network</span>
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-          </a>
+    <Container size="xl" class="py-16 md:py-24">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-start">
+
+        {/* Left — copy + quick links */}
+        <div>
+          <p data-reveal class="text-[11px] uppercase tracking-[0.4em] text-brand-500 mb-6">Get in touch</p>
+          <h2 data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[1.02] tracking-tight text-ink" style="font-size: clamp(2rem, 4.5vw, 3.25rem);">
+            Start the conversation.
+          </h2>
+          <p data-reveal data-reveal-delay="200" class="mt-6 text-base md:text-lg text-ink/80 leading-relaxed max-w-md">
+            Prefer to start a conversation in person? Visit the Cyprus head office on the Local Network page, or step back to the group's worldwide subsidiaries.
+          </p>
+          <div data-reveal data-reveal-delay="280" class="mt-8 flex flex-wrap items-center gap-3">
+            <a
+              href="mailto:recruitment@elysee.com.cy"
+              class="group cursor-pointer inline-flex items-center gap-3 px-6 py-3 bg-brand-500 text-surface hover:bg-brand-700 text-[11px] md:text-xs uppercase tracking-[0.25em] transition-colors duration-200"
+            >
+              <span>Email recruitment@elysee.com.cy</span>
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </a>
+            <a
+              href="/contact/local/"
+              class="group cursor-pointer inline-flex items-center gap-3 px-6 py-3 border border-ink/40 hover:bg-ink hover:border-ink hover:text-surface text-ink text-[11px] md:text-xs uppercase tracking-[0.25em] transition-colors duration-200"
+            >
+              <span>Back to Local Network</span>
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </a>
+          </div>
         </div>
+
+        {/* Right — backend-connected enquiry form */}
+        <div data-reveal data-reveal-delay="200" class="bg-surface p-6 md:p-8 border border-ink/10">
+          <EnquiryForm
+            client:visible
+            source="careers"
+            title="Send us your details"
+            subtitle="Tell us about yourself and the recruitment team will be in touch."
+          />
+        </div>
+
       </div>
     </Container>
   </section>

@@ -2,7 +2,7 @@ import { marked } from 'marked';
 import DOMPurify from 'isomorphic-dompurify';
 import type { Job } from '../types/job';
 
-const DEFAULT_APPLY_EMAIL = 'careers@elysee.com.cy';
+const DEFAULT_APPLY_EMAIL = 'recruitment@elysee.com.cy';
 
 export function getApplyHref(job: Job): { href: string; external: boolean } {
   if (job.apply_url && job.apply_url.trim()) {

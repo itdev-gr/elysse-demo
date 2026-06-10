@@ -23,6 +23,9 @@ recon/assets/**
 # Local Claude Code tooling (project-scoped settings + scheduled task locks)
 .claude/
 
+# Supabase CLI scratch state
+supabase/.temp/
+
 # Added by Astro scaffold
 .env.production
 .idea/

@@ -32,13 +32,13 @@ describe('getApplyHref', () => {
     expect(getApplyHref({ ...baseJob, apply_email: 'a@b.c' }))
       .toEqual({ href: 'mailto:a@b.c', external: false });
   });
-  it('falls back to careers@elysee.com.cy', () => {
+  it('falls back to recruitment@elysee.com.cy', () => {
     expect(getApplyHref(baseJob))
-      .toEqual({ href: 'mailto:careers@elysee.com.cy', external: false });
+      .toEqual({ href: 'mailto:recruitment@elysee.com.cy', external: false });
   });
   it('treats whitespace-only apply_url as absent', () => {
     expect(getApplyHref({ ...baseJob, apply_url: '   ' }))
-      .toEqual({ href: 'mailto:careers@elysee.com.cy', external: false });
+      .toEqual({ href: 'mailto:recruitment@elysee.com.cy', external: false });
   });
 });
 
