@@ -1,10 +1,147 @@
 ---
-import ListPageLayout from '../../../layouts/ListPageLayout.astro';
-import { productCataloguesItems } from '../../../data/site-content';
+/**
+ * Products — Catalogues & Leaflets.
+ *
+ * URL: /products/catalogues/
+ * Source of truth: the `catalogues` table (categories + subcategories, each
+ * with an optional PDF), managed in the admin dashboard. CATALOGUE_SEED from
+ * src/data/catalogues.ts is the offline fallback.
+ *
+ * Cinematic chassis consistent with the certifications pages: scroll
+ * progress, parallax cover hero, editorial intro, card grid rendered by the
+ * CataloguesList island (counts stay truthful via data-catalogue-count),
+ * closing CTA into the local contact network.
+ */
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Container from '../../../components/Container.astro';
+import Section from '../../../components/Section.astro';
+import CataloguesList from '../../../components/catalogues/CataloguesList.tsx';
+import { CATALOGUE_SEED } from '../../../data/catalogues';
 ---
-<ListPageLayout
-  title="Catalogues & Leaflets"
-  eyebrow="Products"
-  subtitle="Download Elysée's product catalogues, technical leaflets, and certification documents."
-  items={productCataloguesItems}
-/>
+<BaseLayout
+  title="Catalogues & Leaflets — Products — Elysée"
+  description="Download Elysée's technical product catalogues and leaflets — compression fittings, valves, pipes, irrigation and more, section by section."
+  padForHeader={false}
+>
+
+  <div aria-hidden="true" data-scroll-progress class="fixed top-0 left-0 right-0 h-[2px] bg-brand-500 z-50 origin-left pointer-events-none" style="transform: scaleX(0);"></div>
+
+  {/* ===== COVER HERO ===== */}
+  <section class="relative min-h-[72vh] md:min-h-[80vh] flex items-end text-surface overflow-hidden">
+    <img
+      data-hero-parallax
+      src="/images/about/pipe-stack.jpg"
+      alt="Stacked Elysée polyethylene pipes ready for dispatch"
+      class="absolute inset-0 w-full h-full object-cover will-change-transform"
+    />
+    <div aria-hidden="true" class="absolute inset-0 bg-gradient-to-b from-ink/45 via-ink/20 to-ink/80"></div>
+    <div aria-hidden="true" class="absolute inset-0 bg-brand-500/30"></div>
+
+    <Container size="xl" class="relative pt-40 md:pt-48 pb-16 md:pb-24 w-full">
+      <p data-reveal class="text-[11px] md:text-xs uppercase tracking-[0.4em] text-surface/85 mb-8">
+        Products · Technical library
+      </p>
+      <h1 data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[0.92] tracking-tight text-surface" style="font-size: clamp(3rem, 9vw, 8rem); max-width: 14ch;">
+        Catalogues &amp; Leaflets.
+      </h1>
+      <p data-reveal data-reveal-delay="240" class="mt-8 max-w-2xl text-base md:text-lg text-surface/85 leading-relaxed">
+        The complete Elysée product range, documented section by section — every catalogue a downloadable PDF.
+      </p>
+      <div data-reveal data-reveal-delay="360" class="mt-14 md:mt-20 flex items-center gap-4 text-[11px] uppercase tracking-[0.3em] text-surface/70">
+        <span aria-hidden="true" class="h-px w-12 bg-surface/50"></span>
+        <span><span data-catalogue-count>10</span> catalogue sections</span>
+      </div>
+    </Container>
+  </section>
+
+  {/* ===== EDITORIAL INTRO ===== */}
+  <Section bg="alt" spacing="lg">
+    <Container size="xl">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16">
+        <aside class="lg:col-span-4">
+          <div class="lg:sticky lg:top-32">
+            <p data-reveal class="text-[11px] uppercase tracking-[0.4em] text-brand-500 mb-6 md:mb-8">The technical library</p>
+            <h2 data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[1.02] tracking-tight text-ink" style="font-size: clamp(2rem, 4.5vw, 3.5rem);">
+              Specified, not guessed.
+            </h2>
+            <div aria-hidden="true" class="mt-8 h-px w-12 bg-brand-500"></div>
+            <p data-reveal data-reveal-delay="240" class="mt-6 max-w-xs text-sm text-ink/60 leading-relaxed">
+              Every dimension, pressure class and material spec — organised the way our range is built, one section at a time.
+            </p>
+          </div>
+        </aside>
+        <div class="lg:col-span-8 lg:pt-2 space-y-7 md:space-y-8">
+          <p
+            data-reveal
+            data-reveal-delay="160"
+            class="text-lg md:text-xl text-ink leading-[1.65]
+                   first-letter:font-display first-letter:font-heavy
+                   first-letter:text-7xl md:first-letter:text-8xl
+                   first-letter:float-left first-letter:mr-3 first-letter:mt-1
+                   first-letter:leading-[0.85] first-letter:text-brand-500"
+          >
+            From compression fittings to polyethylene pipe, each Elysée product family ships with a full technical catalogue — drawings, dimensions, standards and installation guidance, ready for tenders and specification documents.
+          </p>
+          <p data-reveal data-reveal-delay="280" class="text-base md:text-lg text-ink/80 leading-relaxed">
+            Browse the sections below and download what you need. Where a section is split into more specific leaflets, you'll find them listed inside the section card.
+          </p>
+        </div>
+      </div>
+    </Container>
+  </Section>
+
+  {/* ===== CATALOGUE GRID — managed in the admin dashboard ===== */}
+  <Section bg="default" spacing="lg">
+    <Container size="xl">
+      <header class="max-w-3xl mb-12 md:mb-16">
+        <p data-reveal class="text-[11px] uppercase tracking-[0.4em] text-brand-500 mb-6 md:mb-8">Browse the sections</p>
+        <h2 data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[1.02] tracking-tight text-ink" style="font-size: clamp(2.25rem, 5.5vw, 4.5rem);">
+          One PDF per section.
+        </h2>
+        <p data-reveal data-reveal-delay="240" class="mt-6 md:mt-8 text-base md:text-lg text-ink/70 leading-relaxed">
+          Tap a download to get the current edition of any catalogue or leaflet.
+        </p>
+      </header>
+
+      <CataloguesList client:visible fallback={CATALOGUE_SEED} />
+    </Container>
+  </Section>
+
+  {/* ===== CLOSING CTA ===== */}
+  <section class="bg-brand-500/10">
+    <Container size="lg" class="py-16 md:py-20">
+      <div class="mx-auto max-w-2xl text-center">
+        <p data-reveal class="text-base md:text-lg text-ink/80 leading-relaxed">
+          Need a printed copy, a price list, or a catalogue in another language? Our team will send it over.
+        </p>
+        <a
+          data-reveal
+          data-reveal-delay="160"
+          href="/contact/local/"
+          class="group cursor-pointer mt-8 md:mt-10 inline-flex items-center gap-3 px-6 py-3 border border-ink/40 hover:bg-ink hover:border-ink hover:text-surface text-ink text-[11px] md:text-xs uppercase tracking-[0.25em] transition-colors duration-200"
+        >
+          <span>Request a catalogue</span>
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </a>
+      </div>
+    </Container>
+  </section>
+
+  {/* ===== motion (scroll bar + hero parallax) ===== */}
+  <script>
+    import { animate, scroll } from 'motion';
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!reduce) {
+      const bar = document.querySelector('[data-scroll-progress]') as HTMLElement | null;
+      if (bar) scroll(animate(bar, { transform: ['scaleX(0)', 'scaleX(1)'] }, { ease: 'linear' }));
+      const heroImg = document.querySelector('[data-hero-parallax]') as HTMLElement | null;
+      const heroSection = heroImg?.closest('section') as HTMLElement | null;
+      if (heroImg && heroSection) {
+        scroll(
+          animate(heroImg, { transform: ['translateY(0)', 'translateY(15%)'] }, { ease: 'linear' }),
+          { target: heroSection, offset: ['start start', 'end start'] },
+        );
+      }
+    }
+  </script>
+</BaseLayout>

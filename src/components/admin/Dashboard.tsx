@@ -4,16 +4,18 @@ import JobsTab from './JobsTab';
 import PostsTab from './PostsTab';
 import CountriesTab from './CountriesTab';
 import CertificationsTab from './CertificationsTab';
+import CataloguesTab from './CataloguesTab';
 import MessagesTab from './MessagesTab';
 import SettingsTab from './SettingsTab';
 
-type Tab = 'jobs' | 'posts' | 'countries' | 'certs' | 'messages' | 'settings';
+type Tab = 'jobs' | 'posts' | 'countries' | 'certs' | 'catalogues' | 'messages' | 'settings';
 
 const HEADINGS: Record<Tab, string> = {
   jobs: 'Jobs.',
   posts: 'Posts.',
   countries: 'Countries.',
   certs: 'Certifications.',
+  catalogues: 'Catalogues.',
   messages: 'Messages.',
   settings: 'Settings.',
 };
@@ -64,6 +66,9 @@ export default function Dashboard() {
           <button type="button" onClick={() => setTab('certs')} className={tabClass('certs')}>
             Certifications
           </button>
+          <button type="button" onClick={() => setTab('catalogues')} className={tabClass('catalogues')}>
+            Catalogues
+          </button>
           <button type="button" onClick={() => setTab('messages')} className={tabClass('messages')}>
             Messages
           </button>
@@ -76,6 +81,7 @@ export default function Dashboard() {
         {tab === 'posts' && <PostsTab />}
         {tab === 'countries' && <CountriesTab />}
         {tab === 'certs' && <CertificationsTab />}
+        {tab === 'catalogues' && <CataloguesTab />}
         {tab === 'messages' && <MessagesTab />}
         {tab === 'settings' && <SettingsTab />}
       </div>
