@@ -20,6 +20,7 @@ import BaseLayout from '../../../layouts/BaseLayout.astro';
 import Container from '../../../components/Container.astro';
 import Section from '../../../components/Section.astro';
 import AboutSubNav from '../../../components/about/AboutSubNav.astro';
+import EnquiryForm from '../../../components/contact/EnquiryForm.tsx';
 import { aboutUsQualityCertifications } from '../../../data/site-content';
 
 const blocks = aboutUsQualityCertifications.blocks;
@@ -338,25 +339,37 @@ const desc =
     </Section>
   )}
 
-  {/* ===== CLOSING CTA — light brand band ===== */}
+  {/* ===== CLOSING CTA — request a certificate (text + enquiry form) ===== */}
   <section class="bg-brand-500/10">
-    <Container size="lg" class="py-16 md:py-20">
-      <div class="mx-auto max-w-2xl text-center">
-        <p data-reveal class="text-base md:text-lg text-ink/80 leading-relaxed">
-          Need a specific certificate for a tender, regulatory submission, or specification document? Our team can provide it on request.
-        </p>
-        <a
-          data-reveal
-          data-reveal-delay="160"
-          href="/contact/local/"
-          class="group cursor-pointer mt-8 md:mt-10 inline-flex items-center gap-3 px-6 py-3 border border-ink/40 hover:bg-ink hover:border-ink hover:text-surface text-ink text-[11px] md:text-xs uppercase tracking-[0.25em] transition-colors duration-200"
-        >
-          <span>Request a certificate</span>
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M5 12h14" />
-            <path d="m12 5 7 7-7 7" />
-          </svg>
-        </a>
+    <Container size="xl" class="py-16 md:py-24">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-start">
+        <div class="lg:pt-4">
+          <p data-reveal class="text-[11px] uppercase tracking-[0.4em] text-brand-500 mb-6">Request a certificate</p>
+          <p data-reveal data-reveal-delay="120" class="text-base md:text-lg text-ink/80 leading-relaxed max-w-xl">
+            Need a specific certificate for a tender, regulatory submission, or specification document? Our team can provide it on request.
+          </p>
+          <a
+            data-reveal
+            data-reveal-delay="240"
+            href="/contact/local/"
+            class="group cursor-pointer mt-8 md:mt-10 inline-flex items-center gap-3 px-6 py-3 border border-ink/40 hover:bg-ink hover:border-ink hover:text-surface text-ink text-[11px] md:text-xs uppercase tracking-[0.25em] transition-colors duration-200"
+          >
+            <span>Contact our local network</span>
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M5 12h14" />
+              <path d="m12 5 7 7-7 7" />
+            </svg>
+          </a>
+        </div>
+
+        <div data-reveal data-reveal-delay="200" class="bg-surface p-6 md:p-8 border border-ink/10">
+          <EnquiryForm
+            client:visible
+            source="quality-certifications"
+            title="Request a certificate"
+            subtitle="Tell us which certificate, standard, or product family you need evidence for — our quality team will prepare it."
+          />
+        </div>
       </div>
     </Container>
   </section>
