@@ -146,6 +146,7 @@ export interface Office {
   region?: string;
   address?: string;
   phone?: string;
+  fax?: string;
   email?: string;
   hours?: string;
   notes?: string;
@@ -438,6 +439,9 @@ export const aboutUsQualityCertifications: ContentPage = {
 export const greenElyseeAbout: ContentPage = {
   title: 'About Green Elysée',
   eyebrow: 'Green Elysée',
+  heroImage: '/images/green-elysee/about-hero.jpg',
+  heroImageAlt:
+    'Sprinklers irrigating rows of lush green crops at sunset — streaming water, streaming life',
   blocks: [
     {
       kind: 'paragraph',
@@ -1170,6 +1174,14 @@ export const innovationInnovateWithUs: ContentPage = {
 
 export const localOffices: Office[] = [
   {
+    name: 'Ergates Head Office',
+    region: 'Nicosia',
+    address: '5 Pentadaktylou Street\n2643 Ergates Industrial Zone\nNicosia, Cyprus',
+    phone: '+357-22-455000',
+    fax: '+357-22-455055',
+    email: 'info@elysee.com.cy',
+  },
+  {
     name: 'Strovolos Shop',
     region: 'Nicosia',
     address: '32 Solomou Solomou Street, 2032',
@@ -1294,7 +1306,7 @@ export const contactCareers: ContentPage = {
       kind: 'callout',
       title: 'How to apply',
       body:
-        'Address: 7 Vasileos Konstantinou, 2008 Strovolos, Nicosia, Cyprus\nPhone: +357 22 462 462\nEmail: careers@elysee.com.cy\nWebsite: www.elysee.com.cy',
+        'Address: 7 Vasileos Konstantinou, 2008 Strovolos, Nicosia, Cyprus\nPhone: +357 22 462 462\nEmail: recruitment@elysee.com.cy\nWebsite: www.elysee.com.cy',
     },
   ],
 };

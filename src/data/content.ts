@@ -26,7 +26,7 @@ import heroPrivacy from '../assets/images/shutterstock-377226832-privacy-policy.
 
 // Section/article images.
 import imgServicesPanel from '../assets/images/landscape.jpg';
-import imgCoreValues from '../assets/images/shutterstock-377226832-core-values.jpg';
+import imgGreenElysee from '../assets/images/green-hydrogen-shutterstock-1938738706.jpg';
 import imgResponsiblePartner from '../assets/images/shutterstock-377226832-responsible-partner.jpg';
 import imgWeCare from '../assets/images/shutterstock-377226832-we-care.jpg';
 
@@ -241,7 +241,7 @@ export const homePage: PageContent = {
       eyebrow: 'Green Elysée',
       heading: 'Streaming Water, Streaming Life',
       body: 'We are committed to protecting the earth in every possible way, making it a better place to live, while maintaining our business-driven innovation, green thinking, and continuous improvement. Our tag-line “Streaming Water, Streaming Life” synopsizes our beliefs and culture — it is the foundation of all principles and strategies that define Elysée.',
-      image: imgCoreValues,
+      image: imgGreenElysee,
       cta: {
         label: 'DISCOVER GREEN ELYSÉE',
         href: '/green-elysee/',
