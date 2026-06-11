@@ -152,6 +152,80 @@ export interface Office {
   notes?: string;
 }
 
+/** Funded research project detail page (/innovation/funded-research-projects/<slug>/). */
+export interface ProjectDetail {
+  slug: string;
+  /** Mirrors ProjectsBlock.name — deliberately not `title`. */
+  name: string;
+  status: 'Ongoing' | 'Completed';
+  duration: string;
+  totalFunding: string;
+  elyseeFunding?: string;
+  partners?: string[];
+  image: string;
+  imageAlt: string;
+  /** 1–2 sentence summary for meta description. */
+  excerpt: string;
+  blocks: ContentBlock[];
+}
+
+/** Innovation insights article detail page (/innovation/insights/<slug>/). */
+export interface ArticleDetail {
+  slug: string;
+  title: string;
+  category?: 'Innovation News' | 'Success Stories' | 'Activities';
+  /** As shown on live site, e.g. '17-12-2025'. */
+  date?: string;
+  /** e.g. 'Dr. Andreas Gregoriou'. */
+  author?: string;
+  image: string;
+  imageAlt: string;
+  excerpt: string;
+  blocks: ContentBlock[];
+}
+
+/** Exhibition detail page (/insights/exhibitions/<slug>/). */
+export interface ExhibitionDetail {
+  slug: string;
+  title: string;
+  /** Human-readable, e.g. '10–14 November 2026'. */
+  date: string;
+  venue: string;
+  /** e.g. 'Hall 21, Stand B28'. */
+  stand?: string;
+  /** Most exhibitions have no content imagery. */
+  image?: string;
+  imageAlt?: string;
+  excerpt: string;
+  blocks: ContentBlock[];
+}
+
+/** Media detail page (/insights/media/<slug>/). */
+export interface MediaDetail {
+  slug: string;
+  title: string;
+  /** YouTube embed URL: https://www.youtube.com/embed/<id> */
+  videoUrl: string;
+  posterImage?: string;
+  /** Alt text for posterImage; only meaningful when posterImage is set. */
+  imageAlt?: string;
+  excerpt: string;
+  blocks: ContentBlock[];
+}
+
+/** eBook detail page (/insights/ebooks/<slug>/). */
+export interface EbookDetail {
+  slug: string;
+  title: string;
+  year?: string;
+  coverImage?: string;
+  imageAlt?: string;
+  /** When absent, UI renders a "Request a copy" CTA. */
+  downloadUrl?: string;
+  excerpt: string;
+  blocks: ContentBlock[];
+}
+
 /* =========================================================================
  * About Us pillar
  * ========================================================================= */
@@ -653,6 +727,7 @@ export const innovationInsightsItems: InsightItem[] = [
     image: '/images/innovation/insights/industry-40.png',
     excerpt:
       'Injection molding, despite its long industrial history, continues to evolve towards improved dimensional accuracy, reduced energy consumption, and shorter production cycles. As one of the largest manufacturing sectors, it increasingly adopts Industry 4.0 technologies such as the Industrial Internet of Things (IIoT), machine learning, optimization techniques, and digital twins.',
+    href: '/innovation/insights/industry-4-0-and-injection-molding-manufacturing-process/',
   },
   {
     title: 'Success Entrepreneur Stories',
@@ -660,6 +735,7 @@ export const innovationInsightsItems: InsightItem[] = [
     image: '/images/innovation/insights/success-stories.jpg',
     excerpt:
       'In 2007 was teaching students how to use a computer aided design software, while she was studying in Perth, Australia.',
+    href: '/innovation/insights/success-entrepreneur-stories/',
   },
   {
     title: 'Overmolding Injection Molding Process',
@@ -667,6 +743,7 @@ export const innovationInsightsItems: InsightItem[] = [
     image: '/images/innovation/insights/overmolding.jpg',
     excerpt:
       'Overmolding is often called two-shot injection molding since it consists of molding of one material over other(s) forming a multilayer part.',
+    href: '/innovation/insights/overmolding-injection-molding-process/',
   },
   {
     title: 'Micro Injection Molding',
@@ -674,6 +751,7 @@ export const innovationInsightsItems: InsightItem[] = [
     image: '/images/innovation/insights/micro-injection.jpg',
     excerpt:
       'Micro injection molding is a very accurate injection molding technique that is employed for the construction of very small parts.',
+    href: '/innovation/insights/micro-injection-molding/',
   },
   {
     title: 'Gas-assisted Injection Molding',
@@ -681,6 +759,7 @@ export const innovationInsightsItems: InsightItem[] = [
     image: '/images/innovation/insights/gas-assisted.jpg',
     excerpt:
       "Gas-assisted injection molding was first proposed in 1970s, but it didn't gain commercial acceptance until 1990s.",
+    href: '/innovation/insights/gas-assisted-injection-molding/',
   },
   {
     title: 'Exploiting AI Quality Control for Injection Molding Process Optimization',
@@ -688,6 +767,257 @@ export const innovationInsightsItems: InsightItem[] = [
     image: '/images/innovation/insights/ai-processes.jpg',
     excerpt:
       'Automatic in-line quality control is essential for the optimization of injection molding regarding the efficiency of the process and the quality of the produced parts.',
+    href: '/innovation/insights/exploiting-ai-quality-control-for-injection-molding-process-optimization/',
+  },
+];
+
+/* =========================================================================
+ * Innovation insights — article detail pages
+ * Sourced verbatim from elysee.com.cy article pages (crawled June 2026).
+ * ========================================================================= */
+
+export const innovationInsightDetails: ArticleDetail[] = [
+  {
+    slug: 'industry-4-0-and-injection-molding-manufacturing-process',
+    title: 'Industry 4.0 and Injection Molding Manufacturing Process',
+    category: 'Innovation News',
+    date: '17-12-2025',
+    author: 'Dr. Andreas Gregoriou, Research Engineer',
+    image: '/images/innovation/insights/industry-40.png',
+    imageAlt: 'Industry 4.0 and injection molding manufacturing process',
+    excerpt:
+      'Injection molding, despite its long industrial history, continues to evolve towards improved dimensional accuracy, reduced energy consumption, and shorter production cycles. As one of the largest manufacturing sectors, it increasingly adopts Industry 4.0 technologies such as the Industrial Internet of Things (IIoT), machine learning, optimization techniques, and digital twins.',
+    blocks: [
+      {
+        kind: 'paragraph',
+        text:
+          'Even though Injection Molding counts several decades of practice, it can be further improved in terms of products dimensional accuracy, less energy consumption and the reduction time cycle during the manufacturing. It is worth noting that Injection Molding constitutes the third largest manufacturing sector, raising the interest of researchers to evolve injection molding process to by employing emerging technologies such as Industrial Internet of Things (IIoT) and machine learning (ML) alongside with optimization techniques.',
+      },
+      {
+        kind: 'paragraph',
+        text:
+          'The Injection Molding industry nowadays focuses on manufacturing of plastic products/components characterized by good quality while limiting the production cost. This is achieved by employing the smart manufacturing towards a digitalization concept (e.g Injection 4.0 as a part of Industry 4.0). More specifically, process parameters data are collected using Internet of Things (IoT). Briefly described, IoT is a network comprising sensors and relevant software for collecting and exchanging data over the internet. This data can be processed using Machine Learning (ML) and optimization techniques so that Injection Molding process parameters are refined at the end of the optimization process chain. All the above are part of the Industry 4.0 or fourth generation industry.',
+      },
+      {
+        kind: 'image',
+        src: '/images/innovation/insights/details/industry-40-1.jpg',
+        alt: 'Industry 4.0 and injection molding — article figure 1',
+      },
+      { kind: 'paragraph', text: 'The goals of Industry 4.0 are the following:' },
+      {
+        kind: 'list',
+        items: [
+          'Smart factories that optimize their products and processes',
+          'Higher productivity and efficiency',
+          'Lower operational cost',
+        ],
+      },
+      {
+        kind: 'paragraph',
+        text:
+          'An interesting example of Industry 4.0 in actions is the usage of Digital Twins that consist of machine copies or factories intended for simulations. These simulations replicate the manufacturing processes -e.g Injection Molding-, with ultimate target the optimization of the entire manufacturing process and the products.',
+      },
+      {
+        kind: 'image',
+        src: '/images/innovation/insights/details/industry-40-2.jpg',
+        alt: 'Industry 4.0 and injection molding — article figure 2',
+      },
+    ],
+  },
+  {
+    slug: 'success-entrepreneur-stories',
+    title: 'Success Entrepreneur Stories',
+    category: 'Success Stories',
+    date: '13-01-2025',
+    image: '/images/innovation/insights/success-stories.jpg',
+    imageAlt: 'Success entrepreneur stories',
+    excerpt:
+      'In 2007 was teaching students how to use a computer aided design software, while she was studying in Perth, Australia.',
+    blocks: [
+      { kind: 'heading', level: 2, text: 'Melanie Perkins of Canva' },
+      {
+        kind: 'paragraph',
+        text:
+          'In 2007 was teaching students how to use a computer aided design software, while she was studying in Perth, Australia. The software was expensive, complex and the teaching was lasting a semester, prompting her to explore simpler alternatives. She aimed to create an online, cheaper, and simpler software solution.',
+      },
+      {
+        kind: 'paragraph',
+        text:
+          'Her idea was turned down by over 100 investors. However, three years later an investor embraced her concept. Today, 60 million of users exploit the capabilities of Canva across 190 countries.',
+      },
+      { kind: 'heading', level: 2, text: 'Adi Dassler of Adidas' },
+      {
+        kind: 'paragraph',
+        text:
+          'Dassler began his shoemaking career in his mother\'s washroom in Bavaria, Germany, with a goal to fabricate the best possible athletic shoes. His effort was based on the feedback that he was receiving from the athletes regarding their opinion about the shoes, pain points that could be improved and their feeling about his early shoes.',
+      },
+    ],
+  },
+  {
+    slug: 'overmolding-injection-molding-process',
+    title: 'Overmolding Injection Molding Process',
+    category: 'Innovation News',
+    date: '13-01-2025',
+    image: '/images/innovation/insights/overmolding.jpg',
+    imageAlt: 'Overmolding injection molding process',
+    excerpt:
+      'Overmolding is often called two-shot injection molding since it consists of molding of one material over other(s) forming a multilayer part.',
+    blocks: [
+      {
+        kind: 'paragraph',
+        text:
+          'Overmolding is often called two-shot injection molding since it consists of molding of one material over other(s) forming a multilayer part. The process involves injecting resin into a mold (substrate) to solidify, then using a second injection unit to apply resin over the already-hardened layer. Common applications include parts with rubber handles where rubber is injected over plastic substrates.',
+      },
+      {
+        kind: 'image',
+        src: '/images/innovation/insights/details/overmolding-concept.jpg',
+        alt: 'Overmolding concept diagram',
+        caption: 'Fig. 1 Overmolding concept',
+      },
+      { kind: 'heading', level: 2, text: 'Materials commonly used' },
+      {
+        kind: 'list',
+        items: [
+          'Acrylonitrile Butadiene Styrene (ABS)',
+          'High-density Polyethylene (HDPE)',
+          'Polyether Ether Ketone (PEEK)',
+          'Polyamide (Nylon)',
+          'Polycarbonate (PC)',
+          'Polyethylene (PE)',
+          'Polyetherimide (PEI)',
+          'Polybutylene Terephthalate (PBTR)',
+          'Acrylic (PMMA)',
+          'Polyoxymethylene (POM)',
+          'Polypropylene (PP)',
+          'Silicone (SI)',
+          'Thermoplastic Elastomers (TPE)',
+          'Thermoplastic Polyurethane (TPU)',
+          'Thermoplastic Rubber (TPR)',
+        ],
+      },
+    ],
+  },
+  {
+    slug: 'micro-injection-molding',
+    title: 'Micro Injection Molding',
+    category: 'Innovation News',
+    date: '13-01-2025',
+    image: '/images/innovation/insights/micro-injection.jpg',
+    imageAlt: 'Micro injection molding',
+    excerpt:
+      'Micro injection molding is a very accurate injection molding technique that is employed for the construction of very small parts.',
+    blocks: [
+      {
+        kind: 'paragraph',
+        text:
+          'Micro injection molding is a very accurate injection molding technique that is employed for the construction of very small parts. The technique enables production of parts weighing under one gram. The process involves injection of a very small amount of resin into a mold under high pressure via syringe-sized injection machine, requiring precise control of injection pressure, flow rate, and temperature before cooling and solidification.',
+      },
+      {
+        kind: 'image',
+        src: '/images/innovation/insights/details/micro-injection-molding.jpg',
+        alt: 'Micro injection molding setup',
+        caption: 'Fig. 1 Micro Injection Molding setup',
+      },
+      { kind: 'heading', level: 2, text: 'Mold Design' },
+      {
+        kind: 'paragraph',
+        text:
+          'Because micro injection molding produces high-accuracy parts, mold construction requires precision tooling. The process employs CNC and EDM (Electrical Discharge Machining) for mold construction. The cooling process within the mold and removal of excess material are critical considerations.',
+      },
+      { kind: 'heading', level: 2, text: 'Appropriate Materials for Micro Injection Molding' },
+      {
+        kind: 'list',
+        items: [
+          'Thermoplastic Elastomers (TPEs)',
+          'Polyoxymethylene (POM)',
+          'Polycarbonate (PC)',
+          'Polyether Ether Keton (PEEK)',
+          'Liquid Silicon Rubber (LSR)',
+        ],
+      },
+      { kind: 'heading', level: 2, text: 'Bibliography' },
+      {
+        kind: 'list',
+        items: [
+          'AcoMold. (2024, 4 2). Retrieved from The Complete Guide to Micro Injection Molding: Processes, Benefits, and Applications: https://www.acomold.com/micro-injection-molding.html',
+        ],
+      },
+    ],
+  },
+  {
+    slug: 'gas-assisted-injection-molding',
+    title: 'Gas-assisted injection Molding',
+    category: 'Innovation News',
+    date: '13-01-2025',
+    image: '/images/innovation/insights/gas-assisted.jpg',
+    imageAlt: 'Gas-assisted injection molding',
+    excerpt:
+      "Gas-assisted injection molding was first proposed in 1970s, but it didn't gain commercial acceptance until 1990s.",
+    blocks: [
+      {
+        kind: 'paragraph',
+        text:
+          'Gas-assisted injection molding was first proposed in 1970s, but it didn\'t gain commercial acceptance until 1990s (Gas Assisted Injection Molding: Definition, Purpose, and Process, 2023). Even though the Gas Assisted Injection Molding gain acceptance in 1990s, it is considered as innovative solution for the forming of plastic parts.',
+      },
+      {
+        kind: 'paragraph',
+        text:
+          'In Gas-assisted injection molding (GAIM), gas is guided through a nozzle or directly to the core of the part to be injected, and it flows through the hot sections of the polymer, forcing the latter to occupy the cavities of the mold. The gas can be injected prior and/or simultaneously with the polymer.',
+      },
+      {
+        kind: 'image',
+        src: '/images/innovation/insights/details/gas-assisted-injection.jpg',
+        alt: 'Gas-assisted injection molding principle',
+        caption: 'Fig. 1 Gas Assisted Injection Molding principle (Gas-assisted injection molding, 2024)',
+      },
+      {
+        kind: 'paragraph',
+        text:
+          'The main advantages of the Gas-assisted injection molding over the conventional Injection molding technique, is the reduction in cycle times, material cost, residual stresses and allows molding of parts with larger projected areas and cross sections.',
+      },
+      { kind: 'heading', level: 2, text: 'Bibliography' },
+      {
+        kind: 'list',
+        items: [
+          'Clark, C. L. (1994). Overcoming process control challenges of gas-assisted injection molding. ANTEC Technical Papers, 540-543.',
+          'Gas Assisted Injection Molding: Definition, Purpose, and Process. (2023, August).',
+          'Gas-assisted injection molding. (2024, 4 5).',
+          'Jong, D. R., Huang, J. S., & Chang, Y. S. (1996). Experimental studies of design guidelines for gas-assisrted injection molding process. ANTEC, 668-673.',
+          'Koelling, K., Gauri, V., Tendulkar, M., Kaminski, R., & Becker, O. (1997). Understanding the controlling mechanisms of gas- assisted injection molding through visualization. ANTEC Technical Papers, 3697-3701.',
+          'M.A, P. N., Lam, Y. C., & Tor, S. B. (2002). Gas-assisted injection molding: the effects of process variables and channel geometry. Materials Processing Technology, 27-35.',
+          'S.Y. Yang, S. J. (1994). Experimental study on gas - assisted injection molding. ANTEC Technical Papers, 404-407.',
+        ],
+      },
+    ],
+  },
+  {
+    slug: 'exploiting-ai-quality-control-for-injection-molding-process-optimization',
+    title: 'Exploiting AI quality control for the optimization of injection molding process',
+    category: 'Innovation News',
+    date: '18-05-2023',
+    image: '/images/innovation/insights/ai-processes.jpg',
+    imageAlt: 'AI quality control for injection molding process optimization',
+    excerpt:
+      'Automatic in-line quality control is essential for the optimization of injection molding regarding the efficiency of the process and the quality of the produced parts.',
+    blocks: [
+      {
+        kind: 'paragraph',
+        text:
+          'Automatic in-line quality control is essential for the optimization of injection molding, regarding the efficiency of the process and the quality of the produced parts. A fully automated injection molding closed loop has been developed by a group of researchers (Aminabadi, et al., 2022) for the optimization of Injection molding for the fabrication of specific plastic parts. For the optimization of the entire injection molding process, three crucial aspects were taken into account, comprising of part weight, dimensions and surface quality.',
+      },
+      {
+        kind: 'paragraph',
+        text:
+          'A series of experiments were conducted in order to train eight artificial intelligence nodes. Afterwards, the generated models have been applied with controller to control the quality aspect the injection molding process. Through this study, the researchers achieved to control the injection molding process parameters in a manner that good surface quality and dimensional accuracy obtained.',
+      },
+      { kind: 'heading', level: 2, text: 'Bibliography' },
+      {
+        kind: 'list',
+        items: [
+          'Aminabadi, S. S., Tabatabai, P., Steiner, A., Gruber, D. P., Friesenbichler, W., Habersohn, C., & Berger-Weber, a. (2022). Industry 4.0 In-Line AI Quality Control of Plastic Injection Molded Parts. Polymers.',
+        ],
+      },
+    ],
   },
 ];
 
@@ -900,7 +1230,7 @@ export const innovationFundedProjects: ContentPage = {
           totalFunding: '€196,125',
           image: '/images/innovation/projects/innova.png',
           description: "Active research initiative under Elysée's 2025–2026 portfolio.",
-          href: '#',
+          href: '/innovation/funded-research-projects/innova/',
         },
         {
           name: 'AgReCOMPOSITES',
@@ -911,7 +1241,7 @@ export const innovationFundedProjects: ContentPage = {
           image: '/images/innovation/projects/agrecomposites.png',
           description:
             "Falls under the Pillar I 'Smart Growth' that constitutes one of the three strategy pillars of the Restart 2016-2020 Programmes.",
-          href: '#',
+          href: '/innovation/funded-research-projects/agrecomposites/',
         },
       ],
     },
@@ -928,12 +1258,162 @@ export const innovationFundedProjects: ContentPage = {
           image: '/images/innovation/projects/plantngreen.png',
           description:
             'Development of green-tech functionalized, biodegradable fibrous plant nursery bags in ecological seedlings cultivation.',
-          href: '#',
+          href: '/innovation/funded-research-projects/plantngreen/',
         },
       ],
     },
   ],
 };
+
+/* =========================================================================
+ * Funded research projects — detail pages
+ * Sourced verbatim from elysee.com.cy project pages (crawled June 2026).
+ * ========================================================================= */
+
+export const fundedProjectDetails: ProjectDetail[] = [
+  {
+    slug: 'innova',
+    name: 'Innova',
+    status: 'Ongoing',
+    duration: '1/8/2025 – 30/4/2026',
+    totalFunding: '€196,125',
+    image: '/images/innovation/projects/innova.png',
+    imageAlt: 'Innova project logo',
+    excerpt:
+      'The funded project introduces the development of a Next-Generation Mini Valve for irrigation systems, developed by Elysée Irrigation Ltd., combining two patented innovations for low-pressure irrigation applications.',
+    blocks: [
+      { kind: 'paragraph', text: 'Proposal Number: FTI/0325/0006' },
+      { kind: 'heading', level: 2, text: 'Project Summary' },
+      {
+        kind: 'paragraph',
+        text:
+          'The funded project introduces the development of a Next-Generation Mini Valve for irrigation systems, developed by Elysée Irrigation Ltd. The project combines two patented innovations - the double injection molded sealing system and the Dripline quick-connection technology - to create an optimized irrigation product. The invention is intended for low-pressure irrigation applications and began on 1/8/2025 with a nine-month duration.',
+      },
+      { kind: 'heading', level: 2, text: 'Project Objectives' },
+      {
+        kind: 'list',
+        items: [
+          'Development of a Next-Generation Mini Valve for irrigation purposes',
+          'Incorporation of two patented features held by Elysee Irrigation (Dripline connection feature and double injection molded sealing system)',
+          'Outstanding performance metrics: higher flow, better mechanical properties, improved sealing at higher operating pressures',
+        ],
+      },
+    ],
+  },
+  {
+    slug: 'agrecomposites',
+    name: 'AgReCOMPOSITES',
+    status: 'Ongoing',
+    duration: '2/5/2024 – 1/5/2026',
+    totalFunding: '€598,046',
+    elyseeFunding: '€221,130',
+    image: '/images/innovation/projects/agrecomposites.png',
+    imageAlt: 'AgReCOMPOSITES project logo',
+    excerpt:
+      'The project aims to the development of innovative and sustainable polymer composites in the form of novel plastic products mainly for irrigation and water supply.',
+    blocks: [
+      { kind: 'paragraph', text: 'Proposal Number: CODEVELOP-AG-SH-HE/0823/0140' },
+      { kind: 'heading', level: 2, text: 'Project Summary' },
+      {
+        kind: 'paragraph',
+        text:
+          'The project AgReCOMPOSITES falls under the Pillar I \'Smart Growth\' that constitutes one of the three strategy pillars of the Restart 2016-2020 Programmes of the Research and Innovation Foundation (RIF), and it is fully compatible with S3CY \'Agriculture- Food Industry\' priority sector.',
+      },
+      { kind: 'paragraph', text: 'The Host Organization of the project is Elysee.' },
+      {
+        kind: 'paragraph',
+        text:
+          'Carbon-based polymer composites are replacing many conventional materials due to their enhanced thermomechanical properties in various applications. Although, carbon-based fillers, including carbon nanotubes, carbon nano-fibers and graphene that are typically employed as additives, are not environmentally and economically viable.',
+      },
+      {
+        kind: 'paragraph',
+        text:
+          'Thus, one of the project objectives is to develop sustainable, cost- effective and environmentally viable polymer composites. The latter is going to be achieved by incorporating biochar-based fillers deriving from pyrolysis of agricultural and livestock wastes.',
+      },
+      {
+        kind: 'paragraph',
+        text:
+          'The project aims to the development of innovative and sustainable polymer composites in the form of novel plastic products mainly for irrigation and water supply.',
+      },
+      { kind: 'heading', level: 2, text: 'Project Objectives' },
+      {
+        kind: 'paragraph',
+        text:
+          'The main objective of the AgReComposites project is the employment of biochar-based additives in Polypropylene (PP) and Polyethylene (PE) virgin thermoplastics and thermoplastic recyclates for the fabrication of \'green\' plastic pipes and fittings.',
+      },
+      {
+        kind: 'paragraph',
+        text:
+          'Furthermore, another important objective, is the enhancement of an effective collaboration between enterprises and research community, that aims to identify challenges and to develop new sustainable solutions by implementing R&D projects.',
+      },
+      { kind: 'heading', level: 2, text: 'Funding Agencies' },
+      {
+        kind: 'paragraph',
+        text:
+          'The Project CODEVELOP-AG-SH-HE/0823/0140 is funded by the European Union - NextGenerationEU, through the Research and Innovation Foundation.',
+      },
+    ],
+  },
+  {
+    slug: 'plantngreen',
+    name: 'PlantNGreen',
+    status: 'Completed',
+    duration: '01/02/2023 – 31/01/2025',
+    totalFunding: '€574,142.25',
+    elyseeFunding: '€222,878.25',
+    partners: [
+      'University of Cyprus (UCY/HO) — Host Organisation',
+      'Cyprus University of Technology (CUT/PA1)',
+      'Elysee Irrigation Ltd. (Elysee/PA2)',
+      'Advanced Materials Design & Manufacturing Limited / AmaDema (AMDM/PA3)',
+    ],
+    image: '/images/innovation/projects/plantngreen.png',
+    imageAlt: 'PlantNGreen project logo',
+    excerpt:
+      'The primary objective of PlantNGreen is the development of innovative biodegradable nano/microfibrous "green" plant nursery bags, functionalized with selected plant growth promoters for use in ecological seedlings cultivation.',
+    blocks: [
+      {
+        kind: 'paragraph',
+        text:
+          'Development of green-tech functionalized, biodegradable fibrous plant nursery bags in ecological seedlings cultivation',
+      },
+      { kind: 'paragraph', text: 'Proposal Number: CODEVELOP-GT/0322/033' },
+      { kind: 'heading', level: 2, text: 'Project Summary' },
+      {
+        kind: 'paragraph',
+        text:
+          'Plant nursery bags that are typically used in seedlings production mainly consist of low-density polyethylene which is a non-biodegradable plastic material. As a consequence, upon seedling planting, a large amount of plastic waste ends up in the environment. The primary objective of PlantNGreen is the development of innovative biodegradable nano/microfibrous "green" plant nursery bags that will further functionalized with selected plant growth promoters for use in ecological seedlings cultivation, thus promoting both, environmental protection and seedlings growth promotion. The implementation of this project will be based on a strong and effective collaboration to be established between the 2 public academic institutions in Cyprus and 2 local enterprises.',
+      },
+      { kind: 'heading', level: 2, text: 'Project Objectives' },
+      {
+        kind: 'paragraph',
+        text:
+          'PlantNGreen is fully compatible with the specific objectives of the CO-DEVELOP Programme and the Green Transition priority area, as well as with the Priority Sector (S3Cy) of \'\'Sustainable Growth-Environment\'\' an extremely important Sector of Priority.',
+      },
+      {
+        kind: 'list',
+        items: [
+          'Host Organisation: University of Cyprus (UCY/HO)',
+          'Cyprus University of Technology (CUT/PA1)',
+          'Elysee Irrigation Ltd. (Elysee/PA2)',
+          'Advanced Materials Design & Manufacturing Limited / AmaDema (AMDM/PA3)',
+          'Expertise areas spanned: materials engineering, polymer processing/electrospinning, plant physiology, irrigation systems',
+        ],
+      },
+      {
+        kind: 'paragraph',
+        text:
+          'This inter-disciplinary partnership ensures the successful project implementation resulting to a highly significant research/technological output.',
+      },
+      { kind: 'heading', level: 2, text: 'Funding Agencies' },
+      {
+        kind: 'paragraph',
+        text:
+          'The Project CODEVELOP-GT/0322/033 is funded by the European Union - NextGenerationEU, through the Research and Innovation Foundation.',
+      },
+    ],
+  },
+];
 
 export const innovationNetworkPartners: ContentPage = {
   title: 'Network & Partners',
@@ -1073,23 +1553,23 @@ export const insightsExhibitionsItems: InsightItem[] = [
     date: 'Nov 2026',
     excerpt:
       'Elysée will participate in EIMA International 2026, one of the world\'s leading exhibitions for agricultural and irrigation technology. Visit us at Hall 21, Stand B28 at Fiere Expo Center in Bologna, 10–14 November 2026.',
-    href: undefined,
-    image: undefined,
+    href: '/insights/exhibitions/elysee-at-eima-international-2026-meet-us-in-bologna/',
+    image: '/images/insights/exhibitions/eima-2026.png',
   },
   {
     title: 'EIMA 2022',
     date: 'Nov 2022',
     excerpt:
       'Elysée Irrigation was present at EIMA Exhibition in Bologna, Italy, 9–13 November 2022.',
-    href: undefined,
-    image: undefined,
+    href: '/insights/exhibitions/eima-2022/',
+    image: '/images/insights/exhibitions/eima-2022-signature.jpg',
   },
   {
     title: 'Internationale Gartenbaumesse Tulln',
     date: 'Sep 2021',
     excerpt:
       'Elysée participated in the Internationale Gartenbaumesse Tulln, 2–6 September 2021.',
-    href: undefined,
+    href: '/insights/exhibitions/internationale-gartenbaumesse-tulln/',
     image: undefined,
   },
   {
@@ -1097,15 +1577,218 @@ export const insightsExhibitionsItems: InsightItem[] = [
     date: 'Oct 2021',
     excerpt:
       'Elysée was present at EIMA 2021 in Bologna, Italy, 19–23 October 2021, Stand B25 Hall 22.',
-    href: undefined,
+    href: '/insights/exhibitions/eima-2021exhibition/',
     image: undefined,
   },
   {
     title: 'MCE Mostra Convegno',
     excerpt:
       'Elysée exhibited at MCE Mostra Convegno, Stand No. L69, Pavilion 14.',
-    href: undefined,
+    href: '/insights/exhibitions/mce-mostra-convegno/',
     image: undefined,
+  },
+  {
+    title: 'Big 5 Exhibition',
+    excerpt:
+      'Elysée was present at the Big 5 in Dubai, Stand No. A120, Maktoum Hall.',
+    href: '/insights/exhibitions/big-5-exhibition/',
+    image: undefined,
+  },
+];
+
+/* =========================================================================
+ * Exhibitions — detail pages
+ * Sourced verbatim from elysee.com.cy exhibition pages (crawled June 2026).
+ * Live-site typos ("takes places", "23th") preserved verbatim.
+ * ========================================================================= */
+
+export const exhibitionDetails: ExhibitionDetail[] = [
+  {
+    slug: 'elysee-at-eima-international-2026-meet-us-in-bologna',
+    title: 'Elysée at EIMA International 2026: Meet Us in Bologna!',
+    date: '10–14 November 2026',
+    venue: 'Fiere Expo Center, Bologna',
+    stand: 'Hall 21, Stand B28',
+    image: '/images/insights/exhibitions/eima-2026.png',
+    imageAlt: 'Elysée at EIMA International 2026 in Bologna',
+    excerpt:
+      'Elysée will participate in EIMA International 2026, one of the world\'s leading exhibitions for agricultural and irrigation technology. Visit us at Hall 21, Stand B28 at Fiere Expo Center in Bologna, 10–14 November 2026.',
+    blocks: [
+      {
+        kind: 'paragraph',
+        text:
+          'Elysée will proudly participate in EIMA International 2026, one of the world\'s leading exhibitions for agricultural and irrigation technology.',
+      },
+      {
+        kind: 'paragraph',
+        text:
+          'For professionals in irrigation, agriculture, landscaping and water management, EIMA International is where innovation meets opportunity and Elysée is excited to be part of it once again.',
+      },
+      {
+        kind: 'paragraph',
+        text:
+          'At our stand, visitors will have the chance to explore Elysée\'s latest irrigation solutions designed to make installations faster, easier and more efficient. From advanced fittings and connectors to smart irrigation components, our team will showcase products developed to meet the evolving needs of modern agriculture and water systems.',
+      },
+      {
+        kind: 'paragraph',
+        text:
+          'Whether you are a distributor, contractor, installer or industry professional, our experts will be available to discuss:',
+      },
+      {
+        kind: 'list',
+        items: [
+          'Innovative irrigation technologies',
+          'Efficient water management solutions',
+          'Product demonstrations',
+          'New product launches',
+          'Partnership and distribution opportunities',
+        ],
+      },
+      {
+        kind: 'paragraph',
+        text: 'Visit us and discover how Elysée continues to innovate in irrigation solutions.',
+      },
+    ],
+  },
+  {
+    slug: 'eima-2022',
+    title: 'EIMA 2022',
+    date: '9–13 November 2022',
+    venue: 'Bologna, Italy',
+    stand: 'Hall 22, Stand B21',
+    image: '/images/insights/exhibitions/eima-2022-signature.jpg',
+    imageAlt: 'EIMA 2022 exhibition signature',
+    excerpt:
+      'Elysée Irrigation was present at EIMA Exhibition in Bologna, Italy, 9–13 November 2022.',
+    blocks: [
+      {
+        kind: 'paragraph',
+        text:
+          'We are pleased to inform you that Elysée Irrigation will be present at EIMA Exhibition, which takes place in Bologna, Italy, from the 9th until the 13th of November 2022.',
+      },
+      {
+        kind: 'paragraph',
+        text:
+          'We would like to invite you to our Stand B21 Hall 22 so as to be informed about the new products and services through which Elysée Irrigation can help you grow your business and market presence.',
+      },
+      {
+        kind: 'paragraph',
+        text:
+          'Elysee products are not only certified by the highest Standard Organizations but they also offer the best value for money by combining top quality and competitive prices.',
+      },
+      {
+        kind: 'paragraph',
+        text:
+          'If you would like to pre-arrange a meeting with any of our Area Managers please send us an email at marketing@elysee.com.cy',
+      },
+    ],
+  },
+  {
+    slug: 'internationale-gartenbaumesse-tulln',
+    title: 'Internationale Gartenbaumesse Tulln',
+    date: '2–6 September 2021',
+    venue: 'Tulln, Austria',
+    stand: 'Hall 08, Stand 808',
+    excerpt:
+      'Elysée participated in the Internationale Gartenbaumesse Tulln, 2–6 September 2021.',
+    blocks: [
+      {
+        kind: 'paragraph',
+        text:
+          'Around 450 exhibitors present everything around the garden and plants on an exhibition area of 85000m².',
+      },
+      {
+        kind: 'paragraph',
+        text:
+          'The international horticultural fair in Tulln is the most important for all hobby gardeners and professional gardening.',
+      },
+      {
+        kind: 'paragraph',
+        text:
+          'Here you will find the best tips and suggestions for planning, designing, equipment and maintaining your garden in one place.',
+      },
+      {
+        kind: 'paragraph',
+        text: 'Perfect for shopping and finding new products all around the house and garden.',
+      },
+      { kind: 'paragraph', text: 'You are invited to visit us on Stand 808 in hall 08.' },
+      {
+        kind: 'paragraph',
+        text: 'We would like to present our latest products and answer your questions personally.',
+      },
+      { kind: 'paragraph', text: 'We are looking forward to your visit!' },
+    ],
+  },
+  {
+    slug: 'eima-2021exhibition',
+    title: 'EIMA 2021',
+    date: '19–23 October 2021',
+    venue: 'Bologna, Italy',
+    stand: 'Hall 22, Stand B25',
+    excerpt:
+      'Elysée was present at EIMA 2021 in Bologna, Italy, 19–23 October 2021, Stand B25 Hall 22.',
+    blocks: [
+      {
+        kind: 'paragraph',
+        text:
+          'We are pleased to inform you that Elysée Irrigation will be present at EIMA Exhibition, which takes places in Bologna, Italy, from the 19th until the 23th of October.',
+      },
+      {
+        kind: 'paragraph',
+        text:
+          'We would like to invite you to our Stand B25 Hall 22 so as to be informed about the new products and services through which Elysée Irrigation can help you grow your business and market presence.',
+      },
+      {
+        kind: 'paragraph',
+        text:
+          'Elysee products are not only certified by the highest Standard Organizations but they also offer the best value for money by combining top quality and competitive prices.',
+      },
+      {
+        kind: 'paragraph',
+        text:
+          'If you would like to pre-arrange a meeting with any of our Area Managers please send us an email at marketing@elysee.com.cy',
+      },
+    ],
+  },
+  {
+    slug: 'mce-mostra-convegno',
+    title: 'MCE Mostra Convegno',
+    date: '17–20 March 2020',
+    venue: 'Milan, Italy',
+    stand: 'Pavilion 14, Stand No. L69',
+    excerpt: 'Elysée exhibited at MCE Mostra Convegno, Stand No. L69, Pavilion 14.',
+    blocks: [
+      {
+        kind: 'paragraph',
+        text:
+          'Elysee will be present at the MCE Mostra Convegno which is taking place in Milan from the 17th until the 20th of March 2020. We invite you to visit our Stand No. L69 Pavilion 14.',
+      },
+      {
+        kind: 'paragraph',
+        text:
+          'If you would like to talk to an expert and set a meeting please send an email at: marketing@elysee.com.cy or call us at: +357 22 455 000',
+      },
+    ],
+  },
+  {
+    slug: 'big-5-exhibition',
+    title: 'Big 5 Exhibition',
+    date: '25–28 November',
+    venue: 'Dubai',
+    stand: 'Maktoum Hall, Stand No. A120',
+    excerpt: 'Elysée was present at the Big 5 in Dubai, Stand No. A120, Maktoum Hall.',
+    blocks: [
+      {
+        kind: 'paragraph',
+        text:
+          'Elysee will be present at the Big 5 which is taking place in Dubai from the 25th until the 28th of November. We invite you to visit our Stand No. A120 Maktoum Hall.',
+      },
+      {
+        kind: 'paragraph',
+        text:
+          'If you would like to talk to an expert and set a meeting please send an email at: marketing@elysee.com.cy or call us at: +357 22 455 000',
+      },
+    ],
   },
 ];
 
@@ -1114,22 +1797,79 @@ export const insightsMediaItems: InsightItem[] = [
     title: 'Elysée 40 Year Anniversary Event',
     excerpt:
       'Video recording of the Elysée 40 Year Anniversary Event, celebrating four decades of manufacturing and innovation in piping and irrigation systems.',
-    href: undefined,
-    image: undefined,
+    href: '/insights/media/elysee-40-year-anniversary-event/',
+    image: '/images/insights/media/elysee-40-year-anniversary-event.jpg',
   },
   {
     title: 'European Business Award 2014',
     excerpt:
       'Video coverage of Elysée receiving the European Business Award 2014, recognising excellence in European business.',
-    href: undefined,
-    image: undefined,
+    href: '/insights/media/european-business-award-2014/',
+    image: '/images/insights/media/european-business-award-2014.jpg',
   },
   {
     title: 'CYBC Documentary about Innovation in Cyprus — Elysée Irrigation',
     excerpt:
       'Cyprus Broadcasting Corporation documentary featuring Elysée Irrigation as a case study of innovation in Cypriot industry.',
-    href: undefined,
-    image: undefined,
+    href: '/insights/media/cybc-documentary-innovation-in-cyprus/',
+    image: '/images/insights/media/cybc-documentary-innovation-in-cyprus.jpg',
+  },
+];
+
+/* =========================================================================
+ * Media — detail pages
+ * The live site links media cards directly to YouTube; these detail pages
+ * embed the same videos (IDs recorded June 2026).
+ * ========================================================================= */
+
+export const mediaDetails: MediaDetail[] = [
+  {
+    slug: 'elysee-40-year-anniversary-event',
+    title: 'Elysée 40 Year Anniversary Event',
+    videoUrl: 'https://www.youtube.com/embed/RGgYIZMK7GU',
+    posterImage: '/images/insights/media/elysee-40-year-anniversary-event.jpg',
+    imageAlt: 'Elysée 40 Year Anniversary Event',
+    excerpt:
+      'Video recording of the Elysée 40 Year Anniversary Event, celebrating four decades of manufacturing and innovation in piping and irrigation systems.',
+    blocks: [
+      {
+        kind: 'paragraph',
+        text:
+          'Video recording of the Elysée 40 Year Anniversary Event, celebrating four decades of manufacturing and innovation in piping and irrigation systems.',
+      },
+    ],
+  },
+  {
+    slug: 'european-business-award-2014',
+    title: 'European Business Award 2014',
+    videoUrl: 'https://www.youtube.com/embed/irmQi6HPS18',
+    posterImage: '/images/insights/media/european-business-award-2014.jpg',
+    imageAlt: 'European Business Award 2014',
+    excerpt:
+      'Video coverage of Elysée receiving the European Business Award 2014, recognising excellence in European business.',
+    blocks: [
+      {
+        kind: 'paragraph',
+        text:
+          'Video coverage of Elysée receiving the European Business Award 2014, recognising excellence in European business.',
+      },
+    ],
+  },
+  {
+    slug: 'cybc-documentary-innovation-in-cyprus',
+    title: 'CYBC Documentary about Innovation in Cyprus — Elysée Irrigation',
+    videoUrl: 'https://www.youtube.com/embed/Dh_k0xo1F8c',
+    posterImage: '/images/insights/media/cybc-documentary-innovation-in-cyprus.jpg',
+    imageAlt: 'CYBC documentary about innovation in Cyprus featuring Elysée Irrigation',
+    excerpt:
+      'Cyprus Broadcasting Corporation documentary featuring Elysée Irrigation as a case study of innovation in Cypriot industry.',
+    blocks: [
+      {
+        kind: 'paragraph',
+        text:
+          'Cyprus Broadcasting Corporation documentary featuring Elysée Irrigation as a case study of innovation in Cypriot industry.',
+      },
+    ],
   },
 ];
 
@@ -1138,8 +1878,93 @@ export const insightsEbooksItems: InsightItem[] = [
     title: 'Green Elysée: Yearly Report 2021',
     excerpt:
       'Introduction to the "Green Elysée" pillar and Vision50, covering carbon footprint quantification, green energy investments, zero waste achievements, circular economy philosophy, green circular products and technologies, and green policy emissions offsetting.',
-    href: undefined,
-    image: undefined,
+    href: '/insights/ebooks/green-elysee-yearly-report-2021/',
+    image: '/images/insights/ebooks/green-elysee-yearly-report-2021.jpg',
+  },
+  {
+    title: 'Environmental Report 2020',
+    excerpt: 'Elysée\'s Environmental Report 2020, available as a direct PDF download.',
+    href: '/insights/ebooks/environmental-report-2020/',
+    image: '/images/insights/ebooks/environmental-report-2020.png',
+  },
+];
+
+/* =========================================================================
+ * eBooks — detail pages
+ * Sourced verbatim from elysee.com.cy ebook pages (crawled June 2026).
+ * The 2021 yearly report download is form-gated on the live site, so no
+ * downloadUrl is set; the 2020 report PDF is self-hosted by a later task.
+ * ========================================================================= */
+
+export const ebookDetails: EbookDetail[] = [
+  {
+    slug: 'green-elysee-yearly-report-2021',
+    title: 'Green Elysée: Yearly Report 2021',
+    year: '2021',
+    coverImage: '/images/insights/ebooks/green-elysee-yearly-report-2021.jpg',
+    imageAlt: 'Green Elysée Yearly Report 2021 cover',
+    excerpt:
+      'Download Elysee\'s 2021 Green report and learn "How Elysee aims to circle the square".',
+    blocks: [
+      {
+        kind: 'paragraph',
+        text: 'Download Elysee\'s 2021 Green report and learn "How Elysee aims to circle the square"',
+      },
+      { kind: 'heading', level: 2, text: 'What\'s Inside This Book' },
+      {
+        kind: 'paragraph',
+        text:
+          'Elysée acknowledges that businesses have a tremendous impact on climate change and can help in the fight against it. For this reason, we are setting a strategic approach to help us ultimately lead the way to a circular economy model, a testimony of our commitment to quality, towards the fulfillment of our goals for sustainability. Generally, a company\'s minimized carbon footprint is what leads to carbon neutrality.',
+      },
+      {
+        kind: 'paragraph',
+        text: 'We are dedicated to our dream to guide Life on a green path.',
+      },
+      {
+        kind: 'list',
+        items: [
+          'An introduction to "Green Elysee" pillar and our Vision50',
+          'What we have in mind for guiding Life on a green path',
+          'Carbon Footprint: Quantifying our environmental impact',
+          'Green Energy: Investing in renewable energy and reducing significantly the energy intensity of our production facilities',
+          'Zero Waste: Achieving Zero-waste-to-landfill as well as diverting piping waste from landfill',
+          'Circular Economy: Philosophy, initiatives, and Green thinking',
+          'Green Circular products and Technologies for Circularity: High quality, safe, and innovative products, particularly circular products and technologies of circularity',
+          'Green Policy: Investing in emissions offsetting projects',
+        ],
+      },
+      { kind: 'heading', level: 2, text: 'Our Long History Uncovered' },
+      {
+        kind: 'paragraph',
+        text:
+          'Elysee has been supplying irrigation systems for more than four decades and has successfully supplied the highest quality products to clients in over 65 countries. Over the years we have won many awards for our products and we hold many internationally renowned certificates of quality.',
+      },
+      {
+        kind: 'paragraph',
+        text:
+          'Being a long-established business, through our attention to detail, experience, use of state-of-the-art machinery, and diligent manufacturing of innovative and high-quality products, our long history in the irrigation industry has paved the road to targeted customer service, tailored to your specific needs.',
+      },
+      {
+        kind: 'paragraph',
+        text:
+          'We have a very large selection of eco-friendly, corrosion-free, durable, and easy-to-install innovative landscaping products and irrigation systems – smart, flexible, and perfect to cover all types of projects, from small gardens to large-scale landscapes.',
+      },
+    ],
+  },
+  {
+    slug: 'environmental-report-2020',
+    title: 'Environmental Report 2020',
+    year: '2020',
+    coverImage: '/images/insights/ebooks/environmental-report-2020.png',
+    imageAlt: 'Environmental Report 2020 cover',
+    downloadUrl: '/files/ebooks/environmental-report-2020.pdf',
+    excerpt: 'Elysée\'s Environmental Report 2020, available as a direct PDF download.',
+    blocks: [
+      {
+        kind: 'paragraph',
+        text: 'Elysée\'s Environmental Report 2020 is available as a direct PDF download.',
+      },
+    ],
   },
 ];
 
