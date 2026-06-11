@@ -14,6 +14,11 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 export default defineConfig({
   site: 'https://www.sonanbunkers.com',
 
+  // Careers moved from the Contact section to About Us; keep the old URL alive.
+  redirects: {
+    '/contact/careers/': '/about-us/careers/',
+  },
+
   vite: {
     plugins: [tailwindcss()],
     resolve: {

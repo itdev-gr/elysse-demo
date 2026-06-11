@@ -190,6 +190,7 @@ export const aboutSiblings: { label: string; href: string }[] = [
   { label: 'Company Structure', href: '/about-us/company-structure/' },
   { label: 'Vision, Mission & Values', href: '/about-us/vision-mission-values/' },
   { label: 'Quality & Certifications', href: '/about-us/quality-certifications/' },
+  { label: 'Careers', href: '/about-us/careers/' },
 ];
 
 /** Siblings used by the Contact sub-nav (mirrors aboutSiblings). */
@@ -199,7 +200,6 @@ export const contactSiblings: { label: string; href: string }[] = [
   { label: 'Elysée WISE', href: '/contact/wise/' },
   { label: 'Elysée PRIME', href: '/contact/prime/' },
   { label: 'Elysée Rohrsysteme', href: '/contact/rohrsysteme/' },
-  { label: 'Careers', href: '/contact/careers/' },
 ];
 
 /** Sibling lists for the Green Elysée sub-nav. */

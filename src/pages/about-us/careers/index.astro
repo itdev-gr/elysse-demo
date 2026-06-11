@@ -1,14 +1,14 @@
 ---
 /**
- * Contact — Careers (group-wide).
+ * About Us — Careers (group-wide).
  *
- * URL: /contact/careers/
+ * URL: /about-us/careers/ (moved from /contact/careers/ — redirect in astro.config.mjs)
  * Source: `contactCareers` from src/data/site-content.ts.
  */
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import Container from '../../../components/Container.astro';
 import Section from '../../../components/Section.astro';
-import ContactSubNav from '../../../components/contact/ContactSubNav.astro';
+import AboutSubNav from '../../../components/about/AboutSubNav.astro';
 import { contactCareers } from '../../../data/site-content';
 import JobsList from '../../../components/careers/JobsList.tsx';
 import EnquiryForm from '../../../components/contact/EnquiryForm.tsx';
@@ -23,7 +23,7 @@ const contactLines = (callout?.body ?? '').split('\n').map((l) => {
 }).filter((x): x is { label: string; value: string } => Boolean(x));
 ---
 <BaseLayout
-  title={`${contactCareers.title} — Contact — Elysée`}
+  title={`${contactCareers.title} — About Us — Elysée`}
   description={contactCareers.subtitle}
   padForHeader={false}
 >
@@ -43,7 +43,7 @@ const contactLines = (callout?.body ?? '').split('\n').map((l) => {
 
     <Container size="xl" class="relative pt-40 md:pt-48 pb-16 md:pb-24 w-full">
       <p data-reveal class="text-[11px] md:text-xs uppercase tracking-[0.4em] text-surface/85 mb-8">
-        Contact Us · Group-wide
+        About Us · Group-wide
       </p>
       <h1 data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[0.92] tracking-tight text-surface" style="font-size: clamp(3rem, 9vw, 8rem); max-width: 14ch;">
         Careers.
@@ -58,7 +58,7 @@ const contactLines = (callout?.body ?? '').split('\n').map((l) => {
     </Container>
   </section>
 
-  <ContactSubNav currentPath={Astro.url.pathname} />
+  <AboutSubNav currentPath={Astro.url.pathname} />
 
   {/* ===== STAT BAND ===== */}
   <section class="bg-surface border-b border-ink/10">

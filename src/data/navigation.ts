@@ -25,6 +25,7 @@ export const primaryNav: NavItem[] = [
       { label: 'Company Structure', href: '/about-us/company-structure/' },
       { label: 'Vision, Mission & Values', href: '/about-us/vision-mission-values/' },
       { label: 'Quality & Certifications', href: '/about-us/quality-certifications/' },
+      { label: 'Careers', href: '/about-us/careers/' },
     ],
   },
   {
@@ -78,7 +79,6 @@ export const primaryNav: NavItem[] = [
       { label: 'Elysée WISE', href: '/contact/wise/' },
       { label: 'Elysée PRIME', href: '/contact/prime/' },
       { label: 'Elysée Rohrsysteme', href: '/contact/rohrsysteme/' },
-      { label: 'Careers', href: '/contact/careers/' },
     ],
   },
 ];
@@ -108,6 +108,7 @@ export const megaNav: MegaColumns = [
         { label: 'Company Structure', href: '/about-us/company-structure/', image: '/images/about/hq-aerial.jpg', caption: 'Group, brands & facilities' },
         { label: 'Vision, Mission & Values', href: '/about-us/vision-mission-values/', image: '/images/about/engineers-meeting.jpg', caption: 'What drives us' },
         { label: 'Quality & Certifications', href: '/about-us/quality-certifications/', image: '/images/about/qa-lab.jpg', caption: 'ISO, EMAS, ISCC+ accreditations' },
+        { label: 'Careers', href: '/about-us/careers/', image: '/images/about/engineers-meeting.jpg', caption: 'Join the group' },
       ],
     },
     {
@@ -167,7 +168,6 @@ export const megaNav: MegaColumns = [
         { label: 'Elysée WISE', href: '/contact/wise/', image: '/images/about/water-flowing.jpg', caption: 'Smart-water solutions' },
         { label: 'Elysée PRIME', href: '/contact/prime/', image: '/images/about/pipes-warehouse.jpg', caption: 'Premium product line' },
         { label: 'Elysée Rohrsysteme', href: '/contact/rohrsysteme/', image: '/images/about/pipe-stack.jpg', caption: 'Austrian subsidiary' },
-        { label: 'Careers', href: '/contact/careers/', image: '/images/about/engineers-meeting.jpg', caption: 'Join the group' },
       ],
     },
   ],
@@ -189,6 +189,7 @@ export const footerNav: { title: string; items: NavItem[] }[] = [
       { label: 'Company Structure', href: '/about-us/company-structure/' },
       { label: 'Vision, Mission & Values', href: '/about-us/vision-mission-values/' },
       { label: 'Quality & Certifications', href: '/about-us/quality-certifications/' },
+      { label: 'Careers', href: '/about-us/careers/' },
     ],
   },
   {
@@ -226,7 +227,6 @@ export const footerNav: { title: string; items: NavItem[] }[] = [
       { label: 'Elysée WISE', href: '/contact/wise/' },
       { label: 'Elysée PRIME', href: '/contact/prime/' },
       { label: 'Elysée Rohrsysteme', href: '/contact/rohrsysteme/' },
-      { label: 'Careers', href: '/contact/careers/' },
     ],
   },
 ];

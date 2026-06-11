@@ -3,9 +3,9 @@ import { validateDraft, isSpam, emptyDraft } from './contact';
 
 describe('emptyDraft', () => {
   it('seeds source + page_path and blanks the rest', () => {
-    expect(emptyDraft('careers', '/contact/careers/')).toEqual({
+    expect(emptyDraft('careers', '/about-us/careers/')).toEqual({
       source: 'careers', name: '', email: '', company: '', phone: '',
-      message: '', page_path: '/contact/careers/', website: '',
+      message: '', page_path: '/about-us/careers/', website: '',
     });
   });
 });
