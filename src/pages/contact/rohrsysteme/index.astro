@@ -142,9 +142,8 @@ const contactLines = (callout?.body ?? '').split('\n').map((l) => {
     </Container>
   </section>
 
-  {/* ===== CONTACT CARD ===== */}
-  {callout && (
-    <Section bg="alt" spacing="lg">
+  {/* ===== CONTACT CARD + ENQUIRY FORM — side by side ===== */}
+  <Section bg="alt" spacing="lg">
       <Container size="xl">
         <header class="max-w-3xl mb-10 md:mb-12">
           <p data-reveal class="text-[11px] uppercase tracking-[0.4em] text-brand-500 mb-6">Get in touch</p>
@@ -152,7 +151,9 @@ const contactLines = (callout?.body ?? '').split('\n').map((l) => {
             Elysée Rohrsysteme · Austria.
           </h2>
         </header>
-        <div data-reveal data-reveal-delay="240" class="max-w-4xl bg-surface border-l-4 border-brand-500 p-8 md:p-10">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-10 items-start">
+        {callout && (
+        <div data-reveal data-reveal-delay="240" class="bg-surface border-l-4 border-brand-500 p-8 md:p-10 lg:sticky lg:top-32">
           <dl class="grid grid-cols-1 sm:grid-cols-2 gap-x-10 gap-y-6">
             {contactLines.map((line) => {
               const isFullWidth = line.label.toLowerCase() === 'address';
@@ -178,22 +179,19 @@ const contactLines = (callout?.body ?? '').split('\n').map((l) => {
             })}
           </dl>
         </div>
-      </Container>
-    </Section>
-  )}
+        )}
 
-  {/* ===== ENQUIRY FORM — submissions land in the dashboard (source: rohrsysteme) ===== */}
-  <Section bg="alt" spacing="lg">
-    <Container size="lg">
-      <div data-reveal class="mx-auto max-w-3xl bg-surface p-6 md:p-8 border border-ink/10">
-        <EnquiryForm
-          client:visible
-          source="rohrsysteme"
-          title="Contact Elysée Rohrsysteme"
-          subtitle="Send us a message and the Elysée Rohrsysteme team will get back to you."
-        />
-      </div>
-    </Container>
+        {/* Enquiry form — submissions land in the dashboard (source: rohrsysteme) */}
+        <div data-reveal data-reveal-delay="320" class="bg-surface p-6 md:p-8 border border-ink/10">
+          <EnquiryForm
+            client:visible
+            source="rohrsysteme"
+            title="Contact Elysée Rohrsysteme"
+            subtitle="Send us a message and the Elysée Rohrsysteme team will get back to you."
+          />
+        </div>
+        </div>
+      </Container>
   </Section>
 
   {/* ===== CLOSING CTA ===== */}
