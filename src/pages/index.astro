@@ -5,7 +5,7 @@ import Hero from '../components/Hero.astro';
 import SnapSection from '../components/SnapSection.astro';
 import SnapNav, { type SnapNavItem } from '../components/SnapNav.astro';
 import Container from '../components/Container.astro';
-import Card from '../components/Card.astro';
+import HomeNewsCards from '../components/news/HomeNewsCards.tsx';
 import { homePage as page, servicesCards } from '../data/content';
 
 // Split sections so text sections become full-screen image panels
@@ -167,16 +167,18 @@ const navItems: SnapNavItem[] = [
             {newsSection.heading}
           </h2>
         )}
-        <div class="mt-10 md:mt-14 grid sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-          {newsSection.articles.map((a, i) => (
-            <Card
-              title={a.title}
-              eyebrow={a.date ?? a.eyebrow}
-              image={a.image}
-              data-reveal
-              data-reveal-delay={String(160 + i * 80)}
-            />
-          ))}
+        <div class="mt-10 md:mt-14" data-reveal data-reveal-delay="160">
+          {/* Live data from the `news` table (admin News tab); the hardcoded
+               articles act as an offline fallback without their stale images. */}
+          <HomeNewsCards
+            client:visible
+            fallback={newsSection.articles.map((a) => ({
+              href: a.slug ?? null,
+              title: a.title,
+              date: a.date ?? null,
+              image: null,
+            }))}
+          />
         </div>
       </Container>
     </section>
