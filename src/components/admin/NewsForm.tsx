@@ -1,5 +1,6 @@
 import { useState, useRef } from 'react';
 import { supabase } from '../../lib/supabase';
+import MarkdownEditor from './MarkdownEditor';
 import { slugify, calcReadingMinutes, uploadNewsCover } from '../../lib/news';
 import type { NewsArticle, NewsDraft } from '../../types/news';
 
@@ -234,11 +235,11 @@ export default function NewsForm({ initial, onSaved, onCancel }: Props) {
       </Field>
 
       <Field label="Body" required hint="Markdown supported (headings ##, lists, links, **bold**).">
-        <textarea
+        <MarkdownEditor
           required
           rows={15}
           value={draft.body}
-          onChange={(e) => update('body', e.currentTarget.value)}
+          onChange={(v) => update('body', v)}
           className={`${inputClass} font-mono resize-y`}
         />
       </Field>
