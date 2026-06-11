@@ -145,15 +145,17 @@ const contactLines = (callout?.body ?? '').split('\n').map((l) => {
   {/* ===== CONTACT CARD + ENQUIRY FORM — side by side ===== */}
   <Section bg="alt" spacing="lg">
       <Container size="xl">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-10 items-start">
+        {/* Left — heading + contact card follow the scroll, clear of the sub-nav */}
+        <div class="lg:sticky lg:top-40">
         <header class="max-w-3xl mb-10 md:mb-12">
           <p data-reveal class="text-[11px] uppercase tracking-[0.4em] text-brand-500 mb-6">Get in touch</p>
           <h2 data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[1.02] tracking-tight text-ink" style="font-size: clamp(2rem, 4.5vw, 3.5rem);">
             Elysée Rohrsysteme · Austria.
           </h2>
         </header>
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-10 items-start">
         {callout && (
-        <div data-reveal data-reveal-delay="240" class="bg-surface border-l-4 border-brand-500 p-8 md:p-10 lg:sticky lg:top-32">
+        <div data-reveal data-reveal-delay="240" class="bg-surface border-l-4 border-brand-500 p-8 md:p-10">
           <dl class="grid grid-cols-1 sm:grid-cols-2 gap-x-10 gap-y-6">
             {contactLines.map((line) => {
               const isFullWidth = line.label.toLowerCase() === 'address';
@@ -180,6 +182,7 @@ const contactLines = (callout?.body ?? '').split('\n').map((l) => {
           </dl>
         </div>
         )}
+        </div>
 
         {/* Enquiry form — submissions land in the dashboard (source: rohrsysteme) */}
         <div data-reveal data-reveal-delay="320" class="bg-surface p-6 md:p-8 border border-ink/10">

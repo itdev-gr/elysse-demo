@@ -184,8 +184,10 @@ export default function ElyseeWorldMap({ markers, onCountrySelect, selectedCode 
   // even as the underlying canvas zooms.
   const inverseScale = { transform: `scale(${1 / zoom})`, transformOrigin: 'center' };
 
+  // `isolate` keeps the internal z-stack (markers, zoom controls) from
+  // painting over page chrome like the sticky section sub-nav.
   return (
-    <div className="relative w-full">
+    <div className="relative isolate z-0 w-full">
       {/* Map viewport */}
       <div
         ref={viewportRef}
