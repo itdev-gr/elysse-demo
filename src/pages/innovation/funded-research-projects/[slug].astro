@@ -1,0 +1,12 @@
+---
+import type { GetStaticPaths } from 'astro';
+import ProjectDetail from '../../../components/innovation/ProjectDetail.astro';
+import { fundedProjectDetails } from '../../../data/site-content';
+
+export const getStaticPaths = (() => {
+  return fundedProjectDetails.map((p) => ({ params: { slug: p.slug }, props: { project: p } }));
+}) satisfies GetStaticPaths;
+
+const { project } = Astro.props;
+---
+<ProjectDetail project={project} />

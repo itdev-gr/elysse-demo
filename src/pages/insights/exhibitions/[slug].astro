@@ -1,0 +1,12 @@
+---
+import type { GetStaticPaths } from 'astro';
+import ExhibitionDetail from '../../../components/insights/ExhibitionDetail.astro';
+import { exhibitionDetails } from '../../../data/site-content';
+
+export const getStaticPaths = (() => {
+  return exhibitionDetails.map((e) => ({ params: { slug: e.slug }, props: { exhibition: e } }));
+}) satisfies GetStaticPaths;
+
+const { exhibition } = Astro.props;
+---
+<ExhibitionDetail exhibition={exhibition} />

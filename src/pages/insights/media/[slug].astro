@@ -1,0 +1,12 @@
+---
+import type { GetStaticPaths } from 'astro';
+import MediaDetail from '../../../components/insights/MediaDetail.astro';
+import { mediaDetails } from '../../../data/site-content';
+
+export const getStaticPaths = (() => {
+  return mediaDetails.map((m) => ({ params: { slug: m.slug }, props: { media: m } }));
+}) satisfies GetStaticPaths;
+
+const { media } = Astro.props;
+---
+<MediaDetail media={media} />

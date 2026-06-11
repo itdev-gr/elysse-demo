@@ -1,0 +1,94 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/PageHero.astro';
+import ContentBlocks from '../../components/ContentBlocks.astro';
+import type { ArticleDetail } from '../../data/site-content';
+
+interface Props {
+  article: ArticleDetail;
+  /** Parent listing this article belongs to, e.g. { label: 'Innovation Insights', href: '/innovation/insights/' }. */
+  section: { label: string; href: string };
+}
+const { article, section } = Astro.props;
+
+const SITE = Astro.site?.toString().replace(/\/$/, '') ?? '';
+const pageUrl = `${SITE}${Astro.url.pathname}`;
+const shareTwitter = `https://twitter.com/intent/tweet?url=${encodeURIComponent(pageUrl)}&text=${encodeURIComponent(article.title)}`;
+const shareLinkedIn = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(pageUrl)}`;
+
+/** Live-site dates are 'DD-MM-YYYY'; JSON-LD wants ISO 'YYYY-MM-DD'. */
+const isoDate = article.date?.match(/^\d{2}-\d{2}-\d{4}$/)
+  ? article.date.split('-').reverse().join('-')
+  : undefined;
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: article.title,
+  description: article.excerpt,
+  image: `${SITE}${article.image}`,
+  url: pageUrl,
+  ...(isoDate && { datePublished: isoDate }),
+  ...(article.author && { author: { '@type': 'Person', name: article.author } }),
+  publisher: { '@type': 'Organization', name: 'Elysée' },
+};
+const jsonLdSafe = JSON.stringify(jsonLd).replace(/<\/script>/gi, '<\\/script>');
+---
+<BaseLayout title={article.title} description={article.excerpt} ogImage={article.image}>
+  <script type="application/ld+json" slot="head" set:html={jsonLdSafe} />
+
+  <PageHero
+    title={article.title}
+    eyebrow={article.category ?? section.label}
+    image={article.image}
+    imageAlt={article.imageAlt}
+  />
+
+  <article class="mx-auto max-w-screen-md px-4 md:px-8 py-12 md:py-16 space-y-6">
+    <nav aria-label="Breadcrumb" data-reveal class="text-xs uppercase tracking-widest text-ink/60">
+      <ol class="flex items-center gap-2 flex-wrap">
+        <li>
+          <a href={section.href} class="hover:text-brand-500 transition-colors duration-fast">{section.label}</a>
+        </li>
+        <li aria-hidden="true">›</li>
+        <li aria-current="page" class="text-ink/85">{article.title}</li>
+      </ol>
+    </nav>
+
+    {(article.date || article.author) && (
+      <p data-reveal class="flex items-center gap-3 flex-wrap text-sm text-ink/70 border-b border-ink/10 pb-6">
+        {article.date && <time datetime={isoDate ?? article.date} class="text-xs uppercase tracking-widest text-ink/60">{article.date}</time>}
+        {article.date && article.author && <span aria-hidden="true" class="h-px w-6 bg-ink/20"></span>}
+        {article.author && <span class="font-medium text-ink/80">{article.author}</span>}
+      </p>
+    )}
+
+    <ContentBlocks blocks={article.blocks} />
+
+    <footer class="pt-8 mt-8 border-t border-ink/10 flex items-center justify-between gap-4 flex-wrap">
+      <a
+        href={section.href}
+        class="inline-flex items-center gap-1 text-sm font-medium text-brand-500 hover:text-brand-accent transition-colors duration-150"
+      >
+        <span aria-hidden="true">←</span> Back to {section.label}
+      </a>
+      <div class="flex items-center gap-4 text-xs uppercase tracking-widest text-ink/60">
+        <span>Share</span>
+        <a
+          href={shareTwitter}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Share on X (opens in new tab)"
+          class="font-medium text-brand-500 hover:text-brand-accent transition-colors duration-150"
+        >X / Twitter</a>
+        <a
+          href={shareLinkedIn}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Share on LinkedIn (opens in new tab)"
+          class="font-medium text-brand-500 hover:text-brand-accent transition-colors duration-150"
+        >LinkedIn</a>
+      </div>
+    </footer>
+  </article>
+</BaseLayout>

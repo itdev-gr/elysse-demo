@@ -1,0 +1,12 @@
+---
+import type { GetStaticPaths } from 'astro';
+import EbookDetail from '../../../components/insights/EbookDetail.astro';
+import { ebookDetails } from '../../../data/site-content';
+
+export const getStaticPaths = (() => {
+  return ebookDetails.map((b) => ({ params: { slug: b.slug }, props: { ebook: b } }));
+}) satisfies GetStaticPaths;
+
+const { ebook } = Astro.props;
+---
+<EbookDetail ebook={ebook} />

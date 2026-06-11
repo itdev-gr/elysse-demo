@@ -1,0 +1,12 @@
+---
+import type { GetStaticPaths } from 'astro';
+import ArticleDetail from '../../../components/insights/ArticleDetail.astro';
+import { innovationInsightDetails } from '../../../data/site-content';
+
+export const getStaticPaths = (() => {
+  return innovationInsightDetails.map((a) => ({ params: { slug: a.slug }, props: { article: a } }));
+}) satisfies GetStaticPaths;
+
+const { article } = Astro.props;
+---
+<ArticleDetail article={article} section={{ label: 'Innovation Insights', href: '/innovation/insights/' }} />
