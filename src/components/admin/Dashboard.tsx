@@ -2,17 +2,19 @@ import { useState } from 'react';
 import { supabase } from '../../lib/supabase';
 import JobsTab from './JobsTab';
 import PostsTab from './PostsTab';
+import NewsTab from './NewsTab';
 import CountriesTab from './CountriesTab';
 import CertificationsTab from './CertificationsTab';
 import CataloguesTab from './CataloguesTab';
 import MessagesTab from './MessagesTab';
 import SettingsTab from './SettingsTab';
 
-type Tab = 'jobs' | 'posts' | 'countries' | 'certs' | 'catalogues' | 'messages' | 'settings';
+type Tab = 'jobs' | 'posts' | 'news' | 'countries' | 'certs' | 'catalogues' | 'messages' | 'settings';
 
 const HEADINGS: Record<Tab, string> = {
   jobs: 'Jobs.',
   posts: 'Posts.',
+  news: 'News.',
   countries: 'Countries.',
   certs: 'Certifications.',
   catalogues: 'Catalogues.',
@@ -60,6 +62,9 @@ export default function Dashboard() {
           <button type="button" onClick={() => setTab('posts')} className={tabClass('posts')}>
             Posts
           </button>
+          <button type="button" onClick={() => setTab('news')} className={tabClass('news')}>
+            News
+          </button>
           <button type="button" onClick={() => setTab('countries')} className={tabClass('countries')}>
             Countries
           </button>
@@ -79,6 +84,7 @@ export default function Dashboard() {
 
         {tab === 'jobs' && <JobsTab />}
         {tab === 'posts' && <PostsTab />}
+        {tab === 'news' && <NewsTab />}
         {tab === 'countries' && <CountriesTab />}
         {tab === 'certs' && <CertificationsTab />}
         {tab === 'catalogues' && <CataloguesTab />}
