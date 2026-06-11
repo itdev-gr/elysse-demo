@@ -15,7 +15,7 @@ const { items, cta } = Astro.props;
       <li
         data-reveal
         data-reveal-delay={String(i * 40)}
-        class="group flex items-center justify-center aspect-[3/2] bg-surface border border-ink/10 rounded-sm p-4 md:p-6 transition-all duration-200 ease-out hover:border-brand-500/40 hover:shadow-[0_12px_28px_-16px_rgba(0,0,0,0.18)]"
+        class="group flex items-center justify-center aspect-[3/2] bg-surface border border-ink/10 rounded-sm p-2.5 md:p-3 transition-all duration-200 ease-out hover:border-brand-500/40 hover:shadow-[0_12px_28px_-16px_rgba(0,0,0,0.18)]"
         title={p.name}
       >
         <img
@@ -24,7 +24,7 @@ const { items, cta } = Astro.props;
           loading="lazy"
           width="160"
           height="80"
-          class="max-h-12 md:max-h-14 w-auto object-contain grayscale opacity-70 transition-all duration-300 ease-out group-hover:grayscale-0 group-hover:opacity-100"
+          class="max-h-16 md:max-h-20 max-w-full w-auto object-contain grayscale opacity-70 transition-all duration-300 ease-out group-hover:grayscale-0 group-hover:opacity-100"
         />
       </li>
     ))}
