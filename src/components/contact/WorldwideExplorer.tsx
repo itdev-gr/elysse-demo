@@ -68,6 +68,10 @@ export default function WorldwideExplorer() {
   }, [state, code]);
 
   const handleSelect = (next: string) => {
+    if (!next) {
+      setCode(null);
+      return;
+    }
     setCode(next);
     if (state.kind === 'ready') {
       const c = state.countries.find((row) => row.code === next);
@@ -76,7 +80,13 @@ export default function WorldwideExplorer() {
   };
 
   const formTarget = contact?.email ?? FALLBACK_EMAIL;
-  const countryFieldValue = contact?.country ?? '';
+
+  // Alphabetical list for the country dropdown — same selection pipeline as
+  // the map markers, so picking here highlights the map and fills the card.
+  const sortedCountries = useMemo(() => {
+    if (state.kind !== 'ready') return [];
+    return [...state.countries].sort((a, b) => a.country.localeCompare(b.country));
+  }, [state]);
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-start">
@@ -161,14 +171,22 @@ export default function WorldwideExplorer() {
 
           <label className="block mb-4">
             <span className="text-[10px] uppercase tracking-[0.25em] text-ink/55">Country</span>
-            <input
-              type="text"
+            <select
               name="country"
-              value={countryFieldValue}
-              readOnly
-              placeholder="Select a country on the map"
-              className="mt-1 w-full bg-transparent border-b border-ink/25 px-1 py-2 text-sm text-ink placeholder:text-ink/40"
-            />
+              value={code ?? ''}
+              onChange={(e) => handleSelect(e.currentTarget.value)}
+              disabled={state.kind !== 'ready'}
+              className={`mt-1 w-full bg-transparent border-b border-ink/25 px-1 py-2 text-sm focus:outline-none focus:border-brand-500 cursor-pointer ${code ? 'text-ink' : 'text-ink/40'}`}
+            >
+              <option value="">
+                {state.kind === 'ready' ? 'Select a country…' : 'Loading countries…'}
+              </option>
+              {sortedCountries.map((c) => (
+                <option key={c.code} value={c.code}>
+                  {c.country}
+                </option>
+              ))}
+            </select>
           </label>
 
           <label className="block mb-4">
