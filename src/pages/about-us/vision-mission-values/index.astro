@@ -21,6 +21,7 @@ import BaseLayout from '../../../layouts/BaseLayout.astro';
 import Container from '../../../components/Container.astro';
 import Section from '../../../components/Section.astro';
 import AboutSubNav from '../../../components/about/AboutSubNav.astro';
+import EnquiryForm from '../../../components/contact/EnquiryForm.tsx';
 import { aboutUsVisionMissionValues } from '../../../data/site-content';
 
 const blocks = aboutUsVisionMissionValues.blocks;
@@ -421,25 +422,38 @@ const desc =
     </section>
   )}
 
-  {/* ===== CLOSING CTA — light green band ===== */}
+  {/* ===== CLOSING CTA — light green band, text beside the enquiry form ===== */}
   <section class="bg-brand-500/10">
-    <Container size="lg" class="py-16 md:py-20">
-      <div class="mx-auto max-w-2xl text-center">
-        <p data-reveal class="text-base md:text-lg text-ink/80 leading-relaxed">
-          Our Vision, Mission and Values are not posters on a wall — they shape every decision we make, from product design to customer service. Talk to us about how we put them into practice.
-        </p>
-        <a
-          data-reveal
-          data-reveal-delay="160"
-          href="/contact/local/"
-          class="group cursor-pointer mt-8 md:mt-10 inline-flex items-center gap-3 px-6 py-3 border border-ink/40 hover:bg-ink hover:border-ink hover:text-surface text-ink text-[11px] md:text-xs uppercase tracking-[0.25em] transition-colors duration-200"
-        >
-          <span>Contact our network</span>
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M5 12h14" />
-            <path d="m12 5 7 7-7 7" />
-          </svg>
-        </a>
+    <Container size="xl" class="py-16 md:py-20">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-12 items-center">
+        {/* Left — message + link to the contact network */}
+        <div class="max-w-xl lg:sticky lg:top-32">
+          <p data-reveal class="text-base md:text-lg text-ink/80 leading-relaxed">
+            Our Vision, Mission and Values are not posters on a wall — they shape every decision we make, from product design to customer service. Talk to us about how we put them into practice.
+          </p>
+          <a
+            data-reveal
+            data-reveal-delay="160"
+            href="/contact/local/"
+            class="group cursor-pointer mt-8 md:mt-10 inline-flex items-center gap-3 px-6 py-3 border border-ink/40 hover:bg-ink hover:border-ink hover:text-surface text-ink text-[11px] md:text-xs uppercase tracking-[0.25em] transition-colors duration-200"
+          >
+            <span>Contact our network</span>
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M5 12h14" />
+              <path d="m12 5 7 7-7 7" />
+            </svg>
+          </a>
+        </div>
+
+        {/* Right — enquiry form; submissions land in the dashboard (source: vision-mission-values) */}
+        <div data-reveal data-reveal-delay="240" class="bg-surface p-6 md:p-8 border border-ink/10">
+          <EnquiryForm
+            client:visible
+            source="vision-mission-values"
+            title="Talk to us"
+            subtitle="Send us a message and the Elysée team will get back to you."
+          />
+        </div>
       </div>
     </Container>
   </section>
