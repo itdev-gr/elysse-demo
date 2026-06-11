@@ -7,10 +7,15 @@ type Props = {
   groups: MegaGroup[];
 };
 
+// Hover-intent delay before a submenu opens. Switching between groups while
+// one is already open stays instant — this only gates the first open.
+const OPEN_DELAY = 1000;
+
 export default function MegaNav({ groups }: Props) {
   const [active, setActive] = useState<number | null>(null);
   const [headerH, setHeaderH] = useState<number>(80);
   const closeTimer = useRef<number | null>(null);
+  const openTimer = useRef<number | null>(null);
   const triggerRefs = useRef<Array<HTMLButtonElement | null>>([]);
   const reduce = useReducedMotion();
 
@@ -25,6 +30,30 @@ export default function MegaNav({ groups }: Props) {
     cancelClose();
     closeTimer.current = window.setTimeout(() => setActive(null), 120);
   };
+
+  const cancelOpen = () => {
+    if (openTimer.current !== null) {
+      window.clearTimeout(openTimer.current);
+      openTimer.current = null;
+    }
+  };
+
+  // Open `idx` after the hover-intent delay. If a panel is already open we
+  // switch immediately so the menu stays responsive once engaged.
+  const scheduleOpen = (idx: number) => {
+    cancelOpen();
+    setActive((current) => {
+      if (current !== null) return idx;
+      openTimer.current = window.setTimeout(() => setActive(idx), OPEN_DELAY);
+      return current;
+    });
+  };
+
+  // Clear any pending timers on unmount.
+  useEffect(() => () => {
+    cancelClose();
+    cancelOpen();
+  }, []);
 
   useEffect(() => {
     const update = () => {
@@ -62,13 +91,19 @@ export default function MegaNav({ groups }: Props) {
   return (
     <div
       className="ml-auto hidden lg:flex items-stretch"
-      onMouseLeave={scheduleClose}
+      onMouseLeave={() => {
+        cancelOpen();
+        scheduleClose();
+      }}
       onMouseEnter={cancelClose}
     >
       <nav aria-label="Primary" className="flex items-stretch gap-1">
         <a
           href="/"
-          onMouseEnter={() => setActive(null)}
+          onMouseEnter={() => {
+            cancelOpen();
+            setActive(null);
+          }}
           className="inline-flex items-center px-3 py-2 text-xs uppercase tracking-widest font-medium hover:text-brand-accent transition-colors duration-fast"
         >
           Home
@@ -82,8 +117,11 @@ export default function MegaNav({ groups }: Props) {
               className="relative flex items-stretch"
               onMouseEnter={() => {
                 cancelClose();
-                if (hasItems) setActive(idx);
-                else setActive(null);
+                if (hasItems) scheduleOpen(idx);
+                else {
+                  cancelOpen();
+                  setActive(null);
+                }
               }}
             >
               <button
@@ -93,8 +131,14 @@ export default function MegaNav({ groups }: Props) {
                 type="button"
                 aria-expanded={isOpen}
                 aria-haspopup={hasItems ? 'menu' : undefined}
-                onFocus={() => hasItems && setActive(idx)}
+                onFocus={() => {
+                  if (hasItems) {
+                    cancelOpen();
+                    setActive(idx);
+                  }
+                }}
                 onClick={() => {
+                  cancelOpen();
                   if (!hasItems) {
                     window.location.href = group.href || '/';
                   } else {
