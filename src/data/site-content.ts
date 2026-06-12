@@ -146,10 +146,15 @@ export interface Office {
   region?: string;
   address?: string;
   phone?: string;
+  /** Secondary / direct line shown beneath the main phone. */
+  phone2?: string;
   fax?: string;
   email?: string;
   hours?: string;
   notes?: string;
+  /** Geographic position — drives the pin on the Cyprus shop map. */
+  lat?: number;
+  lng?: number;
 }
 
 /** Funded research project detail page (/innovation/funded-research-projects/<slug>/). */
@@ -2001,24 +2006,71 @@ export const localOffices: Office[] = [
   {
     name: 'Ergates Head Office',
     region: 'Nicosia',
-    address: '5 Pentadaktylou Street\n2643 Ergates Industrial Zone\nNicosia, Cyprus',
-    phone: '+357-22-455000',
-    fax: '+357-22-455055',
+    address: '5 Pentadaktylou Street\n2643 Ergates Industrial Area\nNicosia, Cyprus',
+    phone: '+357 22 455 000',
+    fax: '+357 22 455 055',
     email: 'info@elysee.com.cy',
   },
   {
-    name: 'Strovolos Shop',
+    name: 'Strovolos',
     region: 'Nicosia',
-    address: '32 Solomou Solomou Street, 2032',
+    address: '32 Solomou Solomou Street\n2032 Strovolos, Nicosia',
     phone: '+357 22 455 100',
+    phone2: '+357 22 317 913',
     hours: 'Monday–Friday 07:00–13:00 & 13:30–16:30\nSaturday 07:30–13:00',
-    notes: 'Alt phone: +357 22 317 913',
+    lat: 35.138,
+    lng: 33.337,
   },
-  { name: 'Ergates Shop', region: 'Nicosia', notes: 'Contact head office for details.' },
-  { name: 'Larnaca Shop', region: 'Larnaca', notes: 'Contact head office for details.' },
-  { name: 'Frenaros Shop', region: 'Famagusta district', notes: 'Contact head office for details.' },
-  { name: 'Limassol Shop', region: 'Limassol', notes: 'Contact head office for details.' },
-  { name: 'Paphos Shop', region: 'Paphos', notes: 'Contact head office for details.' },
+  {
+    name: 'Ergates',
+    region: 'Nicosia',
+    address: '5 Pentadaktylou Street\n2643 Ergates Industrial Area',
+    phone: '+357 22 455 006',
+    phone2: '+357 22 455 055',
+    hours: 'Monday–Friday 07:30–16:00\nSaturday 07:30–12:30',
+    lat: 35.045,
+    lng: 33.248,
+  },
+  {
+    name: 'Larnaca',
+    region: 'Larnaca',
+    address: '9 Acropoleos Street\n7101 Aradippou Industrial Area',
+    phone: '+357 24 847 999',
+    phone2: '+357 24 641 089',
+    hours: 'Monday–Friday 07:30–16:00',
+    lat: 34.952,
+    lng: 33.588,
+  },
+  {
+    name: 'Frenaros',
+    region: 'Famagusta district',
+    address: '9 Kavalou Street\n5350 Frenaros Industrial Area',
+    phone: '+357 23 847 999',
+    phone2: '+357 23 743 773',
+    hours: 'Monday–Friday 07:30–16:00\nSaturday 07:30–12:30',
+    lat: 35.043,
+    lng: 33.913,
+  },
+  {
+    name: 'Limassol',
+    region: 'Limassol',
+    address: '3 Iapetou Street\n4101 Agios Athanasios Industrial Area',
+    phone: '+357 25 847 999',
+    phone2: '+357 25 722 033',
+    hours: 'Monday–Friday 07:30–16:00\nSaturday 07:30–12:30',
+    lat: 34.706,
+    lng: 32.997,
+  },
+  {
+    name: 'Paphos',
+    region: 'Paphos',
+    address: 'Dimokratias Avenue\n8300 Konia, Paphos',
+    phone: '+357 26 847 999',
+    phone2: '+357 26 962 122',
+    hours: 'Monday–Friday 07:30–16:00',
+    lat: 34.790,
+    lng: 32.452,
+  },
 ];
 
 export const worldwideOffices: Office[] = [
