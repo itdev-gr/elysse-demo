@@ -3,10 +3,10 @@
  * Quality & Certifications — per-category certificate listing.
  *
  * URL: /about-us/quality-certifications/<category>/
- * One page per fixed category (general, compression-fittings, pe-pipes,
- * pvc-pipes). Management System has its own cinematic page
- * (management-system.astro); the Green Elysée category links to
- * /green-elysee/certifications/ instead.
+ * One page per fixed category (general, pe-pipes, pvc-pipes).
+ * Management System and Compression Fittings have their own cinematic
+ * pages (management-system.astro, compression-fittings.astro); the
+ * Green Elysée category links to /green-elysee/certifications/ instead.
  *
  * Certificates come from the `certifications` table (cert_group='quality',
  * category=<slug>) via the QualityCertificatesList island — managed in the
@@ -23,8 +23,10 @@ import {
 } from '../../../data/quality-certificates';
 
 export function getStaticPaths() {
-  // management-system is served by its own dedicated page.
-  return QUALITY_CATEGORIES.filter((c) => c.slug !== 'management-system').map((c) => ({
+  // Categories with their own cinematic page are excluded here.
+  return QUALITY_CATEGORIES.filter(
+    (c) => !['management-system', 'compression-fittings'].includes(c.slug),
+  ).map((c) => ({
     params: { category: c.slug },
   }));
 }

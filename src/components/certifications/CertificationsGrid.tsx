@@ -57,15 +57,20 @@ export default function CertificationsGrid({ group, category, fallback }: Props)
         setState({ kind: 'ready', certs: fallback });
         return;
       }
-      // Dashboard rows may lack a badge image; borrow the seed badge by name
-      // so the grid never renders a logo-less tile for a known certificate.
-      const seedLogos = new Map(
-        fallback.filter((f) => f.logo).map((f) => [f.name.trim().toLowerCase(), f.logo]),
-      );
-      const certs = sortCertifications(data as Certification[]).map((c) => ({
-        ...c,
-        logo: c.logo ?? seedLogos.get(c.name.trim().toLowerCase()) ?? null,
-      }));
+      // Dashboard rows may lack badge art or copy; borrow the seed values by
+      // name so the grid never renders a bare tile for a known certificate.
+      const seed = new Map(fallback.map((f) => [f.name.trim().toLowerCase(), f]));
+      const val = (x: string | null) => (x && x.trim() ? x : null);
+      const certs = sortCertifications(data as Certification[]).map((c) => {
+        const s = seed.get(c.name.trim().toLowerCase());
+        return {
+          ...c,
+          logo: val(c.logo) ?? s?.logo ?? null,
+          description: val(c.description) ?? s?.description ?? null,
+          scope: val(c.scope) ?? s?.scope ?? null,
+          tag: val(c.tag) ?? s?.tag ?? null,
+        };
+      });
       setState({ kind: 'ready', certs });
     })();
     return () => {
@@ -137,6 +142,20 @@ export default function CertificationsGrid({ group, category, fallback }: Props)
 
   const prefix = 'Cert.';
 
+  // Trailing empty cells per breakpoint: the 2-col (sm) and 3-col (lg)
+  // layouts leave different gaps, so the filler shows/spans per breakpoint.
+  const empty2 = (2 - (state.certs.length % 2)) % 2;
+  const empty3 = (3 - (state.certs.length % 3)) % 3;
+  const fillerClass = [
+    'hidden',
+    empty2 ? 'sm:flex' : '',
+    empty3 ? (empty2 ? '' : 'lg:flex') : 'lg:hidden',
+    empty3 === 2 ? 'lg:col-span-2' : '',
+    'bg-surface-alt',
+  ]
+    .filter(Boolean)
+    .join(' ');
+
   return (
     <ol ref={gridRef} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px bg-ink/10 border border-ink/10">
       {state.certs.map((c, i) => {
@@ -190,10 +209,10 @@ export default function CertificationsGrid({ group, category, fallback }: Props)
           </li>
         );
       })}
-      {/* A count like 7 leaves bare grid background in the last row on both
-          the 2-col and 3-col layouts — fill it with a quiet request CTA. */}
-      {state.certs.length % 6 === 1 && (
-        <li data-cert-card className="hidden sm:flex bg-surface-alt lg:col-span-2">
+      {/* Counts like 7 or 20 leave bare grid background in the last row —
+          fill it with a quiet request CTA on the breakpoints that need it. */}
+      {(empty2 > 0 || empty3 > 0) && (
+        <li data-cert-card className={fillerClass}>
           <a
             href="/contact/local/"
             className="group/cta cursor-pointer flex flex-1 flex-col items-start justify-center p-7 md:p-10"
