@@ -145,6 +145,10 @@ export interface Office {
   name: string;
   region?: string;
   address?: string;
+  /** Postal code + district line, shown as the heading of the contact panel. */
+  area?: string;
+  /** Street line, shown with a location-pin icon in the contact panel. */
+  street?: string;
   phone?: string;
   /** Secondary / direct line shown beneath the main phone. */
   phone2?: string;
@@ -152,7 +156,7 @@ export interface Office {
   email?: string;
   hours?: string;
   notes?: string;
-  /** Geographic position — drives the pin on the Cyprus shop map. */
+  /** Geographic position — centres the shop's Google map + marker. */
   lat?: number;
   lng?: number;
 }
@@ -2012,9 +2016,10 @@ export const localOffices: Office[] = [
     email: 'info@elysee.com.cy',
   },
   {
-    name: 'Strovolos',
+    name: 'Strovolos Nicosia',
     region: 'Nicosia',
-    address: '32 Solomou Solomou Street\n2032 Strovolos, Nicosia',
+    area: '2032, Strovolos Nicosia',
+    street: '32 Solomou Solomou Street',
     phone: '+357 22 455 100',
     phone2: '+357 22 317 913',
     hours: 'Monday–Friday 07:00–13:00 & 13:30–16:30\nSaturday 07:30–13:00',
@@ -2022,9 +2027,10 @@ export const localOffices: Office[] = [
     lng: 33.337,
   },
   {
-    name: 'Ergates',
+    name: 'Ergates Nicosia',
     region: 'Nicosia',
-    address: '5 Pentadaktylou Street\n2643 Ergates Industrial Area',
+    area: '2643, Ergates Industrial Area',
+    street: '5 Pentadaktylou Street',
     phone: '+357 22 455 006',
     phone2: '+357 22 455 055',
     hours: 'Monday–Friday 07:30–16:00\nSaturday 07:30–12:30',
@@ -2034,7 +2040,8 @@ export const localOffices: Office[] = [
   {
     name: 'Larnaca',
     region: 'Larnaca',
-    address: '9 Acropoleos Street\n7101 Aradippou Industrial Area',
+    area: '7101, Aradippou Industrial Area',
+    street: '9 Acropoleos Street',
     phone: '+357 24 847 999',
     phone2: '+357 24 641 089',
     hours: 'Monday–Friday 07:30–16:00',
@@ -2044,7 +2051,8 @@ export const localOffices: Office[] = [
   {
     name: 'Frenaros',
     region: 'Famagusta district',
-    address: '9 Kavalou Street\n5350 Frenaros Industrial Area',
+    area: '5350, Frenaros Industrial Area',
+    street: '9 Kavalou Street',
     phone: '+357 23 847 999',
     phone2: '+357 23 743 773',
     hours: 'Monday–Friday 07:30–16:00\nSaturday 07:30–12:30',
@@ -2054,7 +2062,8 @@ export const localOffices: Office[] = [
   {
     name: 'Limassol',
     region: 'Limassol',
-    address: '3 Iapetou Street\n4101 Agios Athanasios Industrial Area',
+    area: '4101, Agios Athanasios Industrial Area',
+    street: '3 Iapetou Street',
     phone: '+357 25 847 999',
     phone2: '+357 25 722 033',
     hours: 'Monday–Friday 07:30–16:00\nSaturday 07:30–12:30',
@@ -2064,7 +2073,8 @@ export const localOffices: Office[] = [
   {
     name: 'Paphos',
     region: 'Paphos',
-    address: 'Dimokratias Avenue\n8300 Konia, Paphos',
+    area: '8300, Konia Paphos',
+    street: 'Dimokratias Avenue',
     phone: '+357 26 847 999',
     phone2: '+357 26 962 122',
     hours: 'Monday–Friday 07:30–16:00',

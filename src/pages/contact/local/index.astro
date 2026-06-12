@@ -20,7 +20,7 @@ import Container from '../../../components/Container.astro';
 import Section from '../../../components/Section.astro';
 import ContactSubNav from '../../../components/contact/ContactSubNav.astro';
 import ContactForm from '../../../components/ContactForm.astro';
-import CyprusShopMap from '../../../components/contact/CyprusShopMap.tsx';
+import ShopLocator from '../../../components/contact/ShopLocator.tsx';
 import { localOffices } from '../../../data/site-content';
 
 // The first office is the Strovolos head office (full contact + hours);
@@ -175,7 +175,7 @@ const [headOffice, ...satelliteShops] = localOffices;
         </header>
 
         <div data-reveal data-reveal-delay="320">
-          <CyprusShopMap client:visible shops={satelliteShops} />
+          <ShopLocator client:visible shops={satelliteShops} />
         </div>
       </Container>
     </section>
