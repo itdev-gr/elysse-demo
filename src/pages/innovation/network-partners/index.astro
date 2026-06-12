@@ -1,5 +1,8 @@
 ---
 import ContentPageLayout from '../../../layouts/ContentPageLayout.astro';
+import InnovationSubNav from '../../../components/innovation/InnovationSubNav.astro';
 import { innovationNetworkPartners } from '../../../data/site-content';
 ---
-<ContentPageLayout content={innovationNetworkPartners} />
+<ContentPageLayout content={innovationNetworkPartners}>
+  <InnovationSubNav slot="subnav" currentPath={Astro.url.pathname} />
+</ContentPageLayout>

@@ -21,6 +21,8 @@ const wide = content.blocks.some((b) => (wideKinds as readonly string[]).include
     image={content.heroImage}
     imageAlt={content.heroImageAlt}
   />
+  {/* Optional section sub-nav — renders only when a page provides it. */}
+  <slot name="subnav" />
   <article class={`mx-auto px-4 md:px-8 py-12 md:py-16 space-y-6 ${wide ? 'max-w-screen-xl' : 'max-w-screen-md'}`}>
     <ContentBlocks blocks={content.blocks} />
   </article>

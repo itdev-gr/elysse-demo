@@ -15,6 +15,8 @@ export interface CertCard {
 
 interface Props {
   group: CertGroup;
+  /** Optional quality-category filter, e.g. 'management-system'. */
+  category?: string;
   /** Server-rendered fallback used when Supabase is unreachable or empty. */
   fallback: CertCard[];
 }
@@ -23,7 +25,7 @@ type State =
   | { kind: 'loading' }
   | { kind: 'ready'; certs: CertCard[] };
 
-export default function CertificationsGrid({ group, fallback }: Props) {
+export default function CertificationsGrid({ group, category, fallback }: Props) {
   const [state, setState] = useState<State>({ kind: 'loading' });
   const gridRef = useRef<HTMLOListElement | null>(null);
 
@@ -34,12 +36,20 @@ export default function CertificationsGrid({ group, fallback }: Props) {
         setState({ kind: 'ready', certs: fallback });
         return;
       }
-      const { data, error } = await supabase
+      let query = supabase
         .from('certifications')
         .select('*')
         .eq('cert_group', group)
-        .eq('is_active', true)
-        .order('sort_order', { ascending: true });
+        .eq('is_active', true);
+      if (category) query = query.eq('category', category);
+      // A network-level failure rejects rather than returning { error } —
+      // treat it the same way so the grid never sticks on the skeleton.
+      const { data, error } = await query
+        .order('sort_order', { ascending: true })
+        .then(
+          (res) => res,
+          () => ({ data: null, error: new Error('network') }),
+        );
       if (cancelled) return;
       // On any failure (or an empty/pre-migration table) keep the page whole
       // with the server-provided fallback rather than rendering a hole.
@@ -47,12 +57,21 @@ export default function CertificationsGrid({ group, fallback }: Props) {
         setState({ kind: 'ready', certs: fallback });
         return;
       }
-      setState({ kind: 'ready', certs: sortCertifications(data as Certification[]) });
+      // Dashboard rows may lack a badge image; borrow the seed badge by name
+      // so the grid never renders a logo-less tile for a known certificate.
+      const seedLogos = new Map(
+        fallback.filter((f) => f.logo).map((f) => [f.name.trim().toLowerCase(), f.logo]),
+      );
+      const certs = sortCertifications(data as Certification[]).map((c) => ({
+        ...c,
+        logo: c.logo ?? seedLogos.get(c.name.trim().toLowerCase()) ?? null,
+      }));
+      setState({ kind: 'ready', certs });
     })();
     return () => {
       cancelled = true;
     };
-  }, [group]);
+  }, [group, category]);
 
   // Keep "N standards / N certifications" copy elsewhere on the page truthful.
   useEffect(() => {
@@ -116,7 +135,7 @@ export default function CertificationsGrid({ group, fallback }: Props) {
     );
   }
 
-  const prefix = group === 'green' ? 'Cert.' : 'Cat.';
+  const prefix = 'Cert.';
 
   return (
     <ol ref={gridRef} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px bg-ink/10 border border-ink/10">

@@ -210,6 +210,16 @@ export const greenElyseeSiblings: { label: string; href: string }[] = [
   { label: 'Insights', href: '/green-elysee/insights/' },
 ];
 
+/** Sibling lists for the Innovation sub-nav (mirrors the Innovation mega-menu). */
+export const innovationSiblings: { label: string; href: string }[] = [
+  { label: 'Why Innovation', href: '/innovation/why-innovation/' },
+  { label: 'Research & Development', href: '/innovation/research-development/' },
+  { label: 'Funded Research Projects', href: '/innovation/funded-research-projects/' },
+  { label: 'Innovation Insights', href: '/innovation/insights/' },
+  { label: 'Network Partners', href: '/innovation/network-partners/' },
+  { label: 'Innovate with Us', href: '/innovation/innovate-with-us/' },
+];
+
 // ---------- per-page content ----------
 
 export const homePage: PageContent = {

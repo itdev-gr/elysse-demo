@@ -1,0 +1,272 @@
+---
+/**
+ * Quality & Certifications — Management System.
+ *
+ * URL: /about-us/quality-certifications/management-system/
+ * Source of truth: the `certifications` table (cert_group='quality',
+ * category='management-system'), managed in the admin dashboard.
+ * QUALITY_CERTIFICATE_SEED['management-system'] (decorated with local badge
+ * art + scope copy below) remains the island's offline fallback.
+ *
+ * Mirrors the cinematic template established by
+ * `/green-elysee/certifications/`: scroll-progress, parallax hero, sticky
+ * sub-nav, stat band, editorial intro with sticky aside + drop-cap,
+ * full-bleed cinematic moment, certification badge grid with stamp-in
+ * effect, closing CTA. Motion + GSAP layered, reduced-motion safe.
+ */
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Container from '../../../components/Container.astro';
+import Section from '../../../components/Section.astro';
+import AboutSubNav from '../../../components/about/AboutSubNav.astro';
+import CertificationsGrid from '../../../components/certifications/CertificationsGrid.tsx';
+import EnquiryForm from '../../../components/contact/EnquiryForm.tsx';
+import {
+  QUALITY_CATEGORIES,
+  QUALITY_CERTIFICATE_SEED,
+} from '../../../data/quality-certificates';
+
+const meta = QUALITY_CATEGORIES.find((c) => c.slug === 'management-system')!;
+const seed = QUALITY_CERTIFICATE_SEED['management-system'] ?? [];
+
+// Badge art + scope copy for the seed certificates, keyed by name. Dashboard
+// rows that lack a badge image borrow these inside the grid island.
+const decor: Record<string, { logo: string; tag: string; scope: string }> = {
+  'CYS EN ISO 9001:2015': {
+    logo: '/images/certifications/iso-9001.svg',
+    tag: 'QMS',
+    scope: 'Quality management across design, production and delivery — certified since 1998.',
+  },
+  'CYS EN ISO 14001': {
+    logo: '/images/certifications/iso-14001.svg',
+    tag: 'EMS',
+    scope: 'Systematic management of environmental responsibilities across all operations.',
+  },
+  'ISO 45001': {
+    logo: '/images/certifications/iso-45001.svg',
+    tag: 'OH&S',
+    scope: 'Occupational health & safety management across every site and shift.',
+  },
+  'Integrated Management System Policy': {
+    logo: '/images/certifications/ims-policy.svg',
+    tag: 'IMS',
+    scope: 'The single company policy binding quality, environmental and safety management together.',
+  },
+  'EMAS 2024': {
+    logo: '/images/certifications/emas.svg',
+    tag: 'EMAS',
+    scope: 'Public environmental statement audited under EU EMAS Regulation 1221/2009.',
+  },
+  'Environmental Declaration 2024': {
+    logo: '/images/certifications/environmental-declaration.svg',
+    tag: 'EMAS',
+    scope: 'Annual disclosure of environmental performance, audited and published.',
+  },
+  'CYS EN ISO 50001:2018': {
+    logo: '/images/certifications/iso-50001.svg',
+    tag: 'EnMS',
+    scope: 'Continual improvement of energy performance across production sites.',
+  },
+};
+
+// Server-rendered fallback for the island when Supabase is unreachable.
+const certFallback = seed.map((c) => ({
+  name: c.name,
+  description: c.description,
+  scope: decor[c.name]?.scope ?? null,
+  tag: decor[c.name]?.tag ?? null,
+  logo: decor[c.name]?.logo ?? null,
+  pdf_url: c.pdf_url,
+}));
+
+const certCount = certFallback.length;
+const desc = `${meta.blurb} ${certCount} independently audited standards — every certificate is downloadable as a PDF.`;
+---
+<BaseLayout title={`${meta.title} — Quality & Certifications — Elysée`} description={desc} padForHeader={false}>
+
+  <div aria-hidden="true" data-scroll-progress class="fixed top-0 left-0 right-0 h-[2px] bg-brand-500 z-50 origin-left pointer-events-none" style="transform: scaleX(0);"></div>
+
+  {/* ===== COVER HERO ===== */}
+  <section class="relative min-h-[88vh] flex items-end text-surface overflow-hidden">
+    <img
+      data-hero-parallax
+      src="/images/about/qa-lab.jpg"
+      alt="Quality Assurance laboratory at the Elysée Ergates facility — where the management system meets the bench"
+      class="absolute inset-0 w-full h-full object-cover will-change-transform"
+    />
+    <div aria-hidden="true" class="absolute inset-0 bg-gradient-to-b from-ink/45 via-ink/20 to-ink/80"></div>
+    <div aria-hidden="true" class="absolute inset-0 bg-brand-500/30"></div>
+
+    <Container size="xl" class="relative pt-40 md:pt-48 pb-16 md:pb-24 w-full">
+      <p data-reveal class="text-[11px] md:text-xs uppercase tracking-[0.4em] text-surface/85 mb-8">
+        Quality &amp; Certifications · {meta.title} · Independently audited
+      </p>
+      <h1 data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[0.92] tracking-tight text-surface" style="font-size: clamp(3rem, 9vw, 8rem); max-width: 14ch;">
+        Managed, by certificate.
+      </h1>
+      <p data-reveal data-reveal-delay="240" class="mt-8 max-w-2xl text-base md:text-lg text-surface/85 leading-relaxed">
+        {meta.blurb}
+      </p>
+      <div data-reveal data-reveal-delay="360" class="mt-14 md:mt-20 flex items-center gap-4 text-[11px] uppercase tracking-[0.3em] text-surface/70">
+        <span aria-hidden="true" class="h-px w-12 bg-surface/50"></span>
+        <span><span data-cert-count>{certCount}</span> certified standards</span>
+      </div>
+    </Container>
+  </section>
+
+  <AboutSubNav currentPath={Astro.url.pathname} />
+
+  {/* ===== STAT BAND ===== */}
+  <section class="bg-surface border-b border-ink/10">
+    <Container size="xl" class="py-16 md:py-24">
+      <p data-reveal class="text-[11px] md:text-xs uppercase tracking-[0.3em] text-brand-500 mb-10 md:mb-14">The management system</p>
+      <dl class="grid grid-cols-2 md:grid-cols-4 gap-px bg-ink/10 border border-ink/10">
+        <div class="bg-surface p-8 md:p-10">
+          <dd data-counter={String(certCount)} data-cert-count class="font-display font-heavy leading-none tracking-tight text-brand-500" style="font-size: clamp(2.5rem, 6vw, 5rem);">{certCount}</dd>
+          <dt class="mt-4 md:mt-5 text-[10px] md:text-xs uppercase tracking-[0.25em] text-ink/60">System certificates</dt>
+        </div>
+        <div class="bg-surface p-8 md:p-10">
+          <dd data-counter="1998" class="font-display font-heavy leading-none tracking-tight text-brand-500" style="font-size: clamp(2.5rem, 6vw, 5rem);">1998</dd>
+          <dt class="mt-4 md:mt-5 text-[10px] md:text-xs uppercase tracking-[0.25em] text-ink/60">ISO 9001 since</dt>
+        </div>
+        <div class="bg-surface p-8 md:p-10">
+          <dd class="font-display font-heavy leading-none tracking-tight text-brand-500" style="font-size: clamp(2rem, 5vw, 4rem);">ISO + EU</dd>
+          <dt class="mt-4 md:mt-5 text-[10px] md:text-xs uppercase tracking-[0.25em] text-ink/60">Standard families</dt>
+        </div>
+        <div class="bg-surface p-8 md:p-10">
+          <dd class="font-display font-heavy leading-none tracking-tight text-brand-500" style="font-size: clamp(2rem, 5vw, 4rem);">Annual</dd>
+          <dt class="mt-4 md:mt-5 text-[10px] md:text-xs uppercase tracking-[0.25em] text-ink/60">Audit cadence</dt>
+        </div>
+      </dl>
+    </Container>
+  </section>
+
+  {/* ===== EDITORIAL INTRO ===== */}
+  <Section bg="alt" spacing="lg">
+    <Container size="xl">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16">
+        <aside class="lg:col-span-4">
+          <div class="lg:sticky lg:top-32">
+            <p data-reveal class="text-[11px] uppercase tracking-[0.4em] text-brand-500 mb-6 md:mb-8">Why a system, not a checklist</p>
+            <h2 data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[1.02] tracking-tight text-ink" style="font-size: clamp(2rem, 4.5vw, 3.5rem);">
+              One system. Four disciplines.
+            </h2>
+            <div aria-hidden="true" class="mt-8 h-px w-12 bg-brand-500"></div>
+            <p data-reveal data-reveal-delay="240" class="mt-6 max-w-xs text-sm text-ink/60 leading-relaxed">
+              Quality, environment, energy, and health &amp; safety — each independently certified, all bound by one integrated policy.
+            </p>
+          </div>
+        </aside>
+        <div class="lg:col-span-8 lg:pt-2 space-y-7 md:space-y-8">
+          <p
+            data-reveal
+            data-reveal-delay="160"
+            class="text-lg md:text-xl text-ink leading-[1.65]
+                   first-letter:font-display first-letter:font-heavy
+                   first-letter:text-7xl md:first-letter:text-8xl
+                   first-letter:float-left first-letter:mr-3 first-letter:mt-1
+                   first-letter:leading-[0.85] first-letter:text-brand-500"
+          >
+            Elysée has run a certified quality management system since 1998. Over the years it has grown into a single integrated framework: ISO 9001 for quality, ISO 14001 and EMAS for the environment, ISO 50001 for energy, and ISO 45001 for the health and safety of everyone on site.
+          </p>
+          <p data-reveal data-reveal-delay="280" class="text-base md:text-lg text-ink/80 leading-relaxed">
+            Every standard below is audited by an independent certification body on an annual cycle, and every claim is backed by a downloadable certificate — the same documents we submit with tenders, regulatory filings, and specification packages.
+          </p>
+        </div>
+      </div>
+    </Container>
+  </Section>
+
+  {/* ===== CINEMATIC MOMENT ===== */}
+  <section class="relative min-h-[55vh] flex items-center text-surface overflow-hidden">
+    <img src="/images/about/pipes-warehouse.jpg" alt="" aria-hidden="true" class="absolute inset-0 w-full h-full object-cover" />
+    <div aria-hidden="true" class="absolute inset-0 bg-ink/65"></div>
+    <div aria-hidden="true" class="absolute inset-0 bg-brand-500/35 mix-blend-multiply"></div>
+    <Container size="lg" class="relative py-20 md:py-28 w-full">
+      <div class="max-w-4xl mx-auto text-center">
+        <p data-reveal class="text-[11px] md:text-xs uppercase tracking-[0.4em] text-surface/75 mb-8">The discipline behind the product</p>
+        <blockquote data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[1.05] tracking-tight" style="font-size: clamp(2rem, 5vw, 4.5rem);">
+          <span aria-hidden="true" class="text-surface/55">&ldquo;</span>Say what you do. Do what you say. Prove it.<span aria-hidden="true" class="text-surface/55">&rdquo;</span>
+        </blockquote>
+      </div>
+    </Container>
+  </section>
+
+  {/* ===== CERTIFICATIONS GRID — badge cards with PDF download links ===== */}
+  <Section bg="alt" spacing="lg">
+    <Container size="xl">
+      <a
+        data-reveal
+        href="/about-us/quality-certifications/"
+        class="group cursor-pointer inline-flex items-center gap-2 mb-10 md:mb-12 text-[11px] uppercase tracking-[0.25em] text-ink/60 hover:text-brand-500 transition-colors duration-200"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 transition-transform duration-200 group-hover:-translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>
+        <span>All certificate categories</span>
+      </a>
+
+      <header class="max-w-3xl mb-12 md:mb-16">
+        <p data-reveal class="text-[11px] uppercase tracking-[0.4em] text-brand-500 mb-6 md:mb-8">Our Management System Certifications</p>
+        <h2 data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[1.02] tracking-tight text-ink" style="font-size: clamp(2.25rem, 5.5vw, 4.5rem);">
+          <span data-cert-count>{certCount}</span> standards. <span data-cert-count>{certCount}</span> PDFs.
+        </h2>
+        <p data-reveal data-reveal-delay="240" class="mt-6 md:mt-8 text-base md:text-lg text-ink/70 leading-relaxed">
+          Tap any badge below to download the current certificate.
+        </p>
+      </header>
+
+      {/* Cards are managed in the admin dashboard (Certifications tab). */}
+      <CertificationsGrid client:visible group="quality" category="management-system" fallback={certFallback} />
+    </Container>
+  </Section>
+
+  {/* ===== CLOSING CTA — request a certificate ===== */}
+  <section class="bg-brand-500/10">
+    <Container size="xl" class="py-16 md:py-24">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-start">
+        <div class="lg:pt-4">
+          <p data-reveal class="text-[11px] uppercase tracking-[0.4em] text-brand-500 mb-6">Request a certificate</p>
+          <p data-reveal data-reveal-delay="120" class="text-base md:text-lg text-ink/80 leading-relaxed max-w-xl">
+            Need an older certificate, a tender-ready bundle, or evidence for a specific management standard? Our team can prepare it on request.
+          </p>
+          <a
+            data-reveal
+            data-reveal-delay="240"
+            href="/contact/local/"
+            class="group cursor-pointer mt-8 md:mt-10 inline-flex items-center gap-3 px-6 py-3 border border-ink/40 hover:bg-ink hover:border-ink hover:text-surface text-ink text-[11px] md:text-xs uppercase tracking-[0.25em] transition-colors duration-200"
+          >
+            <span>Contact our local network</span>
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+          </a>
+        </div>
+
+        <div data-reveal data-reveal-delay="200" class="bg-surface p-6 md:p-8 border border-ink/10">
+          <EnquiryForm
+            client:visible
+            source="management-system-certifications"
+            title="Request a certificate"
+            subtitle="Tell us which certificate, standard, or bundle you need evidence for — our quality team will prepare it."
+          />
+        </div>
+      </div>
+    </Container>
+  </section>
+
+  {/* ===== motion (scroll bar + hero parallax) ===== */}
+  <script>
+    import { animate, scroll } from 'motion';
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!reduce) {
+      const bar = document.querySelector('[data-scroll-progress]') as HTMLElement | null;
+      if (bar) scroll(animate(bar, { transform: ['scaleX(0)', 'scaleX(1)'] }, { ease: 'linear' }));
+      const heroImg = document.querySelector('[data-hero-parallax]') as HTMLElement | null;
+      const heroSection = heroImg?.closest('section') as HTMLElement | null;
+      if (heroImg && heroSection) {
+        scroll(
+          animate(heroImg, { transform: ['translateY(0)', 'translateY(15%)'] }, { ease: 'linear' }),
+          { target: heroSection, offset: ['start start', 'end start'] },
+        );
+      }
+    }
+  </script>
+
+  {/* Certification grid stamp-in animation lives inside CertificationsGrid. */}
+</BaseLayout>

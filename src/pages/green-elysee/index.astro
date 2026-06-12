@@ -1,5 +1,324 @@
 ---
-import ContentPageLayout from '../../layouts/ContentPageLayout.astro';
+/**
+ * Green Elysée — About (section landing).
+ *
+ * URL: /green-elysee/
+ * Source: `greenElyseeAbout` from src/data/site-content.ts.
+ *
+ * Same cinematic chassis as the sibling pages
+ * (`/green-elysee/certifications/`, `/green-elysee/reports/`,
+ * `/green-elysee/insights/`): scroll-progress, parallax cover hero,
+ * sticky sub-nav, stat band, editorial intro with sticky aside + drop-cap,
+ * full-bleed cinematic Vision moment, Strategy50 pillar grid, explore
+ * tiles into the rest of the section, closing CTA with enquiry form.
+ * Motion + GSAP layered, reduced-motion safe.
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Container from '../../components/Container.astro';
+import Section from '../../components/Section.astro';
+import GreenElyseeSubNav from '../../components/green-elysee/GreenElyseeSubNav.astro';
+import EnquiryForm from '../../components/contact/EnquiryForm.tsx';
 import { greenElyseeAbout } from '../../data/site-content';
+
+const blocks = greenElyseeAbout.blocks;
+const paragraphs = blocks.filter(
+  (b): b is Extract<typeof b, { kind: 'paragraph' }> => b.kind === 'paragraph',
+);
+const [intro1, intro2, strategy1, strategy2] = paragraphs;
+const vision = blocks.find(
+  (b): b is Extract<typeof b, { kind: 'callout' }> => b.kind === 'callout',
+);
+const pillarBlock = blocks.find(
+  (b): b is Extract<typeof b, { kind: 'pillars' }> => b.kind === 'pillars',
+);
+
+const desc = intro1?.text?.slice(0, 160) ?? greenElyseeAbout.title;
+
+const explore = [
+  {
+    label: 'Certifications',
+    href: '/green-elysee/certifications/',
+    blurb: 'Six independently audited standards — every certificate downloadable as a PDF.',
+  },
+  {
+    label: 'Reports & eBooks',
+    href: '/green-elysee/reports/',
+    blurb: 'Annual environmental reports and the yearly report library, free to read.',
+  },
+  {
+    label: 'Insights',
+    href: '/green-elysee/insights/',
+    blurb: 'Stories and articles from the journey to becoming a Green leader.',
+  },
+];
 ---
-<ContentPageLayout content={greenElyseeAbout} />
+<BaseLayout title={greenElyseeAbout.title} description={desc} padForHeader={false}>
+
+  <div aria-hidden="true" data-scroll-progress class="fixed top-0 left-0 right-0 h-[2px] bg-brand-500 z-50 origin-left pointer-events-none" style="transform: scaleX(0);"></div>
+
+  {/* ===== COVER HERO ===== */}
+  <section class="relative min-h-[88vh] flex items-end text-surface overflow-hidden">
+    <img
+      data-hero-parallax
+      src={greenElyseeAbout.heroImage}
+      alt={greenElyseeAbout.heroImageAlt}
+      class="absolute inset-0 w-full h-full object-cover will-change-transform"
+    />
+    <div aria-hidden="true" class="absolute inset-0 bg-gradient-to-b from-ink/45 via-ink/20 to-ink/80"></div>
+    <div aria-hidden="true" class="absolute inset-0 bg-brand-500/30"></div>
+
+    <Container size="xl" class="relative pt-40 md:pt-48 pb-16 md:pb-24 w-full">
+      <p data-reveal class="text-[11px] md:text-xs uppercase tracking-[0.4em] text-surface/85 mb-8">
+        {greenElyseeAbout.eyebrow} · About the programme
+      </p>
+      <h1 data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[0.92] tracking-tight text-surface" style="font-size: clamp(3rem, 9vw, 8rem); max-width: 14ch;">
+        As Green as it gets.
+      </h1>
+      <p data-reveal data-reveal-delay="240" class="mt-8 max-w-2xl text-base md:text-lg text-surface/85 leading-relaxed">
+        Committed to protecting the earth in every possible way — with effective, sustainable, innovative, and smart piping and fitting systems.
+      </p>
+      <div data-reveal data-reveal-delay="360" class="mt-14 md:mt-20 flex items-center gap-4 text-[11px] uppercase tracking-[0.3em] text-surface/70">
+        <span aria-hidden="true" class="h-px w-12 bg-surface/50"></span>
+        <span>Streaming water, streaming life</span>
+      </div>
+    </Container>
+  </section>
+
+  <GreenElyseeSubNav currentPath={Astro.url.pathname} />
+
+  {/* ===== STAT BAND ===== */}
+  <section class="bg-surface border-b border-ink/10">
+    <Container size="xl" class="py-16 md:py-24">
+      <p data-reveal class="text-[11px] md:text-xs uppercase tracking-[0.3em] text-brand-500 mb-10 md:mb-14">The programme at a glance</p>
+      <dl class="grid grid-cols-2 md:grid-cols-4 gap-px bg-ink/10 border border-ink/10">
+        <div class="bg-surface p-8 md:p-10">
+          <dd data-counter="1979" class="font-display font-heavy leading-none tracking-tight text-brand-500" style="font-size: clamp(2.5rem, 6vw, 5rem);">1979</dd>
+          <dt class="mt-4 md:mt-5 text-[10px] md:text-xs uppercase tracking-[0.25em] text-ink/60">Journey started</dt>
+        </div>
+        <div class="bg-surface p-8 md:p-10">
+          <dd data-counter="10" class="font-display font-heavy leading-none tracking-tight text-brand-500" style="font-size: clamp(2.5rem, 6vw, 5rem);">10</dd>
+          <dt class="mt-4 md:mt-5 text-[10px] md:text-xs uppercase tracking-[0.25em] text-ink/60">Year strategy</dt>
+        </div>
+        <div class="bg-surface p-8 md:p-10">
+          <dd data-counter="6" class="font-display font-heavy leading-none tracking-tight text-brand-500" style="font-size: clamp(2.5rem, 6vw, 5rem);">6</dd>
+          <dt class="mt-4 md:mt-5 text-[10px] md:text-xs uppercase tracking-[0.25em] text-ink/60">Strategic pillars</dt>
+        </div>
+        <div class="bg-surface p-8 md:p-10">
+          <dd data-counter="2029" class="font-display font-heavy leading-none tracking-tight text-brand-500" style="font-size: clamp(2.5rem, 6vw, 5rem);">2029</dd>
+          <dt class="mt-4 md:mt-5 text-[10px] md:text-xs uppercase tracking-[0.25em] text-ink/60">Vision50 target</dt>
+        </div>
+      </dl>
+    </Container>
+  </section>
+
+  {/* ===== EDITORIAL INTRO ===== */}
+  {intro1 && (
+    <Section bg="alt" spacing="lg">
+      <Container size="xl">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16">
+          <aside class="lg:col-span-4">
+            <div class="lg:sticky lg:top-32">
+              <p data-reveal class="text-[11px] uppercase tracking-[0.4em] text-brand-500 mb-6 md:mb-8">Why we go green</p>
+              <h2 data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[1.02] tracking-tight text-ink" style="font-size: clamp(2rem, 4.5vw, 3.5rem);">
+                Committed to the earth.
+              </h2>
+              <div aria-hidden="true" class="mt-8 h-px w-12 bg-brand-500"></div>
+              <p data-reveal data-reveal-delay="240" class="mt-6 max-w-xs text-sm text-ink/60 leading-relaxed">
+                Business-driven innovation, green thinking, and continuous improvement — with the smallest possible carbon footprint.
+              </p>
+            </div>
+          </aside>
+          <div class="lg:col-span-8 lg:pt-2 space-y-7 md:space-y-8">
+            <p
+              data-reveal
+              data-reveal-delay="160"
+              class="text-lg md:text-xl text-ink leading-[1.65]
+                     first-letter:font-display first-letter:font-heavy
+                     first-letter:text-7xl md:first-letter:text-8xl
+                     first-letter:float-left first-letter:mr-3 first-letter:mt-1
+                     first-letter:leading-[0.85] first-letter:text-brand-500"
+            >
+              {intro1.text}
+            </p>
+            {intro2 && (
+              <p data-reveal data-reveal-delay="280" class="text-base md:text-lg text-ink/80 leading-relaxed">{intro2.text}</p>
+            )}
+          </div>
+        </div>
+      </Container>
+    </Section>
+  )}
+
+  {/* ===== CINEMATIC MOMENT — the Vision ===== */}
+  {vision && (
+    <section class="relative min-h-[55vh] flex items-center text-surface overflow-hidden">
+      <img src="/images/green-elysee/journey-to-green-leader.jpg" alt="" aria-hidden="true" class="absolute inset-0 w-full h-full object-cover" />
+      <div aria-hidden="true" class="absolute inset-0 bg-ink/65"></div>
+      <div aria-hidden="true" class="absolute inset-0 bg-brand-500/35 mix-blend-multiply"></div>
+      <Container size="lg" class="relative py-20 md:py-28 w-full">
+        <div class="max-w-4xl mx-auto text-center">
+          <p data-reveal class="text-[11px] md:text-xs uppercase tracking-[0.4em] text-surface/75 mb-8">{vision.title}</p>
+          <blockquote data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[1.05] tracking-tight" style="font-size: clamp(2rem, 5vw, 4.5rem);">
+            <span aria-hidden="true" class="text-surface/55">&ldquo;</span>{vision.body}<span aria-hidden="true" class="text-surface/55">&rdquo;</span>
+          </blockquote>
+        </div>
+      </Container>
+    </section>
+  )}
+
+  {/* ===== STRATEGY50 — narrative + Pillar 4 grid ===== */}
+  <Section bg="default" spacing="lg">
+    <Container size="xl">
+      <header class="max-w-3xl mb-12 md:mb-16">
+        <p data-reveal class="text-[11px] uppercase tracking-[0.4em] text-brand-500 mb-6 md:mb-8">Elysée Strategy50</p>
+        <h2 data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[1.02] tracking-tight text-ink" style="font-size: clamp(2.25rem, 5.5vw, 4.5rem);">
+          Ten years. Six pillars. One vision.
+        </h2>
+        {strategy1 && (
+          <p data-reveal data-reveal-delay="240" class="mt-6 md:mt-8 text-base md:text-lg text-ink/70 leading-relaxed">
+            {strategy1.text}
+          </p>
+        )}
+        {strategy2 && (
+          <p data-reveal data-reveal-delay="320" class="mt-5 text-base md:text-lg text-ink/70 leading-relaxed">
+            {strategy2.text}
+          </p>
+        )}
+      </header>
+
+      {pillarBlock && (
+        <>
+          {pillarBlock.intro && (
+            <p data-reveal class="font-mono text-[10px] md:text-xs uppercase tracking-[0.25em] text-ink/55 mb-6 md:mb-8">{pillarBlock.intro}</p>
+          )}
+          <ol data-green-pillar-grid class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px bg-ink/10 border border-ink/10">
+            {pillarBlock.items.map((p) => (
+              <li data-green-pillar-card class="bg-surface p-8 md:p-10 flex flex-col group">
+                <span class="font-display font-heavy leading-none tracking-tight text-brand-500/30 transition-colors duration-300 group-hover:text-brand-500" style="font-size: clamp(2.5rem, 5vw, 4rem);">
+                  {String(p.number).padStart(2, '0')}
+                </span>
+                <h3 class="mt-6 font-display font-heavy text-xl md:text-2xl text-ink leading-tight">{p.title}</h3>
+                <div aria-hidden="true" class="mt-4 h-px w-10 bg-brand-500"></div>
+                <p class="mt-4 text-sm md:text-base text-ink/70 leading-relaxed">{p.body}</p>
+              </li>
+            ))}
+          </ol>
+        </>
+      )}
+    </Container>
+  </Section>
+
+  {/* ===== EXPLORE THE PROGRAMME — wayfinding into the section ===== */}
+  <Section bg="alt" spacing="lg">
+    <Container size="xl">
+      <header class="max-w-3xl mb-12 md:mb-16">
+        <p data-reveal class="text-[11px] uppercase tracking-[0.4em] text-brand-500 mb-6">Go deeper</p>
+        <h2 data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[1.02] tracking-tight text-ink" style="font-size: clamp(2rem, 4.5vw, 3.5rem);">
+          Explore the Green programme.
+        </h2>
+      </header>
+      <ol data-green-explore-grid class="grid grid-cols-1 md:grid-cols-3 gap-px bg-ink/10 border border-ink/10">
+        {explore.map((item) => (
+          <li data-green-explore-tile class="bg-surface group">
+            <a href={item.href} class="block p-8 md:p-10 h-full cursor-pointer">
+              <span class="font-mono text-[10px] uppercase tracking-[0.25em] text-ink/55">Green Elysée</span>
+              <h3 class="mt-4 font-display font-heavy text-xl md:text-2xl text-ink leading-tight transition-colors duration-200 group-hover:text-brand-500">{item.label}</h3>
+              <p class="mt-4 text-sm text-ink/70 leading-relaxed">{item.blurb}</p>
+              <span class="mt-6 inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.25em] text-ink group-hover:text-brand-500 transition-colors duration-200">
+                <span>Visit page</span>
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 transition-transform duration-200 group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+              </span>
+            </a>
+          </li>
+        ))}
+      </ol>
+    </Container>
+  </Section>
+
+  {/* ===== CLOSING CTA — talk to the Green team ===== */}
+  <section class="bg-brand-500/10">
+    <Container size="xl" class="py-16 md:py-24">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-start">
+        <div class="lg:pt-4">
+          <p data-reveal class="text-[11px] uppercase tracking-[0.4em] text-brand-500 mb-6">Talk to the Green team</p>
+          <p data-reveal data-reveal-delay="120" class="text-base md:text-lg text-ink/80 leading-relaxed max-w-xl">
+            Questions about the Green Elysée programme, our strategic pillars, or how our circular products can support your project? The team is happy to talk.
+          </p>
+          <div data-reveal data-reveal-delay="240" class="mt-8 md:mt-10 flex flex-wrap items-center gap-3">
+            <a
+              href="/green-elysee/certifications/"
+              class="group cursor-pointer inline-flex items-center gap-3 px-6 py-3 bg-brand-500 text-surface hover:bg-brand-700 text-[11px] md:text-xs uppercase tracking-[0.25em] transition-colors duration-200"
+            >
+              <span>See our green certifications</span>
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </a>
+            <a
+              href="/contact/local/"
+              class="group cursor-pointer inline-flex items-center gap-3 px-6 py-3 border border-ink/40 hover:bg-ink hover:border-ink hover:text-surface text-ink text-[11px] md:text-xs uppercase tracking-[0.25em] transition-colors duration-200"
+            >
+              <span>Contact our local network</span>
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </a>
+          </div>
+        </div>
+
+        <div data-reveal data-reveal-delay="200" class="bg-surface p-6 md:p-8 border border-ink/10">
+          <EnquiryForm
+            client:visible
+            source="green-about"
+            title="Ask the Green Elysée team"
+            subtitle="Tell us what you'd like to know about the programme, the pillars, or our circular products — the team will get back to you."
+          />
+        </div>
+      </div>
+    </Container>
+  </section>
+
+  {/* ===== motion (scroll bar + hero parallax) ===== */}
+  <script>
+    import { animate, scroll } from 'motion';
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!reduce) {
+      const bar = document.querySelector('[data-scroll-progress]') as HTMLElement | null;
+      if (bar) scroll(animate(bar, { transform: ['scaleX(0)', 'scaleX(1)'] }, { ease: 'linear' }));
+      const heroImg = document.querySelector('[data-hero-parallax]') as HTMLElement | null;
+      const heroSection = heroImg?.closest('section') as HTMLElement | null;
+      if (heroImg && heroSection) {
+        scroll(
+          animate(heroImg, { transform: ['translateY(0)', 'translateY(15%)'] }, { ease: 'linear' }),
+          { target: heroSection, offset: ['start start', 'end start'] },
+        );
+      }
+    }
+  </script>
+
+  {/* ===== GSAP — staggered reveal on the pillar + explore grids ===== */}
+  <script>
+    import { gsap } from 'gsap';
+    import { ScrollTrigger } from 'gsap/ScrollTrigger';
+    gsap.registerPlugin(ScrollTrigger);
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    function animateGrid(selector: string, cardSelector: string) {
+      const grid = document.querySelector(selector);
+      if (!grid) return;
+      const cards = Array.from(grid.querySelectorAll(cardSelector)) as HTMLElement[];
+      if (cards.length === 0) return;
+      if (reduce) {
+        cards.forEach((c) => { c.style.opacity = '1'; c.style.transform = 'none'; });
+        return;
+      }
+      gsap.set(cards, { y: 28, opacity: 0 });
+      ScrollTrigger.create({
+        trigger: grid,
+        start: 'top 80%',
+        once: true,
+        onEnter: () => {
+          gsap.to(cards, { y: 0, opacity: 1, duration: 0.6, ease: 'power3.out', stagger: 0.1 });
+        },
+      });
+    }
+    animateGrid('[data-green-pillar-grid]', '[data-green-pillar-card]');
+    animateGrid('[data-green-explore-grid]', '[data-green-explore-tile]');
+  </script>
+</BaseLayout>

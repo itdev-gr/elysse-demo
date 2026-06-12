@@ -6,6 +6,7 @@ import WhyDefinition from '../../../components/innovation/why/WhyDefinition.astr
 import WhyImportance from '../../../components/innovation/why/WhyImportance.astro';
 import WhyProcess from '../../../components/innovation/why/WhyProcess.tsx';
 import WhyClosing from '../../../components/innovation/why/WhyClosing.astro';
+import InnovationSubNav from '../../../components/innovation/InnovationSubNav.astro';
 import { innovationWhy } from '../../../data/site-content';
 
 const paragraphs = innovationWhy.blocks
@@ -29,6 +30,8 @@ const processBlock = innovationWhy.blocks.find(
 ---
 <BaseLayout title={innovationWhy.title} description={innovationWhy.subtitle ?? ''} padForHeader={false}>
   <WhyHero eyebrow={innovationWhy.eyebrow} title={innovationWhy.title} subtitle={innovationWhy.subtitle} />
+
+  <InnovationSubNav currentPath={Astro.url.pathname} />
 
   <WhyManifesto
     eyebrow="Why innovation"
