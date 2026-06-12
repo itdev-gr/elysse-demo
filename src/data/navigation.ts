@@ -130,7 +130,7 @@ export const megaNav: MegaColumns = [
       items: [
         { label: 'Why Innovation', href: '/innovation/why-innovation/', image: '/images/innovation/why/innovation-in-business.png', caption: 'The case for R&D investment' },
         { label: 'Research & Development', href: '/innovation/research-development/', image: '/images/innovation/rd/product-design-and-development.jpg', caption: 'Materials & process labs' },
-        { label: 'Funded Research Projects', href: '/innovation/funded-research-projects/', image: '/images/innovation/projects/innova.png', caption: 'EU & national grant programmes' },
+        { label: 'Funded Research Projects', href: '/innovation/funded-research-projects/', image: '/images/innovation/funded-research-projects-hero.jpg', caption: 'EU & national grant programmes' },
         { label: 'Innovation Insights', href: '/innovation/insights/', image: '/images/innovation/insights/industry-40.png', caption: 'Papers, talks, breakthroughs' },
         { label: 'Network Partners', href: '/innovation/network-partners/', image: '/images/about/engineers-meeting.jpg', caption: 'Universities & consortia' },
         { label: 'Innovate with Us', href: '/innovation/innovate-with-us/', image: '/images/innovation/innovate/hero-illustration.png', caption: 'Collaboration enquiries' },
