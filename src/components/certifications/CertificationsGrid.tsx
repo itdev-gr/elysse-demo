@@ -190,6 +190,26 @@ export default function CertificationsGrid({ group, category, fallback }: Props)
           </li>
         );
       })}
+      {/* A count like 7 leaves bare grid background in the last row on both
+          the 2-col and 3-col layouts — fill it with a quiet request CTA. */}
+      {state.certs.length % 6 === 1 && (
+        <li data-cert-card className="hidden sm:flex bg-surface-alt lg:col-span-2">
+          <a
+            href="/contact/local/"
+            className="group/cta cursor-pointer flex flex-1 flex-col items-start justify-center p-7 md:p-10"
+          >
+            <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-ink/55">Something missing?</span>
+            <span className="mt-4 font-display font-heavy leading-tight text-xl md:text-2xl text-ink">
+              Need an older revision or a tender-ready bundle?
+            </span>
+            <span aria-hidden="true" className="mt-5 h-px w-10 bg-brand-500 transition-[width] duration-500 ease-out group-hover/cta:w-20"></span>
+            <span className="mt-6 inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.25em] text-ink group-hover/cta:text-brand-500 transition-colors duration-200">
+              <span>Request a certificate</span>
+              <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5 transition-transform duration-200 group-hover/cta:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </span>
+          </a>
+        </li>
+      )}
     </ol>
   );
 }
