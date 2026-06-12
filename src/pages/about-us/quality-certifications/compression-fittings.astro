@@ -300,7 +300,7 @@ const desc = `${meta.blurb} ${certCount} approvals from certification bodies acr
       </header>
 
       {/* Cards are managed in the admin dashboard (Certifications tab). */}
-      <CertificationsGrid client:visible group="quality" category="compression-fittings" fallback={certFallback} />
+      <CertificationsGrid client:visible group="quality" category="compression-fittings" columns={5} fallback={certFallback} />
     </Container>
   </Section>
 

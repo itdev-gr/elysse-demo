@@ -17,6 +17,8 @@ interface Props {
   group: CertGroup;
   /** Optional quality-category filter, e.g. 'management-system'. */
   category?: string;
+  /** Cards per row on wide screens: 3 (default) or 5 for large sets. */
+  columns?: 3 | 5;
   /** Server-rendered fallback used when Supabase is unreachable or empty. */
   fallback: CertCard[];
 }
@@ -25,9 +27,14 @@ type State =
   | { kind: 'loading' }
   | { kind: 'ready'; certs: CertCard[] };
 
-export default function CertificationsGrid({ group, category, fallback }: Props) {
+export default function CertificationsGrid({ group, category, columns = 3, fallback }: Props) {
   const [state, setState] = useState<State>({ kind: 'loading' });
   const gridRef = useRef<HTMLOListElement | null>(null);
+
+  const cols5 = columns === 5;
+  const gridClass = cols5
+    ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-px bg-ink/10 border border-ink/10'
+    : 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px bg-ink/10 border border-ink/10';
 
   useEffect(() => {
     let cancelled = false;
@@ -125,8 +132,8 @@ export default function CertificationsGrid({ group, category, fallback }: Props)
 
   if (state.kind === 'loading') {
     return (
-      <ol className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px bg-ink/10 border border-ink/10" aria-busy="true">
-        {[0, 1, 2, 3, 4, 5].map((i) => (
+      <ol className={gridClass} aria-busy="true">
+        {(cols5 ? [0, 1, 2, 3, 4, 5, 6, 7, 8, 9] : [0, 1, 2, 3, 4, 5]).map((i) => (
           <li key={i} className="bg-surface min-h-[420px] animate-pulse">
             <div className="bg-surface-alt border-b border-ink/10 aspect-[4/3]"></div>
             <div className="p-7 space-y-3">
@@ -142,22 +149,27 @@ export default function CertificationsGrid({ group, category, fallback }: Props)
 
   const prefix = 'Cert.';
 
-  // Trailing empty cells per breakpoint: the 2-col (sm) and 3-col (lg)
-  // layouts leave different gaps, so the filler shows/spans per breakpoint.
+  // Trailing empty cells per breakpoint: the 2-col (sm), 3-col (lg) and —
+  // for the 5-col variant — 5-col (xl) layouts leave different gaps, so the
+  // filler shows/spans per breakpoint.
   const empty2 = (2 - (state.certs.length % 2)) % 2;
   const empty3 = (3 - (state.certs.length % 3)) % 3;
+  const empty5 = cols5 ? (5 - (state.certs.length % 5)) % 5 : 0;
   const fillerClass = [
     'hidden',
     empty2 ? 'sm:flex' : '',
     empty3 ? (empty2 ? '' : 'lg:flex') : 'lg:hidden',
     empty3 === 2 ? 'lg:col-span-2' : '',
+    cols5 ? (empty5 ? (empty2 || empty3 ? '' : 'xl:flex') : 'xl:hidden') : '',
+    empty5 === 2 ? 'xl:col-span-2' : empty5 === 3 ? 'xl:col-span-3' : empty5 === 4 ? 'xl:col-span-4' : '',
+    cols5 && empty3 === 2 && empty5 === 1 ? 'xl:col-span-1' : '',
     'bg-surface-alt',
   ]
     .filter(Boolean)
     .join(' ');
 
   return (
-    <ol ref={gridRef} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px bg-ink/10 border border-ink/10">
+    <ol ref={gridRef} className={gridClass}>
       {state.certs.map((c, i) => {
         const num = String(i + 1).padStart(2, '0');
         return (
@@ -165,10 +177,10 @@ export default function CertificationsGrid({ group, category, fallback }: Props)
             <span
               aria-hidden="true"
               className="pointer-events-none absolute -top-3 right-3 font-display font-heavy text-brand-500/10 leading-none select-none transition-colors duration-500 group-hover:text-brand-500/30 z-10"
-              style={{ fontSize: 'clamp(4.5rem, 7vw, 7rem)' }}
+              style={{ fontSize: cols5 ? 'clamp(4rem, 5vw, 5rem)' : 'clamp(4.5rem, 7vw, 7rem)' }}
             >{num}</span>
 
-            <div className="bg-surface-alt border-b border-ink/10 aspect-[4/3] flex items-center justify-center p-8 md:p-10 overflow-hidden">
+            <div className={`bg-surface-alt border-b border-ink/10 aspect-[4/3] flex items-center justify-center p-8 md:p-10 ${cols5 ? 'xl:p-6' : ''} overflow-hidden`}>
               {c.logo ? (
                 <img
                   data-cert-badge
@@ -185,11 +197,11 @@ export default function CertificationsGrid({ group, category, fallback }: Props)
               )}
             </div>
 
-            <div className="relative p-7 md:p-8 flex-1 flex flex-col">
+            <div className={`relative p-7 md:p-8 ${cols5 ? 'xl:p-5' : ''} flex-1 flex flex-col`}>
               <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-ink/55">
                 {prefix}{num}{c.tag ? ` · ${c.tag}` : ''}
               </span>
-              <h3 className="mt-4 font-display font-heavy leading-tight text-xl md:text-2xl text-ink">{c.name}</h3>
+              <h3 className={`mt-4 font-display font-heavy leading-tight text-xl md:text-2xl ${cols5 ? 'xl:text-lg' : ''} text-ink`}>{c.name}</h3>
               {c.description && <p className="mt-1 text-sm text-ink/70 leading-snug">{c.description}</p>}
               <div aria-hidden="true" className="mt-5 h-px w-10 bg-brand-500 transition-[width] duration-500 ease-out group-hover:w-20"></div>
               {c.scope && <p className="mt-4 text-sm text-ink/70 leading-[1.6] flex-1">{c.scope}</p>}
@@ -211,7 +223,7 @@ export default function CertificationsGrid({ group, category, fallback }: Props)
       })}
       {/* Counts like 7 or 20 leave bare grid background in the last row —
           fill it with a quiet request CTA on the breakpoints that need it. */}
-      {(empty2 > 0 || empty3 > 0) && (
+      {(empty2 > 0 || empty3 > 0 || empty5 > 0) && (
         <li data-cert-card className={fillerClass}>
           <a
             href="/contact/local/"
