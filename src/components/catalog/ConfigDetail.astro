@@ -19,9 +19,9 @@ const skuRows: SkuRow[] = c.sizes.map((s) => ({
 ---
 {/* Title — above the image, full width */}
 <header class="mt-6 md:mt-8">
-  <p class="text-[11px] uppercase tracking-[0.3em] text-brand-500 font-semibold">{c.subCategory}</p>
-  <p class="mt-2 font-mono text-[11px] text-ink/65">No.{c.familyCode}</p>
+  <p class="font-mono text-[11px] text-ink/65">No.{c.familyCode}</p>
   <h1 class="mt-1 font-heavy text-4xl lg:text-5xl leading-tight text-ink">{c.configuration}</h1>
+  <p class="mt-2 text-sm text-ink/60">{c.subCategory}</p>
 </header>
 
 <section class="grid grid-cols-1 lg:grid-cols-12 gap-8 mt-8">
@@ -43,7 +43,6 @@ const skuRows: SkuRow[] = c.sizes.map((s) => ({
   {/* Sizes — sticky aside */}
   <aside class="lg:col-span-5 lg:sticky lg:top-20 self-start flex flex-col gap-4">
     <SkuTable rows={skuRows} title="Available sizes" />
-    <a href="/contact/local/" class="cat-btn cat-btn--primary mt-2 self-start">Request a quote</a>
   </aside>
 </section>
 
