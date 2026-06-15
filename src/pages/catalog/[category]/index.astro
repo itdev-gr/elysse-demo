@@ -1,14 +1,11 @@
 ---
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
-import { deriveFacets } from '../../../scripts/catalog/derive-facets';
-import { byCategory, byCountry } from '../../../scripts/catalog/filter-engine';
-import type { CatalogProduct, CategorySlug, Country } from '../../../scripts/catalog/types';
-import { COUNTRIES } from '../../../data/catalog-countries';
+import type { CatalogProduct, CategorySlug } from '../../../scripts/catalog/types';
+import { fetchCatalogConfigurations } from '../../../lib/products';
 import '../../../styles/catalog.css';
 import UtilityBar from '../../../components/catalog/UtilityBar.astro';
 import ProductGrid from '../../../components/catalog/ProductGrid.astro';
-import FilterRail from '../../../components/catalog/FilterRail.astro';
 import CountryModal from '../../../components/catalog/CountryModal.astro';
 import CategoriesNav from '../../../components/catalog/CategoriesNav.astro';
 
@@ -23,44 +20,36 @@ export async function getStaticPaths() {
 const { category } = Astro.params as { category: CategorySlug };
 const { categoryEntry } = Astro.props;
 
-const collection = await getCollection('products');
-const products: CatalogProduct[] = collection.map((c) => ({
-  slug: c.id,
-  name: c.data.name,
-  code: c.data.code,
-  categorySlug: c.data.categorySlug,
-  sectors: c.data.sectors,
-  material: c.data.material,
-  dnRange: c.data.dnRange,
-  pnRating: c.data.pnRating,
-  standards: c.data.standards,
-  imageUrls: c.data.imageUrls,
-  image: c.data.image,
-  blurb: c.data.blurb,
-  pressure: c.data.pressure,
-  sizeRange: c.data.sizeRange,
-  bim: c.data.bim,
-  datasheet: c.data.datasheet,
-  installation: c.data.installation,
-  specs: c.data.specs,
-  featured: c.data.featured,
-  availableCountries: c.data.availableCountries,
-}));
+// Excel-backed categories pull from Supabase; the rest stay empty as before.
+const EXCEL_CATEGORY_NAME: Partial<Record<string, string>> = {
+  'compression-fittings': 'Compression Fittings',
+  'hydraulic-fittings': 'Hydraulic Fittings',
+  'saddles': 'Saddles',
+};
+const excelName = EXCEL_CATEGORY_NAME[category];
+// One card per configuration (catalogue No.), sizes collapsed — matches the
+// printed catalogue layout.
+const products: CatalogProduct[] = excelName ? await fetchCatalogConfigurations(excelName) : [];
 
-const categoryProducts = byCategory(products, category);
+const categoryProducts = products; // already filtered to this category
 const isEmpty = categoryProducts.length === 0;
 
-const productsByCountry = Object.fromEntries(
-  COUNTRIES.map((c) => [c.code, byCategory(byCountry(products, c.code), category)]),
-) as Record<Country, CatalogProduct[]>;
-
-const facetsByCountry = Object.fromEntries(
-  COUNTRIES.map((c) => [c.code, deriveFacets(productsByCountry[c.code])]),
-) as Record<Country, ReturnType<typeof deriveFacets>>;
+// Distinct product series (sub-categories) in catalogue order. `material` holds
+// the sub_category; shown under the title and wired as `materials` filters so
+// tapping one narrows the grid via the existing filter engine.
+const seriesSeen = new Set<string>();
+const series: string[] = [];
+for (const p of products) {
+  const s = p.material;
+  if (s && !seriesSeen.has(s)) {
+    seriesSeen.add(s);
+    series.push(s);
+  }
+}
 
 const productsJson = JSON.stringify(products);
 ---
-<BaseLayout title={`${categoryEntry.data.name} — Catalog — Elysée`} description={categoryEntry.data.blurb}>
+<BaseLayout title={`${categoryEntry.data.name} — Catalog — Elysée`} description={categoryEntry.data.blurb} padForHeader={false}>
   <div class="catalog-scope pt-24 md:pt-28 px-4 md:px-8" data-catalog-root>
     {!isEmpty && <CountryModal />}
     <section class="mx-auto max-w-screen-xl pb-12">
@@ -74,7 +63,18 @@ const productsJson = JSON.stringify(products);
 
       <header class="mt-6 mb-8">
         <h1 class="text-3xl md:text-4xl font-heavy text-ink">{categoryEntry.data.name}</h1>
-        <p class="text-base text-ink/75 mt-2 max-w-3xl">{categoryEntry.data.blurb}</p>
+        {series.length > 0 && (
+          <div class="mt-4 flex flex-wrap gap-2" aria-label="Product series — tap to filter">
+            {series.map((s) => (
+              <label class="cursor-pointer">
+                <input type="checkbox" data-facet="materials" value={s} class="peer sr-only" />
+                <span class="inline-block px-3 py-1.5 text-xs md:text-[13px] border border-ink/15 rounded-sm text-ink/75 transition-colors duration-200 hover:border-brand-500 hover:text-brand-500 peer-checked:bg-brand-500 peer-checked:text-surface peer-checked:border-brand-500 peer-focus-visible:ring-2 peer-focus-visible:ring-brand-500/40">
+                  {s}
+                </span>
+              </label>
+            ))}
+          </div>
+        )}
       </header>
 
       {isEmpty ? (
@@ -90,13 +90,8 @@ const productsJson = JSON.stringify(products);
         </div>
       ) : (
         <div class="grid grid-cols-12 gap-6 py-6">
-          <aside class="col-span-12 md:col-span-3 flex flex-col gap-8">
+          <aside class="col-span-12 md:col-span-3">
             <CategoriesNav active={category} />
-            {COUNTRIES.map((c) => (
-              <div data-country-rail={c.code} hidden>
-                <FilterRail facets={facetsByCountry[c.code]} count={productsByCountry[c.code].length} />
-              </div>
-            ))}
           </aside>
           <section class="col-span-12 md:col-span-9">
             <UtilityBar count={categoryProducts.length} />

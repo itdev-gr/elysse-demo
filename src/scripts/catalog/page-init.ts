@@ -116,6 +116,12 @@ export function initCatalogPage(country: Country, categorySlug: CategorySlug) {
       const k = el.dataset.facet as keyof Filters;
       if (k === 'hasDatasheet' || k === 'bimAvailable') {
         (filters as any)[k] = el.checked;
+      } else if (k === 'materials') {
+        // Series chips are single-select: choosing one clears any other.
+        (filters as any).materials = el.checked ? [el.value] : [];
+        root.querySelectorAll<HTMLInputElement>('input[data-facet="materials"]').forEach(other => {
+          if (other !== el) other.checked = false;
+        });
       } else {
         const set = new Set<string>(((filters as any)[k] as string[]) ?? []);
         if (el.checked) set.add(el.value); else set.delete(el.value);

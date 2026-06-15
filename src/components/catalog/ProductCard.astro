@@ -5,75 +5,46 @@ import { imagesForProduct } from '~/scripts/catalog/per-country-images';
 interface Props { product: CatalogProduct; }
 const { product: p } = Astro.props;
 
-const fallback = p.imageUrls[0] ?? p.image;
+const fallback = p.imageUrls[0] ?? p.image ?? '';
 const perCountry = imagesForProduct(p.slug);
 const perCountryEntries = perCountry ? Object.entries(perCountry) : [];
 const detailUrl = `/catalog/${p.categorySlug}/${p.slug}`;
+const Media = p.hasDetailPage ? 'a' : 'div';
 ---
 <article
-  class="group relative flex flex-col bg-surface border border-ink/10 rounded-md overflow-hidden transition-all duration-200 ease-out hover:border-brand-500/40 hover:shadow-[0_8px_24px_-8px_rgba(0,0,0,0.12)]"
+  class="group relative flex flex-col bg-surface border border-ink/10 rounded-md overflow-hidden transition-colors duration-200 ease-out hover:border-brand-500/40"
   data-product-card
   data-slug={p.slug}
 >
-  <a href={detailUrl} class="relative block aspect-square bg-gradient-to-br from-brand-500/5 via-surface to-brand-500/10 overflow-hidden">
-    {p.code && (
-      <span class="absolute top-3 left-3 z-10 inline-flex items-center px-2 py-0.5 text-[10px] font-mono uppercase tracking-wider bg-surface/90 backdrop-blur-sm text-ink/70 border border-ink/10 rounded-sm">
-        {p.code}
-      </span>
-    )}
-    {p.featured && (
-      <span class="absolute top-3 right-3 z-10 inline-flex items-center px-2 py-0.5 text-[10px] uppercase tracking-wider font-medium bg-brand-500 text-surface rounded-sm">
-        Featured
-      </span>
-    )}
+  <Media
+    href={p.hasDetailPage ? detailUrl : undefined}
+    class="relative block aspect-square bg-surface-alt overflow-hidden"
+  >
     {perCountryEntries.length > 0 ? (
       perCountryEntries.map(([code, url]) => (
-        <img
-          src={url}
-          data-for-country={code}
-          alt={p.name}
-          loading="lazy"
-          width="320"
-          height="320"
-          class="absolute inset-0 w-full h-full object-contain p-6 transition-transform duration-300 ease-out group-hover:scale-[1.04]"
-        />
+        <img src={url} data-for-country={code} alt={p.name} loading="lazy" width="320" height="320"
+          class="absolute inset-0 w-full h-full object-contain p-5 transition-transform duration-300 ease-out group-hover:scale-[1.03]" />
       ))
+    ) : fallback ? (
+      <img src={fallback} alt={p.name} loading="lazy" width="320" height="320"
+        class="absolute inset-0 w-full h-full object-contain p-5 transition-transform duration-300 ease-out group-hover:scale-[1.03]" />
     ) : (
-      <img
-        src={fallback}
-        alt={p.name}
-        loading="lazy"
-        width="320"
-        height="320"
-        class="absolute inset-0 w-full h-full object-contain p-6 transition-transform duration-300 ease-out group-hover:scale-[1.04]"
-      />
+      <span class="absolute inset-0 flex items-center justify-center text-ink/15" aria-hidden="true">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-12 h-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="7" width="18" height="10" rx="2" />
+          <circle cx="8.5" cy="12" r="2.5" />
+          <path d="M11.5 12H19" />
+        </svg>
+      </span>
     )}
-  </a>
+  </Media>
 
-  <div class="flex flex-col flex-1 p-5 gap-2">
-    <a
-      href={detailUrl}
-      class="font-heavy text-lg leading-tight text-ink hover:text-brand-500 transition-colors duration-fast line-clamp-2 min-h-[2.75rem]"
-    >
-      {p.name}
-    </a>
-
-    <p class="text-sm text-ink/70 line-clamp-2 min-h-[2.5rem]">{p.blurb}</p>
-
-    <div class="flex items-center gap-2 text-[11px] uppercase tracking-wider text-ink/55 mt-1">
-      {p.pressure && <span class="font-medium">{p.pressure}</span>}
-      {p.pressure && p.sizeRange && <span aria-hidden="true" class="opacity-50">·</span>}
-      {p.sizeRange && <span>{p.sizeRange}</span>}
-    </div>
-
-    <div class="flex items-center justify-end gap-3 mt-auto pt-4 border-t border-ink/5">
-      <a
-        href={detailUrl}
-        class="inline-flex items-center gap-1.5 px-3 py-2 text-[11px] uppercase tracking-wider font-medium text-brand-500 border border-brand-500/30 rounded-sm hover:bg-brand-500 hover:text-surface hover:border-brand-500 transition-colors duration-fast"
-        aria-label={`View ${p.name} details`}
-      >
-        View details →
-      </a>
-    </div>
+  <div class="p-4 md:p-5">
+    {p.code && <p class="text-xs md:text-sm text-ink/45">No.{p.code}</p>}
+    {p.hasDetailPage ? (
+      <a href={detailUrl} class="mt-0.5 block font-heavy text-base md:text-lg leading-snug text-ink hover:text-brand-500 transition-colors duration-200">{p.name}</a>
+    ) : (
+      <p class="mt-0.5 font-heavy text-base md:text-lg leading-snug text-ink">{p.name}</p>
+    )}
   </div>
 </article>

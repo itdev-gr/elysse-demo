@@ -22,7 +22,7 @@ export const REGIONS: ReadonlyArray<RegionDef> = [
 ];
 
 export const COUNTRIES: ReadonlyArray<CountryDef> = [
-  // Europe (8)
+  // Europe (12)
   { code: 'cy', label: 'Cyprus', region: 'europe' },
   { code: 'gr', label: 'Greece', region: 'europe' },
   { code: 'de', label: 'Germany', region: 'europe' },
@@ -31,6 +31,10 @@ export const COUNTRIES: ReadonlyArray<CountryDef> = [
   { code: 'it', label: 'Italy', region: 'europe' },
   { code: 'es', label: 'Spain', region: 'europe' },
   { code: 'pt', label: 'Portugal', region: 'europe' },
+  { code: 'bg', label: 'Bulgaria', region: 'europe' },
+  { code: 'ro', label: 'Romania', region: 'europe' },
+  { code: 'gb', label: 'United Kingdom', region: 'europe' },
+  { code: 'ie', label: 'Ireland', region: 'europe' },
   // Middle East & Africa (8)
   { code: 'lb', label: 'Lebanon', region: 'middle-east-africa' },
   { code: 'ae', label: 'United Arab Emirates', region: 'middle-east-africa' },

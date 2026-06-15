@@ -39,6 +39,8 @@ export interface CatalogProduct {
   specs: { key: string; value: string }[];
   featured: boolean;
   availableCountries: CountryCode[];
+  /** True when a per-product detail page exists (markdown products). DB-sourced products omit this. */
+  hasDetailPage?: boolean;
 }
 
 export interface Filters {

@@ -1,0 +1,50 @@
+---
+import type { ConfigurationDetail } from '../../lib/products';
+import type { CatalogProduct } from '~/scripts/catalog/types';
+import type { SkuRow } from '~/scripts/catalog/sku-tables';
+import SkuTable from './SkuTable.astro';
+import RelatedProducts from './RelatedProducts.astro';
+
+interface Props { config: ConfigurationDetail; related?: CatalogProduct[]; }
+const { config: c, related = [] } = Astro.props;
+
+// Map each size (SKU) into the SkuTable row shape.
+const skuRows: SkuRow[] = c.sizes.map((s) => ({
+  code: s.code,
+  size: s.size ?? '',
+  box: s.packing_box ?? undefined,
+  bag: s.packing_bag ?? undefined,
+  moq: s.moq ?? undefined,
+}));
+---
+{/* Title — above the image, full width */}
+<header class="mt-6 md:mt-8">
+  <p class="text-[11px] uppercase tracking-[0.3em] text-brand-500 font-semibold">{c.subCategory}</p>
+  <p class="mt-2 font-mono text-[11px] text-ink/65">No.{c.familyCode}</p>
+  <h1 class="mt-1 font-heavy text-4xl lg:text-5xl leading-tight text-ink">{c.configuration}</h1>
+</header>
+
+<section class="grid grid-cols-1 lg:grid-cols-12 gap-8 mt-8">
+  {/* Image */}
+  <div class="lg:col-span-7">
+    <div class="bg-surface-alt border border-ink/10 rounded-md aspect-square flex items-center justify-center text-ink/15 overflow-hidden">
+      {c.image ? (
+        <img src={c.image} alt={c.configuration} width="800" height="800" class="w-full h-full object-contain p-8 scale-[0.85]" />
+      ) : (
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-28 h-28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="3" y="7" width="18" height="10" rx="2" />
+          <circle cx="8.5" cy="12" r="2.5" />
+          <path d="M11.5 12H19" />
+        </svg>
+      )}
+    </div>
+  </div>
+
+  {/* Sizes — sticky aside */}
+  <aside class="lg:col-span-5 lg:sticky lg:top-20 self-start flex flex-col gap-4">
+    <SkuTable rows={skuRows} title="Available sizes" />
+    <a href="/contact/local/" class="cat-btn cat-btn--primary mt-2 self-start">Request a quote</a>
+  </aside>
+</section>
+
+{related.length > 0 && <RelatedProducts products={related} />}

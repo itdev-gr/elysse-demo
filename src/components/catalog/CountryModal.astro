@@ -1,16 +1,26 @@
 ---
 import { COUNTRIES } from '../../data/catalog-countries';
+import { supabase } from '../../lib/supabase';
 
-const TOP_CODES = ['cy', 'at', 'de', 'gr', 'fr'] as const;
-type TopCode = (typeof TOP_CODES)[number];
-const codeOrder = (code: string) => TOP_CODES.indexOf(code as TopCode);
-const topCountries = TOP_CODES
-  .map((code) => COUNTRIES.find((c) => c.code === code))
-  .filter((c): c is (typeof COUNTRIES)[number] => Boolean(c));
-const otherCountries = COUNTRIES
-  .filter((c) => codeOrder(c.code) === -1)
-  .slice()
-  .sort((a, b) => a.label.localeCompare(b.label));
+const { data: mapped } = await supabase
+  .from('group_countries').select('country_code, country').order('country', { ascending: true });
+const codes = new Set((mapped ?? []).map((m: { country_code: string | null }) => m.country_code).filter(Boolean));
+const selectable = codes.size > 0
+  ? COUNTRIES.filter((c) => codes.has(c.code)).slice().sort((a, b) => a.label.localeCompare(b.label))
+  : (() => {
+      // Fallback: use the existing static top/other split when Supabase is unreachable.
+      const TOP_CODES = ['cy', 'at', 'de', 'gr', 'fr'] as const;
+      type TopCode = (typeof TOP_CODES)[number];
+      const codeOrder = (code: string) => TOP_CODES.indexOf(code as TopCode);
+      const top = TOP_CODES
+        .map((code) => COUNTRIES.find((c) => c.code === code))
+        .filter((c): c is (typeof COUNTRIES)[number] => Boolean(c));
+      const other = COUNTRIES
+        .filter((c) => codeOrder(c.code) === -1)
+        .slice()
+        .sort((a, b) => a.label.localeCompare(b.label));
+      return [...top, ...other];
+    })();
 ---
 <div
   class="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center px-4"
@@ -32,9 +42,7 @@ const otherCountries = COUNTRIES
       class="mt-6 block w-full bg-surface border border-ink/20 rounded-sm px-3 py-3 text-sm text-ink focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/30 transition-colors duration-fast"
     >
       <option value="" disabled selected>Choose your country…</option>
-      {topCountries.map((c) => <option value={c.code}>{c.label}</option>)}
-      <option disabled>──────────</option>
-      {otherCountries.map((c) => <option value={c.code}>{c.label}</option>)}
+      {selectable.map((c) => <option value={c.code}>{c.label}</option>)}
     </select>
 
     <button
