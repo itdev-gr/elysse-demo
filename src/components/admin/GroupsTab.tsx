@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { supabase } from '../../lib/supabase';
 import type { ProductGroup, GroupCountry } from '../../types/product';
 import GroupCountryForm from './GroupCountryForm';
+import { triggerPublish } from '../../lib/publish';
 
 export default function GroupsTab() {
   const [groups, setGroups] = useState<ProductGroup[] | null>(null);
@@ -27,6 +28,7 @@ export default function GroupsTab() {
     const { error: err } = await supabase.from('group_countries').delete().eq('id', gc.id);
     if (err) return setError(err.message);
     await load();
+    triggerPublish();
   };
 
   return (

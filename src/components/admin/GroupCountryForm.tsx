@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { supabase } from '../../lib/supabase';
+import { triggerPublish } from '../../lib/publish';
 
 export default function GroupCountryForm({ groupCode, onDone, onCancel }:
   { groupCode: string; onDone: () => void; onCancel: () => void }) {
@@ -16,6 +17,7 @@ export default function GroupCountryForm({ groupCode, onDone, onCancel }:
       .insert({ group_code: groupCode, country: country.trim(), country_code: code.trim() || null });
     if (err) { setBusy(false); return setError(err.code === '23505' ? 'That country is already mapped to a group.' : err.message); }
     setBusy(false);
+    triggerPublish();
     onDone();
   };
 

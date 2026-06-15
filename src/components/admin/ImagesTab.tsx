@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { supabase } from '../../lib/supabase';
+import { triggerPublish } from '../../lib/publish';
 
 // ─── Local types ────────────────────────────────────────────────────────────
 
@@ -212,6 +213,7 @@ export default function ImagesTab() {
     // Reset input so the same file can be re-uploaded if needed
     if (fileInputRef.current) fileInputRef.current.value = '';
     await loadImages();
+    triggerPublish();
   };
 
   // ── delete handler ───────────────────────────────────────────────────────
@@ -221,6 +223,7 @@ export default function ImagesTab() {
     const { error } = await supabase.from('product_images').delete().eq('id', img.id);
     if (error) { setLibError(error.message); return; }
     await loadImages();
+    triggerPublish();
   };
 
   // ── configurations ───────────────────────────────────────────────────────
@@ -285,6 +288,7 @@ export default function ImagesTab() {
     if (error) { setAssignError(error.message); return; }
     setAssignTarget(null);
     await loadProducts();
+    triggerPublish();
   };
 
   const handleClear = async () => {
@@ -298,6 +302,7 @@ export default function ImagesTab() {
     if (error) { setAssignError(error.message); return; }
     setAssignTarget(null);
     await loadProducts();
+    triggerPublish();
   };
 
   // ── render ───────────────────────────────────────────────────────────────

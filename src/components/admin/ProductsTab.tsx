@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { supabase } from '../../lib/supabase';
 import type { Product } from '../../types/product';
 import ProductForm from './ProductForm';
+import { triggerPublish } from '../../lib/publish';
 
 type Mode = { kind: 'list' } | { kind: 'create' } | { kind: 'edit'; product: Product };
 
@@ -45,6 +46,7 @@ export default function ProductsTab() {
       .update({ is_active: !p.is_active }).eq('code', p.code);
     if (err) return setError(err.message);
     await load();
+    triggerPublish();
   };
 
   const remove = async (p: Product) => {
@@ -52,6 +54,7 @@ export default function ProductsTab() {
     const { error: err } = await supabase.from('products').delete().eq('code', p.code);
     if (err) return setError(err.message);
     await load();
+    triggerPublish();
   };
 
   if (mode.kind === 'create')

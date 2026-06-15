@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '../../lib/supabase';
 import { validateProductDraft, nextProductSortOrder } from '../../lib/products';
+import { triggerPublish } from '../../lib/publish';
 import type { Product, ProductDraft } from '../../types/product';
 
 const GROUPS = ['A', 'B', 'C', 'D', 'E'];
@@ -54,7 +55,7 @@ export default function ProductForm({ initial, onDone, onCancel }:
         .insert(groups.map((g) => ({ product_code: productCode, group_code: g })));
       if (insErr) { setBusy(false); return setError(`Product saved, but updating groups failed: ${insErr.message}`); }
     }
-    setBusy(false); onDone();
+    setBusy(false); triggerPublish(); onDone();
   };
 
   const field = (label: string, k: keyof ProductDraft, type: 'text' | 'number' = 'text') => (
