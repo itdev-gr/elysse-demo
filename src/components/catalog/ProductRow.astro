@@ -4,7 +4,7 @@ interface Props { product: CatalogProduct; }
 const { product: p } = Astro.props;
 const thumb = p.imageUrls[0] ?? p.image ?? '';
 ---
-<article class="cat-card flex items-center gap-4 p-4" data-product-row data-slug={p.slug}>
+<article class="cat-card flex items-center gap-4 p-4" data-product-row data-slug={p.slug} data-series={p.material}>
   <div class="flex-shrink-0 w-[72px] h-[72px] bg-surface-alt rounded-sm flex items-center justify-center overflow-hidden">
     {thumb ? (
       <img src={thumb} alt={p.name} loading="lazy" width="72" height="72" class="w-full h-full object-contain p-2" />

@@ -61,6 +61,12 @@ export function initCatalogPage(country: Country, categorySlug: CategorySlug) {
     list?.querySelectorAll<HTMLElement>('[data-product-row]').forEach(el => {
       el.style.display = slugSet.has(el.dataset.slug ?? '') ? '' : 'none';
     });
+    // Hide series-section headings that have no visible products.
+    const visibleSeries = new Set(sorted.map(p => p.material).filter(Boolean));
+    root!.querySelectorAll<HTMLElement>('[data-series-heading]').forEach(el => {
+      const s = el.dataset.series ?? '';
+      el.style.display = visibleSeries.has(s) ? '' : 'none';
+    });
     if (empty) empty.classList.toggle('hidden', sorted.length !== 0);
     if (countEl) countEl.textContent = `Showing ${sorted.length} of ${products.length} products`;
     renderActiveChips();
