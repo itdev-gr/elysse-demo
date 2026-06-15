@@ -16,12 +16,24 @@ export async function setDeployHook(url: string): Promise<string | null> {
   return error ? error.message : null;
 }
 
+/** ISO timestamp of the last publish, or null if never published. */
+export async function getLastPublished(): Promise<string | null> {
+  const { data } = await supabase
+    .from('app_settings').select('value').eq('key', 'last_published_at').maybeSingle();
+  return (data?.value as string | null) ?? null;
+}
+
 /** Trigger a Vercel rebuild now. Returns an error message, or null on success. */
 export async function publishNow(): Promise<string | null> {
   const url = await getDeployHook();
   if (!url) return 'No deploy hook URL configured — add one in the Publish panel.';
   try {
     await fetch(url, { method: 'POST', mode: 'no-cors' });
+    await supabase.from('app_settings').upsert({
+      key: 'last_published_at',
+      value: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    });
     return null;
   } catch (e) {
     return e instanceof Error ? e.message : 'Failed to trigger publish.';

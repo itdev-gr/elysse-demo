@@ -1,7 +1,15 @@
 import { useEffect, useState } from 'react';
-import { getDeployHook, setDeployHook, publishNow } from '../../lib/publish';
+import { getDeployHook, setDeployHook, publishNow, getLastPublished } from '../../lib/publish';
 
 type Status = 'idle' | 'publishing' | 'done' | 'error';
+
+function timeAgo(iso: string): string {
+  const s = Math.floor((Date.now() - new Date(iso).getTime()) / 1000);
+  if (s < 60) return 'just now';
+  if (s < 3600) return `${Math.floor(s / 60)} min ago`;
+  if (s < 86400) return `${Math.floor(s / 3600)} h ago`;
+  return `${Math.floor(s / 86400)} d ago`;
+}
 
 export default function PublishControl() {
   const [hook, setHook] = useState<string | null>(null);
@@ -10,6 +18,7 @@ export default function PublishControl() {
   const [draft, setDraft] = useState('');
   const [status, setStatus] = useState<Status>('idle');
   const [msg, setMsg] = useState<string | null>(null);
+  const [lastPub, setLastPub] = useState<string | null>(null);
 
   useEffect(() => {
     getDeployHook().then((u) => {
@@ -18,6 +27,10 @@ export default function PublishControl() {
       setLoaded(true);
       if (!u) setEditing(true);
     });
+    const refresh = () => getLastPublished().then(setLastPub);
+    refresh();
+    window.addEventListener('focus', refresh);
+    return () => window.removeEventListener('focus', refresh);
   }, []);
 
   const save = async () => {
@@ -34,6 +47,7 @@ export default function PublishControl() {
     const err = await publishNow();
     if (err) { setStatus('error'); setMsg(err); return; }
     setStatus('done');
+    setLastPub(new Date().toISOString());
     setTimeout(() => setStatus('idle'), 5000);
   };
 
@@ -55,6 +69,9 @@ export default function PublishControl() {
             <p className="mt-1.5 text-[10px] text-ink/50">Rebuild started — live in ~1 min.</p>
           )}
           {msg && <p className="mt-1.5 text-[10px] text-red-600">{msg}</p>}
+          {lastPub && (
+            <p className="mt-1.5 text-[10px] text-ink/45">Last published {timeAgo(lastPub)}</p>
+          )}
           <button
             type="button"
             onClick={() => setEditing(true)}
