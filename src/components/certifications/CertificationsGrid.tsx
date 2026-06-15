@@ -66,10 +66,13 @@ export default function CertificationsGrid({ group, category, columns = 3, fallb
       }
       // Dashboard rows may lack badge art or copy; borrow the seed values by
       // name so the grid never renders a bare tile for a known certificate.
-      const seed = new Map(fallback.map((f) => [f.name.trim().toLowerCase(), f]));
+      // Names are normalised case-insensitively, ignoring a trailing
+      // "certificate" ("EN 1401 CERTIFICATE" matches the seed's "EN 1401").
+      const norm = (n: string) => n.trim().toLowerCase().replace(/\s+certificate$/, '');
+      const seed = new Map(fallback.map((f) => [norm(f.name), f]));
       const val = (x: string | null) => (x && x.trim() ? x : null);
       const certs = sortCertifications(data as Certification[]).map((c) => {
-        const s = seed.get(c.name.trim().toLowerCase());
+        const s = seed.get(norm(c.name));
         return {
           ...c,
           logo: val(c.logo) ?? s?.logo ?? null,
