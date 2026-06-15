@@ -1,27 +1,50 @@
 ---
 import { getCollection } from 'astro:content';
-interface Props { active: string; }
-const { active } = Astro.props;
+interface Props {
+  active: string;
+  /** Sub-categories (series) of the active category, shown nested beneath it. */
+  subCategories?: string[];
+}
+const { active, subCategories = [] } = Astro.props;
 const categories = (await getCollection('categories')).sort((a, b) => a.data.order - b.data.order);
 ---
 <nav aria-label="Categories" class="categories-nav">
   <h3 class="font-mono text-[11px] uppercase tracking-wider text-ink/70 mb-2">Categories</h3>
   <ul class="flex flex-col gap-0.5">
-    {categories.map(c => (
-      <li>
-        <a
-          href={`/catalog/${c.data.slug ?? c.id}`}
-          aria-current={c.data.slug ?? c.id === active ? 'page' : undefined}
-          class:list={[
-            'block py-1.5 px-2 text-xs leading-tight rounded',
-            (c.data.slug ?? c.id) === active
-              ? 'bg-ink/5 text-brand-500 font-semibold border-l-2 border-brand-500'
-              : 'text-ink/70 hover:text-brand-500 hover:bg-ink/5 border-l-2 border-transparent'
-          ]}
-        >
-          {c.data.name}
-        </a>
-      </li>
-    ))}
+    {categories.map((c) => {
+      const slug = c.data.slug ?? c.id;
+      const isActive = slug === active;
+      return (
+        <li>
+          <a
+            href={`/catalog/${slug}`}
+            aria-current={isActive ? 'page' : undefined}
+            class:list={[
+              'block py-1.5 px-2 text-xs leading-tight rounded',
+              isActive
+                ? 'bg-ink/5 text-brand-500 font-semibold border-l-2 border-brand-500'
+                : 'text-ink/70 hover:text-brand-500 hover:bg-ink/5 border-l-2 border-transparent',
+            ]}
+          >
+            {c.data.name}
+          </a>
+
+          {isActive && subCategories.length > 0 && (
+            <ul class="mt-1 mb-2 ml-3 pl-2 border-l border-ink/10 flex flex-col gap-0.5">
+              {subCategories.map((sub) => (
+                <li>
+                  <label class="cursor-pointer block">
+                    <input type="checkbox" data-facet="materials" value={sub} class="peer sr-only" />
+                    <span class="block py-1 px-2 -ml-[9px] border-l-2 border-transparent text-[11px] leading-snug text-ink/60 hover:text-brand-500 transition-colors duration-150 peer-checked:text-brand-500 peer-checked:font-semibold peer-checked:border-brand-500">
+                      {sub}
+                    </span>
+                  </label>
+                </li>
+              ))}
+            </ul>
+          )}
+        </li>
+      );
+    })}
   </ul>
 </nav>
