@@ -4,6 +4,10 @@ import PageHero from '../../components/PageHero.astro';
 import ProductCategoryGrid from '../../components/ProductCategoryGrid.astro';
 import { getCategories } from '../../lib/categories';
 
+// On-demand so newly added / hidden categories appear without a rebuild.
+export const prerender = false;
+Astro.response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-revalidate=86400');
+
 const categories = (await getCategories()).map((c) => ({
   name: c.name,
   slug: c.slug,

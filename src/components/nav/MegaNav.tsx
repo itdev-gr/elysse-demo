@@ -19,6 +19,33 @@ export default function MegaNav({ groups }: Props) {
   const triggerRefs = useRef<Array<HTMLButtonElement | null>>([]);
   const reduce = useReducedMotion();
 
+  // Keep the Products mega-panel in sync with the live category list so changes
+  // made in the dashboard appear in the nav without a rebuild. The build-time
+  // `groups` render instantly; this refreshes them after hydration.
+  const [liveGroups, setLiveGroups] = useState(groups);
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      const { supabase } = await import('../../lib/supabase');
+      const { data } = await supabase
+        .from('product_categories')
+        .select('slug,name,image,blurb,sort_order')
+        .eq('is_active', true)
+        .order('sort_order');
+      if (cancelled || !data) return;
+      const items = data.map((c) => ({
+        label: c.name as string,
+        href: `/catalog/${c.slug}/?country=ask`,
+        image: (c.image as string) ?? undefined,
+        caption: (c.blurb as string) ?? undefined,
+      }));
+      setLiveGroups((prev) => prev.map((g) => (g.title === 'Products' ? { ...g, items } : g)));
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [groups]);
+
   const cancelClose = () => {
     if (closeTimer.current !== null) {
       window.clearTimeout(closeTimer.current);
@@ -86,7 +113,7 @@ export default function MegaNav({ groups }: Props) {
     );
   }, [active]);
 
-  const activeGroup = active !== null ? groups[active] : null;
+  const activeGroup = active !== null ? liveGroups[active] : null;
 
   return (
     <div
@@ -108,7 +135,7 @@ export default function MegaNav({ groups }: Props) {
         >
           Home
         </a>
-        {groups.map((group, idx) => {
+        {liveGroups.map((group, idx) => {
           const hasItems = group.items.length > 0;
           const isOpen = active === idx;
           return (

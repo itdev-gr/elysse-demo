@@ -9,16 +9,14 @@ import ProductGrid from '../../../components/catalog/ProductGrid.astro';
 import CountryModal from '../../../components/catalog/CountryModal.astro';
 import CategoriesNav from '../../../components/catalog/CategoriesNav.astro';
 
-export async function getStaticPaths() {
-  const categories = await getCategories();
-  return categories.map((c) => ({
-    params: { category: c.slug },
-    props: { categoryEntry: c },
-  }));
-}
+// Rendered on-demand so new/edited/hidden categories and products are live
+// immediately — no rebuild. Edge-cached for speed; revalidates within a minute.
+export const prerender = false;
+Astro.response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-revalidate=86400');
 
 const { category } = Astro.params as { category: CategorySlug };
-const { categoryEntry } = Astro.props;
+const categoryEntry = (await getCategories()).find((c) => c.slug === category);
+if (!categoryEntry) return new Response(null, { status: 404 });
 
 const excelName = categoryEntry.product_category_name ?? undefined;
 // One card per configuration (catalogue No.), sizes collapsed — matches the

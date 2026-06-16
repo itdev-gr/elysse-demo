@@ -2,18 +2,10 @@
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import NewsPostView from '../../../components/news/NewsPostView.tsx';
 
-export async function getStaticPaths() {
-  const url = import.meta.env.PUBLIC_SUPABASE_URL;
-  const anon = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
-  if (!url || !anon) {
-    // Build without env vars: emit no paths; list page still works at runtime.
-    return [];
-  }
-  const { createClient } = await import('@supabase/supabase-js');
-  const sb = createClient(url, anon);
-  const { data } = await sb.from('news').select('slug').eq('is_published', true);
-  return (data ?? []).map((row) => ({ params: { slug: row.slug as string } }));
-}
+// Rendered on-demand so a newly published item is live immediately — no
+// rebuild. Edge-cached for speed; revalidates within a minute.
+export const prerender = false;
+Astro.response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-revalidate=86400');
 
 const { slug } = Astro.params;
 ---

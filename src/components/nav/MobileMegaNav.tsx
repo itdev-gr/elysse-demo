@@ -14,6 +14,32 @@ export default function MobileMegaNav({ groups }: Props) {
   const triggerRef = useRef<HTMLButtonElement | null>(null);
   const reduce = useReducedMotion();
 
+  // Refresh the Products category list from Supabase after hydration so
+  // dashboard changes appear in the mobile nav without a rebuild.
+  const [liveGroups, setLiveGroups] = useState(groups);
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      const { supabase } = await import('../../lib/supabase');
+      const { data } = await supabase
+        .from('product_categories')
+        .select('slug,name,image,blurb,sort_order')
+        .eq('is_active', true)
+        .order('sort_order');
+      if (cancelled || !data) return;
+      const items: NavItem[] = data.map((c) => ({
+        label: c.name as string,
+        href: `/catalog/${c.slug}/?country=ask`,
+        image: (c.image as string) ?? undefined,
+        caption: (c.blurb as string) ?? undefined,
+      }));
+      setLiveGroups((prev) => prev.map((g) => (g.title === 'Products' ? { ...g, items } : g)));
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [groups]);
+
   useEffect(() => {
     if (!open) return;
     const prev = document.body.style.overflow;
@@ -108,7 +134,7 @@ export default function MobileMegaNav({ groups }: Props) {
                       Home
                     </a>
                   </li>
-                  {groups.map((group, idx) => {
+                  {liveGroups.map((group, idx) => {
                     const hasItems = group.items.length > 0;
                     const isExpanded = expanded === idx;
                     return (

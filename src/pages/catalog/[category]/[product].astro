@@ -11,33 +11,27 @@ import ConfigDetail from '../../../components/catalog/ConfigDetail.astro';
 import { fetchConfigurationDetails, configDetailToCard } from '../../../lib/products';
 import { getCategories } from '../../../lib/categories';
 import type { CatalogProduct } from '../../../scripts/catalog/types';
-import type { ConfigurationDetail } from '../../../lib/products';
 import '../../../styles/catalog.css';
 
-export async function getStaticPaths() {
-  const categories = await getCategories();
-  const paths: Array<{
-    params: { category: string; product: string };
-    props: { config: ConfigurationDetail; categoryName: string; related: CatalogProduct[] };
-  }> = [];
-  for (const c of categories) {
-    if (!c.product_category_name) continue;
-    const configs = await fetchConfigurationDetails(c.product_category_name);
-    for (const config of configs) {
-      // Related: other configurations in the same series first, then the rest.
-      const sameSeries = configs.filter((x) => x.slug !== config.slug && x.subCategory === config.subCategory);
-      const others = configs.filter((x) => x.slug !== config.slug && x.subCategory !== config.subCategory);
-      const related = [...sameSeries, ...others].slice(0, 4).map(configDetailToCard);
-      paths.push({
-        params: { category: c.slug, product: config.slug },
-        props: { config, categoryName: c.name, related },
-      });
-    }
-  }
-  return paths;
-}
+// Rendered on-demand so a newly added/edited product is live immediately — no
+// rebuild. Edge-cached for speed; revalidates within a minute.
+export const prerender = false;
+Astro.response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-revalidate=86400');
 
-const { config, categoryName, related } = Astro.props;
+const { category, product } = Astro.params as { category: string; product: string };
+const categoryEntry = (await getCategories()).find((c) => c.slug === category);
+if (!categoryEntry || !categoryEntry.product_category_name) return new Response(null, { status: 404 });
+
+const configs = await fetchConfigurationDetails(categoryEntry.product_category_name);
+const config = configs.find((x) => x.slug === product);
+if (!config) return new Response(null, { status: 404 });
+
+const categoryName = categoryEntry.name;
+// Related: other configurations in the same series first, then the rest.
+const sameSeries = configs.filter((x) => x.slug !== config.slug && x.subCategory === config.subCategory);
+const others = configs.filter((x) => x.slug !== config.slug && x.subCategory !== config.subCategory);
+const related: CatalogProduct[] = [...sameSeries, ...others].slice(0, 4).map(configDetailToCard);
+
 const desc = `${config.configuration} (No.${config.familyCode}) — ${config.subCategory}. ${config.sizes.length} sizes available.`;
 ---
 <BaseLayout title={`${config.configuration} — ${categoryName} — Elysée`} description={desc} padForHeader={false}>
