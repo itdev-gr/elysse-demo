@@ -25,8 +25,8 @@ const skuRows: SkuRow[] = c.sizes.map((s) => ({
 </header>
 
 <section class="grid grid-cols-1 lg:grid-cols-12 gap-8 mt-8">
-  {/* Image */}
-  <div class="lg:col-span-7">
+  {/* Image — sticky so it follows the scroll while the sizes column is taller */}
+  <div class="lg:col-span-7 lg:sticky lg:top-24 self-start">
     <div class="bg-surface-alt border border-ink/10 rounded-md aspect-square flex items-center justify-center text-ink/15 overflow-hidden">
       {c.image ? (
         <img src={c.image} alt={c.configuration} width="800" height="800" class="w-full h-full object-contain p-8 scale-[0.85]" />
@@ -40,8 +40,8 @@ const skuRows: SkuRow[] = c.sizes.map((s) => ({
     </div>
   </div>
 
-  {/* Sizes — sticky aside */}
-  <aside class="lg:col-span-5 lg:sticky lg:top-20 self-start flex flex-col gap-4">
+  {/* Sizes — the tall column the sticky image follows down */}
+  <aside class="lg:col-span-5 self-start flex flex-col gap-4">
     <SkuTable rows={skuRows} title="Available sizes" />
   </aside>
 </section>
