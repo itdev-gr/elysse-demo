@@ -18,6 +18,9 @@ export default function ProductForm({ initial, onDone, onCancel }:
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [opts, setOpts] = useState<{ category_name: string | null; sub_category: string | null; family_code: string | null }[]>([]);
+  // Managed series from product_subcategories (so newly-added ones with no
+  // products yet are still selectable here), keyed by the Excel category name.
+  const [managedSubs, setManagedSubs] = useState<{ category_name: string; sub_category: string }[]>([]);
   const editing = !!initial;
 
   useEffect(() => {
@@ -46,6 +49,24 @@ export default function ProductForm({ initial, onDone, onCancel }:
         seen.add(k);
         return true;
       }));
+    })();
+  }, []);
+
+  // Managed series (incl. ones added in the Categories tab with no products yet).
+  useEffect(() => {
+    (async () => {
+      const [{ data: pcats }, { data: psubs }] = await Promise.all([
+        supabase.from('product_categories').select('slug, product_category_name'),
+        supabase.from('product_subcategories').select('category_slug, name').eq('is_active', true),
+      ]);
+      const nameBySlug = new Map(
+        ((pcats ?? []) as { slug: string; product_category_name: string | null }[]).map((c) => [c.slug, c.product_category_name]),
+      );
+      setManagedSubs(
+        ((psubs ?? []) as { category_slug: string; name: string }[])
+          .map((s) => ({ category_name: nameBySlug.get(s.category_slug) ?? null, sub_category: s.name }))
+          .filter((x): x is { category_name: string; sub_category: string } => !!x.category_name),
+      );
     })();
   }, []);
 
@@ -94,9 +115,10 @@ export default function ProductForm({ initial, onDone, onCancel }:
   const uniqSorted = (vals: (string | null)[]) =>
     [...new Set(vals.filter((v): v is string => !!v))].sort((a, b) => a.localeCompare(b));
   const categoryOpts = uniqSorted(opts.map((o) => o.category_name));
-  const subCategoryOpts = uniqSorted(
-    opts.filter((o) => !d.category_name || o.category_name === d.category_name).map((o) => o.sub_category),
-  );
+  const subCategoryOpts = uniqSorted([
+    ...opts.filter((o) => !d.category_name || o.category_name === d.category_name).map((o) => o.sub_category),
+    ...managedSubs.filter((o) => !d.category_name || o.category_name === d.category_name).map((o) => o.sub_category),
+  ]);
   const familyCodeOpts = uniqSorted(
     opts
       .filter((o) => (!d.category_name || o.category_name === d.category_name) && (!d.sub_category || o.sub_category === d.sub_category))

@@ -12,6 +12,8 @@ export default function CategoriesTab() {
   const [error, setError] = useState<string | null>(null);
   const [editing, setEditing] = useState<string | null>(null);              // slug being edited
   const [creating, setCreating] = useState(false);
+  const [addingSubFor, setAddingSubFor] = useState<string | null>(null);    // category slug adding a series to
+  const [newSubName, setNewSubName] = useState('');
 
   const load = async () => {
     setError(null);
@@ -100,6 +102,21 @@ export default function CategoriesTab() {
     await load(); triggerPublish();
   };
 
+  // Add a brand-new series under a category.
+  const addSub = async (cat: ProductCategory) => {
+    const name = newSubName.trim();
+    if (!name) return;
+    if (subs.some((s) => s.category_slug === cat.slug && s.name.toLowerCase() === name.toLowerCase())) {
+      return setError(`"${name}" already exists under ${cat.name}.`);
+    }
+    const base = subs.filter((s) => s.category_slug === cat.slug).length;
+    const { error: err } = await supabase.from('product_subcategories')
+      .insert({ category_slug: cat.slug, name, sort_order: base });
+    if (err) return setError(err.message);
+    setAddingSubFor(null); setNewSubName('');
+    await load(); triggerPublish();
+  };
+
   // Insert overlay rows for any products.sub_category not yet present for this category.
   const rescan = async (cat: ProductCategory) => {
     if (!cat.product_category_name) return;
@@ -159,11 +176,33 @@ export default function CategoriesTab() {
 
                 <div className="flex items-center justify-between mt-2 mb-2">
                   <p className="text-[10px] uppercase tracking-[0.25em] text-ink/45">Sub-categories (series)</p>
-                  {excel && (
-                    <button type="button" onClick={() => rescan(cat)} className="text-[10px] uppercase tracking-[0.2em] text-ink/55">Rescan from products</button>
-                  )}
+                  <div className="flex items-center gap-4">
+                    <button type="button" onClick={() => { setAddingSubFor(cat.slug); setNewSubName(''); setError(null); }}
+                      className="text-[10px] uppercase tracking-[0.2em] text-brand-500">+ Add subcategory</button>
+                    {excel && (
+                      <button type="button" onClick={() => rescan(cat)} className="text-[10px] uppercase tracking-[0.2em] text-ink/55">Rescan from products</button>
+                    )}
+                  </div>
                 </div>
-                {catSubs.length === 0 && <p className="text-sm text-ink/50">No series.</p>}
+                {addingSubFor === cat.slug && (
+                  <div className="flex items-center gap-2 mb-3">
+                    <input
+                      autoFocus
+                      value={newSubName}
+                      onChange={(e) => setNewSubName(e.currentTarget.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') addSub(cat);
+                        if (e.key === 'Escape') { setAddingSubFor(null); setNewSubName(''); }
+                      }}
+                      placeholder="New series name"
+                      className="flex-1 bg-transparent border-b border-ink/25 py-1.5 text-sm focus:outline-none focus:border-brand-500" />
+                    <button type="button" onClick={() => addSub(cat)}
+                      className="bg-brand-500 text-surface px-4 py-1.5 text-[11px] uppercase tracking-[0.2em]">Add</button>
+                    <button type="button" onClick={() => { setAddingSubFor(null); setNewSubName(''); }}
+                      className="px-3 py-1.5 text-[11px] uppercase tracking-[0.2em] text-ink/60">Cancel</button>
+                  </div>
+                )}
+                {catSubs.length === 0 && addingSubFor !== cat.slug && <p className="text-sm text-ink/50">No series.</p>}
                 <ul className="flex flex-col gap-1">
                   {catSubs.map((sub) => {
                     const count = excel ? (subCounts[`${excel}|${sub.name}`] ?? 0) : 0;
