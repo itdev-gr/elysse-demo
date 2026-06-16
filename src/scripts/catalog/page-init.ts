@@ -26,6 +26,7 @@ export function initCatalogPage(country: Country, categorySlug: CategorySlug) {
   const list = root.querySelector<HTMLElement>('[data-products-list]');
   const empty = root.querySelector<HTMLElement>('[data-catalog-empty]');
   const countEl = root.querySelector<HTMLElement>('[data-catalog-count]');
+  const breadcrumbSeries = root.querySelector<HTMLElement>('[data-catalog-breadcrumb-series]');
   const searchInput = root.querySelector<HTMLInputElement>('[data-catalog-search]');
   const sortSelect = root.querySelector<HTMLSelectElement>('[data-catalog-sort]');
   const activeChips = root.querySelector<HTMLElement>('[data-active-filters]');
@@ -69,6 +70,10 @@ export function initCatalogPage(country: Country, categorySlug: CategorySlug) {
     });
     if (empty) empty.classList.toggle('hidden', sorted.length !== 0);
     if (countEl) countEl.textContent = `Showing ${sorted.length} of ${products.length} products`;
+    // Reflect the selected series (sub-category) in the breadcrumb.
+    if (breadcrumbSeries) {
+      breadcrumbSeries.textContent = filters.materials.length === 1 ? ` / ${filters.materials[0]}` : '';
+    }
     renderActiveChips();
     syncUrl();
   }
