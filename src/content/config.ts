@@ -43,17 +43,4 @@ const products = defineCollection({
   }),
 });
 
-const categories = defineCollection({
-  type: 'content',
-  schema: z.object({
-    name: z.string(),
-    slug: z.string().optional(),
-    order: z.number().int().nonnegative(),
-    image: z.string(),
-    sourceImage: z.string().url().optional(),
-    leafletPdf: z.string().optional(),
-    blurb: z.string(),
-  }),
-});
-
-export const collections = { products, categories };
+export const collections = { products };

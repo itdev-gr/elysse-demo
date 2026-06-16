@@ -1,18 +1,18 @@
 ---
-import { getCollection } from 'astro:content';
+import { getCategories } from '../../lib/categories';
 interface Props {
   active: string;
   /** Sub-categories (series) of the active category, shown nested beneath it. */
   subCategories?: string[];
 }
 const { active, subCategories = [] } = Astro.props;
-const categories = (await getCollection('categories')).sort((a, b) => a.data.order - b.data.order);
+const categories = await getCategories();
 ---
 <nav aria-label="Categories" class="categories-nav">
   <h3 class="font-mono text-[11px] uppercase tracking-wider text-ink/70 mb-2">Categories</h3>
   <ul class="flex flex-col gap-0.5">
     {categories.map((c) => {
-      const slug = c.data.slug ?? c.id;
+      const slug = c.slug;
       const isActive = slug === active;
       return (
         <li>
@@ -26,7 +26,7 @@ const categories = (await getCollection('categories')).sort((a, b) => a.data.ord
                 : 'text-ink/70 hover:text-brand-500 hover:bg-ink/5 border-l-2 border-transparent',
             ]}
           >
-            {c.data.name}
+            {c.name}
           </a>
 
           {isActive && subCategories.length > 0 && (

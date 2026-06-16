@@ -7,32 +7,30 @@
  * data come from the Supabase-backed `products` table via fetchConfigurationDetails.
  */
 import BaseLayout from '../../../layouts/BaseLayout.astro';
-import { getCollection } from 'astro:content';
 import ConfigDetail from '../../../components/catalog/ConfigDetail.astro';
-import { EXCEL_CATEGORY_NAME, fetchConfigurationDetails, configDetailToCard } from '../../../lib/products';
+import { fetchConfigurationDetails, configDetailToCard } from '../../../lib/products';
+import { getCategories } from '../../../lib/categories';
 import type { CatalogProduct } from '../../../scripts/catalog/types';
 import type { ConfigurationDetail } from '../../../lib/products';
 import '../../../styles/catalog.css';
 
 export async function getStaticPaths() {
-  const categories = await getCollection('categories');
-  const nameBySlug: Record<string, string> = Object.fromEntries(
-    categories.map((c) => [c.data.slug ?? c.id, c.data.name]),
-  );
+  const categories = await getCategories();
   const paths: Array<{
     params: { category: string; product: string };
     props: { config: ConfigurationDetail; categoryName: string; related: CatalogProduct[] };
   }> = [];
-  for (const [slug, name] of Object.entries(EXCEL_CATEGORY_NAME)) {
-    const configs = await fetchConfigurationDetails(name);
+  for (const c of categories) {
+    if (!c.product_category_name) continue;
+    const configs = await fetchConfigurationDetails(c.product_category_name);
     for (const config of configs) {
       // Related: other configurations in the same series first, then the rest.
       const sameSeries = configs.filter((x) => x.slug !== config.slug && x.subCategory === config.subCategory);
       const others = configs.filter((x) => x.slug !== config.slug && x.subCategory !== config.subCategory);
       const related = [...sameSeries, ...others].slice(0, 4).map(configDetailToCard);
       paths.push({
-        params: { category: slug, product: config.slug },
-        props: { config, categoryName: nameBySlug[slug] ?? config.categoryName, related },
+        params: { category: c.slug, product: config.slug },
+        props: { config, categoryName: c.name, related },
       });
     }
   }

@@ -1,20 +1,16 @@
 ---
-import { getCollection } from 'astro:content';
+import { getCategories } from '../lib/categories';
 import { navGroups, type NavItem } from '../data/navigation';
 import MegaNav from './nav/MegaNav.tsx';
 
 // Build the Products mega-panel from the `categories` content collection so
 // the 13 product categories render as image cards (same layout as Innovation).
-const productItems: NavItem[] = (await getCollection('categories'))
-  .sort((a, b) => a.data.order - b.data.order)
-  .map((c) => ({
-    label: c.data.name,
-    // `?country=ask` forces the country picker to open even if a country is
-    // already stored — see the entry script in src/pages/catalog/[category]/index.astro.
-    href: `/catalog/${c.data.slug ?? c.id}/?country=ask`,
-    image: c.data.image,
-    caption: c.data.blurb,
-  }));
+const productItems: NavItem[] = (await getCategories()).map((c) => ({
+  label: c.name,
+  href: `/catalog/${c.slug}/?country=ask`,
+  image: c.image,
+  caption: c.blurb ?? undefined,
+}));
 
 const groupsForNav = navGroups.map((g) =>
   g.title === 'Products' ? { ...g, items: productItems } : g,

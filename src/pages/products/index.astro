@@ -2,14 +2,13 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import PageHero from '../../components/PageHero.astro';
 import ProductCategoryGrid from '../../components/ProductCategoryGrid.astro';
-import { getCollection } from 'astro:content';
+import { getCategories } from '../../lib/categories';
 
-const cats = (await getCollection('categories')).sort((a, b) => a.data.order - b.data.order);
-const categories = cats.map((c) => ({
-  name: c.data.name,
-  slug: c.data.slug ?? c.id,
-  pdf: c.data.leafletPdf,
-  image: c.data.image,
+const categories = (await getCategories()).map((c) => ({
+  name: c.name,
+  slug: c.slug,
+  pdf: c.leaflet_pdf ?? undefined,
+  image: c.image,
 }));
 ---
 <BaseLayout
