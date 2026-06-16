@@ -311,7 +311,7 @@ export default function ImagesTab() {
     <div className="flex flex-col gap-12">
 
       {/* ── 1. Upload ──────────────────────────────────────────────────── */}
-      <section className="order-2">
+      <section className="order-1">
         <h2 className="font-display font-heavy text-base text-ink mb-4">
           Upload images
         </h2>
@@ -373,7 +373,7 @@ export default function ImagesTab() {
       </section>
 
       {/* ── 3. Allocate to products ────────────────────────────────────── */}
-      <section className="order-1">
+      <section className="order-2">
         <h2 className="font-display font-heavy text-base text-ink mb-4">
           Allocate images to configurations
         </h2>
