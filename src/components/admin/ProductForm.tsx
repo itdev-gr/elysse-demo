@@ -17,6 +17,7 @@ export default function ProductForm({ initial, onDone, onCancel }:
   const [groups, setGroups] = useState<string[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const [opts, setOpts] = useState<{ category_name: string | null; sub_category: string | null; family_code: string | null }[]>([]);
   const editing = !!initial;
 
   useEffect(() => {
@@ -24,6 +25,29 @@ export default function ProductForm({ initial, onDone, onCancel }:
     supabase.from('product_group_memberships').select('group_code').eq('product_code', initial.code)
       .then(({ data }) => setGroups((data ?? []).map((r: { group_code: string }) => r.group_code)));
   }, [initial]);
+
+  // Distinct category / sub-category / family-code combos from existing products,
+  // used to populate the dropdowns.
+  useEffect(() => {
+    (async () => {
+      const PAGE = 1000;
+      const rows: typeof opts = [];
+      for (let from = 0; ; from += PAGE) {
+        const { data } = await supabase.from('products')
+          .select('category_name, sub_category, family_code').range(from, from + PAGE - 1);
+        if (!data || data.length === 0) break;
+        rows.push(...(data as typeof opts));
+        if (data.length < PAGE) break;
+      }
+      const seen = new Set<string>();
+      setOpts(rows.filter((r) => {
+        const k = `${r.category_name}|${r.sub_category}|${r.family_code}`;
+        if (seen.has(k)) return false;
+        seen.add(k);
+        return true;
+      }));
+    })();
+  }, []);
 
   const set = <K extends keyof ProductDraft>(k: K, v: ProductDraft[K]) => setD((p) => ({ ...p, [k]: v }));
   const num = (v: string): number | null => {
@@ -67,6 +91,30 @@ export default function ProductForm({ initial, onDone, onCancel }:
     </label>
   );
 
+  const uniqSorted = (vals: (string | null)[]) =>
+    [...new Set(vals.filter((v): v is string => !!v))].sort((a, b) => a.localeCompare(b));
+  const categoryOpts = uniqSorted(opts.map((o) => o.category_name));
+  const subCategoryOpts = uniqSorted(
+    opts.filter((o) => !d.category_name || o.category_name === d.category_name).map((o) => o.sub_category),
+  );
+  const familyCodeOpts = uniqSorted(
+    opts
+      .filter((o) => (!d.category_name || o.category_name === d.category_name) && (!d.sub_category || o.sub_category === d.sub_category))
+      .map((o) => o.family_code),
+  );
+
+  const selectField = (label: string, value: string | null, options: string[], onPick: (v: string | null) => void) => (
+    <label className="block mb-3">
+      <span className="block text-[10px] uppercase tracking-[0.2em] text-ink/55 mb-1">{label}</span>
+      <select value={value ?? ''} onChange={(e) => onPick(e.currentTarget.value || null)}
+        className="w-full bg-transparent border-b border-ink/25 py-2 text-sm focus:outline-none focus:border-brand-500">
+        <option value="">— select —</option>
+        {value && !options.includes(value) && <option value={value}>{value}</option>}
+        {options.map((o) => <option key={o} value={o}>{o}</option>)}
+      </select>
+    </label>
+  );
+
   return (
     <div className="max-w-2xl">
       {error && <p role="alert" className="text-sm text-red-700 bg-red-50 border-l-2 border-red-500 px-3 py-2 mb-6">{error}</p>}
@@ -76,12 +124,14 @@ export default function ProductForm({ initial, onDone, onCancel }:
           <input value={d.code} disabled={editing} onChange={(e) => set('code', e.currentTarget.value)}
             className="w-full bg-transparent border-b border-ink/25 py-2 text-sm font-mono disabled:opacity-50 focus:outline-none focus:border-brand-500" />
         </label>
-        {field('Category name', 'category_name')}
+        {selectField('Category name', d.category_name, categoryOpts, (v) =>
+          setD((p) => ({ ...p, category_name: v, sub_category: null, family_code: null })))}
         {field('Category letter', 'category')}
-        {field('Sub-category', 'sub_category')}
+        {selectField('Sub-category', d.sub_category, subCategoryOpts, (v) =>
+          setD((p) => ({ ...p, sub_category: v, family_code: null })))}
         {field('Configuration', 'configuration')}
         {field('Size', 'size')}
-        {field('Family code', 'family_code')}
+        {selectField('Family code', d.family_code, familyCodeOpts, (v) => set('family_code', v))}
         {field('Box size', 'box_size')}
         {field('Packing bag', 'packing_bag', 'number')}
         {field('Packing box', 'packing_box', 'number')}
