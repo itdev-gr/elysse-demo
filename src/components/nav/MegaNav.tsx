@@ -32,7 +32,7 @@ export default function MegaNav({ groups }: Props) {
         .select('slug,name,image,blurb,sort_order')
         .eq('is_active', true)
         .order('sort_order');
-      if (cancelled || !data) return;
+      if (cancelled || !data || data.length === 0) return; // never blank a good build-time nav
       const items = data.map((c) => ({
         label: c.name as string,
         href: `/catalog/${c.slug}/?country=ask`,
