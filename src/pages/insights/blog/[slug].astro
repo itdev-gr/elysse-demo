@@ -14,5 +14,5 @@ const { slug } = Astro.params;
   description=""
   padForHeader={false}
 >
-  <BlogPostView slug={slug ?? ''} client:load />
+  <BlogPostView slug={slug ?? ''} client:only="react" />
 </BaseLayout>
