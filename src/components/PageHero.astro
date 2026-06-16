@@ -9,11 +9,16 @@ interface Props {
   /** Alt text for the background image. Falls back to an empty string
    * (image becomes decorative) if omitted but `image` is set. */
   imageAlt?: string;
+  /** Shorter hero (for listing pages that need room for content below). */
+  compact?: boolean;
 }
-const { title, eyebrow, subtitle, image, imageAlt } = Astro.props;
+const { title, eyebrow, subtitle, image, imageAlt, compact = false } = Astro.props;
+
+const heroH = compact ? 'min-h-[46vh] md:min-h-[54vh]' : 'min-h-[72vh] md:min-h-[80vh]';
+const heroPad = compact ? 'pt-32 md:pt-36 pb-10 md:pb-12' : 'pt-40 md:pt-48 pb-16 md:pb-20';
 ---
 {image ? (
-  <section class="relative min-h-[72vh] md:min-h-[80vh] flex items-end text-surface overflow-hidden">
+  <section class={`relative ${heroH} flex items-end text-surface overflow-hidden`}>
     <img
       data-page-hero-parallax
       src={image}
@@ -23,7 +28,7 @@ const { title, eyebrow, subtitle, image, imageAlt } = Astro.props;
     <div aria-hidden="true" class="absolute inset-0 bg-gradient-to-b from-ink/45 via-ink/20 to-ink/80"></div>
     <div aria-hidden="true" class="absolute inset-0 bg-brand-500/30"></div>
 
-    <div class="relative mx-auto max-w-screen-xl w-full px-4 md:px-8 pt-40 md:pt-48 pb-16 md:pb-20">
+    <div class={`relative mx-auto max-w-screen-xl w-full px-4 md:px-8 ${heroPad}`}>
       {eyebrow && (
         <p data-reveal class="text-[11px] md:text-xs uppercase tracking-[0.4em] text-surface/85 mb-6 md:mb-8">{eyebrow}</p>
       )}
