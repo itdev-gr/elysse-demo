@@ -9,6 +9,7 @@ import CataloguesTab from './CataloguesTab';
 import MessagesTab from './MessagesTab';
 import SettingsTab from './SettingsTab';
 import ProductsTab from './ProductsTab';
+import CategoriesTab from './CategoriesTab';
 import GroupsTab from './GroupsTab';
 import DataErrorsTab from './DataErrorsTab';
 import ImagesTab from './ImagesTab';
@@ -16,7 +17,7 @@ import PublishControl from './PublishControl';
 
 type Tab =
   | 'jobs' | 'posts' | 'news' | 'countries' | 'certs' | 'catalogues'
-  | 'products' | 'groups' | 'errors' | 'messages' | 'settings' | 'images';
+  | 'products' | 'categories' | 'groups' | 'errors' | 'messages' | 'settings' | 'images';
 
 const HEADINGS: Record<Tab, string> = {
   jobs: 'Jobs.',
@@ -27,6 +28,7 @@ const HEADINGS: Record<Tab, string> = {
   catalogues: 'Catalogues.',
   images: 'Images.',
   products: 'Products.',
+  categories: 'Categories.',
   groups: 'Country Groups.',
   errors: 'Data Errors.',
   messages: 'Messages.',
@@ -39,6 +41,7 @@ const GROUPS: { label: string; items: { id: Tab; label: string }[] }[] = [
     label: 'Products',
     items: [
       { id: 'products', label: 'Products' },
+      { id: 'categories', label: 'Categories' },
       { id: 'groups', label: 'Country Groups' },
       { id: 'errors', label: 'Data Errors' },
       { id: 'catalogues', label: 'Catalogues' },
@@ -173,6 +176,7 @@ export default function Dashboard() {
           {tab === 'certs' && <CertificationsTab />}
           {tab === 'catalogues' && <CataloguesTab />}
           {tab === 'products' && <ProductsTab />}
+          {tab === 'categories' && <CategoriesTab />}
           {tab === 'groups' && <GroupsTab />}
           {tab === 'errors' && <DataErrorsTab />}
           {tab === 'messages' && <MessagesTab />}
