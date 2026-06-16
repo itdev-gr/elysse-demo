@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { supabase } from '../../lib/supabase';
 import type { Post } from '../../types/post';
 import PostForm from './PostForm';
+import { triggerPublish } from '../../lib/publish';
 
 type Mode =
   | { kind: 'list' }
@@ -46,6 +47,7 @@ export default function PostsTab() {
       .eq('id', post.id);
     if (err) return setError(err.message);
     await load();
+    triggerPublish();
   };
 
   const remove = async (post: Post) => {
@@ -53,6 +55,7 @@ export default function PostsTab() {
     const { error: err } = await supabase.from('posts').delete().eq('id', post.id);
     if (err) return setError(err.message);
     await load();
+    triggerPublish();
   };
 
   return (
@@ -138,6 +141,7 @@ export default function PostsTab() {
           onSaved={async () => {
             setMode({ kind: 'list' });
             await load();
+            triggerPublish();
           }}
           onCancel={() => setMode({ kind: 'list' })}
         />
@@ -149,6 +153,7 @@ export default function PostsTab() {
           onSaved={async () => {
             setMode({ kind: 'list' });
             await load();
+            triggerPublish();
           }}
           onCancel={() => setMode({ kind: 'list' })}
         />

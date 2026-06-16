@@ -3,6 +3,7 @@ import { supabase } from '../../lib/supabase';
 import MarkdownEditor from './MarkdownEditor';
 import { slugify, calcReadingMinutes, uploadNewsCover } from '../../lib/news';
 import type { NewsArticle, NewsDraft } from '../../types/news';
+import { triggerPublish } from '../../lib/publish';
 
 const MAX_BYTES = 4 * 1024 * 1024;
 const ALLOWED_MIME = ['image/jpeg', 'image/png', 'image/webp'];
@@ -127,6 +128,7 @@ export default function NewsForm({ initial, onSaved, onCancel }: Props) {
         if (err) throw err;
       }
 
+      triggerPublish();
       onSaved();
     } catch (err) {
       setError((err as Error).message);

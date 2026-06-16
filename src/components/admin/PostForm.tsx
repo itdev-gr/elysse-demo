@@ -3,6 +3,7 @@ import { supabase } from '../../lib/supabase';
 import MarkdownEditor from './MarkdownEditor';
 import { slugify, calcReadingMinutes, uploadCoverImage } from '../../lib/posts';
 import type { Post, PostDraft } from '../../types/post';
+import { triggerPublish } from '../../lib/publish';
 
 const MAX_BYTES = 4 * 1024 * 1024;
 const ALLOWED_MIME = ['image/jpeg', 'image/png', 'image/webp'];
@@ -130,6 +131,7 @@ export default function PostForm({ initial, onSaved, onCancel }: Props) {
         if (err) throw err;
       }
 
+      triggerPublish();
       onSaved();
     } catch (err) {
       setError((err as Error).message);

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { supabase } from '../../lib/supabase';
 import type { NewsArticle } from '../../types/news';
 import NewsForm from './NewsForm';
+import { triggerPublish } from '../../lib/publish';
 
 type Mode =
   | { kind: 'list' }
@@ -46,6 +47,7 @@ export default function NewsTab() {
       .eq('id', article.id);
     if (err) return setError(err.message);
     await load();
+    triggerPublish();
   };
 
   const remove = async (article: NewsArticle) => {
@@ -53,6 +55,7 @@ export default function NewsTab() {
     const { error: err } = await supabase.from('news').delete().eq('id', article.id);
     if (err) return setError(err.message);
     await load();
+    triggerPublish();
   };
 
   return (
@@ -138,6 +141,7 @@ export default function NewsTab() {
           onSaved={async () => {
             setMode({ kind: 'list' });
             await load();
+            triggerPublish();
           }}
           onCancel={() => setMode({ kind: 'list' })}
         />
@@ -149,6 +153,7 @@ export default function NewsTab() {
           onSaved={async () => {
             setMode({ kind: 'list' });
             await load();
+            triggerPublish();
           }}
           onCancel={() => setMode({ kind: 'list' })}
         />
