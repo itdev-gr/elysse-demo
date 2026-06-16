@@ -6,6 +6,7 @@ import SnapSection from '../components/SnapSection.astro';
 import SnapNav, { type SnapNavItem } from '../components/SnapNav.astro';
 import Container from '../components/Container.astro';
 import HomeNewsCards from '../components/news/HomeNewsCards.tsx';
+import Footer from '../components/Footer.astro';
 import { homePage as page, servicesCards } from '../data/content';
 
 // Split sections so text sections become full-screen image panels
@@ -26,6 +27,7 @@ const slugify = (s: string) =>
 
 const HERO_ID = 'panel-hero';
 const NEWS_ID = 'panel-news';
+const FOOTER_ID = 'panel-footer';
 
 const textIds = textSections.map((s) => `panel-${slugify(s.eyebrow ?? s.heading ?? 'section')}`);
 
@@ -36,12 +38,14 @@ const navItems: SnapNavItem[] = [
     label: s.eyebrow ?? s.heading ?? `Section ${i + 1}`,
   })),
   ...(newsSection ? [{ id: NEWS_ID, label: newsSection.heading ?? 'News' }] : []),
+  { id: FOOTER_ID, label: 'Contact' },
 ];
 ---
 <BaseLayout
   title={page.meta.title}
   description={page.meta.description}
   padForHeader={false}
+  hideFooter
 >
   <script is:inline>
     document.documentElement.setAttribute('data-snap-page', '');
@@ -183,4 +187,14 @@ const navItems: SnapNavItem[] = [
       </Container>
     </section>
   )}
+
+  {/* Final panel — the site footer, as a full-screen snap section */}
+  <section
+    id={FOOTER_ID}
+    data-snap
+    data-light-bg
+    class="relative min-h-[100dvh] w-full snap-start snap-always flex flex-col justify-end bg-surface"
+  >
+    <Footer />
+  </section>
 </BaseLayout>
