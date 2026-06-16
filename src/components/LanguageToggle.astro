@@ -1,0 +1,53 @@
+---
+// Language switcher shown in the nav bar. Persists the choice and reflects the
+// active language. (Wiring it to translated content / i18n routing is a
+// separate, larger task — for now it stores the preference.)
+const langs = [
+  { code: 'en', label: 'EN' },
+  { code: 'el', label: 'GR' },
+  { code: 'de', label: 'DE' },
+];
+---
+<div
+  class="ml-auto lg:ml-0 flex items-center gap-1 text-[11px] shrink-0"
+  data-lang-toggle
+  role="group"
+  aria-label="Select language"
+>
+  {langs.map((l, i) => (
+    <>
+      {i > 0 && <span aria-hidden="true" class="opacity-30">·</span>}
+      <button
+        type="button"
+        data-lang={l.code}
+        class="px-1 py-1 uppercase tracking-wider font-medium transition-colors duration-200 hover:text-brand-500 cursor-pointer"
+      >{l.label}</button>
+    </>
+  ))}
+</div>
+
+<script>
+  const KEY = 'elysee.lang';
+  document.querySelectorAll<HTMLElement>('[data-lang-toggle]').forEach((toggle) => {
+    const buttons = Array.from(toggle.querySelectorAll<HTMLButtonElement>('[data-lang]'));
+    const sync = (code: string) => {
+      buttons.forEach((b) => {
+        const active = b.dataset.lang === code;
+        b.setAttribute('aria-current', String(active));
+        b.classList.toggle('text-brand-500', active);
+        b.classList.toggle('font-semibold', active);
+      });
+    };
+    let current = 'en';
+    try { current = localStorage.getItem(KEY) || 'en'; } catch { /* private mode */ }
+    sync(current);
+    toggle.addEventListener('click', (e) => {
+      const btn = (e.target as HTMLElement).closest<HTMLButtonElement>('[data-lang]');
+      if (!btn) return;
+      const code = btn.dataset.lang!;
+      try { localStorage.setItem(KEY, code); } catch { /* private mode */ }
+      document.documentElement.lang = code;
+      sync(code);
+    });
+  });
+</script>
