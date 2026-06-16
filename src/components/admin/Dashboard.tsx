@@ -27,7 +27,7 @@ const HEADINGS: Record<Tab, string> = {
   catalogues: 'Catalogues.',
   images: 'Images.',
   products: 'Products.',
-  groups: 'Groups.',
+  groups: 'Country Groups.',
   errors: 'Data Errors.',
   messages: 'Messages.',
   settings: 'Settings.',
@@ -39,7 +39,7 @@ const GROUPS: { label: string; items: { id: Tab; label: string }[] }[] = [
     label: 'Products',
     items: [
       { id: 'products', label: 'Products' },
-      { id: 'groups', label: 'Groups' },
+      { id: 'groups', label: 'Country Groups' },
       { id: 'errors', label: 'Data Errors' },
       { id: 'catalogues', label: 'Catalogues' },
       { id: 'images', label: 'Images' },
