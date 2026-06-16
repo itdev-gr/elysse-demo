@@ -13,7 +13,6 @@ import CategoriesTab from './CategoriesTab';
 import GroupsTab from './GroupsTab';
 import DataErrorsTab from './DataErrorsTab';
 import ImagesTab from './ImagesTab';
-import PublishControl from './PublishControl';
 
 type Tab =
   | 'jobs' | 'posts' | 'news' | 'countries' | 'certs' | 'catalogues'
@@ -115,8 +114,6 @@ export default function Dashboard() {
           </div>
         ))}
       </nav>
-
-      <PublishControl />
 
       <div className="px-5 py-4 border-t border-ink/10">
         <button

@@ -13,7 +13,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://www.sonanbunkers.com',
+  site: 'https://elysse-demo.vercel.app',
 
   // Static by default; data-driven routes opt into on-demand rendering with
   // `export const prerender = false` so dashboard changes go live with no
