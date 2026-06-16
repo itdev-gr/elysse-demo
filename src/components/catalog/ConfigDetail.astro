@@ -16,12 +16,22 @@ const skuRows: SkuRow[] = c.sizes.map((s) => ({
   bag: s.packing_bag ?? undefined,
   moq: s.moq ?? undefined,
 }));
+
+// Name + description are rendered in English and swapped to the visitor's
+// chosen language client-side (with English fallback). The full per-language
+// map travels in a data attribute; see the script below.
+const nameI18nJson = JSON.stringify(c.nameI18n);
+const descI18nJson = JSON.stringify(c.descriptionI18n);
+const hasDescription = !!c.description || Object.values(c.descriptionI18n).some((v) => !!v);
 ---
 {/* Title — above the image, full width */}
 <header class="mt-6 md:mt-8">
   <p class="font-mono text-[11px] text-ink/65">No.{c.familyCode}</p>
-  <h1 class="mt-1 font-heavy text-4xl lg:text-5xl leading-tight text-ink">{c.configuration}</h1>
+  <h1 data-i18n-name={nameI18nJson} class="mt-1 font-heavy text-4xl lg:text-5xl leading-tight text-ink">{c.configuration}</h1>
   <p class="mt-2 text-sm text-ink/60">{c.subCategory}</p>
+  {hasDescription && (
+    <p data-i18n-desc={descI18nJson} class="mt-4 max-w-2xl text-base text-ink/75 leading-relaxed whitespace-pre-line">{c.description}</p>
+  )}
 </header>
 
 <section class="grid grid-cols-1 lg:grid-cols-12 gap-8 mt-8">
@@ -47,3 +57,25 @@ const skuRows: SkuRow[] = c.sizes.map((s) => ({
 </section>
 
 {related.length > 0 && <RelatedProducts products={related} />}
+
+<script>
+  // Swap the product name + description to the visitor's chosen language,
+  // falling back to English when a translation is missing.
+  function applyLang(lang: string) {
+    document.querySelectorAll<HTMLElement>('[data-i18n-name], [data-i18n-desc]').forEach((el) => {
+      const raw = el.dataset.i18nName ?? el.dataset.i18nDesc;
+      if (!raw) return;
+      let map: Record<string, string>;
+      try { map = JSON.parse(raw); } catch { return; }
+      const text = map[lang] ?? map.en;
+      if (text != null) el.textContent = text;
+    });
+  }
+  let lang = 'en';
+  try { lang = localStorage.getItem('elysee.lang') || 'en'; } catch { /* private mode */ }
+  applyLang(lang);
+  document.addEventListener('elysee:lang', (e) => {
+    const next = (e as CustomEvent<{ lang: string }>).detail?.lang;
+    if (next) applyLang(next);
+  });
+</script>

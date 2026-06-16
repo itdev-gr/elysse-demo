@@ -5,10 +5,16 @@ import { triggerPublish } from '../../lib/publish';
 import type { Product, ProductDraft } from '../../types/product';
 
 const GROUPS = ['A', 'B', 'C', 'D', 'E'];
+const I18N_LANGS: { code: string; label: string }[] = [
+  { code: 'el', label: 'Greek' },
+  { code: 'de', label: 'German' },
+  { code: 'es', label: 'Spanish' },
+  { code: 'fr', label: 'French' },
+];
 const EMPTY: ProductDraft = {
   code: '', category: null, category_name: null, sub_category: null, family_code: null,
   configuration: null, size: null, packing_bag: null, packing_box: null, moq: null,
-  box_size: null, description: null, sort_order: 0, is_active: true,
+  box_size: null, description: null, name_i18n: {}, description_i18n: {}, sort_order: 0, is_active: true,
 };
 
 export default function ProductForm({ initial, onDone, onCancel }:
@@ -76,6 +82,8 @@ export default function ProductForm({ initial, onDone, onCancel }:
     const n = Number(v);
     return Number.isNaN(n) ? null : n;
   };
+  const setI18n = (field: 'name_i18n' | 'description_i18n', lang: string, value: string) =>
+    setD((p) => ({ ...p, [field]: { ...(p[field] ?? {}), [lang]: value } }));
 
   const submit = async () => {
     const msg = validateProductDraft(d);
@@ -160,10 +168,32 @@ export default function ProductForm({ initial, onDone, onCancel }:
         {field('MOQ', 'moq', 'number')}
       </div>
       <label className="block mb-3">
-        <span className="block text-[10px] uppercase tracking-[0.2em] text-ink/55 mb-1">Description</span>
+        <span className="block text-[10px] uppercase tracking-[0.2em] text-ink/55 mb-1">Description (English)</span>
         <textarea value={d.description ?? ''} onChange={(e) => set('description', e.currentTarget.value)}
           className="w-full bg-transparent border border-ink/20 p-2 text-sm focus:outline-none focus:border-brand-500" rows={2} />
       </label>
+
+      <fieldset className="mb-5 border-t border-ink/10 pt-4">
+        <legend className="text-[10px] uppercase tracking-[0.2em] text-ink/55 mb-1">Translations</legend>
+        <p className="text-[10px] text-ink/45 mb-3">Name translates the Configuration. Anything left blank falls back to English on the site.</p>
+        {I18N_LANGS.map((l) => (
+          <div key={l.code} className="mb-4">
+            <p className="text-[11px] font-semibold text-ink/70 mb-1">{l.label}</p>
+            <input
+              value={d.name_i18n?.[l.code] ?? ''}
+              onChange={(e) => setI18n('name_i18n', l.code, e.currentTarget.value)}
+              placeholder={`Name — ${l.label}`}
+              className="w-full bg-transparent border-b border-ink/25 py-1.5 text-sm mb-2 focus:outline-none focus:border-brand-500" />
+            <textarea
+              value={d.description_i18n?.[l.code] ?? ''}
+              onChange={(e) => setI18n('description_i18n', l.code, e.currentTarget.value)}
+              placeholder={`Description — ${l.label}`}
+              rows={2}
+              className="w-full bg-transparent border border-ink/20 p-2 text-sm focus:outline-none focus:border-brand-500" />
+          </div>
+        ))}
+      </fieldset>
+
       <fieldset className="mb-5">
         <legend className="text-[10px] uppercase tracking-[0.2em] text-ink/55 mb-2">Groups (countries that can see it)</legend>
         <div className="flex gap-4">

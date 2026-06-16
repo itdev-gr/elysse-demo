@@ -12,6 +12,11 @@ export interface Product {
   moq: number | null;
   box_size: string | null;
   description: string | null;
+  // Per-language overrides for the product name (configuration) and description.
+  // Keyed by language code (el | de | es | fr); English lives in the plain
+  // `configuration` / `description` columns and is the fallback.
+  name_i18n: Record<string, string> | null;
+  description_i18n: Record<string, string> | null;
   image_url: string | null;
   sort_order: number;
   is_active: boolean;

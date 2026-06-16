@@ -50,6 +50,8 @@ const langs = [
       try { localStorage.setItem(KEY, code); } catch { /* private mode */ }
       document.documentElement.lang = code;
       sync(code);
+      // Let language-aware content (e.g. product name/description) react.
+      document.dispatchEvent(new CustomEvent('elysee:lang', { detail: { lang: code } }));
     });
   });
 </script>

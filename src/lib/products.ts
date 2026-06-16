@@ -196,6 +196,12 @@ export interface ConfigurationDetail {
   slug: string;
   familyCode: string;
   configuration: string;
+  /** Plain-English description (representative row). */
+  description: string | null;
+  /** Name (configuration) by language, incl. `en`. Falls back to English. */
+  nameI18n: Record<string, string>;
+  /** Description by language, incl. `en`. Falls back to English. */
+  descriptionI18n: Record<string, string>;
   subCategory: string;
   categorySlug: CategorySlug;
   categoryName: string;
@@ -203,6 +209,9 @@ export interface ConfigurationDetail {
   availableCountries: string[];
   sizes: ConfigSize[];
 }
+
+/** Languages with optional translations (English is the source + fallback). */
+const I18N_LANGS = ['el', 'de', 'es', 'fr'] as const;
 
 /** Build-time fetch: every configuration in a category, each with its sizes. */
 export async function fetchConfigurationDetails(categoryName: string): Promise<ConfigurationDetail[]> {
@@ -214,10 +223,14 @@ export async function fetchConfigurationDetails(categoryName: string): Promise<C
     const countries = countriesByCode.get(p.code) ?? [];
     let cfg = map.get(slug);
     if (!cfg) {
+      const enName = p.configuration ?? p.description ?? familyCode;
       cfg = {
         slug,
         familyCode,
-        configuration: p.configuration ?? p.description ?? familyCode,
+        configuration: enName,
+        description: p.description ?? null,
+        nameI18n: { en: enName },
+        descriptionI18n: p.description ? { en: p.description } : {},
         subCategory: p.sub_category ?? '',
         categorySlug: CATEGORY_SLUG_BY_NAME[p.category_name ?? ''] ?? 'compression-fittings',
         categoryName: p.category_name ?? categoryName,
@@ -228,6 +241,13 @@ export async function fetchConfigurationDetails(categoryName: string): Promise<C
       map.set(slug, cfg);
     }
     if (!cfg.image && p.image_url) cfg.image = p.image_url;
+    // Merge in any per-language translations from this row (first non-empty wins).
+    const ni = p.name_i18n ?? {};
+    const di = p.description_i18n ?? {};
+    for (const lang of I18N_LANGS) {
+      if (ni[lang]?.trim() && !cfg.nameI18n[lang]) cfg.nameI18n[lang] = ni[lang].trim();
+      if (di[lang]?.trim() && !cfg.descriptionI18n[lang]) cfg.descriptionI18n[lang] = di[lang].trim();
+    }
     cfg.sizes.push({
       code: p.code, size: p.size, packing_bag: p.packing_bag, packing_box: p.packing_box,
       moq: p.moq, box_size: p.box_size, countries,
