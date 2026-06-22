@@ -122,7 +122,7 @@ export default function BlogPostView({ slug }: Props) {
         </p>
 
         <div
-          className="mt-10 text-base md:text-lg text-ink/85 leading-[1.7] [&_h2]:font-display [&_h2]:font-heavy [&_h2]:text-2xl [&_h2]:md:text-3xl [&_h2]:text-ink [&_h2]:mt-10 [&_h2]:mb-5 [&_h3]:font-display [&_h3]:font-heavy [&_h3]:text-xl [&_h3]:text-ink [&_h3]:mt-8 [&_h3]:mb-4 [&_p]:mb-5 [&_a]:text-brand-500 [&_a]:underline [&_ul]:list-disc [&_ul]:pl-6 [&_ul]:mb-5 [&_ol]:list-decimal [&_ol]:pl-6 [&_ol]:mb-5 [&_li]:mb-1 [&_blockquote]:border-l-4 [&_blockquote]:border-brand-500 [&_blockquote]:pl-4 [&_blockquote]:italic [&_blockquote]:my-6 [&_strong]:font-semibold [&_strong]:text-ink"
+          className="mt-10 text-base md:text-lg text-ink/85 leading-[1.7] [&_h2]:font-display [&_h2]:font-heavy [&_h2]:text-2xl [&_h2]:md:text-3xl [&_h2]:text-ink [&_h2]:mt-10 [&_h2]:mb-5 [&_h3]:font-display [&_h3]:font-heavy [&_h3]:text-xl [&_h3]:text-ink [&_h3]:mt-8 [&_h3]:mb-4 [&_p]:mb-5 [&_a]:text-brand-500 [&_a]:underline [&_ul]:list-disc [&_ul]:pl-6 [&_ul]:mb-5 [&_ol]:list-decimal [&_ol]:pl-6 [&_ol]:mb-5 [&_li]:mb-1 [&_blockquote]:border-l-4 [&_blockquote]:border-brand-500 [&_blockquote]:pl-4 [&_blockquote]:italic [&_blockquote]:my-6 [&_strong]:font-semibold [&_strong]:text-ink [&_img]:w-full [&_img]:h-auto [&_img]:my-8 [&_img]:bg-surface-alt"
           // Sanitized via DOMPurify in renderPostBody.
           dangerouslySetInnerHTML={{ __html: renderPostBody(post.body) }}
         />

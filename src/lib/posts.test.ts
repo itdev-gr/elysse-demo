@@ -59,4 +59,21 @@ describe('renderPostBody', () => {
     expect(html).toContain('rel="noopener noreferrer"');
     expect(html).toContain('target="_blank"');
   });
+  it('keeps images served from our Supabase Storage', () => {
+    const src = 'https://hsamhykaqmiiheneonxz.supabase.co/storage/v1/object/public/blog-covers/blog/x/y.png';
+    const html = renderPostBody(`![alt](${src})`);
+    expect(html).toContain(`src="${src}"`);
+    expect(html).toContain('loading="lazy"');
+  });
+  it('drops images hot-linked from the source site', () => {
+    const html = renderPostBody('![alt](https://elysee.com.cy/image/large/249/x.png)');
+    expect(html).not.toContain('<img');
+    expect(html).not.toContain('elysee.com.cy');
+  });
+  it('unwraps links pointing back at the source site', () => {
+    const html = renderPostBody('[catalogue](https://elysee.com.cy/catalogues)');
+    expect(html).toContain('catalogue');
+    expect(html).not.toContain('href="https://elysee.com.cy/catalogues"');
+    expect(html).not.toContain('elysee.com.cy');
+  });
 });
