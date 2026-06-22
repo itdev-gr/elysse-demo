@@ -82,6 +82,12 @@ export default function ProductForm({ initial, onDone, onCancel }:
     const n = Number(v);
     return Number.isNaN(n) ? null : n;
   };
+  // Packing counts must be positive: 0 or a negative value clears the field.
+  const posNum = (v: string): number | null => {
+    if (v.trim() === '') return null;
+    const n = Number(v);
+    return !Number.isFinite(n) || n <= 0 ? null : Math.trunc(n);
+  };
   const setI18n = (field: 'name_i18n' | 'description_i18n', lang: string, value: string) =>
     setD((p) => ({ ...p, [field]: { ...(p[field] ?? {}), [lang]: value } }));
 
@@ -116,6 +122,17 @@ export default function ProductForm({ initial, onDone, onCancel }:
       <span className="block text-[10px] uppercase tracking-[0.2em] text-ink/55 mb-1">{label}</span>
       <input type={type} value={(d[k] as string | number | null) ?? ''}
         onChange={(e) => set(k, (type === 'number' ? num(e.currentTarget.value) : e.currentTarget.value) as never)}
+        className="w-full bg-transparent border-b border-ink/25 py-2 text-sm focus:outline-none focus:border-brand-500" />
+    </label>
+  );
+
+  // Packing bag/box: positive integers only; 0 or negatives clear the field.
+  const packField = (label: string, k: 'packing_bag' | 'packing_box') => (
+    <label className="block mb-3">
+      <span className="block text-[10px] uppercase tracking-[0.2em] text-ink/55 mb-1">{label}</span>
+      <input type="number" min={1} step={1} value={(d[k] as number | null) || ''}
+        onChange={(e) => set(k, posNum(e.currentTarget.value) as never)}
+        onKeyDown={(e) => { if (e.key === '-' || e.key === 'e') e.preventDefault(); }}
         className="w-full bg-transparent border-b border-ink/25 py-2 text-sm focus:outline-none focus:border-brand-500" />
     </label>
   );
@@ -163,8 +180,8 @@ export default function ProductForm({ initial, onDone, onCancel }:
         {field('Size', 'size')}
         {selectField('Family code', d.family_code, familyCodeOpts, (v) => set('family_code', v))}
         {field('Box size', 'box_size')}
-        {field('Packing bag', 'packing_bag', 'number')}
-        {field('Packing box', 'packing_box', 'number')}
+        {packField('Packing bag', 'packing_bag')}
+        {packField('Packing box', 'packing_box')}
         {field('MOQ', 'moq', 'number')}
       </div>
       <label className="block mb-3">
