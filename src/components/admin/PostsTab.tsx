@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { supabase } from '../../lib/supabase';
 import type { Post } from '../../types/post';
 import PostForm from './PostForm';
+import FeaturedToggle from './FeaturedToggle';
 import { triggerPublish } from '../../lib/publish';
 
 type Mode =
@@ -91,6 +92,7 @@ export default function PostsTab() {
                     <th className="px-4 py-3">Author</th>
                     <th className="px-4 py-3">Published</th>
                     <th className="px-4 py-3">Status</th>
+                    <th className="px-4 py-3">Home</th>
                     <th className="px-4 py-3 text-right">Actions</th>
                   </tr>
                 </thead>
@@ -112,6 +114,15 @@ export default function PostsTab() {
                           >
                             {status}
                           </span>
+                        </td>
+                        <td className="px-4 py-3">
+                          <FeaturedToggle
+                            table="posts"
+                            id={p.id}
+                            featured={p.featured_home}
+                            rank={p.featured_rank}
+                            onSaved={load}
+                          />
                         </td>
                         <td className="px-4 py-3 text-right">
                           <div className="inline-flex items-center gap-3 text-[11px] uppercase tracking-[0.25em]">

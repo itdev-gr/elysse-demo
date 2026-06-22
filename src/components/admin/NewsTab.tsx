@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { supabase } from '../../lib/supabase';
 import type { NewsArticle } from '../../types/news';
 import NewsForm from './NewsForm';
+import FeaturedToggle from './FeaturedToggle';
 import { triggerPublish } from '../../lib/publish';
 
 type Mode =
@@ -91,6 +92,7 @@ export default function NewsTab() {
                     <th className="px-4 py-3">Author</th>
                     <th className="px-4 py-3">Published</th>
                     <th className="px-4 py-3">Status</th>
+                    <th className="px-4 py-3">Home</th>
                     <th className="px-4 py-3 text-right">Actions</th>
                   </tr>
                 </thead>
@@ -112,6 +114,15 @@ export default function NewsTab() {
                           >
                             {status}
                           </span>
+                        </td>
+                        <td className="px-4 py-3">
+                          <FeaturedToggle
+                            table="news"
+                            id={a.id}
+                            featured={a.featured_home}
+                            rank={a.featured_rank}
+                            onSaved={load}
+                          />
                         </td>
                         <td className="px-4 py-3 text-right">
                           <div className="inline-flex items-center gap-3 text-[11px] uppercase tracking-[0.25em]">

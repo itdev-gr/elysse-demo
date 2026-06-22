@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { supabase, isSupabaseConfigured } from '../../lib/supabase';
-import type { NewsArticle } from '../../types/news';
+import { isSupabaseConfigured } from '../../lib/supabase';
+import { fetchHomeFeatured, hrefFor } from '../../lib/home-featured';
 
 /** Card shape shared by live data and the server-provided fallback. */
 export interface HomeNewsItem {
@@ -30,19 +30,14 @@ export default function HomeNewsCards({ fallback }: Props) {
     if (!isSupabaseConfigured) return;
     let cancelled = false;
     (async () => {
-      const { data, error } = await supabase
-        .from('news')
-        .select('slug,title,published_at,cover_image')
-        .eq('is_published', true)
-        .order('published_at', { ascending: false, nullsFirst: false })
-        .limit(3);
-      if (cancelled || error || !data || data.length === 0) return;
+      const featured = await fetchHomeFeatured();
+      if (cancelled || !featured || featured.length === 0) return;
       setItems(
-        (data as Pick<NewsArticle, 'slug' | 'title' | 'published_at' | 'cover_image'>[]).map((a) => ({
-          href: a.slug ? `/insights/news/${a.slug}/` : null,
-          title: a.title,
-          date: a.published_at,
-          image: a.cover_image,
+        featured.map((item) => ({
+          href: hrefFor(item),
+          title: item.title,
+          date: item.published_at,
+          image: item.cover_image,
         })),
       );
     })();
