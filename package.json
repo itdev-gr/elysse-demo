@@ -34,7 +34,8 @@
     "sharp": "^0.34.5",
     "tailwind-merge": "^3.6.0",
     "tailwindcss": "^4.3.0",
-    "three": "^0.184.0"
+    "three": "^0.184.0",
+    "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz"
   },
   "overrides": {
     "vite": "^7.3.2"
@@ -48,11 +49,13 @@
     "@types/three": "^0.184.1",
     "@vitest/ui": "^4.1.6",
     "axe-core": "^4.11.4",
+    "cheerio": "^1.2.0",
     "happy-dom": "^20.9.0",
     "prettier": "^3.8.3",
     "prettier-plugin-astro": "^0.14.1",
     "prettier-plugin-tailwindcss": "^0.8.0",
     "svgo": "^4.0.1",
+    "turndown": "^7.2.4",
     "typescript": "^6.0.3",
     "vitest": "^4.1.6"
   }

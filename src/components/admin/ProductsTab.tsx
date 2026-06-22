@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { supabase } from '../../lib/supabase';
 import type { Product } from '../../types/product';
 import ProductForm from './ProductForm';
+import ProductBulkBar from './ProductBulkBar';
 import { triggerPublish } from '../../lib/publish';
 
 type Mode = { kind: 'list' } | { kind: 'create' } | { kind: 'edit'; product: Product };
@@ -65,6 +66,7 @@ export default function ProductsTab() {
   return (
     <>
       {error && <p role="alert" className="text-sm text-red-700 bg-red-50 border-l-2 border-red-500 px-3 py-2 mb-6">{error}</p>}
+      <ProductBulkBar onChanged={load} />
       <div className="mb-4 flex items-center gap-4">
         <button type="button" onClick={() => setMode({ kind: 'create' })}
           className="inline-flex items-center gap-2 bg-brand-500 text-surface px-5 py-2.5 text-[11px] uppercase tracking-[0.25em] font-medium hover:bg-brand-700 transition-colors duration-200 cursor-pointer">
