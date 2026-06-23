@@ -152,7 +152,7 @@ export default function ImagesTab() {
     for (const p of products) {
       const sub = p.sub_category ?? '';
       const fam = p.family_code ?? '';
-      const key = `${sub}|${fam}`;
+      const key = `${p.category_name ?? ''}|${sub}|${fam}`;
       if (!map.has(key)) {
         map.set(key, {
           key,
@@ -197,10 +197,11 @@ export default function ImagesTab() {
 
   const handleAssign = async (img: ProductImage) => {
     if (!assignTarget) return;
-    const { sub_category: subCat, family_code: fam } = assignTarget;
+    const { category_name: cat, sub_category: subCat, family_code: fam } = assignTarget;
     const { error } = await supabase
       .from('products')
       .update({ image_url: img.url })
+      .eq('category_name', cat)
       .eq('sub_category', subCat)
       .eq('family_code', fam);
     if (error) { setAssignError(error.message); return; }
@@ -211,10 +212,11 @@ export default function ImagesTab() {
 
   const handleClear = async () => {
     if (!assignTarget) return;
-    const { sub_category: subCat, family_code: fam } = assignTarget;
+    const { category_name: cat, sub_category: subCat, family_code: fam } = assignTarget;
     const { error } = await supabase
       .from('products')
       .update({ image_url: null })
+      .eq('category_name', cat)
       .eq('sub_category', subCat)
       .eq('family_code', fam);
     if (error) { setAssignError(error.message); return; }
