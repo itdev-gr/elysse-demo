@@ -1,12 +1,12 @@
 ---
-import type { GetStaticPaths } from 'astro';
+export const prerender = false;
 import ExhibitionDetail from '../../../components/insights/ExhibitionDetail.astro';
-import { exhibitionDetails } from '../../../data/site-content';
+import { getExhibitionBySlug } from '../../../lib/exhibitions';
 
-export const getStaticPaths = (() => {
-  return exhibitionDetails.map((e) => ({ params: { slug: e.slug }, props: { exhibition: e } }));
-}) satisfies GetStaticPaths;
+Astro.response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-revalidate=86400');
 
-const { exhibition } = Astro.props;
+const { slug } = Astro.params;
+const exhibition = slug ? await getExhibitionBySlug(slug) : null;
+if (!exhibition) return Astro.redirect('/insights/exhibitions/', 302);
 ---
 <ExhibitionDetail exhibition={exhibition} />

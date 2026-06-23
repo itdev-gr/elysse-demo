@@ -1,12 +1,12 @@
 ---
-import type { GetStaticPaths } from 'astro';
+export const prerender = false;
 import MediaDetail from '../../../components/insights/MediaDetail.astro';
-import { mediaDetails } from '../../../data/site-content';
+import { getMediaBySlug } from '../../../lib/media';
 
-export const getStaticPaths = (() => {
-  return mediaDetails.map((m) => ({ params: { slug: m.slug }, props: { media: m } }));
-}) satisfies GetStaticPaths;
+Astro.response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-revalidate=86400');
 
-const { media } = Astro.props;
+const { slug } = Astro.params;
+const media = slug ? await getMediaBySlug(slug) : null;
+if (!media) return Astro.redirect('/insights/media/', 302);
 ---
 <MediaDetail media={media} />

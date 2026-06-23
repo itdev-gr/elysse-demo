@@ -1,10 +1,23 @@
 ---
+export const prerender = false;
 import ListPageLayout from '../../../layouts/ListPageLayout.astro';
+import { listMedia } from '../../../lib/media';
+import { mediaToCard } from '../../../lib/insights-cards';
 import { insightsMediaItems } from '../../../data/site-content';
+
+Astro.response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-revalidate=86400');
+
+let items;
+const rows = await listMedia();
+if (rows.length > 0) {
+  items = rows.map(mediaToCard);
+} else {
+  items = insightsMediaItems; // offline fallback
+}
 ---
 <ListPageLayout
   title="Media"
   eyebrow="Insights"
   subtitle="Videos, photographs, and broadcast coverage featuring Elysée."
-  items={insightsMediaItems}
+  items={items}
 />

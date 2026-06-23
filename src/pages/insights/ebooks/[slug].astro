@@ -1,12 +1,12 @@
 ---
-import type { GetStaticPaths } from 'astro';
+export const prerender = false;
 import EbookDetail from '../../../components/insights/EbookDetail.astro';
-import { ebookDetails } from '../../../data/site-content';
+import { getEbookBySlug } from '../../../lib/ebooks';
 
-export const getStaticPaths = (() => {
-  return ebookDetails.map((b) => ({ params: { slug: b.slug }, props: { ebook: b } }));
-}) satisfies GetStaticPaths;
+Astro.response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-revalidate=86400');
 
-const { ebook } = Astro.props;
+const { slug } = Astro.params;
+const ebook = slug ? await getEbookBySlug(slug) : null;
+if (!ebook) return Astro.redirect('/insights/ebooks/', 302);
 ---
 <EbookDetail ebook={ebook} />

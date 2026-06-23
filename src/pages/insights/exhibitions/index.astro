@@ -1,10 +1,23 @@
 ---
+export const prerender = false;
 import ListPageLayout from '../../../layouts/ListPageLayout.astro';
+import { listExhibitions } from '../../../lib/exhibitions';
+import { exhibitionToCard } from '../../../lib/insights-cards';
 import { insightsExhibitionsItems } from '../../../data/site-content';
+
+Astro.response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-revalidate=86400');
+
+let items;
+const rows = await listExhibitions();
+if (rows.length > 0) {
+  items = rows.map(exhibitionToCard);
+} else {
+  items = insightsExhibitionsItems; // offline fallback
+}
 ---
 <ListPageLayout
   title="Exhibitions"
   eyebrow="Insights"
-  subtitle="Trade fairs and international exhibitions where you can meet the Elysée team."
-  items={insightsExhibitionsItems}
+  subtitle="Where to meet Elysée — trade fairs and exhibitions across the group."
+  items={items}
 />

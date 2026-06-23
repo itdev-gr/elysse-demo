@@ -1,63 +1,36 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import PageHero from '../../components/PageHero.astro';
-import ContentBlocks from '../../components/ContentBlocks.astro';
-import type { EbookDetail } from '../../data/site-content';
+import { renderPostBody } from '../../lib/posts';
+import type { Ebook } from '../../types/ebook';
 
-interface Props { ebook: EbookDetail; }
+interface Props { ebook: Ebook; }
 const { ebook } = Astro.props;
+const bodyHtml = renderPostBody(ebook.body ?? '');
 ---
-<BaseLayout title={ebook.title} description={ebook.excerpt} ogImage={ebook.coverImage}>
+<BaseLayout title={ebook.title} description={ebook.excerpt} ogImage={ebook.cover_image}>
   <PageHero title={ebook.title} eyebrow="Insights · eBooks" />
-
   <article class="mx-auto max-w-screen-lg px-4 md:px-8 py-12 md:py-16">
     <div class="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-12">
-      {/* Cover + CTA */}
       <aside class="md:col-span-4">
         <div class="md:sticky md:top-28 space-y-6">
-          {ebook.coverImage && (
+          {ebook.cover_image && (
             <figure data-reveal class="overflow-hidden bg-brand-500/5 border border-ink/10 rounded-sm aspect-[3/4]">
-              <img
-                src={ebook.coverImage}
-                alt={ebook.imageAlt ?? `${ebook.title} cover`}
-                loading="eager"
-                class="w-full h-full object-cover"
-              />
+              <img src={ebook.cover_image} alt={ebook.image_alt ?? `${ebook.title} cover`} loading="eager" class="w-full h-full object-cover" />
             </figure>
           )}
-          {ebook.year && (
-            <p data-reveal class="text-xs uppercase tracking-widest text-ink/60">Published {ebook.year}</p>
-          )}
-          {ebook.downloadUrl ? (
-            <a
-              data-reveal
-              href={ebook.downloadUrl}
-              download
-              class="inline-flex items-center justify-center gap-2 px-6 py-3 bg-brand-500 text-surface text-[11px] uppercase tracking-[0.25em] font-medium hover:bg-brand-700 transition-colors duration-200"
-            >
-              Download PDF
-            </a>
+          {ebook.year && <p data-reveal class="text-xs uppercase tracking-widest text-ink/60">Published {ebook.year}</p>}
+          {ebook.download_url ? (
+            <a data-reveal href={ebook.download_url} download class="inline-flex items-center justify-center gap-2 px-6 py-3 bg-brand-500 text-surface text-[11px] uppercase tracking-[0.25em] font-medium hover:bg-brand-700 transition-colors duration-200">Download PDF</a>
           ) : (
-            <a
-              data-reveal
-              href="/contact/local/"
-              class="inline-flex items-center justify-center gap-2 px-6 py-3 bg-brand-500 text-surface text-[11px] uppercase tracking-[0.25em] font-medium hover:bg-brand-700 transition-colors duration-200"
-            >
-              Request a copy
-            </a>
+            <a data-reveal href="/contact/local/" class="inline-flex items-center justify-center gap-2 px-6 py-3 bg-brand-500 text-surface text-[11px] uppercase tracking-[0.25em] font-medium hover:bg-brand-700 transition-colors duration-200">Request a copy</a>
           )}
         </div>
       </aside>
-
-      {/* Body */}
       <div class="md:col-span-8 space-y-6">
-        <ContentBlocks blocks={ebook.blocks} />
-
+        <div class="space-y-4 text-ink/80 leading-relaxed" set:html={bodyHtml}></div>
         <nav aria-label="Back to eBooks" class="pt-8 mt-8 border-t border-ink/10">
-          <a
-            href="/insights/ebooks/"
-            class="inline-flex items-center gap-1 text-sm font-medium text-brand-500 hover:text-brand-accent transition-colors duration-150"
-          >
+          <a href="/insights/ebooks/" class="inline-flex items-center gap-1 text-sm font-medium text-brand-500 hover:text-brand-accent transition-colors duration-150">
             <span aria-hidden="true">←</span> Back to eBooks
           </a>
         </nav>

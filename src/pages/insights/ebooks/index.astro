@@ -1,10 +1,23 @@
 ---
+export const prerender = false;
 import ListPageLayout from '../../../layouts/ListPageLayout.astro';
+import { listEbooks } from '../../../lib/ebooks';
+import { ebookToCard } from '../../../lib/insights-cards';
 import { insightsEbooksItems } from '../../../data/site-content';
+
+Astro.response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-revalidate=86400');
+
+let items;
+const rows = await listEbooks();
+if (rows.length > 0) {
+  items = rows.map(ebookToCard);
+} else {
+  items = insightsEbooksItems; // offline fallback
+}
 ---
 <ListPageLayout
   title="eBooks"
   eyebrow="Insights"
-  subtitle="Downloadable reports and publications from Elysée's green and innovation programmes."
-  items={insightsEbooksItems}
+  subtitle="Reports, guides and publications from Elysée."
+  items={items}
 />
