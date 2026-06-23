@@ -1653,8 +1653,8 @@ export const localOffices: Office[] = [
     phone: '+357 22 455 100',
     phone2: '+357 22 317 913',
     hours: 'Monday–Friday 07:00–13:00 & 13:30–16:30\nSaturday 07:30–13:00',
-    lat: 35.138,
-    lng: 33.337,
+    lat: 35.1266675,
+    lng: 33.355002,
   },
   {
     name: 'Ergates Nicosia',
@@ -1664,8 +1664,8 @@ export const localOffices: Office[] = [
     phone: '+357 22 455 006',
     phone2: '+357 22 455 055',
     hours: 'Monday–Friday 07:30–16:00\nSaturday 07:30–12:30',
-    lat: 35.045,
-    lng: 33.248,
+    lat: 35.0637853,
+    lng: 33.2268412,
   },
   {
     name: 'Larnaca',
@@ -1675,8 +1675,8 @@ export const localOffices: Office[] = [
     phone: '+357 24 847 999',
     phone2: '+357 24 641 089',
     hours: 'Monday–Friday 07:30–16:00',
-    lat: 34.952,
-    lng: 33.588,
+    lat: 34.9401141,
+    lng: 33.5853897,
   },
   {
     name: 'Frenaros',
@@ -1686,8 +1686,8 @@ export const localOffices: Office[] = [
     phone: '+357 23 847 999',
     phone2: '+357 23 743 773',
     hours: 'Monday–Friday 07:30–16:00\nSaturday 07:30–12:30',
-    lat: 35.043,
-    lng: 33.913,
+    lat: 35.033415,
+    lng: 33.909868,
   },
   {
     name: 'Limassol',
@@ -1697,8 +1697,8 @@ export const localOffices: Office[] = [
     phone: '+357 25 847 999',
     phone2: '+357 25 722 033',
     hours: 'Monday–Friday 07:30–16:00\nSaturday 07:30–12:30',
-    lat: 34.706,
-    lng: 32.997,
+    lat: 34.7049446,
+    lng: 33.0644293,
   },
   {
     name: 'Paphos',
@@ -1708,8 +1708,8 @@ export const localOffices: Office[] = [
     phone: '+357 26 847 999',
     phone2: '+357 26 962 122',
     hours: 'Monday–Friday 07:30–16:00',
-    lat: 34.790,
-    lng: 32.452,
+    lat: 34.779296,
+    lng: 32.446584,
   },
 ];
 
