@@ -20,9 +20,9 @@ export default defineConfig({
   // rebuild. The Vercel adapter provides the serverless runtime for those.
   adapter: vercel(),
 
-  // Careers moved from the Contact section to About Us; keep the old URL alive.
+  // Careers moved from the About Us section to Contact Us; keep the old URL alive.
   redirects: {
-    '/contact/careers/': '/about-us/careers/',
+    '/about-us/careers/': '/contact/careers/',
   },
 
   vite: {
