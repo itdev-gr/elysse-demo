@@ -43,7 +43,8 @@ describe('toCatalogProduct', () => {
     code: '330001610', category: 'A', category_name: 'Compression Fittings',
     sub_category: 'Epsilon Series PN16', family_code: '330', configuration: 'Adaptor Male',
     size: '16 x ⅜"', packing_bag: 25, packing_box: 750, moq: 0, box_size: 'L',
-    description: 'Adaptor Male Epsilon Series PN16 - 16 x ⅜"', sort_order: 1,
+    description: 'Adaptor Male Epsilon Series PN16 - 16 x ⅜"',
+    name_i18n: null, description_i18n: null, image_url: null, sort_order: 1,
     is_active: true, created_at: '', updated_at: '',
   };
   it('maps fields and country availability', () => {

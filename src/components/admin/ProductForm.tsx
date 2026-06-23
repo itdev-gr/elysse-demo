@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '../../lib/supabase';
 import { validateProductDraft, nextProductSortOrder } from '../../lib/products';
+import { mergeFamilyCodes } from '../../lib/families';
 import { triggerPublish } from '../../lib/publish';
 import type { Product, ProductDraft } from '../../types/product';
 
@@ -14,7 +15,8 @@ const I18N_LANGS: { code: string; label: string }[] = [
 const EMPTY: ProductDraft = {
   code: '', category: null, category_name: null, sub_category: null, family_code: null,
   configuration: null, size: null, packing_bag: null, packing_box: null, moq: null,
-  box_size: null, description: null, name_i18n: {}, description_i18n: {}, sort_order: 0, is_active: true,
+  box_size: null, description: null, name_i18n: {}, description_i18n: {}, image_url: null,
+  sort_order: 0, is_active: true,
 };
 
 export default function ProductForm({ initial, onDone, onCancel }:
@@ -27,6 +29,9 @@ export default function ProductForm({ initial, onDone, onCancel }:
   // Managed series from product_subcategories (so newly-added ones with no
   // products yet are still selectable here), keyed by the Excel category name.
   const [managedSubs, setManagedSubs] = useState<{ category_name: string; sub_category: string }[]>([]);
+  // Managed family codes from product_families (likewise selectable before any
+  // product uses them), each carrying the image allocated to that code.
+  const [managedFamilies, setManagedFamilies] = useState<{ category_name: string; code: string; image_url: string | null }[]>([]);
   const editing = !!initial;
 
   useEffect(() => {
@@ -58,12 +63,14 @@ export default function ProductForm({ initial, onDone, onCancel }:
     })();
   }, []);
 
-  // Managed series (incl. ones added in the Categories tab with no products yet).
+  // Managed series + family codes (incl. ones added in the Categories / Family
+  // tabs with no products yet).
   useEffect(() => {
     (async () => {
-      const [{ data: pcats }, { data: psubs }] = await Promise.all([
+      const [{ data: pcats }, { data: psubs }, { data: pfams }] = await Promise.all([
         supabase.from('product_categories').select('slug, product_category_name'),
         supabase.from('product_subcategories').select('category_slug, name').eq('is_active', true),
+        supabase.from('product_families').select('category_slug, code, image_url').eq('is_active', true),
       ]);
       const nameBySlug = new Map(
         ((pcats ?? []) as { slug: string; product_category_name: string | null }[]).map((c) => [c.slug, c.product_category_name]),
@@ -72,6 +79,11 @@ export default function ProductForm({ initial, onDone, onCancel }:
         ((psubs ?? []) as { category_slug: string; name: string }[])
           .map((s) => ({ category_name: nameBySlug.get(s.category_slug) ?? null, sub_category: s.name }))
           .filter((x): x is { category_name: string; sub_category: string } => !!x.category_name),
+      );
+      setManagedFamilies(
+        ((pfams ?? []) as { category_slug: string; code: string; image_url: string | null }[])
+          .map((f) => ({ category_name: nameBySlug.get(f.category_slug) ?? null, code: f.code, image_url: f.image_url }))
+          .filter((x): x is { category_name: string; code: string; image_url: string | null } => !!x.category_name),
       );
     })();
   }, []);
@@ -144,11 +156,27 @@ export default function ProductForm({ initial, onDone, onCancel }:
     ...opts.filter((o) => !d.category_name || o.category_name === d.category_name).map((o) => o.sub_category),
     ...managedSubs.filter((o) => !d.category_name || o.category_name === d.category_name).map((o) => o.sub_category),
   ]);
-  const familyCodeOpts = uniqSorted(
+  // Codes already on products (filtered by the chosen category + series) merged
+  // with the managed codes for the category (which may have no products yet).
+  const familyCodeOpts = mergeFamilyCodes(
     opts
       .filter((o) => (!d.category_name || o.category_name === d.category_name) && (!d.sub_category || o.sub_category === d.sub_category))
       .map((o) => o.family_code),
+    managedFamilies
+      .filter((m) => !d.category_name || m.category_name === d.category_name)
+      .map((m) => m.code),
   );
+
+  // Pick a family code; if that code has an allocated image and the draft has
+  // none yet, default the product's image to it.
+  const pickFamilyCode = (v: string | null) =>
+    setD((p) => {
+      const fam = v
+        ? managedFamilies.find((m) => m.code === v && (!p.category_name || m.category_name === p.category_name))
+        : undefined;
+      const image_url = fam?.image_url && !p.image_url ? fam.image_url : p.image_url;
+      return { ...p, family_code: v, image_url };
+    });
 
   const selectField = (label: string, value: string | null, options: string[], onPick: (v: string | null) => void) => (
     <label className="block mb-3">
@@ -178,7 +206,7 @@ export default function ProductForm({ initial, onDone, onCancel }:
           setD((p) => ({ ...p, sub_category: v, family_code: null })))}
         {field('Configuration', 'configuration')}
         {field('Size', 'size')}
-        {selectField('Family code', d.family_code, familyCodeOpts, (v) => set('family_code', v))}
+        {selectField('Family code', d.family_code, familyCodeOpts, pickFamilyCode)}
         {field('Box size', 'box_size')}
         {packField('Packing bag', 'packing_bag')}
         {packField('Packing box', 'packing_box')}
