@@ -12,9 +12,10 @@ export default function GroupCountryForm({ groupCode, onDone, onCancel }:
   const submit = async () => {
     if (busy) return;
     if (!country.trim()) return setError('Country name is required.');
+    if (!code.trim()) return setError('ISO code is required (e.g. au) — without it the country is unavailable in the catalog.');
     setBusy(true);
     const { error: err } = await supabase.from('group_countries')
-      .insert({ group_code: groupCode, country: country.trim(), country_code: code.trim() || null });
+      .insert({ group_code: groupCode, country: country.trim(), country_code: code.trim() });
     if (err) { setBusy(false); return setError(err.code === '23505' ? 'That country is already mapped to a group.' : err.message); }
     setBusy(false);
     triggerPublish();
