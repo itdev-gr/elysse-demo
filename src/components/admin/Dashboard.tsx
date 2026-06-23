@@ -3,6 +3,9 @@ import { supabase } from '../../lib/supabase';
 import JobsTab from './JobsTab';
 import PostsTab from './PostsTab';
 import NewsTab from './NewsTab';
+import ExhibitionsTab from './ExhibitionsTab';
+import MediaTab from './MediaTab';
+import EbooksTab from './EbooksTab';
 import CountriesTab from './CountriesTab';
 import CertificationsTab from './CertificationsTab';
 import CataloguesTab from './CataloguesTab';
@@ -16,13 +19,16 @@ import DataErrorsTab from './DataErrorsTab';
 import ImagesTab from './ImagesTab';
 
 type Tab =
-  | 'jobs' | 'posts' | 'news' | 'countries' | 'certs' | 'catalogues'
+  | 'jobs' | 'posts' | 'news' | 'exhibitions' | 'media' | 'ebooks' | 'countries' | 'certs' | 'catalogues'
   | 'products' | 'categories' | 'families' | 'groups' | 'errors' | 'messages' | 'settings' | 'images';
 
 const HEADINGS: Record<Tab, string> = {
   jobs: 'Jobs.',
   posts: 'Posts.',
   news: 'News.',
+  exhibitions: 'Exhibitions.',
+  media: 'Media.',
+  ebooks: 'eBooks.',
   countries: 'Countries.',
   certs: 'Certifications.',
   catalogues: 'Catalogues.',
@@ -55,10 +61,13 @@ const GROUPS: { label: string; items: { id: Tab; label: string }[] }[] = [
     items: [{ id: 'certs', label: 'Certifications' }],
   },
   {
-    label: 'Blog & News',
+    label: 'Insights',
     items: [
       { id: 'posts', label: 'Posts' },
       { id: 'news', label: 'News' },
+      { id: 'exhibitions', label: 'Exhibitions' },
+      { id: 'media', label: 'Media' },
+      { id: 'ebooks', label: 'eBooks' },
     ],
   },
   {
@@ -172,6 +181,9 @@ export default function Dashboard() {
           {tab === 'jobs' && <JobsTab />}
           {tab === 'posts' && <PostsTab />}
           {tab === 'news' && <NewsTab />}
+          {tab === 'exhibitions' && <ExhibitionsTab />}
+          {tab === 'media' && <MediaTab />}
+          {tab === 'ebooks' && <EbooksTab />}
           {tab === 'countries' && <CountriesTab />}
           {tab === 'certs' && <CertificationsTab />}
           {tab === 'catalogues' && <CataloguesTab />}
