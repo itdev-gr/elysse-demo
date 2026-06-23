@@ -22,7 +22,13 @@ const { category, product } = Astro.params as { category: string; product: strin
 const categoryEntry = (await getCategories()).find((c) => c.slug === category);
 if (!categoryEntry || !categoryEntry.product_category_name) return new Response(null, { status: 404 });
 
-const configs = await fetchConfigurationDetails(categoryEntry.product_category_name);
+let configs;
+try {
+  configs = await fetchConfigurationDetails(categoryEntry.product_category_name);
+} catch (err) {
+  console.error(`catalog product "${product}": fetch failed`, err);
+  return new Response(null, { status: 404 });
+}
 const config = configs.find((x) => x.slug === product);
 if (!config) return new Response(null, { status: 404 });
 

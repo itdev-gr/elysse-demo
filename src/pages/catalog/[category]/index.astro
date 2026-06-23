@@ -21,7 +21,15 @@ if (!categoryEntry) return new Response(null, { status: 404 });
 const excelName = categoryEntry.product_category_name ?? undefined;
 // One card per configuration (catalogue No.), sizes collapsed — matches the
 // printed catalogue layout.
-const products: CatalogProduct[] = excelName ? await fetchCatalogConfigurations(excelName) : [];
+let products: CatalogProduct[] = [];
+if (excelName) {
+  try {
+    products = await fetchCatalogConfigurations(excelName);
+  } catch (err) {
+    console.error(`catalog "${category}": product fetch failed, rendering empty`, err);
+    products = [];
+  }
+}
 
 const categoryProducts = products; // already filtered to this category
 const isEmpty = categoryProducts.length === 0;
