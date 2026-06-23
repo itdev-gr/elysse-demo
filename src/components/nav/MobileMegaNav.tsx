@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import type { MegaGroup, NavItem } from '../../data/navigation';
 import { drawerVariants, backdropVariants, accordionVariants, EASE_OUT } from './megaAnim';
@@ -14,31 +14,62 @@ export default function MobileMegaNav({ groups }: Props) {
   const triggerRef = useRef<HTMLButtonElement | null>(null);
   const reduce = useReducedMotion();
 
-  // Refresh the Products category list from Supabase after hydration so
-  // dashboard changes appear in the mobile nav without a rebuild.
-  const [liveGroups, setLiveGroups] = useState(groups);
+  // Refresh the Products category list from Supabase after hydration (so
+  // dashboard changes appear without a rebuild) and resolve names/captions to
+  // the visitor's chosen language, falling back to English.
+  type RawCat = {
+    slug: string; name: string; image: string | null; blurb: string | null;
+    name_i18n: Record<string, string> | null; blurb_i18n: Record<string, string> | null;
+  };
+  const [rawCats, setRawCats] = useState<RawCat[] | null>(null);
+  const [lang, setLang] = useState<string>(() => {
+    try { return localStorage.getItem('elysee.lang') || 'en'; } catch { return 'en'; }
+  });
+
   useEffect(() => {
     let cancelled = false;
     (async () => {
       const { supabase } = await import('../../lib/supabase');
       const { data } = await supabase
         .from('product_categories')
-        .select('slug,name,image,blurb,sort_order')
+        .select('slug,name,image,blurb,sort_order,name_i18n,blurb_i18n')
         .eq('is_active', true)
         .order('sort_order');
       if (cancelled || !data || data.length === 0) return; // never blank a good build-time nav
-      const items: NavItem[] = data.map((c) => ({
-        label: c.name as string,
-        href: `/catalog/${c.slug}/?country=ask`,
-        image: (c.image as string) ?? undefined,
-        caption: (c.blurb as string) ?? undefined,
-      }));
-      setLiveGroups((prev) => prev.map((g) => (g.title === 'Products' ? { ...g, items } : g)));
+      setRawCats(data as unknown as RawCat[]);
     })();
     return () => {
       cancelled = true;
     };
-  }, [groups]);
+  }, []);
+
+  useEffect(() => {
+    const onLang = (e: Event) => {
+      const next = (e as CustomEvent<{ lang: string }>).detail?.lang;
+      if (next) setLang(next);
+    };
+    document.addEventListener('elysee:lang', onLang);
+    return () => document.removeEventListener('elysee:lang', onLang);
+  }, []);
+
+  const liveGroups = useMemo(() => {
+    if (!rawCats) return groups;
+    const pick = (m: Record<string, string> | null, fb: string) => {
+      if (lang === 'en') return fb;
+      const t = m?.[lang];
+      return t && t.trim() ? t : fb;
+    };
+    const items: NavItem[] = rawCats.map((c) => {
+      const caption = pick(c.blurb_i18n, c.blurb ?? '');
+      return {
+        label: pick(c.name_i18n, c.name),
+        href: `/catalog/${c.slug}/?country=ask`,
+        image: c.image ?? undefined,
+        caption: caption || undefined,
+      };
+    });
+    return groups.map((g) => (g.title === 'Products' ? { ...g, items } : g));
+  }, [rawCats, lang, groups]);
 
   useEffect(() => {
     if (!open) return;

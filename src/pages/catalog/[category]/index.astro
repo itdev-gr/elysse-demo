@@ -40,6 +40,9 @@ for (const p of products) {
 }
 const overlay = (await getSubcategories()).filter((s) => s.category_slug === categoryEntry.slug);
 const series = applySubcategoryOverlay(rawSeries, overlay);
+// Series name → its non-English translations, for the storefront language swap.
+const seriesI18n: Record<string, Record<string, string>> = {};
+for (const o of overlay) if (o.name_i18n && Object.keys(o.name_i18n).length) seriesI18n[o.name] = o.name_i18n;
 
 const productsJson = JSON.stringify(products);
 ---
@@ -52,18 +55,18 @@ const productsJson = JSON.stringify(products);
         <span class="mx-2">/</span>
         <a href="/products/" class="hover:text-brand-500">Products</a>
         <span class="mx-2">/</span>
-        <span aria-current="page">{categoryEntry.name}</span>
+        <span aria-current="page" data-i18n={JSON.stringify(categoryEntry.name_i18n ?? {})}>{categoryEntry.name}</span>
       </nav>
 
       <header class="mt-6 mb-8">
-        <h1 class="text-3xl md:text-4xl font-heavy text-ink">{categoryEntry.name}</h1>
+        <h1 class="text-3xl md:text-4xl font-heavy text-ink" data-i18n={JSON.stringify(categoryEntry.name_i18n ?? {})}>{categoryEntry.name}</h1>
       </header>
 
       {isEmpty ? (
         <div class="grid grid-cols-12 gap-6 py-6">
           <aside class="col-span-12 md:col-span-3">
             <div class="md:sticky md:top-24">
-              <CategoriesNav active={category} subCategories={series} />
+              <CategoriesNav active={category} subCategories={series} subCategoryI18n={seriesI18n} />
             </div>
           </aside>
           <section class="col-span-12 md:col-span-9 flex flex-col items-center justify-center py-24 text-center">
@@ -76,11 +79,11 @@ const productsJson = JSON.stringify(products);
         <div class="grid grid-cols-12 gap-6 py-6">
           <aside class="col-span-12 md:col-span-3">
             <div class="md:sticky md:top-24">
-              <CategoriesNav active={category} subCategories={series} />
+              <CategoriesNav active={category} subCategories={series} subCategoryI18n={seriesI18n} />
             </div>
           </aside>
           <section class="col-span-12 md:col-span-9">
-            <UtilityBar count={categoryProducts.length} category={categoryEntry.name} categorySlug={categoryEntry.slug} />
+            <UtilityBar count={categoryProducts.length} category={categoryEntry.name} categorySlug={categoryEntry.slug} categoryI18n={categoryEntry.name_i18n ?? {}} />
             <ProductGrid products={categoryProducts} />
           </section>
         </div>

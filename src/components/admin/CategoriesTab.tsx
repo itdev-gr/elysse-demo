@@ -3,6 +3,7 @@ import { supabase } from '../../lib/supabase';
 import { triggerPublish } from '../../lib/publish';
 import type { ProductCategory, ProductSubcategory } from '../../lib/categories';
 import CategoryForm from './CategoryForm';
+import SubcategoryEditForm from './SubcategoryEditForm';
 
 export default function CategoriesTab() {
   const [cats, setCats] = useState<ProductCategory[] | null>(null);
@@ -14,6 +15,7 @@ export default function CategoriesTab() {
   const [creating, setCreating] = useState(false);
   const [addingSubFor, setAddingSubFor] = useState<string | null>(null);    // category slug adding a series to
   const [newSubName, setNewSubName] = useState('');
+  const [editingSub, setEditingSub] = useState<string | null>(null);        // subcategory id being edited
 
   const load = async () => {
     setError(null);
@@ -75,21 +77,6 @@ export default function CategoriesTab() {
     const { error: err } = await supabase.from('product_subcategories')
       .update({ sort_order: value }).eq('id', sub.id);
     if (err) return setError(err.message);
-    await load(); triggerPublish();
-  };
-
-  const renameSub = async (sub: ProductSubcategory, excelName: string | null) => {
-    const next = prompt(`Rename series "${sub.name}" to:`, sub.name);
-    if (!next || next.trim() === '' || next.trim() === sub.name) return;
-    const newName = next.trim();
-    const { error: e1 } = await supabase.from('product_subcategories')
-      .update({ name: newName }).eq('id', sub.id);
-    if (e1) return setError(e1.message);
-    if (excelName) {
-      const { error: e2 } = await supabase.from('products')
-        .update({ sub_category: newName }).eq('category_name', excelName).eq('sub_category', sub.name);
-      if (e2) return setError(`Series renamed, but updating products failed: ${e2.message}`);
-    }
     await load(); triggerPublish();
   };
 
@@ -206,16 +193,27 @@ export default function CategoriesTab() {
                 <ul className="flex flex-col gap-1">
                   {catSubs.map((sub) => {
                     const count = excel ? (subCounts[`${excel}|${sub.name}`] ?? 0) : 0;
+                    const langCount = sub.name_i18n ? Object.keys(sub.name_i18n).length : 0;
                     return (
-                      <li key={sub.id} className={`flex items-center gap-3 text-sm border-b border-ink/5 py-1.5 ${sub.is_active ? '' : 'opacity-60'}`}>
-                        <input type="number" defaultValue={sub.sort_order} onBlur={(e) => reorderSub(sub, Number(e.currentTarget.value || 0))}
-                          className="w-12 bg-transparent border-b border-ink/15 text-xs text-center" aria-label={`Order of ${sub.name}`} />
-                        <span className="flex-1">{sub.name}</span>
-                        <span className="font-mono text-[10px] text-ink/45">{count} prod</span>
-                        {!sub.is_active && <span className="text-[10px] uppercase tracking-[0.2em] text-ink/45">hidden</span>}
-                        <button type="button" onClick={() => renameSub(sub, excel)} className="text-[11px] text-brand-500 uppercase tracking-[0.15em]">Rename</button>
-                        <button type="button" onClick={() => toggleSub(sub)} className="text-[11px] text-ink/60 uppercase tracking-[0.15em]">{sub.is_active ? 'Hide' : 'Show'}</button>
-                        <button type="button" onClick={() => deleteSub(sub, excel)} className="text-red-600" aria-label={`Delete ${sub.name}`}>×</button>
+                      <li key={sub.id} className={`border-b border-ink/5 ${sub.is_active ? '' : 'opacity-60'}`}>
+                        <div className="flex items-center gap-3 text-sm py-1.5">
+                          <input type="number" defaultValue={sub.sort_order} onBlur={(e) => reorderSub(sub, Number(e.currentTarget.value || 0))}
+                            className="w-12 bg-transparent border-b border-ink/15 text-xs text-center" aria-label={`Order of ${sub.name}`} />
+                          <span className="flex-1">{sub.name}</span>
+                          {langCount > 0 && <span className="text-[10px] uppercase tracking-[0.15em] text-brand-500/70">{langCount} lang</span>}
+                          <span className="font-mono text-[10px] text-ink/45">{count} prod</span>
+                          {!sub.is_active && <span className="text-[10px] uppercase tracking-[0.2em] text-ink/45">hidden</span>}
+                          <button type="button" onClick={() => setEditingSub(editingSub === sub.id ? null : sub.id)} className="text-[11px] text-brand-500 uppercase tracking-[0.15em]">Edit</button>
+                          <button type="button" onClick={() => toggleSub(sub)} className="text-[11px] text-ink/60 uppercase tracking-[0.15em]">{sub.is_active ? 'Hide' : 'Show'}</button>
+                          <button type="button" onClick={() => deleteSub(sub, excel)} className="text-red-600" aria-label={`Delete ${sub.name}`}>×</button>
+                        </div>
+                        {editingSub === sub.id && (
+                          <SubcategoryEditForm
+                            sub={sub}
+                            excelName={excel}
+                            onDone={() => { setEditingSub(null); load(); }}
+                            onCancel={() => setEditingSub(null)} />
+                        )}
                       </li>
                     );
                   })}

@@ -13,6 +13,7 @@ const categories = (await getCategories()).map((c) => ({
   slug: c.slug,
   pdf: c.leaflet_pdf ?? undefined,
   image: c.image,
+  nameI18n: c.name_i18n ?? {},
 }));
 ---
 <BaseLayout

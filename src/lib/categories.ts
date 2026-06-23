@@ -1,5 +1,14 @@
 import { supabase } from './supabase';
 
+/** Non-English languages categories/subcategories can be translated into.
+ *  English is the base column and the fallback, so it is not listed here. */
+export const CATEGORY_I18N_LANGS: { code: string; label: string }[] = [
+  { code: 'el', label: 'Greek' },
+  { code: 'de', label: 'German' },
+  { code: 'es', label: 'Spanish' },
+  { code: 'fr', label: 'French' },
+];
+
 export interface ProductCategory {
   slug: string;
   name: string;
@@ -10,6 +19,17 @@ export interface ProductCategory {
   blurb: string | null;
   product_category_name: string | null;
   is_active: boolean;
+  /** Non-English name translations keyed by language code (el/de/es/fr). */
+  name_i18n: Record<string, string> | null;
+  /** Non-English blurb translations keyed by language code. */
+  blurb_i18n: Record<string, string> | null;
+}
+
+/** Drop empty/whitespace entries so only real translations are stored. */
+export function cleanI18n(map: Record<string, string> | null | undefined): Record<string, string> {
+  const out: Record<string, string> = {};
+  for (const [k, v] of Object.entries(map ?? {})) if (v && v.trim()) out[k] = v.trim();
+  return out;
 }
 
 export interface ProductSubcategory {
@@ -18,6 +38,8 @@ export interface ProductSubcategory {
   name: string;
   sort_order: number;
   is_active: boolean;
+  /** Non-English name translations keyed by language code (el/de/es/fr). */
+  name_i18n: Record<string, string> | null;
 }
 
 /** Categories ordered by sort_order. Active-only unless includeHidden. */

@@ -1,12 +1,12 @@
 ---
-interface Props { count: number; category?: string; categorySlug?: string; }
-const { count, category, categorySlug } = Astro.props;
+interface Props { count: number; category?: string; categorySlug?: string; categoryI18n?: Record<string, string>; }
+const { count, category, categorySlug, categoryI18n = {} } = Astro.props;
 ---
 <div class="sticky top-16 z-20 bg-surface border-b border-ink/10">
   <div class="flex items-center justify-between gap-4 py-3">
     <nav aria-label="Breadcrumb" class="font-mono text-[11px] text-ink/65 min-w-0 truncate">
       {category ? (
-        <a href={categorySlug ? `/catalog/${categorySlug}/` : '#'} class="hover:text-brand-500" data-catalog-breadcrumb-cat>{category}</a>
+        <a href={categorySlug ? `/catalog/${categorySlug}/` : '#'} class="hover:text-brand-500" data-catalog-breadcrumb-cat data-i18n={JSON.stringify(categoryI18n)}>{category}</a>
       ) : (
         <span aria-current="page">Catalog</span>
       )}<span data-catalog-breadcrumb-series class="text-brand-500"></span>

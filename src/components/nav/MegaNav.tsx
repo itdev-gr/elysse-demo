@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import type { MegaGroup } from '../../data/navigation';
 import MegaPanel from './MegaPanel';
@@ -20,31 +20,62 @@ export default function MegaNav({ groups }: Props) {
   const reduce = useReducedMotion();
 
   // Keep the Products mega-panel in sync with the live category list so changes
-  // made in the dashboard appear in the nav without a rebuild. The build-time
-  // `groups` render instantly; this refreshes them after hydration.
-  const [liveGroups, setLiveGroups] = useState(groups);
+  // made in the dashboard appear in the nav without a rebuild, and resolved to
+  // the visitor's chosen language. The build-time `groups` render instantly
+  // (English); the live data + language refresh them after hydration.
+  type RawCat = {
+    slug: string; name: string; image: string | null; blurb: string | null;
+    name_i18n: Record<string, string> | null; blurb_i18n: Record<string, string> | null;
+  };
+  const [rawCats, setRawCats] = useState<RawCat[] | null>(null);
+  const [lang, setLang] = useState<string>(() => {
+    try { return localStorage.getItem('elysee.lang') || 'en'; } catch { return 'en'; }
+  });
+
   useEffect(() => {
     let cancelled = false;
     (async () => {
       const { supabase } = await import('../../lib/supabase');
       const { data } = await supabase
         .from('product_categories')
-        .select('slug,name,image,blurb,sort_order')
+        .select('slug,name,image,blurb,sort_order,name_i18n,blurb_i18n')
         .eq('is_active', true)
         .order('sort_order');
       if (cancelled || !data || data.length === 0) return; // never blank a good build-time nav
-      const items = data.map((c) => ({
-        label: c.name as string,
-        href: `/catalog/${c.slug}/?country=ask`,
-        image: (c.image as string) ?? undefined,
-        caption: (c.blurb as string) ?? undefined,
-      }));
-      setLiveGroups((prev) => prev.map((g) => (g.title === 'Products' ? { ...g, items } : g)));
+      setRawCats(data as unknown as RawCat[]);
     })();
     return () => {
       cancelled = true;
     };
-  }, [groups]);
+  }, []);
+
+  useEffect(() => {
+    const onLang = (e: Event) => {
+      const next = (e as CustomEvent<{ lang: string }>).detail?.lang;
+      if (next) setLang(next);
+    };
+    document.addEventListener('elysee:lang', onLang);
+    return () => document.removeEventListener('elysee:lang', onLang);
+  }, []);
+
+  const liveGroups = useMemo(() => {
+    if (!rawCats) return groups;
+    const pick = (m: Record<string, string> | null, fb: string) => {
+      if (lang === 'en') return fb;
+      const t = m?.[lang];
+      return t && t.trim() ? t : fb;
+    };
+    const items = rawCats.map((c) => {
+      const caption = pick(c.blurb_i18n, c.blurb ?? '');
+      return {
+        label: pick(c.name_i18n, c.name),
+        href: `/catalog/${c.slug}/?country=ask`,
+        image: c.image ?? undefined,
+        caption: caption || undefined,
+      };
+    });
+    return groups.map((g) => (g.title === 'Products' ? { ...g, items } : g));
+  }, [rawCats, lang, groups]);
 
   const cancelClose = () => {
     if (closeTimer.current !== null) {

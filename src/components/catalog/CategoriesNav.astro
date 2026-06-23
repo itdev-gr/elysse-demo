@@ -4,8 +4,10 @@ interface Props {
   active: string;
   /** Sub-categories (series) of the active category, shown nested beneath it. */
   subCategories?: string[];
+  /** Series name → its non-English translations, for the language swap. */
+  subCategoryI18n?: Record<string, Record<string, string>>;
 }
-const { active, subCategories = [] } = Astro.props;
+const { active, subCategories = [], subCategoryI18n = {} } = Astro.props;
 const categories = await getCategories();
 ---
 <nav aria-label="Categories" class="categories-nav">
@@ -25,6 +27,7 @@ const categories = await getCategories();
                 ? 'bg-ink/5 text-brand-500 font-semibold border-l-2 border-brand-500'
                 : 'text-ink/70 hover:text-brand-500 hover:bg-ink/5 border-l-2 border-transparent',
             ]}
+            data-i18n={JSON.stringify(c.name_i18n ?? {})}
           >
             {c.name}
           </a>
@@ -35,7 +38,10 @@ const categories = await getCategories();
                 <li>
                   <label class="cursor-pointer block">
                     <input type="checkbox" data-facet="materials" value={sub} class="peer sr-only" />
-                    <span class="block py-1 px-2 -ml-[9px] border-l-2 border-transparent text-[11px] leading-snug text-ink/60 hover:text-brand-500 transition-colors duration-150 peer-checked:text-brand-500 peer-checked:font-semibold peer-checked:border-brand-500">
+                    <span
+                      class="block py-1 px-2 -ml-[9px] border-l-2 border-transparent text-[11px] leading-snug text-ink/60 hover:text-brand-500 transition-colors duration-150 peer-checked:text-brand-500 peer-checked:font-semibold peer-checked:border-brand-500"
+                      data-i18n={JSON.stringify(subCategoryI18n[sub] ?? {})}
+                    >
                       {sub}
                     </span>
                   </label>

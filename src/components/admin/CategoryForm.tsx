@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import { supabase } from '../../lib/supabase';
 import { triggerPublish } from '../../lib/publish';
-import type { ProductCategory } from '../../lib/categories';
+import { CATEGORY_I18N_LANGS, cleanI18n, type ProductCategory } from '../../lib/categories';
 
 const EMPTY: ProductCategory = {
   slug: '', name: '', sort_order: 0, image: '', source_image: null,
   leaflet_pdf: null, blurb: null, product_category_name: null, is_active: true,
+  name_i18n: {}, blurb_i18n: {},
 };
 
 export default function CategoryForm({ initial, onDone, onCancel }:
@@ -18,12 +19,20 @@ export default function CategoryForm({ initial, onDone, onCancel }:
   const set = <K extends keyof ProductCategory>(k: K, v: ProductCategory[K]) =>
     setD((p) => ({ ...p, [k]: v }));
 
+  const setI18n = (field: 'name_i18n' | 'blurb_i18n', lang: string, value: string) =>
+    setD((p) => ({ ...p, [field]: { ...(p[field] ?? {}), [lang]: value } }));
+
   const submit = async () => {
     if (!d.slug.trim()) return setError('Slug is required.');
     if (!d.name.trim()) return setError('Name is required.');
     if (!d.image.trim()) return setError('Image path is required.');
     setBusy(true); setError(null);
-    const payload = { ...d, slug: d.slug.trim() };
+    const payload = {
+      ...d,
+      slug: d.slug.trim(),
+      name_i18n: cleanI18n(d.name_i18n),
+      blurb_i18n: cleanI18n(d.blurb_i18n),
+    };
     const { error: err } = editing
       ? await supabase.from('product_categories').update(payload).eq('slug', initial!.slug)
       : await supabase.from('product_categories').insert(payload);
@@ -65,6 +74,30 @@ export default function CategoryForm({ initial, onDone, onCancel }:
         <textarea value={d.blurb ?? ''} onChange={(e) => set('blurb', e.currentTarget.value || null)}
           className="w-full bg-transparent border border-ink/20 p-2 text-sm focus:outline-none focus:border-brand-500" rows={2} />
       </label>
+
+      <fieldset className="border border-ink/10 p-4 mb-5">
+        <legend className="text-[10px] uppercase tracking-[0.2em] text-ink/55 px-1">Translations</legend>
+        <p className="text-[10px] text-ink/40 mb-3">
+          Name and blurb per language. Anything left blank falls back to English on the site.
+        </p>
+        {CATEGORY_I18N_LANGS.map((l) => (
+          <div key={l.code} className="mb-4 last:mb-0">
+            <p className="text-[10px] uppercase tracking-[0.2em] text-ink/55 mb-1">{l.label}</p>
+            <input
+              value={d.name_i18n?.[l.code] ?? ''}
+              onChange={(e) => setI18n('name_i18n', l.code, e.currentTarget.value)}
+              placeholder={`Name (${l.label})`}
+              className="w-full bg-transparent border-b border-ink/25 py-1.5 text-sm focus:outline-none focus:border-brand-500 mb-2" />
+            <textarea
+              value={d.blurb_i18n?.[l.code] ?? ''}
+              onChange={(e) => setI18n('blurb_i18n', l.code, e.currentTarget.value)}
+              placeholder={`Blurb (${l.label})`}
+              rows={2}
+              className="w-full bg-transparent border border-ink/20 p-2 text-sm focus:outline-none focus:border-brand-500" />
+          </div>
+        ))}
+      </fieldset>
+
       <label className="flex items-center gap-2 text-sm mb-5">
         <input type="checkbox" checked={d.is_active} className="accent-brand-500"
           onChange={(e) => set('is_active', e.currentTarget.checked)} /> Active (visible on the site)

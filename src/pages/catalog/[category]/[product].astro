@@ -27,6 +27,7 @@ const config = configs.find((x) => x.slug === product);
 if (!config) return new Response(null, { status: 404 });
 
 const categoryName = categoryEntry.name;
+const categoryNameI18n = JSON.stringify(categoryEntry.name_i18n ?? {});
 // Related: other configurations in the same series first, then the rest.
 const sameSeries = configs.filter((x) => x.slug !== config.slug && x.subCategory === config.subCategory);
 const others = configs.filter((x) => x.slug !== config.slug && x.subCategory !== config.subCategory);
@@ -42,14 +43,14 @@ const desc = `${config.configuration} (No.${config.familyCode}) — ${config.sub
         <span class="mx-2">/</span>
         <a href="/products/" class="hover:text-brand-500">Products</a>
         <span class="mx-2">/</span>
-        <a href={`/catalog/${config.categorySlug}/`} class="hover:text-brand-500">{categoryName}</a>
+        <a href={`/catalog/${config.categorySlug}/`} class="hover:text-brand-500" data-i18n={categoryNameI18n}>{categoryName}</a>
         <span class="mx-2">/</span>
         <span aria-current="page">{config.configuration}</span>
       </nav>
 
       <a href={`/catalog/${config.categorySlug}/`} class="group mt-5 inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.25em] text-ink/60 hover:text-brand-500 transition-colors duration-200">
         <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 transition-transform duration-200 group-hover:-translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>
-        <span>Back to {categoryName}</span>
+        <span>Back to <span data-i18n={categoryNameI18n}>{categoryName}</span></span>
       </a>
 
       <ConfigDetail config={config} related={related} />

@@ -4,6 +4,7 @@ export interface ProductCategory {
   slug: string;
   pdf?: string;
   image?: string;
+  nameI18n?: Record<string, string>;
 }
 interface Props { categories: ProductCategory[]; }
 const { categories } = Astro.props;
@@ -21,11 +22,11 @@ const { categories } = Astro.props;
             class="h-full w-full object-contain p-4"
           />
         ) : (
-          <span class="flex h-full w-full items-center justify-center text-sm text-ink/60">{cat.name}</span>
+          <span class="flex h-full w-full items-center justify-center text-sm text-ink/60" data-i18n={JSON.stringify(cat.nameI18n ?? {})}>{cat.name}</span>
         )}
       </a>
       <div class="p-5">
-        <h3 class="text-lg font-heavy text-ink">{cat.name}</h3>
+        <h3 class="text-lg font-heavy text-ink" data-i18n={JSON.stringify(cat.nameI18n ?? {})}>{cat.name}</h3>
         <div class="mt-4 flex items-center gap-3">
           <a href={`/catalog/${cat.slug}/?country=ask`} class="text-xs uppercase tracking-widest font-medium text-brand-500 hover:text-brand-accent transition-colors duration-fast">View Products →</a>
           {cat.pdf && (
