@@ -20,6 +20,9 @@ export interface Product {
   image_url: string | null;
   sort_order: number;
   is_active: boolean;
+  // Hidden rows are removed from BOTH the public catalog and the admin list
+  // (recoverable via the admin "Show hidden" toggle), distinct from is_active.
+  is_hidden: boolean;
   created_at: string;
   updated_at: string;
 }

@@ -24,6 +24,7 @@ export const PRODUCT_COLUMNS = [
   'groups',
   'image_url',
   'is_active',
+  'is_hidden',
   'sort_order',
 ] as const;
 
@@ -60,6 +61,7 @@ export function productToRow(p: Product, groupCodes: string[]): ProductRow {
     groups: groupCodes.join(','),
     image_url: p.image_url ?? '',
     is_active: p.is_active ? 'TRUE' : 'FALSE',
+    is_hidden: p.is_hidden ? 'TRUE' : 'FALSE',
     sort_order: p.sort_order ?? 0,
   };
 }
@@ -81,6 +83,8 @@ export function rowToDraft(row: ProductRow): { draft: ProductDraft | null; group
     .split(/[,\s]+/).map((g) => g.trim().toUpperCase()).filter(Boolean);
   const activeRaw = str(row.is_active);
   const is_active = activeRaw === null ? true : !/^(false|0|no|n)$/i.test(activeRaw);
+  // Hidden defaults to false (visible) when the column is absent or empty.
+  const is_hidden = /^(true|1|yes|y)$/i.test(str(row.is_hidden) ?? '');
   const draft: ProductDraft = {
     code,
     category: str(row.category),
@@ -98,6 +102,7 @@ export function rowToDraft(row: ProductRow): { draft: ProductDraft | null; group
     box_size: str(row.box_size),
     image_url: str(row.image_url),
     is_active,
+    is_hidden,
     sort_order: intOrNull(row.sort_order) ?? 0,
   };
   return { draft, groups, error: null };
@@ -120,6 +125,7 @@ export function templateExampleRow(): ProductRow {
     groups: 'A,B,C',
     image_url: '',
     is_active: 'TRUE',
+    is_hidden: 'FALSE',
     sort_order: 1,
   };
 }

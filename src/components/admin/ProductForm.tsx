@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '../../lib/supabase';
 import { validateProductDraft, nextProductSortOrder } from '../../lib/products';
+import { configKey, fetchConfigTranslations, upsertConfigTranslations } from '../../lib/product-configurations';
+import type { ConfigTranslations } from '../../lib/product-configurations';
 import { mergeFamilyCodes } from '../../lib/families';
 import { triggerPublish } from '../../lib/publish';
 import type { Product, ProductDraft } from '../../types/product';
@@ -16,7 +18,7 @@ const EMPTY: ProductDraft = {
   code: '', category: null, category_name: null, sub_category: null, family_code: null,
   configuration: null, size: null, packing_bag: null, packing_box: null, moq: null,
   box_size: null, description: null, name_i18n: {}, description_i18n: {}, image_url: null,
-  sort_order: 0, is_active: true,
+  sort_order: 0, is_active: true, is_hidden: false,
 };
 
 export default function ProductForm({ initial, onDone, onCancel }:
@@ -32,6 +34,11 @@ export default function ProductForm({ initial, onDone, onCancel }:
   // Managed family codes from product_families (likewise selectable before any
   // product uses them), each carrying the image allocated to that code.
   const [managedFamilies, setManagedFamilies] = useState<{ category_name: string; code: string; image_url: string | null }[]>([]);
+  // Product-level translations (product_configurations), edited here but shared
+  // by every size of this configuration.
+  const [cfgTr, setCfgTr] = useState<ConfigTranslations>({ name: '', description: '', name_i18n: {}, description_i18n: {} });
+  const [slugByName, setSlugByName] = useState<Map<string, string>>(new Map());
+  const [loadedKey, setLoadedKey] = useState<string>('');
   const editing = !!initial;
 
   useEffect(() => {
@@ -72,9 +79,11 @@ export default function ProductForm({ initial, onDone, onCancel }:
         supabase.from('product_subcategories').select('category_slug, name').eq('is_active', true),
         supabase.from('product_families').select('category_slug, code, image_url').eq('is_active', true),
       ]);
-      const nameBySlug = new Map(
-        ((pcats ?? []) as { slug: string; product_category_name: string | null }[]).map((c) => [c.slug, c.product_category_name]),
-      );
+      const pcatRows = (pcats ?? []) as { slug: string; product_category_name: string | null }[];
+      const nameBySlug = new Map(pcatRows.map((c) => [c.slug, c.product_category_name]));
+      setSlugByName(new Map(
+        pcatRows.filter((c) => c.product_category_name).map((c) => [c.product_category_name as string, c.slug]),
+      ));
       setManagedSubs(
         ((psubs ?? []) as { category_slug: string; name: string }[])
           .map((s) => ({ category_name: nameBySlug.get(s.category_slug) ?? null, sub_category: s.name }))
@@ -100,8 +109,38 @@ export default function ProductForm({ initial, onDone, onCancel }:
     const n = Number(v);
     return !Number.isFinite(n) || n <= 0 ? null : Math.trunc(n);
   };
-  const setI18n = (field: 'name_i18n' | 'description_i18n', lang: string, value: string) =>
-    setD((p) => ({ ...p, [field]: { ...(p[field] ?? {}), [lang]: value } }));
+  const setCfgField = (k: 'name' | 'description', v: string) => setCfgTr((p) => ({ ...p, [k]: v }));
+  const setCfgI18n = (field: 'name_i18n' | 'description_i18n', lang: string, value: string) =>
+    setCfgTr((p) => ({ ...p, [field]: { ...p[field], [lang]: value } }));
+
+  // The configuration key (category_slug + config_slug) for the current draft,
+  // or null until enough fields are chosen.
+  const cfgKeyOf = (draft: ProductDraft) => {
+    const category_slug = draft.category_name ? slugByName.get(draft.category_name) : undefined;
+    if (!category_slug || !(draft.family_code ?? draft.code)) return null;
+    return configKey({ category_slug, sub_category: draft.sub_category, family_code: draft.family_code, code: draft.code });
+  };
+
+  // Load the product-level translations whenever the resolved configuration
+  // changes (once in edit mode; when series/code are picked in create mode).
+  useEffect(() => {
+    const key = cfgKeyOf(d);
+    const ks = key ? `${key.category_slug}/${key.config_slug}` : '';
+    if (!key || ks === loadedKey) return;
+    let cancelled = false;
+    fetchConfigTranslations(key).then((rec) => {
+      if (cancelled) return;
+      setCfgTr({
+        name: rec?.name ?? '',
+        description: rec?.description ?? '',
+        name_i18n: rec?.name_i18n ?? {},
+        description_i18n: rec?.description_i18n ?? {},
+      });
+      setLoadedKey(ks);
+    });
+    return () => { cancelled = true; };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [slugByName, d.category_name, d.sub_category, d.family_code, d.code]);
 
   const submit = async () => {
     const msg = validateProductDraft(d);
@@ -125,6 +164,11 @@ export default function ProductForm({ initial, onDone, onCancel }:
       const { error: insErr } = await supabase.from('product_group_memberships')
         .insert(groups.map((g) => ({ product_code: productCode, group_code: g })));
       if (insErr) { setBusy(false); return setError(`Product saved, but updating groups failed: ${insErr.message}`); }
+    }
+    const trKey = cfgKeyOf(payload);
+    if (trKey) {
+      const { error: trErr } = await upsertConfigTranslations(trKey, cfgTr);
+      if (trErr) { setBusy(false); return setError(`Product saved, but translations failed: ${trErr}`); }
     }
     setBusy(false); triggerPublish(); onDone();
   };
@@ -219,19 +263,37 @@ export default function ProductForm({ initial, onDone, onCancel }:
       </label>
 
       <fieldset className="mb-5 border-t border-ink/10 pt-4">
-        <legend className="text-[10px] uppercase tracking-[0.2em] text-ink/55 mb-1">Translations</legend>
-        <p className="text-[10px] text-ink/45 mb-3">Name translates the Configuration. Anything left blank falls back to English on the site.</p>
+        <legend className="text-[10px] uppercase tracking-[0.2em] text-ink/55 mb-1">Translations — apply to the whole product (all sizes)</legend>
+        <p className="text-[10px] text-ink/45 mb-3">
+          The name + description shown on the product page, per language. These apply to every size of this
+          configuration. Leave a language blank to fall back to English; leave the English display name blank to use
+          the Configuration value.
+        </p>
+        <div className="mb-4">
+          <p className="text-[11px] font-semibold text-ink/70 mb-1">English (display name)</p>
+          <input
+            value={cfgTr.name}
+            onChange={(e) => setCfgField('name', e.currentTarget.value)}
+            placeholder="Display name — overrides the Configuration on the page"
+            className="w-full bg-transparent border-b border-ink/25 py-1.5 text-sm mb-2 focus:outline-none focus:border-brand-500" />
+          <textarea
+            value={cfgTr.description}
+            onChange={(e) => setCfgField('description', e.currentTarget.value)}
+            placeholder="Description — English"
+            rows={2}
+            className="w-full bg-transparent border border-ink/20 p-2 text-sm focus:outline-none focus:border-brand-500" />
+        </div>
         {I18N_LANGS.map((l) => (
           <div key={l.code} className="mb-4">
             <p className="text-[11px] font-semibold text-ink/70 mb-1">{l.label}</p>
             <input
-              value={d.name_i18n?.[l.code] ?? ''}
-              onChange={(e) => setI18n('name_i18n', l.code, e.currentTarget.value)}
+              value={cfgTr.name_i18n?.[l.code] ?? ''}
+              onChange={(e) => setCfgI18n('name_i18n', l.code, e.currentTarget.value)}
               placeholder={`Name — ${l.label}`}
               className="w-full bg-transparent border-b border-ink/25 py-1.5 text-sm mb-2 focus:outline-none focus:border-brand-500" />
             <textarea
-              value={d.description_i18n?.[l.code] ?? ''}
-              onChange={(e) => setI18n('description_i18n', l.code, e.currentTarget.value)}
+              value={cfgTr.description_i18n?.[l.code] ?? ''}
+              onChange={(e) => setCfgI18n('description_i18n', l.code, e.currentTarget.value)}
               placeholder={`Description — ${l.label}`}
               rows={2}
               className="w-full bg-transparent border border-ink/20 p-2 text-sm focus:outline-none focus:border-brand-500" />
@@ -251,9 +313,13 @@ export default function ProductForm({ initial, onDone, onCancel }:
           ))}
         </div>
       </fieldset>
-      <label className="flex items-center gap-2 text-sm mb-6">
+      <label className="flex items-center gap-2 text-sm mb-3">
         <input type="checkbox" checked={d.is_active} className="accent-brand-500"
           onChange={(e) => set('is_active', e.currentTarget.checked)} /> Active
+      </label>
+      <label className="flex items-center gap-2 text-sm mb-6">
+        <input type="checkbox" checked={d.is_hidden} className="accent-brand-500"
+          onChange={(e) => set('is_hidden', e.currentTarget.checked)} /> Hidden (remove from site &amp; admin list)
       </label>
       <div className="flex gap-3">
         <button type="button" disabled={busy} onClick={submit}

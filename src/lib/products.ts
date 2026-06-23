@@ -2,6 +2,12 @@ import { supabase } from './supabase';
 import type { CatalogProduct, CategorySlug } from '../scripts/catalog/types';
 import type { Product, ProductGroup, GroupCountry, ProductDraft } from '../types/product';
 import { expandCountriesForGroups } from './product-groups';
+import {
+  configSlug,
+  fetchConfigsByCategorySlug,
+  resolveNameI18n,
+  resolveDescriptionI18n,
+} from './product-configurations';
 
 const CATEGORY_SLUG_BY_NAME: Record<string, CategorySlug> = {
   'Compression Fittings': 'compression-fittings',
@@ -18,14 +24,10 @@ export const EXCEL_CATEGORY_NAME: Record<string, string> = {
   'saddles': 'Saddles',
 };
 
-function slugify(s: string): string {
-  return s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
-}
-
-/** Stable URL slug for a configuration within a category: "{series}-{familyCode}". */
-export function configSlug(subCategory: string | null, familyCode: string): string {
-  return `${slugify(subCategory ?? '')}-${slugify(familyCode)}`.replace(/^-|-$/g, '');
-}
+// `configSlug` (+ slugify) lives in ./product-configurations so that module can
+// own the configuration key without a circular import; re-exported here for
+// backward compatibility with existing importers.
+export { configSlug };
 
 export function parsePnFromSubCategory(sub: string | null): number | undefined {
   const m = sub?.match(/PN\s*(\d+)/i);
@@ -96,7 +98,8 @@ async function loadCategory(
 ): Promise<{ products: Product[]; countriesByCode: Map<string, string[]> }> {
   const [products, memberships, groupCountries] = await Promise.all([
     fetchAll<Product>((from, to) =>
-      supabase.from('products').select('*').eq('category_name', categoryName).eq('is_active', true)
+      supabase.from('products').select('*').eq('category_name', categoryName)
+        .eq('is_active', true).eq('is_hidden', false)
         .order('sort_order', { ascending: true }).range(from, to),
     ),
     fetchAll<{ product_code: string; group_code: string }>((from, to) =>
@@ -215,7 +218,11 @@ const I18N_LANGS = ['el', 'de', 'es', 'fr'] as const;
 
 /** Build-time fetch: every configuration in a category, each with its sizes. */
 export async function fetchConfigurationDetails(categoryName: string): Promise<ConfigurationDetail[]> {
-  const { products, countriesByCode } = await loadCategory(categoryName);
+  const categorySlug = CATEGORY_SLUG_BY_NAME[categoryName] ?? 'compression-fittings';
+  const [{ products, countriesByCode }, configRecords] = await Promise.all([
+    loadCategory(categoryName),
+    fetchConfigsByCategorySlug(categorySlug),
+  ]);
   const map = new Map<string, ConfigurationDetail>();
   for (const p of products) {
     const familyCode = p.family_code ?? p.code;
@@ -253,6 +260,23 @@ export async function fetchConfigurationDetails(categoryName: string): Promise<C
       moq: p.moq, box_size: p.box_size, countries,
     });
     for (const c of countries) if (!cfg.availableCountries.includes(c)) cfg.availableCountries.push(c);
+  }
+  // Overlay product-level translations (product_configurations). The record is
+  // the source of truth for name + translations; the per-row merge built above
+  // is the fallback for any configuration with no record yet.
+  for (const cfg of map.values()) {
+    const rec = configRecords.get(cfg.slug);
+    const derivedName = cfg.configuration;
+    const perRowName = { ...cfg.nameI18n };
+    delete perRowName.en;
+    cfg.nameI18n = resolveNameI18n(derivedName, perRowName, rec);
+    cfg.configuration = cfg.nameI18n.en;
+
+    const derivedDesc = cfg.description;
+    const perRowDesc = { ...cfg.descriptionI18n };
+    delete perRowDesc.en;
+    cfg.descriptionI18n = resolveDescriptionI18n(derivedDesc, perRowDesc, rec);
+    cfg.description = cfg.descriptionI18n.en ?? null;
   }
   return [...map.values()];
 }

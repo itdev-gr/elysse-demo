@@ -12,6 +12,7 @@ export default function ProductsTab() {
   const [error, setError] = useState<string | null>(null);
   const [mode, setMode] = useState<Mode>({ kind: 'list' });
   const [query, setQuery] = useState('');
+  const [showHidden, setShowHidden] = useState(false);
 
   const load = async () => {
     setError(null);
@@ -32,19 +33,30 @@ export default function ProductsTab() {
   };
   useEffect(() => { load(); }, []);
 
+  const hiddenCount = rows?.filter((r) => r.is_hidden).length ?? 0;
+
   const filtered = useMemo(() => {
     if (!rows) return [];
+    const visible = showHidden ? rows : rows.filter((r) => !r.is_hidden);
     const q = query.trim().toLowerCase();
-    if (!q) return rows.slice(0, 200);
-    return rows.filter((r) =>
+    if (!q) return visible.slice(0, 200);
+    return visible.filter((r) =>
       [r.code, r.description, r.sub_category, r.configuration, r.category_name]
         .some((v) => v?.toLowerCase().includes(q)),
     ).slice(0, 200);
-  }, [rows, query]);
+  }, [rows, query, showHidden]);
 
   const toggleActive = async (p: Product) => {
     const { error: err } = await supabase.from('products')
       .update({ is_active: !p.is_active }).eq('code', p.code);
+    if (err) return setError(err.message);
+    await load();
+    triggerPublish();
+  };
+
+  const toggleHidden = async (p: Product) => {
+    const { error: err } = await supabase.from('products')
+      .update({ is_hidden: !p.is_hidden }).eq('code', p.code);
     if (err) return setError(err.message);
     await load();
     triggerPublish();
@@ -72,7 +84,11 @@ export default function ProductsTab() {
           className="inline-flex items-center gap-2 bg-brand-500 text-surface px-5 py-2.5 text-[11px] uppercase tracking-[0.25em] font-medium hover:bg-brand-700 transition-colors duration-200 cursor-pointer">
           + New product
         </button>
-        <span className="text-xs text-ink/55">{rows ? `${rows.length} total` : ''}</span>
+        <span className="text-xs text-ink/55">{rows ? `${rows.length} total${hiddenCount ? `, ${hiddenCount} hidden` : ''}` : ''}</span>
+        <label className="flex items-center gap-1.5 text-xs text-ink/70 ml-auto">
+          <input type="checkbox" checked={showHidden} className="accent-brand-500"
+            onChange={(e) => setShowHidden(e.currentTarget.checked)} /> Show hidden
+        </label>
       </div>
       <div className="mb-6">
         <input type="search" value={query} onChange={(e) => setQuery(e.currentTarget.value)}
@@ -94,7 +110,7 @@ export default function ProductsTab() {
                 <tr><td colSpan={5} className="py-6 text-sm text-ink/60">No products match.</td></tr>
               )}
               {filtered.map((p) => (
-                <tr key={p.code} className="border-b border-ink/5">
+                <tr key={p.code} className={`border-b border-ink/5${p.is_hidden ? ' opacity-50' : ''}`}>
                   <td className="py-2 pr-3 font-mono text-[12px]">{p.code}</td>
                   <td className="py-2 pr-3">{p.description}</td>
                   <td className="py-2 pr-3 text-ink/70">{p.sub_category}</td>
@@ -105,6 +121,7 @@ export default function ProductsTab() {
                   </td>
                   <td className="py-2"><div className="flex gap-3">
                     <button type="button" onClick={() => setMode({ kind: 'edit', product: p })} className="text-[11px] text-brand-500">Edit</button>
+                    <button type="button" onClick={() => toggleHidden(p)} className="text-[11px] text-ink/60">{p.is_hidden ? 'Unhide' : 'Hide'}</button>
                     <button type="button" onClick={() => remove(p)} className="text-[11px] text-red-600">Delete</button>
                   </div></td>
                 </tr>
