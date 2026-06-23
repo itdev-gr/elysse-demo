@@ -3,22 +3,13 @@ import type { ProjectsBlock } from '../site-content';
 import {
   fundedProjectDetails,
   innovationInsightDetails,
-  exhibitionDetails,
-  mediaDetails,
-  ebookDetails,
   innovationInsightsItems,
-  insightsExhibitionsItems,
-  insightsMediaItems,
-  insightsEbooksItems,
   innovationFundedProjects,
 } from '../site-content';
 
 const registries = [
   { name: 'fundedProjectDetails', entries: fundedProjectDetails },
   { name: 'innovationInsightDetails', entries: innovationInsightDetails },
-  { name: 'exhibitionDetails', entries: exhibitionDetails },
-  { name: 'mediaDetails', entries: mediaDetails },
-  { name: 'ebookDetails', entries: ebookDetails },
 ] as const;
 
 describe('detail registries — slugs', () => {
@@ -47,24 +38,6 @@ const listToRegistry = [
     items: innovationInsightsItems,
     base: '/innovation/insights/',
     slugs: new Set(innovationInsightDetails.map((d) => d.slug)),
-  },
-  {
-    name: 'insightsExhibitionsItems → exhibitionDetails',
-    items: insightsExhibitionsItems,
-    base: '/insights/exhibitions/',
-    slugs: new Set(exhibitionDetails.map((d) => d.slug)),
-  },
-  {
-    name: 'insightsMediaItems → mediaDetails',
-    items: insightsMediaItems,
-    base: '/insights/media/',
-    slugs: new Set(mediaDetails.map((d) => d.slug)),
-  },
-  {
-    name: 'insightsEbooksItems → ebookDetails',
-    items: insightsEbooksItems,
-    base: '/insights/ebooks/',
-    slugs: new Set(ebookDetails.map((d) => d.slug)),
   },
 ] as const;
 
