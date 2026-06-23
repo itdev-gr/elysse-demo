@@ -1,6 +1,12 @@
-// One-off: read the static insight arrays from src/data/site-content.ts,
+// One-off (SPENT): read the static insight arrays from src/data/site-content.ts,
 // convert blocks -> Markdown, and emit an idempotent seed migration.
 //   npx tsx scripts/seed-insights.mjs
+//
+// NOTE: This generator is no longer runnable. The source arrays it imports
+// (exhibitionDetails / mediaDetails / ebookDetails) were removed in commit
+// e72de9d once their data lived in Supabase. The durable artifact is the
+// already-committed supabase/migrations/0031_seed_insights.sql. Kept only as a
+// record of how that seed was produced — do not re-run.
 import { writeFileSync } from 'node:fs';
 import {
   exhibitionDetails, mediaDetails, ebookDetails,
