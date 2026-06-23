@@ -67,7 +67,9 @@ export function initCatalogPage(country: Country, categorySlug: CategorySlug) {
     // series is filtered out the next visible one keeps its large top margin
     // and floats far below the bar. Give the first *visible* heading in each
     // view the same reduced gap the first one has (grid mt-2, list mt-0).
-    const visibleSeries = new Set(sorted.map(p => p.material).filter(Boolean));
+    // Products without a series render under the "Other" heading (ProductGrid uses
+    // `p.material ?? 'Other'`); map falsy materials to 'Other' so that heading shows.
+    const visibleSeries = new Set(sorted.map(p => p.material || 'Other'));
     const views: Array<[HTMLElement | null, string]> = [[grid, '0.5rem'], [list, '0px']];
     for (const [container, firstGap] of views) {
       if (!container) continue;
