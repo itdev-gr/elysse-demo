@@ -62,12 +62,23 @@ export function initCatalogPage(country: Country, categorySlug: CategorySlug) {
     list?.querySelectorAll<HTMLElement>('[data-product-row]').forEach(el => {
       el.style.display = slugSet.has(el.dataset.slug ?? '') ? '' : 'none';
     });
-    // Hide series-section headings that have no visible products.
+    // Hide series-section headings that have no visible products. CSS
+    // `first:mt-*` only targets the DOM-first heading, so once an earlier
+    // series is filtered out the next visible one keeps its large top margin
+    // and floats far below the bar. Give the first *visible* heading in each
+    // view the same reduced gap the first one has (grid mt-2, list mt-0).
     const visibleSeries = new Set(sorted.map(p => p.material).filter(Boolean));
-    root!.querySelectorAll<HTMLElement>('[data-series-heading]').forEach(el => {
-      const s = el.dataset.series ?? '';
-      el.style.display = visibleSeries.has(s) ? '' : 'none';
-    });
+    const views: Array<[HTMLElement | null, string]> = [[grid, '0.5rem'], [list, '0px']];
+    for (const [container, firstGap] of views) {
+      if (!container) continue;
+      let first = true;
+      container.querySelectorAll<HTMLElement>('[data-series-heading]').forEach(el => {
+        const visible = visibleSeries.has(el.dataset.series ?? '');
+        el.style.display = visible ? '' : 'none';
+        el.style.marginTop = visible && first ? firstGap : '';
+        if (visible) first = false;
+      });
+    }
     if (empty) empty.classList.toggle('hidden', sorted.length !== 0);
     if (countEl) countEl.textContent = `Showing ${sorted.length} of ${products.length} products`;
     // Reflect the selected series (sub-category) in the breadcrumb.
