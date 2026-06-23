@@ -4,6 +4,9 @@ import { supabase } from '../../lib/supabase';
 import { triggerPublish } from '../../lib/publish';
 import { validateProductDraft } from '../../lib/products';
 import { PRODUCT_COLUMNS, productToRow, rowToDraft, templateExampleRow, type ProductRow } from '../../lib/product-xlsx';
+import { configKey } from '../../lib/product-configurations';
+import type { ProductConfiguration, ConfigTranslations } from '../../lib/product-configurations';
+import { cleanI18n } from '../../lib/categories';
 import type { Product, ProductDraft } from '../../types/product';
 
 const PAGE = 1000;
@@ -14,6 +17,15 @@ function chunk<T>(arr: T[], n: number): T[][] {
   const out: T[][] = [];
   for (let i = 0; i < arr.length; i += n) out.push(arr.slice(i, i + n));
   return out;
+}
+
+/** category_name (Excel value) → category slug, for resolving a row's configuration. */
+async function loadSlugByName(): Promise<Map<string, string>> {
+  const { data, error } = await supabase.from('product_categories').select('slug, product_category_name');
+  if (error) throw new Error(error.message);
+  return new Map(((data ?? []) as { slug: string; product_category_name: string | null }[])
+    .filter((c) => c.product_category_name)
+    .map((c) => [c.product_category_name as string, c.slug]));
 }
 
 type Result = { total: number; ok: number; failed: number; errors: string[] } | null;
@@ -53,7 +65,23 @@ export default function ProductBulkBar({ onChanged }: { onChanged: () => void })
         }
         if (data.length < PAGE) break;
       }
-      const rows = products.map((p) => productToRow(p, (byCode.get(p.code) ?? []).sort()));
+      // Configuration-level translations, keyed like the URL resolver.
+      const cfgRows: ProductConfiguration[] = [];
+      for (let from = 0; ; from += PAGE) {
+        const { data, error: e } = await supabase.from('product_configurations').select('*').order('category_slug').range(from, from + PAGE - 1);
+        if (e) throw new Error(e.message);
+        if (!data || data.length === 0) break;
+        cfgRows.push(...(data as ProductConfiguration[]));
+        if (data.length < PAGE) break;
+      }
+      const configByKey = new Map(cfgRows.map((c) => [`${c.category_slug}/${c.config_slug}`, c]));
+      const slugByName = await loadSlugByName();
+      const rows = products.map((p) => {
+        const cat = p.category_name ? slugByName.get(p.category_name) : undefined;
+        const key = cat ? configKey({ category_slug: cat, sub_category: p.sub_category, family_code: p.family_code, code: p.code }) : null;
+        const rec = key ? configByKey.get(`${key.category_slug}/${key.config_slug}`) ?? null : null;
+        return productToRow(p, (byCode.get(p.code) ?? []).sort(), rec);
+      });
       const ws = XLSX.utils.json_to_sheet(rows, { header: HEADER });
       const wb = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(wb, ws, 'Products');
@@ -73,13 +101,13 @@ export default function ProductBulkBar({ onChanged }: { onChanged: () => void })
       const sheet = wb.Sheets[wb.SheetNames[0]];
       const rows = XLSX.utils.sheet_to_json<ProductRow>(sheet, { defval: '' });
       const errors: string[] = [];
-      const valid: { draft: ProductDraft; groups: string[] }[] = [];
+      const valid: { draft: ProductDraft; groups: string[]; translations: ConfigTranslations | null }[] = [];
       rows.forEach((row, i) => {
-        const { draft, groups, error: rowErr } = rowToDraft(row);
+        const { draft, groups, translations, error: rowErr } = rowToDraft(row);
         if (rowErr || !draft) { errors.push(`Row ${i + 2}: ${rowErr ?? 'invalid row'}`); return; }
         const vMsg = validateProductDraft(draft);
         if (vMsg) { errors.push(`Row ${i + 2} (${draft.code}): ${vMsg}`); return; }
-        valid.push({ draft, groups });
+        valid.push({ draft, groups, translations });
       });
 
       // Upsert products in chunks; on a chunk failure, retry that chunk row-by-row
@@ -106,6 +134,33 @@ export default function ProductBulkBar({ onChanged }: { onChanged: () => void })
         if (!part.length) continue;
         const { error: mErr } = await supabase.from('product_group_memberships').insert(part);
         if (mErr) errors.push(`Group memberships: ${mErr.message}`);
+      }
+
+      // Configuration-level translations: only when the sheet carried those
+      // columns (otherwise translations is null and existing ones are kept).
+      // One upsert per configuration, deduped across that config's size rows.
+      if (valid.some((v) => v.translations)) {
+        const slugByName = await loadSlugByName();
+        const cfgByKey = new Map<string, ProductConfiguration>();
+        for (const v of valid) {
+          if (!v.translations) continue;
+          const cat = v.draft.category_name ? slugByName.get(v.draft.category_name) : undefined;
+          if (!cat) continue;
+          const key = configKey({ category_slug: cat, sub_category: v.draft.sub_category, family_code: v.draft.family_code, code: v.draft.code });
+          cfgByKey.set(`${key.category_slug}/${key.config_slug}`, {
+            category_slug: key.category_slug,
+            config_slug: key.config_slug,
+            name: v.translations.name.trim() || null,
+            description: v.translations.description.trim() || null,
+            name_i18n: cleanI18n(v.translations.name_i18n),
+            description_i18n: cleanI18n(v.translations.description_i18n),
+          });
+        }
+        for (const part of chunk([...cfgByKey.values()], CHUNK)) {
+          if (!part.length) continue;
+          const { error: cErr } = await supabase.from('product_configurations').upsert(part, { onConflict: 'category_slug,config_slug' });
+          if (cErr) errors.push(`Translations: ${cErr.message}`);
+        }
       }
 
       const ok = okCodes.length;
