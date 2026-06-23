@@ -19,7 +19,7 @@ const categories = await getCategories();
       return (
         <li>
           <a
-            href={`/catalog/${slug}`}
+            href={`/catalog/${slug}/`}
             aria-current={isActive ? 'page' : undefined}
             class:list={[
               'block py-1.5 px-2 text-xs leading-tight rounded',
