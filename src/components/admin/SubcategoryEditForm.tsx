@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { supabase } from '../../lib/supabase';
 import { triggerPublish } from '../../lib/publish';
 import { CATEGORY_I18N_LANGS, cleanI18n, type ProductSubcategory } from '../../lib/categories';
+import { planConfigSlugRemap, applyConfigSlugRemap } from '../../lib/remap-config-slugs';
 
 // Inline panel for renaming a series and editing its translations. Replaces the
 // old prompt()-based rename. The English `name` is the matching key against
@@ -32,6 +33,15 @@ export default function SubcategoryEditForm({ sub, excelName, onDone, onCancel }
       const { error: e2 } = await supabase.from('products')
         .update({ sub_category: newName }).eq('category_name', excelName).eq('sub_category', sub.name);
       if (e2) { setBusy(false); return setError(`Saved, but updating products failed: ${e2.message}`); }
+      const { data: affected } = await supabase.from('products')
+        .select('sub_category, family_code, code')
+        .eq('category_name', excelName).eq('sub_category', newName); // already renamed
+      const plan = planConfigSlugRemap(
+        (affected ?? []).map((r) => ({ ...r, sub_category: sub.name })), // old sub for slug-from
+        { kind: 'sub', from: sub.name, to: newName },
+      );
+      const remapErr = await applyConfigSlugRemap(sub.category_slug, plan);
+      if (remapErr) { setBusy(false); return setError(`Saved, but updating translations failed: ${remapErr}`); }
     }
     setBusy(false); triggerPublish(); onDone();
   };

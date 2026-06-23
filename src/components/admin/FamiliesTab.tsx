@@ -4,6 +4,7 @@ import { triggerPublish } from '../../lib/publish';
 import type { ProductCategory } from '../../lib/categories';
 import type { ProductFamily } from '../../lib/families';
 import { LibraryGrid, type ProductImage } from './ImageLibraryGrid';
+import { planConfigSlugRemap, applyConfigSlugRemap } from '../../lib/remap-config-slugs';
 
 // A family code's derived facts from the products that use it.
 interface CodeFacts {
@@ -93,6 +94,16 @@ export default function FamiliesTab() {
       const { error: e2 } = await supabase.from('products')
         .update({ family_code: code }).eq('category_name', excel).eq('family_code', fam.code);
       if (e2) return setError(`Code renamed, but updating products failed: ${e2.message}`);
+      // Keep product_configurations translations attached after the slug changes.
+      const { data: affected } = await supabase.from('products')
+        .select('sub_category, family_code, code')
+        .eq('category_name', excel).eq('family_code', code); // already renamed to `code`
+      const plan = planConfigSlugRemap(
+        (affected ?? []).map((r) => ({ ...r, family_code: fam.code })), // old ref for slug-from
+        { kind: 'family', from: fam.code, to: code },
+      );
+      const remapErr = await applyConfigSlugRemap(cat.slug, plan);
+      if (remapErr) return setError(`Code renamed, but updating translations failed: ${remapErr}`);
     }
     await load(); triggerPublish();
   };
