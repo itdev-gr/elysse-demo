@@ -8,7 +8,7 @@ interface Props { ebook: Ebook; }
 const { ebook } = Astro.props;
 const bodyHtml = renderPostBody(ebook.body ?? '');
 ---
-<BaseLayout title={ebook.title} description={ebook.excerpt} ogImage={ebook.cover_image}>
+<BaseLayout title={ebook.title} description={ebook.excerpt} ogImage={ebook.cover_image ?? undefined}>
   <PageHero title={ebook.title} eyebrow="Insights · eBooks" />
   <article class="mx-auto max-w-screen-lg px-4 md:px-8 py-12 md:py-16">
     <div class="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-12">
