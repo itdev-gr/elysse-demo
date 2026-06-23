@@ -684,7 +684,7 @@ export const greenElyseeInsightsItems: InsightItem[] = [
     excerpt:
       'The circular economy concept aims at reducing waste as much as possible — and, in effect, a product\'s life cycle is extended to the maximum. Our journey from compression fittings in 1979 to a six-pillar Green programme in 2026 is one of constant compounding: every certificate, every audit, every recycled tonne of resin earns the next.',
     image: '/images/green-elysee/journey-to-green-leader.jpg',
-    href: '/press-room/news/',
+    href: '/insights/news/',
   },
 ];
 
