@@ -140,8 +140,8 @@
 /* === per-country visibility rules =========================================
    Default: only the 'cy' country's elements show. Switching the active country
    on the catalog-root (via JS) reveals that country's elements instead.
-   25 codes: cy, gr, de, at, fr, it, es, pt, lb, ae, sa, eg, il, jo, ma, za,
-             jp, au, nz, in, sg, us, ca, br, mx
+   29 codes: cy, gr, de, at, fr, it, es, pt, lb, ae, sa, eg, il, jo, ma, za,
+             jp, au, nz, in, sg, us, ca, br, mx, bg, ro, gb, ie
    `data-for-country` is used (not `data-country`) to avoid collision with the
    country-modal buttons. Applies to BOTH the listing root [data-catalog-root]
    and the detail root [data-catalog-detail]. JS sets data-active-country on
@@ -201,6 +201,14 @@
 [data-catalog-detail] [data-for-country="br"] { display: none; }
 [data-catalog-root] [data-for-country="mx"],
 [data-catalog-detail] [data-for-country="mx"] { display: none; }
+[data-catalog-root] [data-for-country="bg"],
+[data-catalog-detail] [data-for-country="bg"] { display: none; }
+[data-catalog-root] [data-for-country="ro"],
+[data-catalog-detail] [data-for-country="ro"] { display: none; }
+[data-catalog-root] [data-for-country="gb"],
+[data-catalog-detail] [data-for-country="gb"] { display: none; }
+[data-catalog-root] [data-for-country="ie"],
+[data-catalog-detail] [data-for-country="ie"] { display: none; }
 
 /* Image variants: default visible: cy */
 [data-catalog-root] img[data-for-country="cy"],
@@ -255,6 +263,14 @@
 [data-catalog-detail] img[data-for-country="br"] { display: none; }
 [data-catalog-root] img[data-for-country="mx"],
 [data-catalog-detail] img[data-for-country="mx"] { display: none; }
+[data-catalog-root] img[data-for-country="bg"],
+[data-catalog-detail] img[data-for-country="bg"] { display: none; }
+[data-catalog-root] img[data-for-country="ro"],
+[data-catalog-detail] img[data-for-country="ro"] { display: none; }
+[data-catalog-root] img[data-for-country="gb"],
+[data-catalog-detail] img[data-for-country="gb"] { display: none; }
+[data-catalog-root] img[data-for-country="ie"],
+[data-catalog-detail] img[data-for-country="ie"] { display: none; }
 
 /* When data-active-country="gr": hide cy, show gr */
 [data-catalog-root][data-active-country="gr"] [data-for-country="cy"],
@@ -495,3 +511,43 @@
 [data-catalog-detail][data-active-country="mx"] img[data-for-country="cy"] { display: none; }
 [data-catalog-root][data-active-country="mx"] img[data-for-country="mx"],
 [data-catalog-detail][data-active-country="mx"] img[data-for-country="mx"] { display: block; }
+
+/* When data-active-country="bg": hide cy, show bg */
+[data-catalog-root][data-active-country="bg"] [data-for-country="cy"],
+[data-catalog-detail][data-active-country="bg"] [data-for-country="cy"] { display: none; }
+[data-catalog-root][data-active-country="bg"] [data-for-country="bg"],
+[data-catalog-detail][data-active-country="bg"] [data-for-country="bg"] { display: inline; }
+[data-catalog-root][data-active-country="bg"] img[data-for-country="cy"],
+[data-catalog-detail][data-active-country="bg"] img[data-for-country="cy"] { display: none; }
+[data-catalog-root][data-active-country="bg"] img[data-for-country="bg"],
+[data-catalog-detail][data-active-country="bg"] img[data-for-country="bg"] { display: block; }
+
+/* When data-active-country="ro": hide cy, show ro */
+[data-catalog-root][data-active-country="ro"] [data-for-country="cy"],
+[data-catalog-detail][data-active-country="ro"] [data-for-country="cy"] { display: none; }
+[data-catalog-root][data-active-country="ro"] [data-for-country="ro"],
+[data-catalog-detail][data-active-country="ro"] [data-for-country="ro"] { display: inline; }
+[data-catalog-root][data-active-country="ro"] img[data-for-country="cy"],
+[data-catalog-detail][data-active-country="ro"] img[data-for-country="cy"] { display: none; }
+[data-catalog-root][data-active-country="ro"] img[data-for-country="ro"],
+[data-catalog-detail][data-active-country="ro"] img[data-for-country="ro"] { display: block; }
+
+/* When data-active-country="gb": hide cy, show gb */
+[data-catalog-root][data-active-country="gb"] [data-for-country="cy"],
+[data-catalog-detail][data-active-country="gb"] [data-for-country="cy"] { display: none; }
+[data-catalog-root][data-active-country="gb"] [data-for-country="gb"],
+[data-catalog-detail][data-active-country="gb"] [data-for-country="gb"] { display: inline; }
+[data-catalog-root][data-active-country="gb"] img[data-for-country="cy"],
+[data-catalog-detail][data-active-country="gb"] img[data-for-country="cy"] { display: none; }
+[data-catalog-root][data-active-country="gb"] img[data-for-country="gb"],
+[data-catalog-detail][data-active-country="gb"] img[data-for-country="gb"] { display: block; }
+
+/* When data-active-country="ie": hide cy, show ie */
+[data-catalog-root][data-active-country="ie"] [data-for-country="cy"],
+[data-catalog-detail][data-active-country="ie"] [data-for-country="cy"] { display: none; }
+[data-catalog-root][data-active-country="ie"] [data-for-country="ie"],
+[data-catalog-detail][data-active-country="ie"] [data-for-country="ie"] { display: inline; }
+[data-catalog-root][data-active-country="ie"] img[data-for-country="cy"],
+[data-catalog-detail][data-active-country="ie"] img[data-for-country="cy"] { display: none; }
+[data-catalog-root][data-active-country="ie"] img[data-for-country="ie"],
+[data-catalog-detail][data-active-country="ie"] img[data-for-country="ie"] { display: block; }
