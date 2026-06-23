@@ -2,7 +2,7 @@ import type { Country, CategorySlug } from './types';
 import { COUNTRIES } from '../../data/catalog-countries';
 import { getBasket } from './basket-store';
 
-export function initDetailPage(country: Country, categorySlug: CategorySlug) {
+export function initDetailPage(country: Country, _categorySlug: CategorySlug) {
   const root = document.querySelector<HTMLElement>('[data-catalog-detail]');
   if (!root) return;
   root.setAttribute('data-active-country', country);

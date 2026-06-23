@@ -21,7 +21,7 @@ import { getTimelineImage } from '../../../data/history-timeline-images';
 
 const blocks = aboutUsHistory.blocks;
 const paragraphs = blocks.filter((b): b is Extract<typeof b, { kind: 'paragraph' }> => b.kind === 'paragraph');
-const [intro1, intro2, intro3, sectorsP, productsLeadP, closingP] = paragraphs;
+const [intro1, intro2, intro3, , productsLeadP, closingP] = paragraphs;
 const callout = blocks.find((b): b is Extract<typeof b, { kind: 'callout' }> => b.kind === 'callout');
 const timeline = blocks.find((b): b is Extract<typeof b, { kind: 'timeline' }> => b.kind === 'timeline');
 const stats = blocks.find((b): b is Extract<typeof b, { kind: 'stats' }> => b.kind === 'stats');

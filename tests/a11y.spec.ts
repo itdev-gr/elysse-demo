@@ -63,7 +63,7 @@ const ROUTES = [
 ];
 
 for (const route of ROUTES) {
-  test(`a11y: ${route}`, async ({ page }, info) => {
+  test(`a11y: ${route}`, async ({ page }) => {
     // 'load' (not 'networkidle') — robust against HMR WebSocket on the dev server.
     await page.goto(`http://localhost:4321${route}`, { waitUntil: 'load' });
     const results = await new AxeBuilder({ page })
