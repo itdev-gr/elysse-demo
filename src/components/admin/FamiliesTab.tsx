@@ -104,13 +104,6 @@ export default function FamiliesTab() {
     await load(); triggerPublish();
   };
 
-  const reorderCode = async (fam: ProductFamily, value: number) => {
-    const { error: err } = await supabase.from('product_families')
-      .update({ sort_order: value }).eq('id', fam.id);
-    if (err) return setError(err.message);
-    await load(); triggerPublish();
-  };
-
   const deleteCode = async (cat: ProductCategory, fam: ProductFamily) => {
     const count = factsFor(cat, fam.code).count;
     if (count > 0) return setError(`Code "${fam.code}" still has ${count} products — hide it instead of deleting.`);
@@ -199,8 +192,6 @@ export default function FamiliesTab() {
                     const { count, series } = factsFor(cat, fam.code);
                     return (
                       <li key={fam.id} className={`flex items-center gap-3 text-sm border-b border-ink/5 py-1.5 ${fam.is_active ? '' : 'opacity-60'}`}>
-                        <input type="number" defaultValue={fam.sort_order} onBlur={(e) => reorderCode(fam, Number(e.currentTarget.value || 0))}
-                          className="w-12 bg-transparent border-b border-ink/15 text-xs text-center" aria-label={`Order of ${fam.code}`} />
                         {fam.image_url ? (
                           <img src={fam.image_url} alt="" className="w-9 h-9 object-contain bg-surface-alt border border-ink/10 shrink-0" />
                         ) : (

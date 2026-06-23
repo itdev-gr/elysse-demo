@@ -27,3 +27,7 @@ document.addEventListener('elysee:lang', (e) => {
   const next = (e as CustomEvent<{ lang: string }>).detail?.lang;
   if (next) apply(next);
 });
+
+// Mark this side-effect script as an ES module (no exports of its own) so it can
+// be imported both for its side effects and dynamically from the test.
+export {};

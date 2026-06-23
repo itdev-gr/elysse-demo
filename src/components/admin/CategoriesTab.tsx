@@ -73,13 +73,6 @@ export default function CategoriesTab() {
     await load(); triggerPublish();
   };
 
-  const reorderSub = async (sub: ProductSubcategory, value: number) => {
-    const { error: err } = await supabase.from('product_subcategories')
-      .update({ sort_order: value }).eq('id', sub.id);
-    if (err) return setError(err.message);
-    await load(); triggerPublish();
-  };
-
   const deleteSub = async (sub: ProductSubcategory, excelName: string | null) => {
     const count = excelName ? (subCounts[`${excelName}|${sub.name}`] ?? 0) : 0;
     if (count > 0) return setError(`Series "${sub.name}" still has ${count} products — hide it instead of deleting.`);
@@ -197,8 +190,6 @@ export default function CategoriesTab() {
                     return (
                       <li key={sub.id} className={`border-b border-ink/5 ${sub.is_active ? '' : 'opacity-60'}`}>
                         <div className="flex items-center gap-3 text-sm py-1.5">
-                          <input type="number" defaultValue={sub.sort_order} onBlur={(e) => reorderSub(sub, Number(e.currentTarget.value || 0))}
-                            className="w-12 bg-transparent border-b border-ink/15 text-xs text-center" aria-label={`Order of ${sub.name}`} />
                           <span className="flex-1">{sub.name}</span>
                           {langCount > 0 && <span className="text-[10px] uppercase tracking-[0.15em] text-brand-500/70">{langCount} lang</span>}
                           <span className="font-mono text-[10px] text-ink/45">{count} prod</span>
