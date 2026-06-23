@@ -33,12 +33,15 @@ const fullOgImage = ogImage
   ? (ogImage.startsWith('http') ? ogImage : `${SITE}${ogImage}`)
   : `${SITE}/og-default.jpg`;
 
-const titleSuffix = 'Elysse Group';
-const fullTitle = title === titleSuffix ? title : `${title} — ${titleSuffix}`;
+const titleSuffix = 'Elysée';
+const fullTitle = title.includes(titleSuffix) ? title : `${title} — ${titleSuffix}`;
 ---
 <!doctype html>
 <html lang="en">
   <head>
+    <script is:inline>
+      try { var l = localStorage.getItem('elysee.lang'); if (l && l !== 'en') document.documentElement.lang = l; } catch (e) {}
+    </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="generator" content={Astro.generator} />
@@ -52,7 +55,7 @@ const fullTitle = title === titleSuffix ? title : `${title} — ${titleSuffix}`;
     <meta property="og:image" content={fullOgImage} />
     <meta property="og:url" content={canonicalHref} />
     <meta property="og:type" content="website" />
-    <meta property="og:site_name" content="Elysse Group" />
+    <meta property="og:site_name" content="Elysée" />
 
     {/* Twitter */}
     <meta name="twitter:card" content="summary_large_image" />
