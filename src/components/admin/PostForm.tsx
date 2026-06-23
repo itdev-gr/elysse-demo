@@ -29,7 +29,9 @@ function emptyDraft(): PostDraft {
 }
 
 function toDraft(p: Post): PostDraft {
-  const { id: _id, created_at: _ca, updated_at: _ua, ...rest } = p;
+  // Strip server-managed + home-featured columns; FeaturedToggle owns the
+  // latter, so the edit form must not write them back (lost-update bug).
+  const { id: _id, created_at: _ca, updated_at: _ua, featured_home: _fh, featured_rank: _fr, ...rest } = p;
   return rest;
 }
 
