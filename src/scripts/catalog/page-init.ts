@@ -199,7 +199,7 @@ export function initCatalogPage(country: Country, categorySlug: CategorySlug) {
     });
   });
 
-  // Clear all (FilterRail + EmptyResults both have a [data-clear-filters] button)
+  // Clear all (EmptyResults has a [data-clear-filters] button)
   clearBtns.forEach(btn => btn.addEventListener('click', () => {
     filters = { ...EMPTY_FILTERS };
     applyUiFromFilters();

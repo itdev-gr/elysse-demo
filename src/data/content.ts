@@ -14,14 +14,10 @@ import type { ImageMetadata } from 'astro';
 
 // Hero images — one per page (where the source has a clear hero asset).
 import heroHome from '../assets/images/ocean-1440x900.jpg';
-import heroAboutUs from '../assets/images/shutterstock-699756580-2.jpg';
-import heroStreamingWater from '../assets/images/streaming-water.jpg';
 import heroFuelProducts from '../assets/images/shutterstock-377226832-fuel-products.jpg';
 import heroMarineLubricants from '../assets/images/shutterstock-1007620258-scaled.jpg';
 import heroAlternativeFuels from '../assets/images/green-hydrogen-shutterstock-1938738706.jpg';
 import heroAdvisoryServices from '../assets/images/shutterstock-377226832-advisory-services.jpg';
-import heroContact from '../assets/images/shutterstock-374742190-group-ceo-statement.jpg';
-import heroNews from '../assets/images/landscape.jpg'; // press-room landing has no dedicated hero asset; reuse landscape banner.
 import heroPrivacy from '../assets/images/shutterstock-377226832-privacy-policy.jpg';
 
 // Section/article images.
@@ -33,14 +29,6 @@ import imgWeCare from '../assets/images/shutterstock-377226832-we-care.jpg';
 import imgArticlePanama from '../assets/images/untitled-1.png';
 import imgArticleHsbc from '../assets/images/barge-graphic.jpg';
 import imgArticleTenYear from '../assets/images/10-year-celebration.jpg';
-import imgArticleHseq from '../assets/images/shutterstock-377226832-hseq-article.jpg';
-import imgArticleMethane from '../assets/images/shutterstock-377226832-looking-at-ways.jpg';
-import imgArticleDrs from '../assets/images/shutterstock-309247196.jpg'; // No dedicated DRS asset in repo; reuse a generic environmental image. TODO confirm.
-
-// Infographic / supporting assets for the Alternative Fuels page.
-import imgShipInfographic from '../assets/images/ship-infographic.jpg';
-import imgSustainableBiomass from '../assets/images/sustainable-biomass.jpg';
-import imgEnergyPrice from '../assets/images/energy-price.jpg';
 
 // Homepage services panel — one image per sector card.
 import imgServiceAgriculture from '../assets/images/services-agriculture.jpg';
@@ -307,107 +295,6 @@ export const homePage: PageContent = {
   ],
 };
 
-export const aboutUsPage: PageContent = {
-  slug: '/about-us/',
-  meta: {
-    title: 'About Us — Elysée',
-    description:
-      'Elysée manufactures and supplies piping and irrigation systems for water supply, irrigation, sewerage and energy. Based in Cyprus, serving 65+ destinations.',
-  },
-  hero: {
-    eyebrow: 'About Us',
-    headline: 'Corporate Profile',
-    sub: 'A family business founded in 1979 — manufacturing piping and irrigation systems for water supply, irrigation, sewerage and energy across more than 65 countries.',
-    image: heroAboutUs,
-  },
-  sections: [
-    {
-      kind: 'text',
-      heading: 'Who we are',
-      body: 'Elysée manufactures and supplies piping and irrigation systems for water supply, irrigation, sewerage and energy. Based in Cyprus, a key location at the crossroads of three continents, Elysée serves more than 65 destinations in Europe, the Middle East, South Africa, Japan, Australia and New Zealand.\n\nIt is in our nature as a company but also as people, to be ambitious and set high targets. We are inspired by our 40-year history and experience and we look forward to our fifth decade with optimism and confidence. From our expert engineers to our highly knowledgeable customer-services staff, teamwork plays a huge part in the success of Elysée.',
-    },
-    {
-      kind: 'text',
-      heading: 'Years of experience',
-      body: 'With a flexible organizational structure, Elysée ensures a quick response to customer enquiries, orders and opportunities for collaboration. New products are developed every year and added to upgrade existing products, creating a consistently growing range. Many years of experience in fittings design, manufacture and supply are reflected in new products which respond to customer needs, and in our ability to produce and deliver every order to its destination on schedule.',
-    },
-    {
-      kind: 'feature-grid',
-      heading: 'Discover more about Elysée',
-      items: [
-        {
-          title: 'History',
-          eyebrow: 'Our journey',
-          body: 'From premium-flower cultivation in the 1970s to a 65-country presence today — the milestones that built Elysée.',
-          href: '/about-us/history/',
-          image: heroStreamingWater,
-        },
-        {
-          title: 'Company Structure',
-          eyebrow: 'How we are organized',
-          body: 'The departments and divisions that keep Elysée operating across its production, distribution, and R&D activities.',
-          href: '/about-us/company-structure/',
-          image: heroStreamingWater,
-        },
-        {
-          title: 'Vision, Mission & Values',
-          eyebrow: 'What drives us',
-          body: 'To be a green leader worldwide through Innovative, Smart, Easy-to-use Piping Systems — and the values that take us there.',
-          href: '/about-us/vision-mission-values/',
-          image: heroStreamingWater,
-        },
-        {
-          title: 'Quality & Certifications',
-          eyebrow: 'How we prove it',
-          body: 'ISO 9001 since 1998, plus DVGW, KIWA, WRAS, SII and OVGW product certifications.',
-          href: '/about-us/quality-certifications/',
-          image: heroStreamingWater,
-        },
-      ],
-    },
-  ],
-  siblings: aboutSiblings,
-};
-
-export const marineEnergyPage: PageContent = {
-  slug: '/about-us/your-marine-energy-provider/',
-  meta: {
-    title: 'Your Marine Energy Provider — Elysse Group',
-    description:
-      'Elysse Group was founded in 2014 with the goal of becoming a leading independent fuel and energy provider to the shipping industry.',
-  },
-  hero: {
-    eyebrow: 'About Us',
-    headline: 'Streaming Water, Streaming Life',
-    sub: 'Constantly seeking out exceptional products and services, exceeding our customers’ expectations, and helping them achieve their goals.',
-    image: heroStreamingWater,
-  },
-  sections: [
-    {
-      kind: 'text',
-      heading: 'Who we are',
-      body: 'Elysée manufactures and supplies piping and irrigation systems for water supply, irrigation, sewerage and energy. Based in Cyprus, a key location at crossroads of three continents, Elysée serves more than 65 destinations in Europe, the Middle East, South Africa, Japan, Australia and New Zealand.\n\nIt is in our nature as a company but also as people, to be ambitious and set high targets. We are inspired by our 40-year history and experience and we look forward to our fifth decade with optimism and confidence. From our expert engineers to our highly knowledgeable customer services staff, teamwork plays a huge part in the success of Elysee. Collaboration across all departments, attention to detail and a lot of hard work result in amazing products, to create brilliant solutions that can be tailored perfectly to every customer.\n\nWe strive to innovate and improve, and because we have our own in-house R&D department, we can be ahead of the crowd when it comes to developing and creating new and exciting products. With each new product we look to maximise not just the efficiency of the product, but also the durability and ease of use. We also love to add in new features that make your life easier. Always with a thought to minimising environmental impact, and keeping prices competitive for you and your business, we want to save you time, save you money, and save the planet. We’re proud to say that we manage to achieve these targets time and time again, thanks to every member of the Elysee team.',
-    },
-    {
-      kind: 'text',
-      heading: 'Beyond sourcing & physical operations',
-      body: 'At Elysse Group, we are not just a sourcing and physical operation. We go beyond that by providing our customers with a range of value-added services, including an advisory service, risk management, and market analysis. These services enable us to support our customers throughout the entire lifecycle of their fuel needs, from sourcing and procurement to delivery.',
-    },
-    {
-      kind: 'text',
-      heading: 'Our vision',
-      body: 'We take great pride in our commitment to customer service and excellence. Our vision is to be the go-to source for top-quality products and services in the industry. We aim to achieve this by living our mission and working towards our vision of being known for our excellent customer service, commitment to sustainability, and social responsibility.',
-    },
-    {
-      kind: 'text',
-      heading: 'Creating value for everyone',
-      body: 'At Elysse Group, we firmly believe that by creating value for our customers, we also create value for our employees and the community. We are proud of our team of experts who have extensive experience in the industry and are dedicated to providing exceptional service to our customers.\n\nWhether you are a small business or a large corporation, Elysse Group is here to provide you with the highest quality fuel products and services, as well as the expertise and support you need to succeed. Contact us today to learn more about how we can help you achieve your goals.',
-      cta: { label: 'Contact us', href: '/contact/' },
-    },
-  ],
-  siblings: aboutSiblings,
-};
-
 // ---------- Service pages — Elysee Group's 4 sectors ----------
 // Heroes reuse the previously-imported shutterstock photos as placeholders;
 // swap to dedicated category photography when available. Body copy below is
@@ -527,197 +414,6 @@ export const industryPage: PageContent = {
     },
   ],
   siblings: servicesSiblings,
-};
-
-export const contactPage: PageContent = {
-  slug: '/contact/',
-  meta: {
-    title: 'Contact — Elysse Group',
-    description:
-      'Get in touch with Elysse Group — offices in London, Athens, Rotterdam, Oslo, Rio de Janeiro, Singapore, Dubai, and Panama.',
-  },
-  hero: {
-    eyebrow: 'Contact',
-    headline: 'Contact us',
-    sub: 'Eight offices across the globe — reach the team closest to you.',
-    image: heroContact,
-  },
-  sections: [
-    {
-      kind: 'offices',
-      heading: 'Worldwide Offices',
-      offices: [
-        {
-          city: 'London',
-          code: 'LDN',
-          region: 'United Kingdom',
-          addressLines: [
-            'Ground Floor,',
-            '10 Coldbath Square',
-            'London EC1R 5HL',
-            'United Kingdom',
-          ],
-          email: 'london@elyssegroup.com',
-        },
-        {
-          city: 'Athens',
-          code: 'ATH',
-          region: 'Greece',
-          addressLines: [
-            'Ave. Vouliagmenis 82,',
-            'Glyfada, 166 75,',
-            'Greece',
-          ],
-          email: 'athens@elyssegroup.com',
-        },
-        {
-          city: 'Rotterdam',
-          code: 'RTM',
-          region: 'Netherlands',
-          addressLines: [
-            'World Trade Center,',
-            'Beursplein 37, 3011 AA,',
-            '3rd floor, Room 3.03',
-            'Rotterdam',
-            'Netherlands',
-          ],
-          email: 'rotterdam@elyssegroup.com',
-        },
-        {
-          city: 'Oslo',
-          code: 'OSL',
-          region: 'Norway',
-          addressLines: ['Grundingen 6,', 'Oslo', '0250', 'Norway'],
-          email: 'oslo@elyssegroup.com',
-        },
-        {
-          city: 'Rio de Janeiro',
-          code: 'RJ',
-          region: 'Brazil',
-          addressLines: [
-            'Rua da Quitanda',
-            '52 -1002,',
-            'CEP 20.011-030 Centro',
-          ],
-          email: 'rio@elyssegroup.com',
-        },
-        {
-          city: 'Singapore',
-          code: 'SG',
-          region: 'Singapore',
-          addressLines: [
-            '16 Raffles Quay',
-            '#17-03',
-            'Hong Leong Building',
-            '048581',
-            'Singapore',
-          ],
-          email: 'singapore@elyssegroup.com',
-        },
-        {
-          city: 'Dubai',
-          code: 'DXB',
-          region: 'United Arab Emirates',
-          addressLines: [
-            'JLT Cluster I',
-            'Platinum Tower #2703-2704',
-            'Jumeirah Lake Towers',
-            'Dubai',
-            'United Arab Emirates',
-          ],
-          email: 'dubai@elyssegroup.com',
-        },
-        {
-          city: 'Panama',
-          code: 'PA',
-          region: 'Panama',
-          addressLines: [
-            'World Trade Center',
-            'Calle 53 Este, Oficina 705',
-            'Marbella, Panama',
-          ],
-          phones: ['+507 6461 5040'],
-          email: 'panama@elyssegroup.com',
-        },
-      ],
-    },
-  ],
-};
-
-export const newsIndexPage: PageContent = {
-  slug: '/press-room/news/',
-  meta: {
-    title: 'News — Elysse Group Press Room',
-    description:
-      'Latest news from Elysse Group — expansion announcements, industry analysis, sustainability updates, and milestones from across our worldwide offices.',
-  },
-  hero: {
-    eyebrow: 'Press Room',
-    headline: 'News',
-    sub: 'Announcements, industry analysis, and milestones from the Elysse Group team.',
-    image: heroNews,
-  },
-  sections: [
-    {
-      kind: 'news-list',
-      eyebrow: 'Showing latest',
-      heading: 'Latest News',
-      articles: [
-        {
-          title:
-            'Elysse Group Expands into the Americas with the Launch of ELYSSE ENERGY Panama',
-          slug: '/press-room/news/elysse-energy-panama-launch/',
-          date: '10/1/2025',
-          image: imgArticlePanama,
-          excerpt:
-            'Elysse Group expands into the Americas with the launch of ELYSSE ENERGY PANAMA S.A. in Panama City. Led by industry veteran Hernán Ortiz, the new hub strengthens the company’s regional presence from Canada to Argentina and marks a key step in its transition toward cleaner marine energy solutions.',
-        },
-        {
-          title:
-            'Elysse Group Secures Significant Funding to Propel Global Expansion',
-          slug: '/press-room/news/hsbc-funding-increase-july-2024/',
-          date: '7/29/2024',
-          image: imgArticleHsbc,
-          excerpt:
-            'At Elysse Group, we are thrilled to announce a major milestone in our journey towards global expansion. With the steadfast support of HSBC UK, our company is poised for significant growth, driven by a substantial funding increase that will enable us to meet rising demands and enhance our operations worldwide.',
-        },
-        {
-          title: 'CELEBRATING A DECADE OF EXCELLENCE',
-          slug: '/press-room/news/10-year-celebration/',
-          date: '4/30/2024',
-          image: imgArticleTenYear,
-          excerpt:
-            'We proudly celebrated our 10th Anniversary on April 30th, marking a decade of achievements and growth. The milestone was commemorated with joyous celebrations held across all our offices, bringing together teams from every corner of our organization to reflect on our journey and look forward to an even brighter future.',
-        },
-        {
-          title:
-            'HSEQ standards continue to drive innovation in the bunker industry',
-          slug: '/press-room/news/hseq-article/',
-          date: '12/21/2022',
-          image: imgArticleHseq,
-          excerpt:
-            'The importance of HSEQ (health, safety, environmental, and quality) standards in the bunker industry has never been greater.',
-        },
-        {
-          title:
-            'Looking at ways the oil and gas industry can reduce the methane emissions.',
-          slug: '/press-room/news/looking-at-ways-to-reduce-methane-gas-emissions/',
-          date: '11/24/2022',
-          image: imgArticleMethane,
-          excerpt:
-            'Oil and gas industry leaders are taking steps to reduce methane emissions in an effort to combat climate change and protect the environment.',
-        },
-        {
-          title: 'DRS standards for pollution',
-          slug: '/press-room/news/drs-standards-for-pollution/',
-          date: '12/21/2021',
-          image: imgArticleDrs,
-          excerpt:
-            'A Design-for-Recycling approach seeks to make plastic products or parts more easily recyclable, with the objective of ensuring that a consistent amount of plastic waste is recycled and can be used again.',
-        },
-      ],
-    },
-  ],
 };
 
 export const privacyPolicyPage: PageContent = {
@@ -918,21 +614,4 @@ export const termsOfSupplyPage: PageContent = {
       body: 'Elysée may update these Terms from time to time. The version in force at the date of order acceptance applies to that order. The current version is always published at this URL.',
     },
   ],
-};
-
-// ---------- registry ----------
-
-export const allPages: Record<string, PageContent> = {
-  '/': homePage,
-  '/about-us/': aboutUsPage,
-  '/about-us/your-marine-energy-provider/': marineEnergyPage,
-  '/our-services/agriculture/': agriculturePage,
-  '/our-services/landscape/': landscapePage,
-  '/our-services/building-infrastructure/': buildingInfrastructurePage,
-  '/our-services/industry/': industryPage,
-  '/contact/': contactPage,
-  '/press-room/news/': newsIndexPage,
-  '/legal/privacy-policy/': privacyPolicyPage,
-  '/legal/terms-of-use/': termsOfUsagePage,
-  '/legal/terms-of-supply/': termsOfSupplyPage,
 };
