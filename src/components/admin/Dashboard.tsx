@@ -24,7 +24,7 @@ type Tab =
 
 const HEADINGS: Record<Tab, string> = {
   jobs: 'Jobs.',
-  posts: 'Posts.',
+  posts: 'Blogs.',
   news: 'News.',
   exhibitions: 'Exhibitions.',
   media: 'Media.',
@@ -63,7 +63,7 @@ const GROUPS: { label: string; items: { id: Tab; label: string }[] }[] = [
   {
     label: 'Insights',
     items: [
-      { id: 'posts', label: 'Posts' },
+      { id: 'posts', label: 'Blogs' },
       { id: 'news', label: 'News' },
       { id: 'exhibitions', label: 'Exhibitions' },
       { id: 'media', label: 'Media' },

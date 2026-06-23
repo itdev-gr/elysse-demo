@@ -1,12 +1,14 @@
 ---
-export const prerender = false;
-import EbookDetail from '../../../components/insights/EbookDetail.astro';
-import { getEbookBySlug } from '../../../lib/ebooks';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import EbookDetailView from '../../../components/insights/EbookDetailView.tsx';
 
-Astro.response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-revalidate=86400');
+// Dynamic route rendered on-demand; the row is fetched in the browser so a
+// newly published publication is live immediately, and the markdown sanitiser
+// (jsdom) stays off the serverless runtime.
+export const prerender = false;
 
 const { slug } = Astro.params;
-const ebook = slug ? await getEbookBySlug(slug) : null;
-if (!ebook) return Astro.redirect('/insights/ebooks/', 302);
 ---
-<EbookDetail ebook={ebook} />
+<BaseLayout title="eBook — Insights — Elysée" description="">
+  <EbookDetailView slug={slug ?? ''} client:only="react" />
+</BaseLayout>

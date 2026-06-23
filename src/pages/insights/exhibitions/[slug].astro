@@ -1,12 +1,14 @@
 ---
-export const prerender = false;
-import ExhibitionDetail from '../../../components/insights/ExhibitionDetail.astro';
-import { getExhibitionBySlug } from '../../../lib/exhibitions';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import ExhibitionDetailView from '../../../components/insights/ExhibitionDetailView.tsx';
 
-Astro.response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-revalidate=86400');
+// Dynamic route rendered on-demand; the row is fetched in the browser so a
+// newly published exhibition is live immediately, and the markdown sanitiser
+// (jsdom) stays off the serverless runtime.
+export const prerender = false;
 
 const { slug } = Astro.params;
-const exhibition = slug ? await getExhibitionBySlug(slug) : null;
-if (!exhibition) return Astro.redirect('/insights/exhibitions/', 302);
 ---
-<ExhibitionDetail exhibition={exhibition} />
+<BaseLayout title="Exhibition — Insights — Elysée" description="">
+  <ExhibitionDetailView slug={slug ?? ''} client:only="react" />
+</BaseLayout>
