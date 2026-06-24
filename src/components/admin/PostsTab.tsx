@@ -75,14 +75,14 @@ export default function PostsTab() {
               onClick={() => setMode({ kind: 'create' })}
               className="inline-flex items-center gap-2 bg-brand-500 text-surface px-5 py-2.5 text-[11px] uppercase tracking-[0.25em] font-medium hover:bg-brand-700 transition-colors duration-200 cursor-pointer"
             >
-              + New post
+              + New blog
             </button>
           </div>
 
           {posts === null ? (
             <p className="text-sm text-ink/60">Loading…</p>
           ) : posts.length === 0 ? (
-            <p className="text-sm text-ink/60">No posts yet. Create the first one.</p>
+            <p className="text-sm text-ink/60">No blogs yet. Create the first one.</p>
           ) : (
             <div className="overflow-x-auto bg-surface border border-ink/10">
               <table className="w-full text-sm">

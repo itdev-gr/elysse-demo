@@ -1,7 +1,11 @@
 ---
 import type { CatalogProduct } from '~/scripts/catalog/types';
-interface Props { product: CatalogProduct; }
-const { product: p } = Astro.props;
+interface Props {
+  product: CatalogProduct;
+  /** Series name → its non-English translations, for the language swap. */
+  seriesI18n?: Record<string, Record<string, string>>;
+}
+const { product: p, seriesI18n = {} } = Astro.props;
 const thumb = p.imageUrls[0] ?? p.image ?? '';
 ---
 <article class="cat-card flex items-center gap-4 p-4" data-product-row data-slug={p.slug} data-series={p.material}>
@@ -21,6 +25,6 @@ const thumb = p.imageUrls[0] ?? p.image ?? '';
   <div class="flex-1 min-w-0">
     {p.code && <p class="text-[11px] text-ink/50">No.{p.code}</p>}
     <p class="font-heavy text-lg text-ink leading-tight">{p.name}</p>
-    {p.material && <p class="text-xs text-ink/60 mt-0.5">{p.material}</p>}
+    {p.material && <p class="text-xs text-ink/60 mt-0.5" data-i18n={JSON.stringify(seriesI18n[p.material] ?? {})}>{p.material}</p>}
   </div>
 </article>

@@ -1,12 +1,14 @@
 ---
-export const prerender = false;
-import MediaDetail from '../../../components/insights/MediaDetail.astro';
-import { getMediaBySlug } from '../../../lib/media';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import MediaDetailView from '../../../components/insights/MediaDetailView.tsx';
 
-Astro.response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-revalidate=86400');
+// Dynamic route rendered on-demand; the row is fetched in the browser so a
+// newly published item is live immediately, and the markdown sanitiser
+// (jsdom) stays off the serverless runtime.
+export const prerender = false;
 
 const { slug } = Astro.params;
-const media = slug ? await getMediaBySlug(slug) : null;
-if (!media) return Astro.redirect('/insights/media/', 302);
 ---
-<MediaDetail media={media} />
+<BaseLayout title="Media — Insights — Elysée" description="">
+  <MediaDetailView slug={slug ?? ''} client:only="react" />
+</BaseLayout>

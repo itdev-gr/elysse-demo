@@ -5,9 +5,7 @@
  * Design tokens — Tailwind v4 `@theme` block.
  *
  * Each variable below is auto-promoted by Tailwind v4 into a matching utility
- * class (e.g. `--color-brand-500` → `bg-brand-500` / `text-brand-500`). Values
- * come from recon/output/tailwind-tokens.draft.mjs, which traces back to
- * DESIGN.md + recon/output/tokens.json (1440x900 capture of sonanbunkers.com).
+ * class (e.g. `--color-brand-500` → `bg-brand-500` / `text-brand-500`).
  * ------------------------------------------------------------------------- */
 @theme {
   /* === Breakpoints ======================================================

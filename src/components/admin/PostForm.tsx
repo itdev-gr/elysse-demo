@@ -149,7 +149,7 @@ export default function PostForm({ initial, onSaved, onCancel }: Props) {
     <form onSubmit={onSubmit} className="bg-surface border-l-4 border-brand-500 p-6 md:p-8 space-y-5">
       <header className="flex items-center justify-between">
         <h2 className="font-display font-heavy text-xl text-ink">
-          {initial ? 'Edit post' : 'New post'}
+          {initial ? 'Edit blog' : 'New blog'}
         </h2>
         <button
           type="button"
@@ -275,7 +275,7 @@ export default function PostForm({ initial, onSaved, onCancel }: Props) {
           disabled={submitting}
           className="inline-flex items-center gap-2 bg-brand-500 text-surface px-5 py-2.5 text-[11px] uppercase tracking-[0.25em] font-medium hover:bg-brand-700 transition-colors duration-200 disabled:opacity-60 cursor-pointer"
         >
-          {submitting ? 'Saving…' : initial ? 'Save changes' : 'Create post'}
+          {submitting ? 'Saving…' : initial ? 'Save changes' : 'Create blog'}
         </button>
       </div>
     </form>

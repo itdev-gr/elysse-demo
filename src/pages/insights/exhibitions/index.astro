@@ -1,23 +1,25 @@
 ---
-export const prerender = false;
-import ListPageLayout from '../../../layouts/ListPageLayout.astro';
-import { listExhibitions } from '../../../lib/exhibitions';
-import { exhibitionToCard } from '../../../lib/insights-cards';
-import { insightsExhibitionsItems } from '../../../data/site-content';
-
-Astro.response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-revalidate=86400');
-
-let items;
-const rows = await listExhibitions();
-if (rows.length > 0) {
-  items = rows.map(exhibitionToCard);
-} else {
-  items = insightsExhibitionsItems; // offline fallback
-}
+/**
+ * Insights — Exhibitions.
+ *
+ * Static shell + client island (mirrors the Blog/News pattern). The grid is
+ * fetched in the browser from the `exhibitions` table, managed in the admin
+ * dashboard, so newly published entries appear with no rebuild.
+ */
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import PageHero from '../../../components/PageHero.astro';
+import InsightsList from '../../../components/insights/InsightsList.tsx';
 ---
-<ListPageLayout
-  title="Exhibitions"
-  eyebrow="Insights"
-  subtitle="Where to meet Elysée — trade fairs and exhibitions across the group."
-  items={items}
-/>
+<BaseLayout
+  title="Exhibitions — Insights — Elysée"
+  description="Where to meet Elysée — trade fairs and exhibitions across the group."
+>
+  <PageHero
+    title="Exhibitions"
+    eyebrow="Insights"
+    subtitle="Where to meet Elysée — trade fairs and exhibitions across the group."
+  />
+  <section class="mx-auto max-w-screen-xl px-4 md:px-8 py-12 md:py-16">
+    <InsightsList kind="exhibitions" emptyMessage="No exhibitions listed yet — check back soon." client:visible />
+  </section>
+</BaseLayout>

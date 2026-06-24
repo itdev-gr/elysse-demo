@@ -92,7 +92,7 @@ const productsJson = JSON.stringify(products);
           </aside>
           <section class="col-span-12 md:col-span-9">
             <UtilityBar count={categoryProducts.length} category={categoryEntry.name} categorySlug={categoryEntry.slug} categoryI18n={categoryEntry.name_i18n ?? {}} />
-            <ProductGrid products={categoryProducts} />
+            <ProductGrid products={categoryProducts} seriesI18n={seriesI18n} />
           </section>
         </div>
       )}

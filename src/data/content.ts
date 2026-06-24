@@ -15,7 +15,7 @@ import type { ImageMetadata } from 'astro';
 // Hero images — one per page (where the source has a clear hero asset).
 import heroHome from '../assets/images/ocean-1440x900.jpg';
 import heroFuelProducts from '../assets/images/shutterstock-377226832-fuel-products.jpg';
-import heroMarineLubricants from '../assets/images/shutterstock-1007620258-scaled.jpg';
+import heroLandscape from '../assets/images/shutterstock-1007620258-scaled.jpg';
 import heroAlternativeFuels from '../assets/images/green-hydrogen-shutterstock-1938738706.jpg';
 import heroAdvisoryServices from '../assets/images/shutterstock-377226832-advisory-services.jpg';
 import heroPrivacy from '../assets/images/shutterstock-377226832-privacy-policy.jpg';
@@ -340,7 +340,7 @@ export const landscapePage: PageContent = {
     eyebrow: 'Our Services',
     headline: 'Landscape',
     sub: 'Specialist support for parks, campuses, and grounds — irrigation, turf, and ongoing care.',
-    image: heroMarineLubricants,
+    image: heroLandscape,
   },
   sections: [
     {
@@ -532,7 +532,7 @@ export const privacyPolicyPage: PageContent = {
 export const termsOfUsagePage: PageContent = {
   slug: '/legal/terms-of-use/',
   meta: {
-    title: 'Terms of Usage — Elysse Group',
+    title: 'Terms of Usage — Elysée',
     description:
       'The information appearing on this Web site is provided in good faith. Every attempt has been taken by Elysée Irrigation employees to ensure its accuracy.',
   },
@@ -553,7 +553,7 @@ export const termsOfUsagePage: PageContent = {
 export const termsOfSupplyPage: PageContent = {
   slug: '/legal/terms-of-supply/',
   meta: {
-    title: 'Terms of Supply — Elysse Group',
+    title: 'Terms of Supply — Elysée',
     description:
       'The terms and conditions governing the supply of Elysée products to customers and distributors worldwide.',
   },
