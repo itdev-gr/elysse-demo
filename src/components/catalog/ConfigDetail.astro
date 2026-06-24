@@ -5,8 +5,13 @@ import type { SkuRow } from '~/scripts/catalog/sku-tables';
 import SkuTable from './SkuTable.astro';
 import RelatedProducts from './RelatedProducts.astro';
 
-interface Props { config: ConfigurationDetail; related?: CatalogProduct[]; }
-const { config: c, related = [] } = Astro.props;
+interface Props {
+  config: ConfigurationDetail;
+  related?: CatalogProduct[];
+  /** Series (sub-category) name → its non-English translations, for the swap. */
+  subCategoryI18n?: Record<string, string>;
+}
+const { config: c, related = [], subCategoryI18n = {} } = Astro.props;
 
 // Map each size (SKU) into the SkuTable row shape.
 const skuRows: SkuRow[] = c.sizes.map((s) => ({
@@ -28,7 +33,7 @@ const hasDescription = !!c.description || Object.values(c.descriptionI18n).some(
 <header class="mt-6 md:mt-8">
   <p class="font-mono text-lg md:text-xl font-medium text-ink/70">No.{c.familyCode}</p>
   <h1 data-i18n-name={nameI18nJson} class="mt-1 font-heavy text-4xl lg:text-5xl leading-tight text-ink">{c.configuration}</h1>
-  <p class="mt-2 text-sm text-ink/60">{c.subCategory}</p>
+  <p class="mt-2 text-sm text-ink/60" data-i18n={JSON.stringify(subCategoryI18n)}>{c.subCategory}</p>
   {hasDescription && (
     <p data-i18n-desc={descI18nJson} class="mt-4 max-w-2xl text-base text-ink/75 leading-relaxed whitespace-pre-line">{c.description}</p>
   )}

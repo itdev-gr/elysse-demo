@@ -9,7 +9,7 @@
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import ConfigDetail from '../../../components/catalog/ConfigDetail.astro';
 import { fetchConfigurationDetails, configDetailToCard } from '../../../lib/products';
-import { getCategories } from '../../../lib/categories';
+import { getCategories, getSubcategories } from '../../../lib/categories';
 import type { CatalogProduct } from '../../../scripts/catalog/types';
 import '../../../styles/catalog.css';
 
@@ -34,6 +34,11 @@ if (!config) return new Response(null, { status: 404 });
 
 const categoryName = categoryEntry.name;
 const categoryNameI18n = JSON.stringify(categoryEntry.name_i18n ?? {});
+// Series (sub-category) translations for the swap of the line under the title.
+const subOverlay = (await getSubcategories()).find(
+  (s) => s.category_slug === categoryEntry.slug && s.name === config.subCategory,
+);
+const subCategoryI18n = subOverlay?.name_i18n ?? {};
 // Related: other configurations in the same series first, then the rest.
 const sameSeries = configs.filter((x) => x.slug !== config.slug && x.subCategory === config.subCategory);
 const others = configs.filter((x) => x.slug !== config.slug && x.subCategory !== config.subCategory);
@@ -59,7 +64,7 @@ const desc = `${config.configuration} (No.${config.familyCode}) — ${config.sub
         <span>Back to <span data-i18n={categoryNameI18n}>{categoryName}</span></span>
       </a>
 
-      <ConfigDetail config={config} related={related} />
+      <ConfigDetail config={config} related={related} subCategoryI18n={subCategoryI18n} />
     </section>
   </div>
 </BaseLayout>
