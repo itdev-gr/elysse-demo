@@ -1,57 +1,121 @@
 ---
-// Language switcher shown in the nav bar. Persists the choice and reflects the
-// active language. (Wiring it to translated content / i18n routing is a
-// separate, larger task — for now it stores the preference.)
+// Language switcher shown in the nav bar. A compact trigger shows the active
+// language; clicking it opens a dropdown list of the rest. Persists the choice
+// and reflects the active language. (Wiring it to translated content / i18n
+// routing is a separate, larger task — for now it stores the preference.)
 const langs = [
-  { code: 'en', label: 'EN' },
-  { code: 'el', label: 'GR' },
-  { code: 'de', label: 'DE' },
-  { code: 'es', label: 'ES' },
-  { code: 'fr', label: 'FR' },
+  { code: 'en', label: 'EN', name: 'English' },
+  { code: 'el', label: 'GR', name: 'Ελληνικά' },
+  { code: 'de', label: 'DE', name: 'Deutsch' },
+  { code: 'es', label: 'ES', name: 'Español' },
+  { code: 'fr', label: 'FR', name: 'Français' },
 ];
 ---
-<div
-  class="ml-auto lg:ml-0 flex items-center gap-1 text-[11px] shrink-0"
-  data-lang-toggle
-  role="group"
-  aria-label="Select language"
->
-  {langs.map((l, i) => (
-    <>
-      {i > 0 && <span aria-hidden="true" class="opacity-30">·</span>}
-      <button
-        type="button"
-        data-lang={l.code}
-        class="px-1 py-1 uppercase tracking-wider font-medium transition-colors duration-200 hover:text-brand-500 cursor-pointer"
-      >{l.label}</button>
-    </>
-  ))}
+<div class="relative ml-auto lg:ml-0 shrink-0" data-lang-toggle>
+  <button
+    type="button"
+    data-lang-trigger
+    aria-haspopup="listbox"
+    aria-expanded="false"
+    aria-label="Select language"
+    class="flex items-center gap-1.5 px-2 py-1.5 text-[11px] uppercase tracking-wider font-medium transition-colors duration-200 hover:text-brand-500 cursor-pointer"
+  >
+    <span data-lang-current>EN</span>
+    <svg
+      data-lang-chevron
+      viewBox="0 0 12 12"
+      aria-hidden="true"
+      class="h-2.5 w-2.5 transition-transform duration-200"
+    >
+      <path
+        d="M2.5 4.5 6 8l3.5-3.5"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+    </svg>
+  </button>
+
+  <ul
+    data-lang-menu
+    role="listbox"
+    aria-label="Language"
+    class="absolute right-0 top-full mt-2 hidden min-w-[9rem] overflow-hidden rounded-md border border-surface-divider bg-surface text-ink shadow-lg py-1 z-50"
+  >
+    {langs.map((l) => (
+      <li>
+        <button
+          type="button"
+          role="option"
+          aria-selected="false"
+          data-lang={l.code}
+          data-label={l.label}
+          class="flex w-full items-center gap-2.5 px-3 py-2 text-left transition-colors duration-150 hover:bg-surface-alt hover:text-brand-500 cursor-pointer"
+        >
+          <span class="w-6 text-[11px] uppercase tracking-wider font-semibold">{l.label}</span>
+          <span class="text-[13px]">{l.name}</span>
+        </button>
+      </li>
+    ))}
+  </ul>
 </div>
 
 <script>
   const KEY = 'elysee.lang';
   document.querySelectorAll<HTMLElement>('[data-lang-toggle]').forEach((toggle) => {
-    const buttons = Array.from(toggle.querySelectorAll<HTMLButtonElement>('[data-lang]'));
+    const trigger = toggle.querySelector<HTMLButtonElement>('[data-lang-trigger]');
+    const menu = toggle.querySelector<HTMLElement>('[data-lang-menu]');
+    const currentLabel = toggle.querySelector<HTMLElement>('[data-lang-current]');
+    const chevron = toggle.querySelector<SVGElement>('[data-lang-chevron]');
+    const options = Array.from(toggle.querySelectorAll<HTMLButtonElement>('[data-lang]'));
+    if (!trigger || !menu) return;
+
+    const setOpen = (open: boolean) => {
+      menu.classList.toggle('hidden', !open);
+      trigger.setAttribute('aria-expanded', String(open));
+      chevron?.classList.toggle('rotate-180', open);
+    };
+
     const sync = (code: string) => {
-      buttons.forEach((b) => {
-        const active = b.dataset.lang === code;
-        b.setAttribute('aria-current', String(active));
-        b.classList.toggle('text-brand-500', active);
-        b.classList.toggle('font-semibold', active);
+      const active = options.find((o) => o.dataset.lang === code) ?? options[0];
+      if (currentLabel && active) currentLabel.textContent = active.dataset.label ?? code.toUpperCase();
+      options.forEach((o) => {
+        const isActive = o.dataset.lang === code;
+        o.setAttribute('aria-selected', String(isActive));
+        o.classList.toggle('text-brand-500', isActive);
+        o.classList.toggle('font-semibold', isActive);
       });
     };
+
     let current = 'en';
     try { current = localStorage.getItem(KEY) || 'en'; } catch { /* private mode */ }
     sync(current);
-    toggle.addEventListener('click', (e) => {
+
+    trigger.addEventListener('click', (e) => {
+      e.stopPropagation();
+      setOpen(menu.classList.contains('hidden'));
+    });
+
+    menu.addEventListener('click', (e) => {
       const btn = (e.target as HTMLElement).closest<HTMLButtonElement>('[data-lang]');
       if (!btn) return;
       const code = btn.dataset.lang!;
       try { localStorage.setItem(KEY, code); } catch { /* private mode */ }
       document.documentElement.lang = code;
       sync(code);
+      setOpen(false);
       // Let language-aware content (e.g. product name/description) react.
       document.dispatchEvent(new CustomEvent('elysee:lang', { detail: { lang: code } }));
+    });
+
+    // Dismiss on outside click or Escape.
+    document.addEventListener('click', (e) => {
+      if (!toggle.contains(e.target as Node)) setOpen(false);
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') { setOpen(false); trigger.focus(); }
     });
   });
 </script>
