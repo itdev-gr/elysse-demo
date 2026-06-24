@@ -43,9 +43,9 @@ const Media = p.hasDetailPage ? 'a' : 'div';
   <div class="p-4 md:p-5">
     {p.code && <p class="text-xs md:text-sm text-ink/45">No.{p.code}</p>}
     {p.hasDetailPage ? (
-      <a href={detailUrl} class="mt-0.5 block font-heavy text-base md:text-lg leading-snug text-ink hover:text-brand-500 transition-colors duration-200">{p.name}</a>
+      <a href={detailUrl} data-i18n={JSON.stringify(p.nameI18n ?? {})} class="mt-0.5 block font-heavy text-base md:text-lg leading-snug text-ink hover:text-brand-500 transition-colors duration-200">{p.name}</a>
     ) : (
-      <p class="mt-0.5 font-heavy text-base md:text-lg leading-snug text-ink">{p.name}</p>
+      <p data-i18n={JSON.stringify(p.nameI18n ?? {})} class="mt-0.5 font-heavy text-base md:text-lg leading-snug text-ink">{p.name}</p>
     )}
   </div>
 </article>

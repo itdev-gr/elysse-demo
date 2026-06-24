@@ -24,7 +24,7 @@ const thumb = p.imageUrls[0] ?? p.image ?? '';
   </div>
   <div class="flex-1 min-w-0">
     {p.code && <p class="text-[11px] text-ink/50">No.{p.code}</p>}
-    <p class="font-heavy text-lg text-ink leading-tight">{p.name}</p>
+    <p data-i18n={JSON.stringify(p.nameI18n ?? {})} class="font-heavy text-lg text-ink leading-tight">{p.name}</p>
     {p.material && <p class="text-xs text-ink/60 mt-0.5" data-i18n={JSON.stringify(seriesI18n[p.material] ?? {})}>{p.material}</p>}
   </div>
 </article>

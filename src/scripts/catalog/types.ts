@@ -21,6 +21,8 @@ export const CATEGORY_SLUGS: ReadonlyArray<CategorySlug> = [
 export interface CatalogProduct {
   slug: string;
   name: string;
+  /** Name by language (incl. `en`), for the storefront language swap. Falls back to `name`. */
+  nameI18n?: Record<string, string>;
   code?: string;
   categorySlug: CategorySlug;
   sectors: Sector[];

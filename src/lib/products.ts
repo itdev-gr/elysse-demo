@@ -131,12 +131,17 @@ export async function fetchCatalogProducts(categoryName: string): Promise<Catalo
 }
 
 /** A product configuration (catalogue No.) as a card — sizes collapsed away. */
-function configToCatalogProduct(rep: Product, countries: string[]): CatalogProduct {
+function configToCatalogProduct(
+  rep: Product,
+  countries: string[],
+  nameI18n?: Record<string, string>,
+): CatalogProduct {
   const slug = CATEGORY_SLUG_BY_NAME[rep.category_name ?? ''];
   const ref = rep.family_code ?? rep.code; // catalogue number, e.g. "330A"
   return {
     slug: configSlug(rep.sub_category, ref),
-    name: rep.configuration ?? rep.description ?? ref,
+    name: nameI18n?.en ?? rep.configuration ?? rep.description ?? ref,
+    nameI18n,
     code: ref,
     categorySlug: slug ?? 'compression-fittings',
     sectors: [],
@@ -165,22 +170,42 @@ function configToCatalogProduct(rep: Product, countries: string[]): CatalogProdu
  * of its sizes is available there (union of memberships).
  */
 export async function fetchCatalogConfigurations(categoryName: string): Promise<CatalogProduct[]> {
-  const { products, countriesByCode } = await loadCategory(categoryName);
-  const groups = new Map<string, { rep: Product; countries: Set<string>; order: number }>();
+  const categorySlug = CATEGORY_SLUG_BY_NAME[categoryName] ?? 'compression-fittings';
+  const [{ products, countriesByCode }, configRecords] = await Promise.all([
+    loadCategory(categoryName),
+    fetchConfigsByCategorySlug(categorySlug),
+  ]);
+  const groups = new Map<
+    string,
+    { rep: Product; countries: Set<string>; order: number; perRow: Record<string, string> }
+  >();
   for (const p of products) {
     const key = configSlug(p.sub_category, p.family_code ?? p.code);
-    const g = groups.get(key);
     const countries = countriesByCode.get(p.code) ?? [];
+    let g = groups.get(key);
     if (!g) {
-      groups.set(key, { rep: p, countries: new Set(countries), order: p.sort_order });
+      g = { rep: p, countries: new Set(countries), order: p.sort_order, perRow: {} };
+      groups.set(key, g);
     } else {
       for (const c of countries) g.countries.add(c);
       if (p.sort_order < g.order) g.order = p.sort_order;
     }
+    // Merge per-row name translations (first non-empty wins) — the fallback for
+    // any configuration without a product_configurations record.
+    const ni = p.name_i18n ?? {};
+    for (const lang of I18N_LANGS) {
+      if (ni[lang]?.trim() && !g.perRow[lang]) g.perRow[lang] = ni[lang]!.trim();
+    }
   }
-  return [...groups.values()]
-    .sort((a, b) => a.order - b.order)
-    .map((g) => configToCatalogProduct(g.rep, [...g.countries]));
+  return [...groups.entries()]
+    .sort((a, b) => a[1].order - b[1].order)
+    .map(([key, g]) => {
+      const derivedName = g.rep.configuration ?? g.rep.description ?? (g.rep.family_code ?? g.rep.code);
+      // Same resolution as the detail page: product_configurations record wins,
+      // per-row merged map is the fallback, English always present.
+      const nameI18n = resolveNameI18n(derivedName, g.perRow, configRecords.get(key));
+      return configToCatalogProduct(g.rep, [...g.countries], nameI18n);
+    });
 }
 
 /** One size (SKU) within a configuration. */
@@ -286,6 +311,7 @@ export function configDetailToCard(c: ConfigurationDetail): CatalogProduct {
   return {
     slug: c.slug,
     name: c.configuration,
+    nameI18n: c.nameI18n,
     code: c.familyCode,
     categorySlug: c.categorySlug,
     sectors: [],
