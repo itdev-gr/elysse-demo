@@ -83,4 +83,58 @@ export const shared: Record<string, string> = {
   // aria-labels that embed the brand name (brand kept, descriptor translated)
   'Elysée — home': 'Elysée — αρχική',
   'Elysée Group — home': 'Elysée Group — αρχική',
+
+  // Enquiry form — field labels
+  'Name': 'Όνομα',
+  'Company': 'Εταιρεία',
+  'Email': 'Email',
+  'Phone': 'Τηλέφωνο',
+  'Message': 'Μήνυμα',
+
+  // Enquiry form — placeholders & aria-labels
+  'Contact form': 'Φόρμα επικοινωνίας',
+  'Your full name': 'Το πλήρες όνομά σας',
+  'Optional': 'Προαιρετικό',
+  'How can we help?': 'Πώς μπορούμε να βοηθήσουμε;',
+
+  // Enquiry form — buttons, consent & messages
+  'Send message': 'Αποστολή μηνύματος',
+  'Sending…': 'Αποστολή…',
+  'By submitting, you agree to be contacted by Elysée regarding your enquiry.':
+    'Με την υποβολή, συμφωνείτε να επικοινωνήσει μαζί σας η Elysée σχετικά με το αίτημά σας.',
+  'Thank you.': 'Σας ευχαριστούμε.',
+  'Your message is on its way — a member of the Elysée team will be in touch shortly.':
+    'Το μήνυμά σας στάλθηκε — ένα μέλος της ομάδας της Elysée θα επικοινωνήσει μαζί σας σύντομα.',
+  'Something went wrong sending your message':
+    'Κάτι πήγε στραβά κατά την αποστολή του μηνύματός σας',
+  '. Please try again or email us directly.':
+    '. Παρακαλούμε δοκιμάστε ξανά ή στείλτε μας email απευθείας.',
+
+  // Enquiry form — default & passed title/subtitle props
+  'Send us a message': 'Στείλτε μας ένα μήνυμα',
+  'Fill in the form and the right Elysée team will get back to you.':
+    'Συμπληρώστε τη φόρμα και η αρμόδια ομάδα της Elysée θα επικοινωνήσει μαζί σας.',
+  'Talk to us': 'Επικοινωνήστε μαζί μας',
+  'Send us a message and the Elysée team will get back to you.':
+    'Στείλτε μας ένα μήνυμα και η ομάδα της Elysée θα επικοινωνήσει μαζί σας.',
+  'Request a certificate': 'Ζητήστε ένα πιστοποιητικό',
+  'Tell us which certificate or recognition you need evidence for — our quality team will prepare it.':
+    'Πείτε μας για ποιο πιστοποιητικό ή αναγνώριση χρειάζεστε αποδεικτικά — η ομάδα ποιότητάς μας θα το ετοιμάσει.',
+  'Tell us which certificate, standard, or diameter class you need evidence for — our quality team will prepare it.':
+    'Πείτε μας για ποιο πιστοποιητικό, πρότυπο ή κλάση διαμέτρου χρειάζεστε αποδεικτικά — η ομάδα ποιότητάς μας θα το ετοιμάσει.',
+  'Tell us which certificate, standard, or product family you need evidence for — our quality team will prepare it.':
+    'Πείτε μας για ποιο πιστοποιητικό, πρότυπο ή οικογένεια προϊόντων χρειάζεστε αποδεικτικά — η ομάδα ποιότητάς μας θα το ετοιμάσει.',
+  'Tell us which certificate, standard, or application you need evidence for — our quality team will prepare it.':
+    'Πείτε μας για ποιο πιστοποιητικό, πρότυπο ή εφαρμογή χρειάζεστε αποδεικτικά — η ομάδα ποιότητάς μας θα το ετοιμάσει.',
+  'Tell us which approval, market, or product family you need evidence for — our quality team will prepare it.':
+    'Πείτε μας για ποια έγκριση, αγορά ή οικογένεια προϊόντων χρειάζεστε αποδεικτικά — η ομάδα ποιότητάς μας θα το ετοιμάσει.',
+  'Tell us which certificate, standard, or bundle you need evidence for — our quality team will prepare it.':
+    'Πείτε μας για ποιο πιστοποιητικό, πρότυπο ή πακέτο χρειάζεστε αποδεικτικά — η ομάδα ποιότητάς μας θα το ετοιμάσει.',
+
+  // Certifications grid
+  'Certified': 'Πιστοποιημένο',
+  'Download PDF': 'Λήψη PDF',
+  'Something missing?': 'Λείπει κάτι;',
+  'Need an older revision or a tender-ready bundle?':
+    'Χρειάζεστε παλαιότερη έκδοση ή πακέτο έτοιμο για διαγωνισμό;',
 };
