@@ -5,6 +5,7 @@ import { services } from './services';
 import { contact } from './contact';
 import { innovation } from './innovation';
 import { insights } from './insights';
+import { green } from './green';
 // Section dictionaries are spread in here as each section task lands.
 export const EL: Record<string, string> = {
   ...shared,
@@ -14,4 +15,5 @@ export const EL: Record<string, string> = {
   ...contact,
   ...innovation,
   ...insights,
+  ...green,
 };

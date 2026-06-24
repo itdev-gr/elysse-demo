@@ -18,6 +18,7 @@ import Section from '../../../components/Section.astro';
 import GreenElyseeSubNav from '../../../components/green-elysee/GreenElyseeSubNav.astro';
 import EnquiryForm from '../../../components/contact/EnquiryForm.tsx';
 import { greenElyseeInsightsItems } from '../../../data/site-content';
+import { i18nAttr } from '../../../lib/i18n';
 
 const [featured, ...rest] = greenElyseeInsightsItems;
 const desc =
@@ -44,18 +45,18 @@ const desc =
     <div aria-hidden="true" class="absolute inset-0 bg-brand-500/30"></div>
 
     <Container size="xl" class="relative pt-40 md:pt-48 pb-16 md:pb-24 w-full">
-      <p data-reveal class="text-[11px] md:text-xs uppercase tracking-[0.4em] text-surface/85 mb-8">
+      <p data-reveal data-i18n={i18nAttr('Green Elysée · Stories')} class="text-[11px] md:text-xs uppercase tracking-[0.4em] text-surface/85 mb-8">
         Green Elysée · Stories
       </p>
-      <h1 data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[0.92] tracking-tight text-surface" style="font-size: clamp(3rem, 9vw, 8rem); max-width: 14ch;">
+      <h1 data-reveal data-reveal-delay="120" data-i18n={i18nAttr('Insights.')} class="font-display font-heavy leading-[0.92] tracking-tight text-surface" style="font-size: clamp(3rem, 9vw, 8rem); max-width: 14ch;">
         Insights.
       </h1>
-      <p data-reveal data-reveal-delay="240" class="mt-8 max-w-2xl text-base md:text-lg text-surface/85 leading-relaxed">
+      <p data-reveal data-reveal-delay="240" data-i18n={i18nAttr('Stories and articles from our green journey — from circular-economy thinking to the people behind the certificates.')} class="mt-8 max-w-2xl text-base md:text-lg text-surface/85 leading-relaxed">
         Stories and articles from our green journey — from circular-economy thinking to the people behind the certificates.
       </p>
       <div data-reveal data-reveal-delay="360" class="mt-14 md:mt-20 flex items-center gap-4 text-[11px] uppercase tracking-[0.3em] text-surface/70">
         <span aria-hidden="true" class="h-px w-12 bg-surface/50"></span>
-        <span>From the programme</span>
+        <span data-i18n={i18nAttr('From the programme')}>From the programme</span>
       </div>
     </Container>
   </section>
@@ -65,23 +66,23 @@ const desc =
   {/* ===== STAT BAND ===== */}
   <section class="bg-surface border-b border-ink/10">
     <Container size="xl" class="py-16 md:py-24">
-      <p data-reveal class="text-[11px] md:text-xs uppercase tracking-[0.3em] text-brand-500 mb-10 md:mb-14">The story so far</p>
+      <p data-reveal data-i18n={i18nAttr('The story so far')} class="text-[11px] md:text-xs uppercase tracking-[0.3em] text-brand-500 mb-10 md:mb-14">The story so far</p>
       <dl class="grid grid-cols-2 md:grid-cols-4 gap-px bg-ink/10 border border-ink/10">
         <div class="bg-surface p-8 md:p-10">
           <dd data-counter="1979" class="font-display font-heavy leading-none tracking-tight text-brand-500" style="font-size: clamp(2.5rem, 6vw, 5rem);">1979</dd>
-          <dt class="mt-4 md:mt-5 text-[10px] md:text-xs uppercase tracking-[0.25em] text-ink/60">Journey started</dt>
+          <dt data-i18n={i18nAttr('Journey started')} class="mt-4 md:mt-5 text-[10px] md:text-xs uppercase tracking-[0.25em] text-ink/60">Journey started</dt>
         </div>
         <div class="bg-surface p-8 md:p-10">
           <dd data-counter="6" class="font-display font-heavy leading-none tracking-tight text-brand-500" style="font-size: clamp(2.5rem, 6vw, 5rem);">6</dd>
-          <dt class="mt-4 md:mt-5 text-[10px] md:text-xs uppercase tracking-[0.25em] text-ink/60">Strategic pillars</dt>
+          <dt data-i18n={i18nAttr('Strategic pillars')} class="mt-4 md:mt-5 text-[10px] md:text-xs uppercase tracking-[0.25em] text-ink/60">Strategic pillars</dt>
         </div>
         <div class="bg-surface p-8 md:p-10">
           <dd class="font-display font-heavy leading-none tracking-tight text-brand-500" style="font-size: clamp(2rem, 5vw, 4rem);">Circular</dd>
-          <dt class="mt-4 md:mt-5 text-[10px] md:text-xs uppercase tracking-[0.25em] text-ink/60">Economy model</dt>
+          <dt data-i18n={i18nAttr('Economy model')} class="mt-4 md:mt-5 text-[10px] md:text-xs uppercase tracking-[0.25em] text-ink/60">Economy model</dt>
         </div>
         <div class="bg-surface p-8 md:p-10">
           <dd data-counter="2029" class="font-display font-heavy leading-none tracking-tight text-brand-500" style="font-size: clamp(2.5rem, 6vw, 5rem);">2029</dd>
-          <dt class="mt-4 md:mt-5 text-[10px] md:text-xs uppercase tracking-[0.25em] text-ink/60">Vision50 target</dt>
+          <dt data-i18n={i18nAttr('Vision50 target')} class="mt-4 md:mt-5 text-[10px] md:text-xs uppercase tracking-[0.25em] text-ink/60">Vision50 target</dt>
         </div>
       </dl>
     </Container>
@@ -93,12 +94,12 @@ const desc =
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16">
         <aside class="lg:col-span-4">
           <div class="lg:sticky lg:top-32">
-            <p data-reveal class="text-[11px] uppercase tracking-[0.4em] text-brand-500 mb-6 md:mb-8">Why we tell these stories</p>
-            <h2 data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[1.02] tracking-tight text-ink" style="font-size: clamp(2rem, 4.5vw, 3.5rem);">
+            <p data-reveal data-i18n={i18nAttr('Why we tell these stories')} class="text-[11px] uppercase tracking-[0.4em] text-brand-500 mb-6 md:mb-8">Why we tell these stories</p>
+            <h2 data-reveal data-reveal-delay="120" data-i18n={i18nAttr('The people behind the certificates.')} class="font-display font-heavy leading-[1.02] tracking-tight text-ink" style="font-size: clamp(2rem, 4.5vw, 3.5rem);">
               The people behind the certificates.
             </h2>
             <div aria-hidden="true" class="mt-8 h-px w-12 bg-brand-500"></div>
-            <p data-reveal data-reveal-delay="240" class="mt-6 max-w-xs text-sm text-ink/60 leading-relaxed">
+            <p data-reveal data-reveal-delay="240" data-i18n={i18nAttr('Every audit, every recycled tonne of resin, every Pillar-4 project has a face and a story.')} class="mt-6 max-w-xs text-sm text-ink/60 leading-relaxed">
               Every audit, every recycled tonne of resin, every Pillar-4 project has a face and a story.
             </p>
           </div>
@@ -107,6 +108,7 @@ const desc =
           <p
             data-reveal
             data-reveal-delay="160"
+            data-i18n={i18nAttr("Certificates and reports document where we are. Insights tell you how we got here — and where we're going. Read the articles, profiles and field stories that sit behind the Green Elysée programme.")}
             class="text-lg md:text-xl text-ink leading-[1.65]
                    first-letter:font-display first-letter:font-heavy
                    first-letter:text-7xl md:first-letter:text-8xl
@@ -123,7 +125,7 @@ const desc =
     <Section bg="default" spacing="lg">
       <Container size="xl">
         <header class="max-w-3xl mb-10 md:mb-12">
-          <p data-reveal class="text-[11px] uppercase tracking-[0.4em] text-brand-500 mb-6">Featured</p>
+          <p data-reveal data-i18n={i18nAttr('Featured')} class="text-[11px] uppercase tracking-[0.4em] text-brand-500 mb-6">Featured</p>
         </header>
 
         <article data-green-insight-featured class="group relative grid grid-cols-1 lg:grid-cols-12 gap-0 border border-ink/10 overflow-hidden">
@@ -143,18 +145,18 @@ const desc =
             )}
           </a>
           <div class="lg:col-span-5 bg-surface p-8 md:p-12 flex flex-col justify-center">
-            <span class="font-mono text-[10px] uppercase tracking-[0.25em] text-ink/55">Article · Green Elysée</span>
-            <h3 class="mt-5 font-display font-heavy text-2xl md:text-4xl lg:text-3xl xl:text-4xl text-ink leading-tight">{featured.title}</h3>
+            <span class="font-mono text-[10px] uppercase tracking-[0.25em] text-ink/55" data-i18n={i18nAttr('Article · Green Elysée')}>Article · Green Elysée</span>
+            <h3 class="mt-5 font-display font-heavy text-2xl md:text-4xl lg:text-3xl xl:text-4xl text-ink leading-tight" data-i18n={i18nAttr(featured.title)}>{featured.title}</h3>
             <div aria-hidden="true" class="mt-5 h-px w-12 bg-brand-500"></div>
             {featured.excerpt && (
-              <p class="mt-6 text-base md:text-lg text-ink/75 leading-[1.65]">{featured.excerpt}</p>
+              <p class="mt-6 text-base md:text-lg text-ink/75 leading-[1.65]" data-i18n={i18nAttr(featured.excerpt)}>{featured.excerpt}</p>
             )}
             {featured.href && (
               <a
                 href={featured.href}
                 class="mt-8 inline-flex items-center gap-3 self-start px-6 py-3 bg-brand-500 text-surface hover:bg-brand-700 text-[11px] md:text-xs uppercase tracking-[0.25em] transition-colors duration-200 cursor-pointer"
               >
-                <span>Continue reading</span>
+                <span data-i18n={i18nAttr('Continue reading')}>Continue reading</span>
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
               </a>
             )}
@@ -169,8 +171,8 @@ const desc =
     <Section bg="alt" spacing="lg">
       <Container size="xl">
         <header class="max-w-3xl mb-12 md:mb-16">
-          <p data-reveal class="text-[11px] uppercase tracking-[0.4em] text-brand-500 mb-6">More stories</p>
-          <h2 data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[1.02] tracking-tight text-ink" style="font-size: clamp(2rem, 4.5vw, 3.5rem);">
+          <p data-reveal data-i18n={i18nAttr('More stories')} class="text-[11px] uppercase tracking-[0.4em] text-brand-500 mb-6">More stories</p>
+          <h2 data-reveal data-reveal-delay="120" data-i18n={i18nAttr('From the Green programme.')} class="font-display font-heavy leading-[1.02] tracking-tight text-ink" style="font-size: clamp(2rem, 4.5vw, 3.5rem);">
             From the Green programme.
           </h2>
         </header>
@@ -184,11 +186,11 @@ const desc =
               )}
               <div class="p-6 md:p-7 flex-1 flex flex-col">
                 {it.date && <span class="font-mono text-[10px] uppercase tracking-[0.25em] text-ink/55">{it.date}</span>}
-                <h3 class="mt-3 font-display font-heavy text-lg md:text-xl text-ink leading-tight">{it.title}</h3>
-                {it.excerpt && <p class="mt-3 text-sm text-ink/70 leading-relaxed flex-1">{it.excerpt}</p>}
+                <h3 class="mt-3 font-display font-heavy text-lg md:text-xl text-ink leading-tight" data-i18n={i18nAttr(it.title)}>{it.title}</h3>
+                {it.excerpt && <p class="mt-3 text-sm text-ink/70 leading-relaxed flex-1" data-i18n={i18nAttr(it.excerpt)}>{it.excerpt}</p>}
                 {it.href && (
                   <a href={it.href} class="mt-5 inline-flex items-center gap-2 self-start text-[11px] uppercase tracking-[0.25em] text-ink hover:text-brand-500 transition-colors duration-200 cursor-pointer">
-                    <span>Read story</span>
+                    <span data-i18n={i18nAttr('Read story')}>Read story</span>
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 transition-transform duration-200 group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
                   </a>
                 )}
@@ -205,8 +207,8 @@ const desc =
     <Container size="xl" class="py-16 md:py-24">
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-start">
         <div class="lg:pt-4">
-          <p data-reveal class="text-[11px] uppercase tracking-[0.4em] text-brand-500 mb-6">Press &amp; partnerships</p>
-          <p data-reveal data-reveal-delay="120" class="text-base md:text-lg text-ink/80 leading-relaxed max-w-xl">
+          <p data-reveal data-i18n={i18nAttr('Press & partnerships')} class="text-[11px] uppercase tracking-[0.4em] text-brand-500 mb-6">Press &amp; partnerships</p>
+          <p data-reveal data-reveal-delay="120" data-i18n={i18nAttr('Have a story idea, or want to feature the Green Elysée programme in your publication? Press inquiries and partnership requests are welcome.')} class="text-base md:text-lg text-ink/80 leading-relaxed max-w-xl">
             Have a story idea, or want to feature the Green Elysée programme in your publication? Press inquiries and partnership requests are welcome.
           </p>
           <div data-reveal data-reveal-delay="240" class="mt-8 md:mt-10 flex flex-wrap items-center gap-3">
@@ -214,14 +216,14 @@ const desc =
               href="/insights/news/"
               class="group cursor-pointer inline-flex items-center gap-3 px-6 py-3 bg-brand-500 text-surface hover:bg-brand-700 text-[11px] md:text-xs uppercase tracking-[0.25em] transition-colors duration-200"
             >
-              <span>Browse the Newsroom</span>
+              <span data-i18n={i18nAttr('Browse the Newsroom')}>Browse the Newsroom</span>
               <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
             </a>
             <a
               href="/contact/local/"
               class="group cursor-pointer inline-flex items-center gap-3 px-6 py-3 border border-ink/40 hover:bg-ink hover:border-ink hover:text-surface text-ink text-[11px] md:text-xs uppercase tracking-[0.25em] transition-colors duration-200"
             >
-              <span>Pitch a story</span>
+              <span data-i18n={i18nAttr('Pitch a story')}>Pitch a story</span>
               <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
             </a>
           </div>

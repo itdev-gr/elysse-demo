@@ -24,6 +24,7 @@ import {
   greenElyseeCertifications,
   greenCertificationItems,
 } from '../../../data/site-content';
+import { i18nAttr } from '../../../lib/i18n';
 
 const blocks = greenElyseeCertifications.blocks;
 const paragraphs = blocks.filter(
@@ -63,17 +64,17 @@ const certFallback = greenCertificationItems.map((c) => ({
 
     <Container size="xl" class="relative pt-40 md:pt-48 pb-16 md:pb-24 w-full">
       <p data-reveal class="text-[11px] md:text-xs uppercase tracking-[0.4em] text-surface/85 mb-8">
-        {greenElyseeCertifications.eyebrow} · Independently audited
+        {greenElyseeCertifications.eyebrow}<span data-i18n={i18nAttr(' · Independently audited')}> · Independently audited</span>
       </p>
-      <h1 data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[0.92] tracking-tight text-surface" style="font-size: clamp(3rem, 9vw, 8rem); max-width: 14ch;">
+      <h1 data-reveal data-reveal-delay="120" data-i18n={i18nAttr('Green, by certificate.')} class="font-display font-heavy leading-[0.92] tracking-tight text-surface" style="font-size: clamp(3rem, 9vw, 8rem); max-width: 14ch;">
         Green, by certificate.
       </h1>
-      <p data-reveal data-reveal-delay="240" class="mt-8 max-w-2xl text-base md:text-lg text-surface/85 leading-relaxed">
+      <p data-reveal data-reveal-delay="240" data-i18n={i18nAttr(greenElyseeCertifications.subtitle ?? '')} class="mt-8 max-w-2xl text-base md:text-lg text-surface/85 leading-relaxed">
         {greenElyseeCertifications.subtitle}
       </p>
       <div data-reveal data-reveal-delay="360" class="mt-14 md:mt-20 flex items-center gap-4 text-[11px] uppercase tracking-[0.3em] text-surface/70">
         <span aria-hidden="true" class="h-px w-12 bg-surface/50"></span>
-        <span><span data-cert-count>6</span> certified standards</span>
+        <span><span data-cert-count>6</span><span data-i18n={i18nAttr(' certified standards')}> certified standards</span></span>
       </div>
     </Container>
   </section>
@@ -83,23 +84,23 @@ const certFallback = greenCertificationItems.map((c) => ({
   {/* ===== STAT BAND ===== */}
   <section class="bg-surface border-b border-ink/10">
     <Container size="xl" class="py-16 md:py-24">
-      <p data-reveal class="text-[11px] md:text-xs uppercase tracking-[0.3em] text-brand-500 mb-10 md:mb-14">The Green programme</p>
+      <p data-reveal data-i18n={i18nAttr('The Green programme')} class="text-[11px] md:text-xs uppercase tracking-[0.3em] text-brand-500 mb-10 md:mb-14">The Green programme</p>
       <dl class="grid grid-cols-2 md:grid-cols-4 gap-px bg-ink/10 border border-ink/10">
         <div class="bg-surface p-8 md:p-10">
           <dd data-counter="6" data-cert-count class="font-display font-heavy leading-none tracking-tight text-brand-500" style="font-size: clamp(2.5rem, 6vw, 5rem);">6</dd>
-          <dt class="mt-4 md:mt-5 text-[10px] md:text-xs uppercase tracking-[0.25em] text-ink/60">Green certifications</dt>
+          <dt data-i18n={i18nAttr('Green certifications')} class="mt-4 md:mt-5 text-[10px] md:text-xs uppercase tracking-[0.25em] text-ink/60">Green certifications</dt>
         </div>
         <div class="bg-surface p-8 md:p-10">
           <dd class="font-display font-heavy leading-none tracking-tight text-brand-500" style="font-size: clamp(2rem, 5vw, 4rem);">EU + ISO</dd>
-          <dt class="mt-4 md:mt-5 text-[10px] md:text-xs uppercase tracking-[0.25em] text-ink/60">Standard families</dt>
+          <dt data-i18n={i18nAttr('Standard families')} class="mt-4 md:mt-5 text-[10px] md:text-xs uppercase tracking-[0.25em] text-ink/60">Standard families</dt>
         </div>
         <div class="bg-surface p-8 md:p-10">
           <dd data-counter="2024" class="font-display font-heavy leading-none tracking-tight text-brand-500" style="font-size: clamp(2.5rem, 6vw, 5rem);">2024</dd>
-          <dt class="mt-4 md:mt-5 text-[10px] md:text-xs uppercase tracking-[0.25em] text-ink/60">Latest declaration</dt>
+          <dt data-i18n={i18nAttr('Latest declaration')} class="mt-4 md:mt-5 text-[10px] md:text-xs uppercase tracking-[0.25em] text-ink/60">Latest declaration</dt>
         </div>
         <div class="bg-surface p-8 md:p-10">
           <dd class="font-display font-heavy leading-none tracking-tight text-brand-500" style="font-size: clamp(2rem, 5vw, 4rem);">Annual</dd>
-          <dt class="mt-4 md:mt-5 text-[10px] md:text-xs uppercase tracking-[0.25em] text-ink/60">Audit cadence</dt>
+          <dt data-i18n={i18nAttr('Audit cadence')} class="mt-4 md:mt-5 text-[10px] md:text-xs uppercase tracking-[0.25em] text-ink/60">Audit cadence</dt>
         </div>
       </dl>
     </Container>
@@ -112,12 +113,12 @@ const certFallback = greenCertificationItems.map((c) => ({
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16">
           <aside class="lg:col-span-4">
             <div class="lg:sticky lg:top-32">
-              <p data-reveal class="text-[11px] uppercase tracking-[0.4em] text-brand-500 mb-6 md:mb-8">Why certificates matter</p>
-              <h2 data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[1.02] tracking-tight text-ink" style="font-size: clamp(2rem, 4.5vw, 3.5rem);">
+              <p data-reveal data-i18n={i18nAttr('Why certificates matter')} class="text-[11px] uppercase tracking-[0.4em] text-brand-500 mb-6 md:mb-8">Why certificates matter</p>
+              <h2 data-reveal data-reveal-delay="120" data-i18n={i18nAttr('Audited, not asserted.')} class="font-display font-heavy leading-[1.02] tracking-tight text-ink" style="font-size: clamp(2rem, 4.5vw, 3.5rem);">
                 Audited, not asserted.
               </h2>
               <div aria-hidden="true" class="mt-8 h-px w-12 bg-brand-500"></div>
-              <p data-reveal data-reveal-delay="240" class="mt-6 max-w-xs text-sm text-ink/60 leading-relaxed">
+              <p data-reveal data-reveal-delay="240" data-i18n={i18nAttr('Every green claim Elysée makes is backed by a third-party audit and a downloadable certificate.')} class="mt-6 max-w-xs text-sm text-ink/60 leading-relaxed">
                 Every green claim Elysée makes is backed by a third-party audit and a downloadable certificate.
               </p>
             </div>
@@ -126,6 +127,7 @@ const certFallback = greenCertificationItems.map((c) => ({
             <p
               data-reveal
               data-reveal-delay="160"
+              data-i18n={i18nAttr(intro1.text)}
               class="text-lg md:text-xl text-ink leading-[1.65]
                      first-letter:font-display first-letter:font-heavy
                      first-letter:text-7xl md:first-letter:text-8xl
@@ -135,7 +137,7 @@ const certFallback = greenCertificationItems.map((c) => ({
               {intro1.text}
             </p>
             {intro2 && (
-              <p data-reveal data-reveal-delay="280" class="text-base md:text-lg text-ink/80 leading-relaxed">{intro2.text}</p>
+              <p data-reveal data-reveal-delay="280" data-i18n={i18nAttr(intro2.text)} class="text-base md:text-lg text-ink/80 leading-relaxed">{intro2.text}</p>
             )}
           </div>
         </div>
@@ -150,9 +152,9 @@ const certFallback = greenCertificationItems.map((c) => ({
     <div aria-hidden="true" class="absolute inset-0 bg-brand-500/35 mix-blend-multiply"></div>
     <Container size="lg" class="relative py-20 md:py-28 w-full">
       <div class="max-w-4xl mx-auto text-center">
-        <p data-reveal class="text-[11px] md:text-xs uppercase tracking-[0.4em] text-surface/75 mb-8">As Green as it gets</p>
+        <p data-reveal data-i18n={i18nAttr('As Green as it gets')} class="text-[11px] md:text-xs uppercase tracking-[0.4em] text-surface/75 mb-8">As Green as it gets</p>
         <blockquote data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[1.05] tracking-tight" style="font-size: clamp(2rem, 5vw, 4.5rem);">
-          <span aria-hidden="true" class="text-surface/55">&ldquo;</span>Streaming water, streaming life.<span aria-hidden="true" class="text-surface/55">&rdquo;</span>
+          <span aria-hidden="true" class="text-surface/55">&ldquo;</span><span data-i18n={i18nAttr('Streaming water, streaming life.')}>Streaming water, streaming life.</span><span aria-hidden="true" class="text-surface/55">&rdquo;</span>
         </blockquote>
       </div>
     </Container>
@@ -162,11 +164,11 @@ const certFallback = greenCertificationItems.map((c) => ({
   <Section bg="alt" spacing="lg">
     <Container size="xl">
       <header class="max-w-3xl mb-12 md:mb-16">
-        <p data-reveal class="text-[11px] uppercase tracking-[0.4em] text-brand-500 mb-6 md:mb-8">Our Green Certifications</p>
+        <p data-reveal data-i18n={i18nAttr('Our Green Certifications')} class="text-[11px] uppercase tracking-[0.4em] text-brand-500 mb-6 md:mb-8">Our Green Certifications</p>
         <h2 data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[1.02] tracking-tight text-ink" style="font-size: clamp(2.25rem, 5.5vw, 4.5rem);">
-          <span data-cert-count>6</span> standards. <span data-cert-count>6</span> PDFs.
+          <span data-cert-count>6</span><span data-i18n={i18nAttr(' standards. ')}> standards. </span><span data-cert-count>6</span><span data-i18n={i18nAttr(' PDFs.')}> PDFs.</span>
         </h2>
-        <p data-reveal data-reveal-delay="240" class="mt-6 md:mt-8 text-base md:text-lg text-ink/70 leading-relaxed">
+        <p data-reveal data-reveal-delay="240" data-i18n={i18nAttr('Tap any badge below to download the current certificate.')} class="mt-6 md:mt-8 text-base md:text-lg text-ink/70 leading-relaxed">
           Tap any badge below to download the current certificate.
         </p>
       </header>
@@ -181,8 +183,8 @@ const certFallback = greenCertificationItems.map((c) => ({
     <Container size="xl" class="py-16 md:py-24">
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-start">
         <div class="lg:pt-4">
-          <p data-reveal class="text-[11px] uppercase tracking-[0.4em] text-brand-500 mb-6">Request a certificate</p>
-          <p data-reveal data-reveal-delay="120" class="text-base md:text-lg text-ink/80 leading-relaxed max-w-xl">
+          <p data-reveal data-i18n={i18nAttr('Request a certificate')} class="text-[11px] uppercase tracking-[0.4em] text-brand-500 mb-6">Request a certificate</p>
+          <p data-reveal data-reveal-delay="120" data-i18n={i18nAttr('Need an older certificate, a tender-ready bundle, or evidence for a specific product family? Our team can prepare it on request.')} class="text-base md:text-lg text-ink/80 leading-relaxed max-w-xl">
             Need an older certificate, a tender-ready bundle, or evidence for a specific product family? Our team can prepare it on request.
           </p>
           <a
@@ -191,7 +193,7 @@ const certFallback = greenCertificationItems.map((c) => ({
             href="/contact/local/"
             class="group cursor-pointer mt-8 md:mt-10 inline-flex items-center gap-3 px-6 py-3 border border-ink/40 hover:bg-ink hover:border-ink hover:text-surface text-ink text-[11px] md:text-xs uppercase tracking-[0.25em] transition-colors duration-200"
           >
-            <span>Contact our local network</span>
+            <span data-i18n={i18nAttr('Contact our local network')}>Contact our local network</span>
             <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
           </a>
         </div>
