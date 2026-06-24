@@ -47,8 +47,8 @@ const GROUPS: { label: string; items: { id: Tab; label: string }[] }[] = [
   {
     label: 'Products',
     items: [
-      { id: 'products', label: 'Products' },
       { id: 'categories', label: 'Categories' },
+      { id: 'products', label: 'Products' },
       { id: 'families', label: 'Families' },
       { id: 'groups', label: 'Country Groups' },
       { id: 'errors', label: 'Data Errors' },
