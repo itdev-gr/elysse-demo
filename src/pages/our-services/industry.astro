@@ -4,14 +4,15 @@ import Hero from '../../components/Hero.astro';
 import SectionRenderer from '../../components/SectionRenderer.astro';
 import Container from '../../components/Container.astro';
 import { industryPage as page, servicesSiblings } from '../../data/content';
+import { i18nAttr, i18nAttrFor } from '../../lib/i18n';
 const currentPath = '/our-services/industry/';
 ---
 <BaseLayout title={page.meta.title} description={page.meta.description}>
   {page.hero && <Hero {...page.hero} />}
   <Container size="xl" class="py-12 md:py-16 grid lg:grid-cols-[16rem_1fr] gap-12">
     <aside class="order-2 lg:order-1">
-      <h2 class="text-xs uppercase tracking-widest text-ink-muted mb-4">Our Services</h2>
-      <nav aria-label="Services">
+      <h2 data-i18n={i18nAttr('Our Services')} class="text-xs uppercase tracking-widest text-ink-muted mb-4">Our Services</h2>
+      <nav aria-label="Services" data-i18n-attr={i18nAttrFor({ 'aria-label': 'Services' })}>
         <ul class="space-y-1 text-sm">
           {servicesSiblings.map((s) => (
             <li>
@@ -19,7 +20,7 @@ const currentPath = '/our-services/industry/';
                 href={s.href}
                 aria-current={s.href === currentPath ? 'page' : undefined}
                 class={`block px-3 py-2 -mx-3 transition-colors duration-fast ${s.href === currentPath ? 'bg-brand-500 text-surface' : 'text-ink hover:text-brand-500'}`}
-              >{s.label}</a>
+              ><span data-i18n={i18nAttr(s.label)}>{s.label}</span></a>
             </li>
           ))}
         </ul>
