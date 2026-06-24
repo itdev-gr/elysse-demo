@@ -22,6 +22,7 @@ import ContactSubNav from '../../../components/contact/ContactSubNav.astro';
 import ContactForm from '../../../components/ContactForm.astro';
 import ShopLocator from '../../../components/contact/ShopLocator.tsx';
 import { localOffices } from '../../../data/site-content';
+import { i18nAttr } from '../../../lib/i18n';
 
 // The first office is the Strovolos head office (full contact + hours);
 // the remaining 5 are the satellite shops shown as a card grid below.
@@ -48,18 +49,18 @@ const [headOffice, ...satelliteShops] = localOffices;
     <div aria-hidden="true" class="absolute inset-0 bg-brand-500/30"></div>
 
     <Container size="xl" class="relative pt-40 md:pt-48 pb-16 md:pb-24 w-full">
-      <p data-reveal class="text-[11px] md:text-xs uppercase tracking-[0.4em] text-surface/85 mb-8">
+      <p data-reveal class="text-[11px] md:text-xs uppercase tracking-[0.4em] text-surface/85 mb-8" data-i18n={i18nAttr('Contact Us · Cyprus')}>
         Contact Us · Cyprus
       </p>
-      <h1 data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[0.92] tracking-tight text-surface" style="font-size: clamp(3rem, 9vw, 8rem); max-width: 14ch;">
+      <h1 data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[0.92] tracking-tight text-surface" style="font-size: clamp(3rem, 9vw, 8rem); max-width: 14ch;" data-i18n={i18nAttr('Local Network.')}>
         Local Network.
       </h1>
-      <p data-reveal data-reveal-delay="240" class="mt-8 max-w-2xl text-base md:text-lg text-surface/85 leading-relaxed">
+      <p data-reveal data-reveal-delay="240" class="mt-8 max-w-2xl text-base md:text-lg text-surface/85 leading-relaxed" data-i18n={i18nAttr("Six shops across the island plus the Ergates head office. Drop in, give us a call, or send a message — we'll route your enquiry to the closest Elysée location.")}>
         Six shops across the island plus the Ergates head office. Drop in, give us a call, or send a message — we'll route your enquiry to the closest Elysée location.
       </p>
       <div data-reveal data-reveal-delay="360" class="mt-14 md:mt-20 flex items-center gap-4 text-[11px] uppercase tracking-[0.3em] text-surface/70">
         <span aria-hidden="true" class="h-px w-12 bg-surface/50"></span>
-        <span>Local Network</span>
+        <span data-i18n={i18nAttr('Local Network')}>Local Network</span>
       </div>
     </Container>
   </section>
@@ -69,23 +70,23 @@ const [headOffice, ...satelliteShops] = localOffices;
   {/* ===== STAT BAND ===== */}
   <section class="bg-surface border-b border-ink/10">
     <Container size="xl" class="py-16 md:py-24">
-      <p data-reveal class="text-[11px] md:text-xs uppercase tracking-[0.3em] text-brand-500 mb-10 md:mb-14">By the network</p>
+      <p data-reveal class="text-[11px] md:text-xs uppercase tracking-[0.3em] text-brand-500 mb-10 md:mb-14" data-i18n={i18nAttr('By the network')}>By the network</p>
       <dl class="grid grid-cols-2 md:grid-cols-4 gap-px bg-ink/10 border border-ink/10">
         <div class="bg-surface p-8 md:p-10">
           <dd data-counter="6" class="font-display font-heavy leading-none tracking-tight text-brand-500" style="font-size: clamp(2.5rem, 6vw, 5rem);">6</dd>
-          <dt class="mt-4 md:mt-5 text-[10px] md:text-xs uppercase tracking-[0.25em] text-ink/60">Shops island-wide</dt>
+          <dt class="mt-4 md:mt-5 text-[10px] md:text-xs uppercase tracking-[0.25em] text-ink/60" data-i18n={i18nAttr('Shops island-wide')}>Shops island-wide</dt>
         </div>
         <div class="bg-surface p-8 md:p-10">
           <dd data-counter="6" class="font-display font-heavy leading-none tracking-tight text-brand-500" style="font-size: clamp(2.5rem, 6vw, 5rem);">6</dd>
-          <dt class="mt-4 md:mt-5 text-[10px] md:text-xs uppercase tracking-[0.25em] text-ink/60">Cities covered</dt>
+          <dt class="mt-4 md:mt-5 text-[10px] md:text-xs uppercase tracking-[0.25em] text-ink/60" data-i18n={i18nAttr('Cities covered')}>Cities covered</dt>
         </div>
         <div class="bg-surface p-8 md:p-10">
           <dd data-counter="1979" class="font-display font-heavy leading-none tracking-tight text-brand-500" style="font-size: clamp(2.5rem, 6vw, 5rem);">1979</dd>
-          <dt class="mt-4 md:mt-5 text-[10px] md:text-xs uppercase tracking-[0.25em] text-ink/60">Cyprus since</dt>
+          <dt class="mt-4 md:mt-5 text-[10px] md:text-xs uppercase tracking-[0.25em] text-ink/60" data-i18n={i18nAttr('Cyprus since')}>Cyprus since</dt>
         </div>
         <div class="bg-surface p-8 md:p-10">
           <dd data-counter="45+" class="font-display font-heavy leading-none tracking-tight text-brand-500" style="font-size: clamp(2.5rem, 6vw, 5rem);">45+</dd>
-          <dt class="mt-4 md:mt-5 text-[10px] md:text-xs uppercase tracking-[0.25em] text-ink/60">Years on the island</dt>
+          <dt class="mt-4 md:mt-5 text-[10px] md:text-xs uppercase tracking-[0.25em] text-ink/60" data-i18n={i18nAttr('Years on the island')}>Years on the island</dt>
         </div>
       </dl>
     </Container>
@@ -98,12 +99,12 @@ const [headOffice, ...satelliteShops] = localOffices;
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16">
           <aside class="lg:col-span-4">
             <div class="lg:sticky lg:top-32">
-              <p data-reveal class="text-[11px] uppercase tracking-[0.4em] text-brand-500 mb-6 md:mb-8">Head office</p>
+              <p data-reveal class="text-[11px] uppercase tracking-[0.4em] text-brand-500 mb-6 md:mb-8" data-i18n={i18nAttr('Head office')}>Head office</p>
               <h2 data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[1.02] tracking-tight text-ink" style="font-size: clamp(2rem, 4.5vw, 3.5rem);">
                 {headOffice.region}, Cyprus.
               </h2>
               <div aria-hidden="true" class="mt-8 h-px w-12 bg-brand-500"></div>
-              <p data-reveal data-reveal-delay="240" class="mt-6 max-w-xs text-sm text-ink/60 leading-relaxed">
+              <p data-reveal data-reveal-delay="240" class="mt-6 max-w-xs text-sm text-ink/60 leading-relaxed" data-i18n={i18nAttr('Visit, call, or send a message. The head office routes enquiries to the right shop.')}>
                 Visit, call, or send a message. The head office routes enquiries to the right shop.
               </p>
             </div>
@@ -114,13 +115,13 @@ const [headOffice, ...satelliteShops] = localOffices;
               <dl class="grid grid-cols-1 sm:grid-cols-2 gap-x-10 gap-y-6">
                 {headOffice.address && (
                   <div>
-                    <dt class="text-[10px] uppercase tracking-[0.25em] text-ink/55 mb-1.5">Address</dt>
+                    <dt class="text-[10px] uppercase tracking-[0.25em] text-ink/55 mb-1.5" data-i18n={i18nAttr('Address')}>Address</dt>
                     <dd class="font-display font-heavy text-lg text-ink leading-snug whitespace-pre-line">{headOffice.address}</dd>
                   </div>
                 )}
                 {headOffice.phone && (
                   <div>
-                    <dt class="text-[10px] uppercase tracking-[0.25em] text-ink/55 mb-1.5">Tel</dt>
+                    <dt class="text-[10px] uppercase tracking-[0.25em] text-ink/55 mb-1.5" data-i18n={i18nAttr('Tel')}>Tel</dt>
                     <dd class="font-display font-heavy text-lg text-ink leading-snug">
                       <a href={`tel:${headOffice.phone.replace(/[^+\d]/g, '')}`} class="hover:text-brand-500 transition-colors duration-200">{headOffice.phone}</a>
                     </dd>
@@ -128,13 +129,13 @@ const [headOffice, ...satelliteShops] = localOffices;
                 )}
                 {headOffice.fax && (
                   <div>
-                    <dt class="text-[10px] uppercase tracking-[0.25em] text-ink/55 mb-1.5">Fax</dt>
+                    <dt class="text-[10px] uppercase tracking-[0.25em] text-ink/55 mb-1.5" data-i18n={i18nAttr('Fax')}>Fax</dt>
                     <dd class="font-display font-heavy text-lg text-ink leading-snug">{headOffice.fax}</dd>
                   </div>
                 )}
                 {headOffice.email && (
                   <div>
-                    <dt class="text-[10px] uppercase tracking-[0.25em] text-ink/55 mb-1.5">Email</dt>
+                    <dt class="text-[10px] uppercase tracking-[0.25em] text-ink/55 mb-1.5" data-i18n={i18nAttr('Email')}>Email</dt>
                     <dd class="font-display font-heavy text-lg text-ink leading-snug">
                       <a href={`mailto:${headOffice.email}`} class="hover:text-brand-500 transition-colors duration-200">{headOffice.email}</a>
                     </dd>
@@ -142,13 +143,13 @@ const [headOffice, ...satelliteShops] = localOffices;
                 )}
                 {headOffice.hours && (
                   <div class="sm:col-span-2 border-t border-ink/10 pt-6">
-                    <dt class="text-[10px] uppercase tracking-[0.25em] text-ink/55 mb-1.5">Hours</dt>
+                    <dt class="text-[10px] uppercase tracking-[0.25em] text-ink/55 mb-1.5" data-i18n={i18nAttr('Hours')}>Hours</dt>
                     <dd class="text-base text-ink/85 leading-relaxed whitespace-pre-line">{headOffice.hours}</dd>
                   </div>
                 )}
                 {headOffice.notes && (
                   <div class="sm:col-span-2 border-t border-ink/10 pt-6">
-                    <dt class="text-[10px] uppercase tracking-[0.25em] text-ink/55 mb-1.5">Also</dt>
+                    <dt class="text-[10px] uppercase tracking-[0.25em] text-ink/55 mb-1.5" data-i18n={i18nAttr('Also')}>Also</dt>
                     <dd class="text-base text-ink/85 leading-relaxed">{headOffice.notes}</dd>
                   </div>
                 )}
@@ -165,11 +166,11 @@ const [headOffice, ...satelliteShops] = localOffices;
     <section class="bg-surface relative">
       <Container size="xl" class="relative py-24 md:py-32">
         <header class="max-w-3xl mb-12 md:mb-16">
-          <p data-reveal class="text-[11px] uppercase tracking-[0.4em] text-brand-500 mb-6 md:mb-8">Across the island</p>
-          <h2 data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[1.02] tracking-tight text-ink" style="font-size: clamp(2.25rem, 5.5vw, 4.5rem);">
+          <p data-reveal class="text-[11px] uppercase tracking-[0.4em] text-brand-500 mb-6 md:mb-8" data-i18n={i18nAttr('Across the island')}>Across the island</p>
+          <h2 data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[1.02] tracking-tight text-ink" style="font-size: clamp(2.25rem, 5.5vw, 4.5rem);" data-i18n={i18nAttr('Find your nearest shop.')}>
             Find your nearest shop.
           </h2>
-          <p data-reveal data-reveal-delay="240" class="mt-6 md:mt-8 text-base md:text-lg text-ink/70 leading-relaxed">
+          <p data-reveal data-reveal-delay="240" class="mt-6 md:mt-8 text-base md:text-lg text-ink/70 leading-relaxed" data-i18n={i18nAttr('Six Elysée locations covering Nicosia, Larnaca, Limassol, Famagusta district and Paphos.')}>
             Six Elysée locations covering Nicosia, Larnaca, Limassol, Famagusta district and Paphos.
           </p>
         </header>
@@ -185,8 +186,8 @@ const [headOffice, ...satelliteShops] = localOffices;
   <Section bg="alt" spacing="lg">
     <Container size="lg">
       <header class="max-w-2xl mx-auto text-center mb-10 md:mb-12">
-        <p data-reveal class="text-[11px] uppercase tracking-[0.4em] text-brand-500 mb-6">Prefer to write?</p>
-        <h2 data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[1.02] tracking-tight text-ink" style="font-size: clamp(2rem, 4.5vw, 3.5rem);">
+        <p data-reveal class="text-[11px] uppercase tracking-[0.4em] text-brand-500 mb-6" data-i18n={i18nAttr('Prefer to write?')}>Prefer to write?</p>
+        <h2 data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[1.02] tracking-tight text-ink" style="font-size: clamp(2rem, 4.5vw, 3.5rem);" data-i18n={i18nAttr('Send us a message.')}>
           Send us a message.
         </h2>
       </header>
@@ -203,7 +204,7 @@ const [headOffice, ...satelliteShops] = localOffices;
   <section class="bg-brand-500/10">
     <Container size="lg" class="py-16 md:py-20">
       <div class="mx-auto max-w-2xl text-center">
-        <p data-reveal class="text-base md:text-lg text-ink/80 leading-relaxed">
+        <p data-reveal class="text-base md:text-lg text-ink/80 leading-relaxed" data-i18n={i18nAttr('Looking for export, technical advice, or one of our international subsidiaries? Continue to the Worldwide Network.')}>
           Looking for export, technical advice, or one of our international subsidiaries? Continue to the Worldwide Network.
         </p>
         <a
@@ -212,7 +213,7 @@ const [headOffice, ...satelliteShops] = localOffices;
           href="/contact/worldwide/"
           class="group cursor-pointer mt-8 md:mt-10 inline-flex items-center gap-3 px-6 py-3 border border-ink/40 hover:bg-ink hover:border-ink hover:text-surface text-ink text-[11px] md:text-xs uppercase tracking-[0.25em] transition-colors duration-200"
         >
-          <span>Worldwide Network</span>
+          <span data-i18n={i18nAttr('Worldwide Network')}>Worldwide Network</span>
           <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <path d="M5 12h14" />
             <path d="m12 5 7 7-7 7" />

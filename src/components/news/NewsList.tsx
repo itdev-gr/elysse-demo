@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { supabase, isSupabaseConfigured } from '../../lib/supabase';
 import type { NewsArticle } from '../../types/news';
+import { i18nAttr } from '../../lib/i18n';
 
 /** Card shape shared by live data and the server-provided fallback. */
 export interface NewsCardNode {
@@ -75,6 +76,14 @@ export default function NewsList({ fallback }: Props) {
     };
   }, []);
 
+  // Re-apply the active language once the data-driven tree has rendered.
+  useEffect(() => {
+    try {
+      const l = localStorage.getItem('elysee.lang');
+      if (l && l !== 'en') document.dispatchEvent(new CustomEvent('elysee:lang', { detail: { lang: l } }));
+    } catch {}
+  }, [state]);
+
   // Staggered reveal for the grid cards, consistent with the rest of the site.
   useEffect(() => {
     if (state.kind !== 'ready' || !gridRef.current) return;
@@ -120,9 +129,9 @@ export default function NewsList({ fallback }: Props) {
   if (state.items.length === 0) {
     return (
       <div className="bg-surface-alt border-l-4 border-brand-500/40 p-8 md:p-10 max-w-3xl">
-        <p className="text-[10px] uppercase tracking-[0.3em] text-brand-500 font-semibold mb-3">Nothing yet</p>
-        <h3 className="font-display font-heavy text-xl md:text-2xl text-ink leading-tight">No news yet.</h3>
-        <p className="mt-4 text-base text-ink/75 leading-relaxed">
+        <p data-i18n={i18nAttr('Nothing yet')} className="text-[10px] uppercase tracking-[0.3em] text-brand-500 font-semibold mb-3">Nothing yet</p>
+        <h3 data-i18n={i18nAttr('No news yet.')} className="font-display font-heavy text-xl md:text-2xl text-ink leading-tight">No news yet.</h3>
+        <p data-i18n={i18nAttr('Check back soon — we publish launches, milestones and updates from across the group regularly.')} className="mt-4 text-base text-ink/75 leading-relaxed">
           Check back soon — we publish launches, milestones and updates from across the group regularly.
         </p>
       </div>
@@ -142,7 +151,7 @@ export default function NewsList({ fallback }: Props) {
       >
         <div className="relative aspect-[16/10] lg:aspect-auto lg:min-h-[380px] bg-surface-alt overflow-hidden">
           <CoverOrMark src={featured.cover_image} className="transition-transform duration-700 ease-out group-hover:scale-105" />
-          <span className="absolute top-4 left-4 inline-block bg-brand-500 text-surface text-[10px] uppercase tracking-[0.25em] px-3 py-1.5">
+          <span data-i18n={i18nAttr('Latest')} className="absolute top-4 left-4 inline-block bg-brand-500 text-surface text-[10px] uppercase tracking-[0.25em] px-3 py-1.5">
             Latest
           </span>
         </div>
@@ -155,7 +164,7 @@ export default function NewsList({ fallback }: Props) {
           <p className="mt-6 text-base md:text-lg text-ink/70 leading-[1.6] line-clamp-3">{featured.excerpt}</p>
           {featuredHref && (
             <span className="mt-8 inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.25em] text-brand-500 font-medium">
-              Read article <ArrowR className="w-3.5 h-3.5 transition-transform duration-200 group-hover:translate-x-1" />
+              <span data-i18n={i18nAttr('Read article')}>Read article</span> <ArrowR className="w-3.5 h-3.5 transition-transform duration-200 group-hover:translate-x-1" />
             </span>
           )}
         </div>
@@ -186,7 +195,7 @@ export default function NewsList({ fallback }: Props) {
                   <p className="mt-4 text-sm md:text-base text-ink/70 leading-[1.6] line-clamp-3 flex-1">{a.excerpt}</p>
                   {href && (
                     <span className="mt-6 inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.25em] text-brand-500 font-medium">
-                      Read article <ArrowR className="w-3.5 h-3.5 transition-transform duration-200 group-hover:translate-x-1" />
+                      <span data-i18n={i18nAttr('Read article')}>Read article</span> <ArrowR className="w-3.5 h-3.5 transition-transform duration-200 group-hover:translate-x-1" />
                     </span>
                   )}
                 </div>

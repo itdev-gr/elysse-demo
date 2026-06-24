@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { supabase, isSupabaseConfigured } from '../../lib/supabase';
 import type { Post } from '../../types/post';
+import { i18nAttr } from '../../lib/i18n';
 import BlogCard from './BlogCard';
 
 type State =
@@ -42,6 +43,14 @@ export default function BlogList() {
     };
   }, []);
 
+  // Re-apply the active language once the data-driven tree has rendered.
+  useEffect(() => {
+    try {
+      const l = localStorage.getItem('elysee.lang');
+      if (l && l !== 'en') document.dispatchEvent(new CustomEvent('elysee:lang', { detail: { lang: l } }));
+    } catch {}
+  }, [state]);
+
   if (state.kind === 'loading') {
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
@@ -67,18 +76,19 @@ export default function BlogList() {
     const body = state.kind === 'empty'
       ? 'Check back soon — we publish new pieces from across the group regularly.'
       : 'Please come back shortly. In the meantime, you can browse our newsroom for the latest updates.';
+    const eyebrow = state.kind === 'empty' ? 'Nothing yet' : 'Temporarily unavailable';
     return (
       <div className="bg-surface-alt border-l-4 border-brand-500/40 p-8 md:p-10 max-w-3xl">
-        <p className="text-[10px] uppercase tracking-[0.3em] text-brand-500 font-semibold mb-3">
-          {state.kind === 'empty' ? 'Nothing yet' : 'Temporarily unavailable'}
+        <p data-i18n={i18nAttr(eyebrow)} className="text-[10px] uppercase tracking-[0.3em] text-brand-500 font-semibold mb-3">
+          {eyebrow}
         </p>
-        <h3 className="font-display font-heavy text-xl md:text-2xl text-ink leading-tight">{heading}</h3>
-        <p className="mt-4 text-base text-ink/75 leading-relaxed">{body}</p>
+        <h3 data-i18n={i18nAttr(heading)} className="font-display font-heavy text-xl md:text-2xl text-ink leading-tight">{heading}</h3>
+        <p data-i18n={i18nAttr(body)} className="mt-4 text-base text-ink/75 leading-relaxed">{body}</p>
         <a
           href="/insights/news/"
           className="mt-6 inline-flex items-center gap-2 bg-brand-500 text-surface px-5 py-2.5 text-[11px] uppercase tracking-[0.25em] font-medium hover:bg-brand-700 transition-colors duration-200"
         >
-          Visit the newsroom
+          <span data-i18n={i18nAttr('Visit the newsroom')}>Visit the newsroom</span>
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
             <path d="M5 12h14" />
             <path d="m12 5 7 7-7 7" />

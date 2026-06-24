@@ -1,6 +1,7 @@
 ---
 import Container from './Container.astro';
 import { footerNav, footerLegal, social, companyContact } from '../data/navigation';
+import { i18nAttr, i18nAttrFor } from '../lib/i18n';
 import logo from '../assets/icons/elysee-logo-3d.png';
 const year = new Date().getFullYear();
 ---
@@ -14,7 +15,7 @@ const year = new Date().getFullYear();
 
       {/* Brand + Contact block */}
       <div class="lg:col-span-6 lg:self-start">
-        <a href="/" class="inline-block" aria-label="Elysée Group — home">
+        <a href="/" class="inline-block" aria-label="Elysée Group — home" data-i18n-attr={i18nAttrFor({ 'aria-label': 'Elysée Group — home' })}>
           <img
             src={logo.src}
             alt="Elysée"
@@ -34,7 +35,7 @@ const year = new Date().getFullYear();
         </address>
         <dl class="mt-4 space-y-1 text-sm">
           <div class="flex gap-3">
-            <dt class="w-12 text-brand-500 uppercase tracking-wider text-[10px] pt-1 font-semibold">Tel</dt>
+            <dt class="w-12 text-brand-500 uppercase tracking-wider text-[10px] pt-1 font-semibold" data-i18n={i18nAttr('Tel')}>Tel</dt>
             <dd>
               <a href={`tel:${companyContact.phone.replace(/[^+\d]/g, '')}`} class="text-ink hover:text-brand-500 transition-colors duration-200">
                 {companyContact.phone}
@@ -42,7 +43,7 @@ const year = new Date().getFullYear();
             </dd>
           </div>
           <div class="flex gap-3">
-            <dt class="w-12 text-brand-500 uppercase tracking-wider text-[10px] pt-1 font-semibold">Fax</dt>
+            <dt class="w-12 text-brand-500 uppercase tracking-wider text-[10px] pt-1 font-semibold" data-i18n={i18nAttr('Fax')}>Fax</dt>
             <dd class="text-ink">{companyContact.fax}</dd>
           </div>
           <div class="flex gap-3">
@@ -58,8 +59,8 @@ const year = new Date().getFullYear();
 
       {/* Newsletter */}
       <div class="lg:col-span-6 lg:pl-10 lg:border-l lg:border-ink/10">
-        <p class="text-[11px] uppercase tracking-[0.3em] text-brand-500 font-semibold">Newsletter</p>
-        <h2 class="mt-3 font-display font-heavy leading-tight text-xl md:text-2xl text-ink max-w-md">
+        <p class="text-[11px] uppercase tracking-[0.3em] text-brand-500 font-semibold" data-i18n={i18nAttr('Newsletter')}>Newsletter</p>
+        <h2 class="mt-3 font-display font-heavy leading-tight text-xl md:text-2xl text-ink max-w-md" data-i18n={i18nAttr('Subscribe to be the first to know about our news and future plans.')}>
           Subscribe to be the first to know about our news and future plans.
         </h2>
         <form
@@ -67,7 +68,7 @@ const year = new Date().getFullYear();
           method="post"
           class="mt-5 flex flex-col sm:flex-row gap-2 max-w-lg"
         >
-          <label class="sr-only" for="newsletter-email">Email address</label>
+          <label class="sr-only" for="newsletter-email" data-i18n={i18nAttr('Email address')}>Email address</label>
           <input
             id="newsletter-email"
             name="email"
@@ -81,7 +82,7 @@ const year = new Date().getFullYear();
             type="submit"
             class="inline-flex items-center justify-center gap-2 bg-brand-500 text-surface px-5 py-2.5 text-[11px] uppercase tracking-[0.25em] font-medium hover:bg-brand-700 transition-colors duration-200 cursor-pointer"
           >
-            Subscribe
+            <span data-i18n={i18nAttr('Subscribe')}>Subscribe</span>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <path d="M5 12h14" />
               <path d="m12 5 7 7-7 7" />
@@ -89,12 +90,12 @@ const year = new Date().getFullYear();
           </button>
         </form>
         <p class="mt-3 text-xs text-ink/55 max-w-lg leading-relaxed">
-          By subscribing you agree to our <a href="/legal/privacy-policy/" class="underline underline-offset-2 hover:text-brand-500 transition-colors duration-200">Privacy Policy</a>.
+          <span data-i18n={i18nAttr('By subscribing you agree to our')}>By subscribing you agree to our</span> <a href="/legal/privacy-policy/" class="underline underline-offset-2 hover:text-brand-500 transition-colors duration-200" data-i18n={i18nAttr('Privacy Policy')}>Privacy Policy</a>.
         </p>
 
         {social.length > 0 && (
           <div class="mt-7">
-            <p class="text-[11px] uppercase tracking-[0.3em] text-brand-500 mb-3 font-semibold">Connect</p>
+            <p class="text-[11px] uppercase tracking-[0.3em] text-brand-500 mb-3 font-semibold" data-i18n={i18nAttr('Connect')}>Connect</p>
             <ul class="flex items-center gap-2">
               {social.map((s) => (
                 <li>
@@ -119,13 +120,14 @@ const year = new Date().getFullYear();
     <div class="py-6 md:py-8 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8 md:gap-6">
       {footerNav.map((col) => (
         <div>
-          <h2 class="text-[11px] font-semibold uppercase tracking-[0.25em] text-brand-500">{col.title}</h2>
+          <h2 class="text-[11px] font-semibold uppercase tracking-[0.25em] text-brand-500" data-i18n={i18nAttr(col.title)}>{col.title}</h2>
           <ul class="mt-4 space-y-2.5">
             {col.items.map((it) => (
               <li>
                 <a
                   class="text-sm text-ink hover:text-brand-500 transition-colors duration-200"
                   href={it.href}
+                  data-i18n={i18nAttr(it.label)}
                 >
                   {it.label}
                 </a>
@@ -153,7 +155,7 @@ const year = new Date().getFullYear();
     <Container size="xl" class="relative py-5 md:py-6">
       <div class="flex flex-col md:flex-row items-center justify-between gap-6 text-xs text-surface">
         {/* Logo mark on left */}
-        <a href="/" class="inline-flex shrink-0" aria-label="Elysée Group — home">
+        <a href="/" class="inline-flex shrink-0" aria-label="Elysée Group — home" data-i18n-attr={i18nAttrFor({ 'aria-label': 'Elysée Group — home' })}>
           <img
             src={logo.src}
             alt="Elysée"
@@ -168,14 +170,14 @@ const year = new Date().getFullYear();
           {footerLegal.map((it) => (
             <>
               <span aria-hidden="true" class="text-surface/40">|</span>
-              <a href={it.href} class="hover:text-surface/80 transition-colors duration-200">{it.label}</a>
+              <a href={it.href} class="hover:text-surface/80 transition-colors duration-200" data-i18n={i18nAttr(it.label)}>{it.label}</a>
             </>
           ))}
         </div>
 
         {/* Designer credit on right */}
         <p class="shrink-0">
-          Designed &amp; Development by
+          <span data-i18n={i18nAttr('Designed & Development by')}>Designed &amp; Development by</span>
           <a
             href="https://www.itdev.gr"
             target="_blank"

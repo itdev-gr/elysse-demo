@@ -17,6 +17,7 @@ import Section from '../../../components/Section.astro';
 import NewsList from '../../../components/news/NewsList.tsx';
 import { insightsNewsItems } from '../../../data/site-content';
 import { slugify } from '../../../lib/posts';
+import { i18nAttr } from '../../../lib/i18n';
 
 // Offline fallback for the island. Mirrors the seeded rows so the page never
 // looks broken if Supabase is unreachable.
@@ -50,13 +51,13 @@ const newsFallback = insightsNewsItems.map((it) => ({
     <div aria-hidden="true" class="absolute inset-0 bg-brand-500/30"></div>
 
     <Container size="xl" class="relative pt-40 md:pt-48 pb-14 md:pb-20 w-full">
-      <p data-reveal class="text-[11px] md:text-xs uppercase tracking-[0.4em] text-surface/85 mb-8">
+      <p data-reveal data-i18n={i18nAttr('Insights · Newsroom')} class="text-[11px] md:text-xs uppercase tracking-[0.4em] text-surface/85 mb-8">
         Insights · Newsroom
       </p>
-      <h1 data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[0.92] tracking-tight text-surface" style="font-size: clamp(3rem, 9vw, 8rem); max-width: 14ch;">
+      <h1 data-reveal data-reveal-delay="120" data-i18n={i18nAttr('News.')} class="font-display font-heavy leading-[0.92] tracking-tight text-surface" style="font-size: clamp(3rem, 9vw, 8rem); max-width: 14ch;">
         News.
       </h1>
-      <p data-reveal data-reveal-delay="240" class="mt-8 max-w-2xl text-base md:text-lg text-surface/85 leading-relaxed">
+      <p data-reveal data-reveal-delay="240" data-i18n={i18nAttr('Product launches, company milestones, and industry updates from across the Elysée group.')} class="mt-8 max-w-2xl text-base md:text-lg text-surface/85 leading-relaxed">
         Product launches, company milestones, and industry updates from across the Elysée group.
       </p>
     </Container>
@@ -66,8 +67,8 @@ const newsFallback = insightsNewsItems.map((it) => ({
   <Section bg="default" spacing="lg">
     <Container size="xl">
       <header class="max-w-3xl mb-12 md:mb-16">
-        <p data-reveal class="text-[11px] uppercase tracking-[0.4em] text-brand-500 mb-6 md:mb-8">From the newsroom</p>
-        <h2 data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[1.02] tracking-tight text-ink" style="font-size: clamp(2rem, 5vw, 3.75rem);">
+        <p data-reveal data-i18n={i18nAttr('From the newsroom')} class="text-[11px] uppercase tracking-[0.4em] text-brand-500 mb-6 md:mb-8">From the newsroom</p>
+        <h2 data-reveal data-reveal-delay="120" data-i18n={i18nAttr('The latest from Elysée.')} class="font-display font-heavy leading-[1.02] tracking-tight text-ink" style="font-size: clamp(2rem, 5vw, 3.75rem);">
           The latest from Elysée.
         </h2>
       </header>

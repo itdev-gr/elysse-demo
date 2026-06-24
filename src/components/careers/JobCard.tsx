@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import type { Job } from '../../types/job';
 import { getApplyHref, renderJobDescription } from '../../lib/jobs';
+import { i18nAttr } from '../../lib/i18n';
 
 type Props = { job: Job };
 
@@ -21,6 +22,16 @@ function previewText(markdown: string, max = 160): string {
 export default function JobCard({ job }: Props) {
   const [expanded, setExpanded] = useState(false);
   const apply = getApplyHref(job);
+
+  // This card renders translated nodes after hydration (and re-renders when the
+  // description is expanded/collapsed); re-fire the swap so the loaded listener
+  // applies the active language to the freshly rendered tree.
+  useEffect(() => {
+    try {
+      const l = localStorage.getItem('elysee.lang');
+      if (l && l !== 'en') document.dispatchEvent(new CustomEvent('elysee:lang', { detail: { lang: l } }));
+    } catch {}
+  }, [expanded]);
 
   return (
     <article className="group bg-surface border-l-4 border-brand-500 p-6 md:p-8 transition-colors duration-300 hover:bg-surface-alt">
@@ -59,7 +70,7 @@ export default function JobCard({ job }: Props) {
           rel={apply.external ? 'noopener noreferrer' : undefined}
           className="inline-flex items-center gap-2 bg-brand-500 text-surface px-5 py-2.5 text-[11px] uppercase tracking-[0.25em] font-medium hover:bg-brand-700 transition-colors duration-200"
         >
-          Apply
+          <span data-i18n={i18nAttr('Apply')}>Apply</span>
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
             <path d="M5 12h14" />
             <path d="m12 5 7 7-7 7" />
@@ -71,7 +82,7 @@ export default function JobCard({ job }: Props) {
           aria-expanded={expanded}
           className="inline-flex items-center gap-1 px-3 py-2 text-[11px] uppercase tracking-[0.25em] text-ink/70 hover:text-brand-500 transition-colors duration-200 cursor-pointer"
         >
-          {expanded ? 'Read less' : 'Read more'}
+          <span data-i18n={i18nAttr(expanded ? 'Read less' : 'Read more')}>{expanded ? 'Read less' : 'Read more'}</span>
           <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true" className={`transition-transform ${expanded ? 'rotate-180' : ''}`}>
             <path d="M2 4l3 3 3-3" />
           </svg>

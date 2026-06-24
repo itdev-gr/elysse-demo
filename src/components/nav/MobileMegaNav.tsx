@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import type { MegaGroup, NavItem } from '../../data/navigation';
 import { drawerVariants, backdropVariants, accordionVariants, EASE_OUT } from './megaAnim';
+import { i18nAttr, i18nAttrFor } from '../../lib/i18n';
 import MegaThumb from './MegaThumb';
 
 type Props = {
@@ -118,6 +119,7 @@ export default function MobileMegaNav({ groups }: Props) {
             role="dialog"
             aria-modal="true"
             aria-label="Primary navigation"
+            data-i18n-attr={i18nAttrFor({ 'aria-label': 'Primary navigation' })}
             initial={{ pointerEvents: 'none' }}
             animate={{ pointerEvents: 'auto' }}
             exit={{ pointerEvents: 'none' }}
@@ -141,11 +143,12 @@ export default function MobileMegaNav({ groups }: Props) {
               className="absolute right-0 top-0 bottom-0 w-[88vw] max-w-sm bg-surface text-ink overflow-y-auto shadow-2xl"
             >
               <div className="sticky top-0 z-10 flex items-center justify-between px-6 py-5 border-b border-ink/10 bg-surface">
-                <span className="text-sm uppercase tracking-widest font-medium">Menu</span>
+                <span className="text-sm uppercase tracking-widest font-medium" data-i18n={i18nAttr('Menu')}>Menu</span>
                 <button
                   type="button"
                   onClick={closeDrawer}
                   aria-label="Close menu"
+                  data-i18n-attr={i18nAttrFor({ 'aria-label': 'Close menu' })}
                   className="inline-flex items-center justify-center p-2 -mr-2 hover:text-brand-500 transition-colors duration-fast cursor-pointer"
                 >
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
@@ -154,13 +157,14 @@ export default function MobileMegaNav({ groups }: Props) {
                 </button>
               </div>
 
-              <nav aria-label="Mobile primary" className="px-2 py-2">
+              <nav aria-label="Mobile primary" data-i18n-attr={i18nAttrFor({ 'aria-label': 'Mobile primary' })} className="px-2 py-2">
                 <ul>
                   <li className="border-b border-ink/5">
                     <a
                       href="/"
                       onClick={closeDrawer}
                       className="block px-4 py-3 text-sm uppercase tracking-widest font-medium text-ink hover:text-brand-500 transition-colors duration-fast"
+                      data-i18n={i18nAttr('Home')}
                     >
                       Home
                     </a>
@@ -176,7 +180,7 @@ export default function MobileMegaNav({ groups }: Props) {
                           onClick={() => setExpanded(isExpanded ? null : idx)}
                           className="w-full flex items-center justify-between px-4 py-3 text-sm uppercase tracking-widest font-medium text-ink hover:text-brand-500 transition-colors duration-fast cursor-pointer"
                         >
-                          <span>{group.title}</span>
+                          <span data-i18n={i18nAttr(group.title)}>{group.title}</span>
                           {hasItems && (
                             <motion.svg
                               animate={{ rotate: isExpanded ? 180 : 0 }}
@@ -253,7 +257,7 @@ function MobileItem({ item }: { item: NavItem }) {
           )}
         </span>
         <span className="flex flex-col min-w-0">
-          <span className="text-sm font-medium text-ink group-hover:text-brand-500 transition-colors duration-fast">
+          <span className="text-sm font-medium text-ink group-hover:text-brand-500 transition-colors duration-fast" data-i18n={i18nAttr(item.label)}>
             {item.label}
           </span>
           {item.caption && (

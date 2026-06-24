@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { supabase, isSupabaseConfigured } from '../../lib/supabase';
 import type { NewsArticle } from '../../types/news';
+import { i18nAttr } from '../../lib/i18n';
 import { renderNewsBody } from '../../lib/news';
 
 type Props = { slug: string };
@@ -48,6 +49,14 @@ export default function NewsPostView({ slug }: Props) {
     };
   }, [slug]);
 
+  // Re-apply the active language once the data-driven tree has rendered.
+  useEffect(() => {
+    try {
+      const l = localStorage.getItem('elysee.lang');
+      if (l && l !== 'en') document.dispatchEvent(new CustomEvent('elysee:lang', { detail: { lang: l } }));
+    } catch {}
+  }, [state]);
+
   if (state.kind === 'loading') {
     return (
       <div className="max-w-3xl mx-auto px-4 md:px-6 py-16 md:py-24 animate-pulse">
@@ -65,20 +74,21 @@ export default function NewsPostView({ slug }: Props) {
 
   if (state.kind === 'not-found' || state.kind === 'error') {
     const heading = state.kind === 'not-found' ? 'Article not found.' : 'Article temporarily unavailable.';
+    const eyebrow = state.kind === 'not-found' ? 'Not found' : 'Temporarily unavailable';
     return (
       <div className="max-w-3xl mx-auto px-4 md:px-6 py-20 md:py-28">
-        <p className="text-[10px] uppercase tracking-[0.3em] text-brand-500 font-semibold mb-3">
-          {state.kind === 'not-found' ? 'Not found' : 'Temporarily unavailable'}
+        <p data-i18n={i18nAttr(eyebrow)} className="text-[10px] uppercase tracking-[0.3em] text-brand-500 font-semibold mb-3">
+          {eyebrow}
         </p>
-        <h1 className="font-display font-heavy text-3xl md:text-4xl text-ink leading-tight">{heading}</h1>
-        <p className="mt-4 text-base text-ink/75 leading-relaxed">
+        <h1 data-i18n={i18nAttr(heading)} className="font-display font-heavy text-3xl md:text-4xl text-ink leading-tight">{heading}</h1>
+        <p data-i18n={i18nAttr('The article you are looking for may have been moved or unpublished. Browse all our latest news below.')} className="mt-4 text-base text-ink/75 leading-relaxed">
           The article you are looking for may have been moved or unpublished. Browse all our latest news below.
         </p>
         <a
           href="/insights/news/"
           className="mt-8 inline-flex items-center gap-2 bg-brand-500 text-surface px-5 py-2.5 text-[11px] uppercase tracking-[0.25em] font-medium hover:bg-brand-700 transition-colors duration-200"
         >
-          Back to all news
+          <span data-i18n={i18nAttr('Back to all news')}>Back to all news</span>
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
             <path d="M5 12h14" />
             <path d="m12 5 7 7-7 7" />
@@ -101,7 +111,7 @@ export default function NewsPostView({ slug }: Props) {
         </div>
       )}
       <div className="max-w-3xl mx-auto px-4 md:px-6 py-12 md:py-20">
-        <p className="text-[11px] uppercase tracking-[0.4em] text-brand-500 font-semibold">Insights · News</p>
+        <p data-i18n={i18nAttr('Insights · News')} className="text-[11px] uppercase tracking-[0.4em] text-brand-500 font-semibold">Insights · News</p>
         <h1
           className="mt-6 font-display font-heavy leading-[1.05] tracking-tight text-ink"
           style={{ fontSize: 'clamp(2.25rem, 5vw, 4rem)' }}
@@ -127,7 +137,7 @@ export default function NewsPostView({ slug }: Props) {
             <path d="M19 12H5" />
             <path d="m12 19-7-7 7-7" />
           </svg>
-          Back to all news
+          <span data-i18n={i18nAttr('Back to all news')}>Back to all news</span>
         </a>
       </div>
     </article>

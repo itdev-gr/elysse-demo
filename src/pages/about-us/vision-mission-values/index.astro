@@ -23,6 +23,7 @@ import Section from '../../../components/Section.astro';
 import AboutSubNav from '../../../components/about/AboutSubNav.astro';
 import EnquiryForm from '../../../components/contact/EnquiryForm.tsx';
 import { aboutUsVisionMissionValues } from '../../../data/site-content';
+import { i18nAttr } from '../../../lib/i18n';
 
 const blocks = aboutUsVisionMissionValues.blocks;
 const paragraphs = blocks.filter((b): b is Extract<typeof b, { kind: 'paragraph' }> => b.kind === 'paragraph');
@@ -86,14 +87,14 @@ const desc =
         {aboutUsVisionMissionValues.eyebrow} · What drives us
       </p>
       <h1 data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[0.92] tracking-tight text-surface" style="font-size: clamp(3rem, 9vw, 8rem); max-width: 14ch;">
-        Vision, Mission<br/>&amp; Values.
+        <span data-i18n={i18nAttr('Vision, Mission')}>Vision, Mission</span><br/><span data-i18n={i18nAttr('& Values.')}>&amp; Values.</span>
       </h1>
       <p data-reveal data-reveal-delay="240" class="mt-8 max-w-2xl text-base md:text-lg text-surface/85 leading-relaxed">
         {aboutUsVisionMissionValues.subtitle} A one-vision, five-mission, six-value framework — and the W·I·S·E acronym that ties them together.
       </p>
       <div data-reveal data-reveal-delay="360" class="mt-14 md:mt-20 flex items-center gap-4 text-[11px] uppercase tracking-[0.3em] text-surface/70">
         <span aria-hidden="true" class="h-px w-12 bg-surface/50"></span>
-        <span>{aboutUsVisionMissionValues.title}</span>
+        <span data-i18n={i18nAttr(aboutUsVisionMissionValues.title)}>{aboutUsVisionMissionValues.title}</span>
       </div>
     </Container>
   </section>
@@ -111,25 +112,25 @@ const desc =
         {/* Left — sticky editorial intro */}
         <aside class="lg:col-span-5">
           <div class="lg:sticky lg:top-32">
-            <p data-reveal class="text-[11px] uppercase tracking-[0.4em] text-brand-500 mb-6 md:mb-8">By the framework</p>
-            <h2 data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[1.02] tracking-tight text-ink" style="font-size: clamp(2rem, 4.5vw, 3.5rem);">
+            <p data-reveal class="text-[11px] uppercase tracking-[0.4em] text-brand-500 mb-6 md:mb-8" data-i18n={i18nAttr('By the framework')}>By the framework</p>
+            <h2 data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[1.02] tracking-tight text-ink" style="font-size: clamp(2rem, 4.5vw, 3.5rem);" data-i18n={i18nAttr('One vision. Five pillars. Six values.')}>
               One vision. Five pillars. Six values.
             </h2>
             <div aria-hidden="true" class="mt-8 h-px w-12 bg-brand-500"></div>
-            <p data-reveal data-reveal-delay="240" class="mt-6 max-w-sm text-base md:text-lg text-ink/70 leading-[1.7]">
+            <p data-reveal data-reveal-delay="240" class="mt-6 max-w-sm text-base md:text-lg text-ink/70 leading-[1.7]" data-i18n={i18nAttr('Vision sets the destination. Mission sets the pace. Values set the tone. The W·I·S·E framework is the test we hold every product, every process and every partnership to.')}>
               Vision sets the destination. Mission sets the pace. Values set the tone. The W·I·S·E framework is the test we hold every product, every process and every partnership to.
             </p>
             <dl data-reveal data-reveal-delay="360" class="mt-10 grid grid-cols-3 gap-4 max-w-sm">
               <div class="border-t border-ink/15 pt-3">
-                <dt class="text-[10px] uppercase tracking-[0.25em] text-ink/55">Reads</dt>
-                <dd class="mt-1 text-sm font-display font-heavy text-ink">Top → bottom</dd>
+                <dt class="text-[10px] uppercase tracking-[0.25em] text-ink/55" data-i18n={i18nAttr('Reads')}>Reads</dt>
+                <dd class="mt-1 text-sm font-display font-heavy text-ink" data-i18n={i18nAttr('Top → bottom')}>Top → bottom</dd>
               </div>
               <div class="border-t border-ink/15 pt-3">
-                <dt class="text-[10px] uppercase tracking-[0.25em] text-ink/55">Anchor</dt>
+                <dt class="text-[10px] uppercase tracking-[0.25em] text-ink/55" data-i18n={i18nAttr('Anchor')}>Anchor</dt>
                 <dd class="mt-1 text-sm font-display font-heavy text-brand-500">W·I·S·E</dd>
               </div>
               <div class="border-t border-ink/15 pt-3">
-                <dt class="text-[10px] uppercase tracking-[0.25em] text-ink/55">Updated</dt>
+                <dt class="text-[10px] uppercase tracking-[0.25em] text-ink/55" data-i18n={i18nAttr('Updated')}>Updated</dt>
                 <dd class="mt-1 text-sm font-display font-heavy text-ink">2026</dd>
               </div>
             </dl>
@@ -153,12 +154,12 @@ const desc =
                 aria-hidden="true"
                 class="absolute left-0 top-1.5 hidden sm:flex w-[30px] h-[30px] rounded-full bg-surface border-2 border-brand-500 text-brand-500 text-[10px] font-bold items-center justify-center"
               >01</span>
-              <p class="text-[10px] uppercase tracking-[0.3em] text-ink/55">Chapter One · Destination</p>
+              <p class="text-[10px] uppercase tracking-[0.3em] text-ink/55" data-i18n={i18nAttr('Chapter One · Destination')}>Chapter One · Destination</p>
               <div class="mt-2 flex items-baseline gap-4 md:gap-5">
                 <span data-counter="1" class="font-display font-heavy leading-none tracking-tight text-brand-500" style="font-size: clamp(3rem, 7vw, 5.5rem);">1</span>
-                <h3 class="font-display font-heavy text-2xl md:text-3xl text-ink leading-tight">Vision</h3>
+                <h3 class="font-display font-heavy text-2xl md:text-3xl text-ink leading-tight" data-i18n={i18nAttr('Vision')}>Vision</h3>
               </div>
-              <p class="mt-4 text-base md:text-lg text-ink/75 leading-[1.65] max-w-lg">
+              <p class="mt-4 text-base md:text-lg text-ink/75 leading-[1.65] max-w-lg" data-i18n={i18nAttr('A single statement of where Elysée is heading — green leadership worldwide through W·I·S·E piping systems.')}>
                 A single statement of where Elysée is heading — green leadership worldwide through W·I·S·E piping systems.
               </p>
             </li>
@@ -170,12 +171,12 @@ const desc =
                 aria-hidden="true"
                 class="absolute left-0 top-1.5 hidden sm:flex w-[30px] h-[30px] rounded-full bg-surface border-2 border-brand-500 text-brand-500 text-[10px] font-bold items-center justify-center"
               >02</span>
-              <p class="text-[10px] uppercase tracking-[0.3em] text-ink/55">Chapter Two · Pace</p>
+              <p class="text-[10px] uppercase tracking-[0.3em] text-ink/55" data-i18n={i18nAttr('Chapter Two · Pace')}>Chapter Two · Pace</p>
               <div class="mt-2 flex items-baseline gap-4 md:gap-5">
                 <span data-counter="5" class="font-display font-heavy leading-none tracking-tight text-brand-500" style="font-size: clamp(3rem, 7vw, 5.5rem);">5</span>
-                <h3 class="font-display font-heavy text-2xl md:text-3xl text-ink leading-tight">Mission pillars</h3>
+                <h3 class="font-display font-heavy text-2xl md:text-3xl text-ink leading-tight" data-i18n={i18nAttr('Mission pillars')}>Mission pillars</h3>
               </div>
-              <p class="mt-4 text-base md:text-lg text-ink/75 leading-[1.65] max-w-lg">
+              <p class="mt-4 text-base md:text-lg text-ink/75 leading-[1.65] max-w-lg" data-i18n={i18nAttr('Five commitments that translate the Vision into day-to-day priorities — for customers, people, growth and the planet.')}>
                 Five commitments that translate the Vision into day-to-day priorities — for customers, people, growth and the planet.
               </p>
             </li>
@@ -187,12 +188,12 @@ const desc =
                 aria-hidden="true"
                 class="absolute left-0 top-1.5 hidden sm:flex w-[30px] h-[30px] rounded-full bg-surface border-2 border-brand-500 text-brand-500 text-[10px] font-bold items-center justify-center"
               >03</span>
-              <p class="text-[10px] uppercase tracking-[0.3em] text-ink/55">Chapter Three · Tone</p>
+              <p class="text-[10px] uppercase tracking-[0.3em] text-ink/55" data-i18n={i18nAttr('Chapter Three · Tone')}>Chapter Three · Tone</p>
               <div class="mt-2 flex items-baseline gap-4 md:gap-5">
                 <span data-counter="6" class="font-display font-heavy leading-none tracking-tight text-brand-500" style="font-size: clamp(3rem, 7vw, 5.5rem);">6</span>
-                <h3 class="font-display font-heavy text-2xl md:text-3xl text-ink leading-tight">Core values</h3>
+                <h3 class="font-display font-heavy text-2xl md:text-3xl text-ink leading-tight" data-i18n={i18nAttr('Core values')}>Core values</h3>
               </div>
-              <p class="mt-4 text-base md:text-lg text-ink/75 leading-[1.65] max-w-lg">
+              <p class="mt-4 text-base md:text-lg text-ink/75 leading-[1.65] max-w-lg" data-i18n={i18nAttr('Six principles that guide how we work with each other, with our customers and with the environment we operate in.')}>
                 Six principles that guide how we work with each other, with our customers and with the environment we operate in.
               </p>
             </li>
@@ -204,12 +205,12 @@ const desc =
                 aria-hidden="true"
                 class="absolute left-0 top-1.5 hidden sm:flex w-[30px] h-[30px] rounded-full bg-brand-500 text-surface text-[10px] font-bold items-center justify-center shadow-[0_0_0_4px_var(--color-surface)]"
               >★</span>
-              <p class="text-[10px] uppercase tracking-[0.3em] text-brand-500">Anchor · The test</p>
+              <p class="text-[10px] uppercase tracking-[0.3em] text-brand-500" data-i18n={i18nAttr('Anchor · The test')}>Anchor · The test</p>
               <div class="mt-2 flex items-baseline gap-4 md:gap-5 flex-wrap">
                 <span class="font-display font-heavy leading-none tracking-tight text-brand-500 whitespace-nowrap" style="font-size: clamp(2.5rem, 6vw, 4.5rem);">W·I·S·E</span>
-                <h3 class="font-display font-heavy text-2xl md:text-3xl text-ink leading-tight">Framework</h3>
+                <h3 class="font-display font-heavy text-2xl md:text-3xl text-ink leading-tight" data-i18n={i18nAttr('Framework')}>Framework</h3>
               </div>
-              <p class="mt-4 text-base md:text-lg text-ink/75 leading-[1.65] max-w-lg">
+              <p class="mt-4 text-base md:text-lg text-ink/75 leading-[1.65] max-w-lg" data-i18n={i18nAttr('Worldwide. Innovative. Smart. Easy-to-Use. The four words we test every product, process and partnership against.')}>
                 Worldwide. Innovative. Smart. Easy-to-Use. The four words we test every product, process and partnership against.
               </p>
             </li>
@@ -226,12 +227,12 @@ const desc =
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16">
           <aside class="lg:col-span-4">
             <div class="lg:sticky lg:top-32">
-              <p data-reveal class="text-[11px] uppercase tracking-[0.4em] text-brand-500 mb-6 md:mb-8">Why we exist</p>
-              <h2 data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[1.02] tracking-tight text-ink" style="font-size: clamp(2rem, 4.5vw, 3.5rem);">
+              <p data-reveal class="text-[11px] uppercase tracking-[0.4em] text-brand-500 mb-6 md:mb-8" data-i18n={i18nAttr('Why we exist')}>Why we exist</p>
+              <h2 data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[1.02] tracking-tight text-ink" style="font-size: clamp(2rem, 4.5vw, 3.5rem);" data-i18n={i18nAttr('Customer-first, by design.')}>
                 Customer-first, by design.
               </h2>
               <div aria-hidden="true" class="mt-8 h-px w-12 bg-brand-500"></div>
-              <p data-reveal data-reveal-delay="240" class="mt-6 max-w-xs text-sm text-ink/60 leading-relaxed">
+              <p data-reveal data-reveal-delay="240" class="mt-6 max-w-xs text-sm text-ink/60 leading-relaxed" data-i18n={i18nAttr('Three sentences that set the operating philosophy for the entire company.')}>
                 Three sentences that set the operating philosophy for the entire company.
               </p>
             </div>
@@ -245,6 +246,7 @@ const desc =
                      first-letter:text-7xl md:first-letter:text-8xl
                      first-letter:float-left first-letter:mr-3 first-letter:mt-1
                      first-letter:leading-[0.85] first-letter:text-brand-500"
+              data-i18n={i18nAttr(introP.text)}
             >
               {introP.text}
             </p>
@@ -267,7 +269,7 @@ const desc =
       <div aria-hidden="true" class="absolute inset-0 bg-brand-500/35 mix-blend-multiply"></div>
       <Container size="lg" class="relative py-24 md:py-36 w-full">
         <div class="max-w-4xl mx-auto text-center">
-          <p data-reveal class="text-[11px] md:text-xs uppercase tracking-[0.4em] text-surface/75 mb-10">Chapter One · Our Vision</p>
+          <p data-reveal class="text-[11px] md:text-xs uppercase tracking-[0.4em] text-surface/75 mb-10" data-i18n={i18nAttr('Chapter One · Our Vision')}>Chapter One · Our Vision</p>
           <blockquote data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[1.02] tracking-tight" style="font-size: clamp(2.5rem, 7vw, 6rem);">
             <span aria-hidden="true" class="text-surface/55">&ldquo;</span>{visionP.text.replace(/\.$/, '')}<span aria-hidden="true" class="text-surface/55">.&rdquo;</span>
           </blockquote>
@@ -283,11 +285,11 @@ const desc =
   <section class="bg-surface border-b border-ink/10">
     <Container size="xl" class="py-20 md:py-28">
       <header class="max-w-3xl mb-12 md:mb-16">
-        <p data-reveal class="text-[11px] uppercase tracking-[0.4em] text-brand-500 mb-6 md:mb-8">The W·I·S·E framework</p>
-        <h2 data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[1.02] tracking-tight text-ink" style="font-size: clamp(2rem, 5vw, 4rem);">
+        <p data-reveal class="text-[11px] uppercase tracking-[0.4em] text-brand-500 mb-6 md:mb-8" data-i18n={i18nAttr('The W·I·S·E framework')}>The W·I·S·E framework</p>
+        <h2 data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[1.02] tracking-tight text-ink" style="font-size: clamp(2rem, 5vw, 4rem);" data-i18n={i18nAttr('Four letters, one operating philosophy.')}>
           Four letters, one operating philosophy.
         </h2>
-        <p data-reveal data-reveal-delay="240" class="mt-6 md:mt-8 text-base md:text-lg text-ink/70 leading-relaxed">
+        <p data-reveal data-reveal-delay="240" class="mt-6 md:mt-8 text-base md:text-lg text-ink/70 leading-relaxed" data-i18n={i18nAttr('Every product, every process, every partnership is tested against four words. They appear together as W·I·S·E — and they precede the Vision, the Mission, and every Value below.')}>
           Every product, every process, every partnership is tested against four words. They appear together as W·I·S·E — and they precede the Vision, the Mission, and every Value below.
         </p>
       </header>
@@ -304,9 +306,9 @@ const desc =
             </span>
             <div>
               <p class="text-[10px] uppercase tracking-[0.3em] text-ink/55">Letter {String(i + 1).padStart(2, '0')}</p>
-              <h3 class="mt-2 font-display font-heavy text-xl md:text-2xl text-ink leading-tight">{w.word}</h3>
+              <h3 class="mt-2 font-display font-heavy text-xl md:text-2xl text-ink leading-tight" data-i18n={i18nAttr(w.word)}>{w.word}</h3>
               <div aria-hidden="true" class="mt-4 h-px w-10 bg-brand-500"></div>
-              <p class="mt-4 text-sm md:text-base text-ink/75 leading-[1.6]">{w.meaning}</p>
+              <p class="mt-4 text-sm md:text-base text-ink/75 leading-[1.6]" data-i18n={i18nAttr(w.meaning)}>{w.meaning}</p>
             </div>
           </article>
         ))}
@@ -319,11 +321,11 @@ const desc =
     <Section bg="alt" spacing="lg">
       <Container size="xl">
         <header class="max-w-3xl mb-12 md:mb-16">
-          <p data-reveal class="text-[11px] uppercase tracking-[0.4em] text-brand-500 mb-6 md:mb-8">Chapter Two · Our Mission</p>
-          <h2 data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[1.02] tracking-tight text-ink" style="font-size: clamp(2.25rem, 5.5vw, 4.5rem);">
+          <p data-reveal class="text-[11px] uppercase tracking-[0.4em] text-brand-500 mb-6 md:mb-8" data-i18n={i18nAttr('Chapter Two · Our Mission')}>Chapter Two · Our Mission</p>
+          <h2 data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[1.02] tracking-tight text-ink" style="font-size: clamp(2.25rem, 5.5vw, 4.5rem);" data-i18n={i18nAttr('Five commitments. One workshop.')}>
             Five commitments. One workshop.
           </h2>
-          <p data-reveal data-reveal-delay="240" class="mt-6 md:mt-8 text-base md:text-lg text-ink/70 leading-relaxed">
+          <p data-reveal data-reveal-delay="240" class="mt-6 md:mt-8 text-base md:text-lg text-ink/70 leading-relaxed" data-i18n={i18nAttr('Five commitments translate the Vision into day-to-day priorities — for our customers, our people, our growth, and the planet.')}>
             Five commitments translate the Vision into day-to-day priorities — for our customers, our people, our growth, and the planet.
           </p>
         </header>
@@ -341,10 +343,10 @@ const desc =
             />
             <div aria-hidden="true" class="absolute inset-0 bg-gradient-to-t from-ink/70 via-ink/15 to-transparent"></div>
             <figcaption class="absolute bottom-6 md:bottom-8 left-6 md:left-8 right-6 md:right-8 text-surface">
-              <p class="text-[10px] uppercase tracking-[0.3em] text-surface/80">Mission anchor</p>
-              <p class="mt-2 font-display font-heavy text-xl md:text-2xl leading-tight">Streaming water, streaming life</p>
+              <p class="text-[10px] uppercase tracking-[0.3em] text-surface/80" data-i18n={i18nAttr('Mission anchor')}>Mission anchor</p>
+              <p class="mt-2 font-display font-heavy text-xl md:text-2xl leading-tight" data-i18n={i18nAttr('Streaming water, streaming life')}>Streaming water, streaming life</p>
               <div aria-hidden="true" class="mt-4 h-px w-12 bg-surface/50"></div>
-              <p class="mt-3 text-xs md:text-sm text-surface/80 leading-relaxed max-w-xs">
+              <p class="mt-3 text-xs md:text-sm text-surface/80 leading-relaxed max-w-xs" data-i18n={i18nAttr('Five pillars that turn the brand promise into practice.')}>
                 Five pillars that turn the brand promise into practice.
               </p>
             </figcaption>
@@ -366,9 +368,9 @@ const desc =
                       </span>
                       <div class="flex-1 min-w-0">
                         <p class="text-[10px] md:text-[11px] uppercase tracking-[0.25em] text-ink/55">Pillar {num}</p>
-                        <h3 class="mt-2 font-display font-heavy text-xl md:text-2xl text-ink leading-tight">{m.title}</h3>
+                        <h3 class="mt-2 font-display font-heavy text-xl md:text-2xl text-ink leading-tight" data-i18n={i18nAttr(m.title)}>{m.title}</h3>
                         <div aria-hidden="true" class="mt-4 h-px w-10 bg-brand-500 transition-[width] duration-500 ease-out group-hover:w-20"></div>
-                        <p class="mt-4 md:mt-5 text-base text-ink/80 leading-[1.7]">{m.body}</p>
+                        <p class="mt-4 md:mt-5 text-base text-ink/80 leading-[1.7]" data-i18n={i18nAttr(m.body)}>{m.body}</p>
                       </div>
                     </div>
                   </article>
@@ -386,11 +388,11 @@ const desc =
     <section class="bg-surface relative overflow-hidden">
       <Container size="xl" class="relative py-24 md:py-36">
         <div class="max-w-3xl mb-16 md:mb-20">
-          <p data-reveal class="text-[11px] uppercase tracking-[0.3em] text-brand-500 mb-6">Chapter Three · Our Values</p>
-          <h2 data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[0.95] tracking-tight text-ink" style="font-size: clamp(2.25rem, 5.5vw, 4.5rem);">
+          <p data-reveal class="text-[11px] uppercase tracking-[0.3em] text-brand-500 mb-6" data-i18n={i18nAttr('Chapter Three · Our Values')}>Chapter Three · Our Values</p>
+          <h2 data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[0.95] tracking-tight text-ink" style="font-size: clamp(2.25rem, 5.5vw, 4.5rem);" data-i18n={i18nAttr('Six principles, not posters.')}>
             Six principles, not posters.
           </h2>
-          <p data-reveal data-reveal-delay="240" class="mt-6 md:mt-8 text-base md:text-lg text-ink/75 leading-relaxed">
+          <p data-reveal data-reveal-delay="240" class="mt-6 md:mt-8 text-base md:text-lg text-ink/75 leading-relaxed" data-i18n={i18nAttr('Six principles that guide how we work — with each other, with our customers and with the environment we operate in.')}>
             Six principles that guide how we work — with each other, with our customers and with the environment we operate in.
           </p>
         </div>
@@ -410,9 +412,9 @@ const desc =
                     {num}
                   </span>
                   <p class="relative text-[10px] uppercase tracking-[0.3em] text-brand-500">Value {num}</p>
-                  <h3 class="relative mt-6 font-display font-heavy text-xl md:text-2xl text-ink leading-tight">{v.label}</h3>
+                  <h3 class="relative mt-6 font-display font-heavy text-xl md:text-2xl text-ink leading-tight" data-i18n={i18nAttr(v.label)}>{v.label}</h3>
                   <div aria-hidden="true" class="relative mt-4 h-px w-10 bg-brand-500 transition-[width] duration-500 ease-out group-hover:w-20"></div>
-                  <p class="relative mt-5 text-sm md:text-base text-ink/75 leading-[1.65] flex-1">{meaning}</p>
+                  <p class="relative mt-5 text-sm md:text-base text-ink/75 leading-[1.65] flex-1" data-i18n={i18nAttr(meaning)}>{meaning}</p>
                 </article>
               </li>
             );
@@ -428,7 +430,7 @@ const desc =
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-12 items-center">
         {/* Left — message + link to the contact network */}
         <div class="max-w-xl lg:sticky lg:top-32">
-          <p data-reveal class="text-base md:text-lg text-ink/80 leading-relaxed">
+          <p data-reveal class="text-base md:text-lg text-ink/80 leading-relaxed" data-i18n={i18nAttr('Our Vision, Mission and Values are not posters on a wall — they shape every decision we make, from product design to customer service. Talk to us about how we put them into practice.')}>
             Our Vision, Mission and Values are not posters on a wall — they shape every decision we make, from product design to customer service. Talk to us about how we put them into practice.
           </p>
           <a
@@ -437,7 +439,7 @@ const desc =
             href="/contact/local/"
             class="group cursor-pointer mt-8 md:mt-10 inline-flex items-center gap-3 px-6 py-3 border border-ink/40 hover:bg-ink hover:border-ink hover:text-surface text-ink text-[11px] md:text-xs uppercase tracking-[0.25em] transition-colors duration-200"
           >
-            <span>Contact our network</span>
+            <span data-i18n={i18nAttr('Contact our network')}>Contact our network</span>
             <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <path d="M5 12h14" />
               <path d="m12 5 7 7-7 7" />

@@ -18,6 +18,7 @@ import Section from '../../../components/Section.astro';
 import AboutSubNav from '../../../components/about/AboutSubNav.astro';
 import { aboutUsHistory } from '../../../data/site-content';
 import { getTimelineImage } from '../../../data/history-timeline-images';
+import { i18nAttr } from '../../../lib/i18n';
 
 const blocks = aboutUsHistory.blocks;
 const paragraphs = blocks.filter((b): b is Extract<typeof b, { kind: 'paragraph' }> => b.kind === 'paragraph');
@@ -94,15 +95,15 @@ const desc =
       <p data-reveal class="text-[11px] md:text-xs uppercase tracking-[0.4em] text-surface/85 mb-8">
         {aboutUsHistory.eyebrow} · Heritage · Since 1979
       </p>
-      <h1 data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[0.92] tracking-tight text-surface" style="font-size: clamp(3rem, 9vw, 8rem); max-width: 14ch;">
+      <h1 data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[0.92] tracking-tight text-surface" style="font-size: clamp(3rem, 9vw, 8rem); max-width: 14ch;" data-i18n={i18nAttr('Built one decade at a time.')}>
         Built one decade at a time.
       </h1>
-      <p data-reveal data-reveal-delay="240" class="mt-8 max-w-2xl text-base md:text-lg text-surface/85 leading-relaxed">
+      <p data-reveal data-reveal-delay="240" class="mt-8 max-w-2xl text-base md:text-lg text-surface/85 leading-relaxed" data-i18n={i18nAttr('From a Cypriot greenhouse in the 1970s to a piping and irrigation manufacturer shipping to 65 destinations — the story of Elysée Irrigation, founded 16 April 1979.')}>
         From a Cypriot greenhouse in the 1970s to a piping and irrigation manufacturer shipping to 65 destinations — the story of Elysée Irrigation, founded 16 April 1979.
       </p>
       <div data-reveal data-reveal-delay="360" class="mt-14 md:mt-20 flex items-center gap-4 text-[11px] uppercase tracking-[0.3em] text-surface/70">
         <span aria-hidden="true" class="h-px w-12 bg-surface/50"></span>
-        <span>{aboutUsHistory.title}</span>
+        <span data-i18n={i18nAttr(aboutUsHistory.title)}>{aboutUsHistory.title}</span>
       </div>
     </Container>
   </section>
@@ -113,12 +114,12 @@ const desc =
   {stats && (
     <section class="bg-surface border-b border-ink/10">
       <Container size="xl" class="py-16 md:py-24">
-        <p data-reveal class="text-[11px] md:text-xs uppercase tracking-[0.3em] text-brand-500 mb-10 md:mb-14">By the numbers</p>
+        <p data-reveal class="text-[11px] md:text-xs uppercase tracking-[0.3em] text-brand-500 mb-10 md:mb-14" data-i18n={i18nAttr('By the numbers')}>By the numbers</p>
         <dl class="grid grid-cols-2 md:grid-cols-4 gap-px bg-ink/10 border border-ink/10">
           {stats.items.map((s) => (
             <div class="bg-surface p-8 md:p-10">
               <dd data-counter={s.value} class="font-display font-heavy leading-none tracking-tight text-brand-500" style="font-size: clamp(2.5rem, 6vw, 5rem);">{s.value}</dd>
-              <dt class="mt-4 md:mt-5 text-[10px] md:text-xs uppercase tracking-[0.25em] text-ink/60">{s.label}</dt>
+              <dt class="mt-4 md:mt-5 text-[10px] md:text-xs uppercase tracking-[0.25em] text-ink/60" data-i18n={i18nAttr(s.label)}>{s.label}</dt>
             </div>
           ))}
         </dl>
@@ -133,12 +134,12 @@ const desc =
 
         {/* 1. LEAD MOMENT — eyebrow + display pull-quote + italic tail */}
         <header class="max-w-5xl mb-14 md:mb-20">
-          <p data-reveal class="text-[11px] uppercase tracking-[0.4em] text-brand-500 mb-6 md:mb-8">Origins · 1979</p>
-          <h2 data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[1.02] tracking-tight text-ink" style="font-size: clamp(2rem, 5vw, 4.5rem);">
+          <p data-reveal class="text-[11px] uppercase tracking-[0.4em] text-brand-500 mb-6 md:mb-8" data-i18n={i18nAttr('Origins · 1979')}>Origins · 1979</p>
+          <h2 data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[1.02] tracking-tight text-ink" style="font-size: clamp(2rem, 5vw, 4.5rem);" data-i18n={i18nAttr(originsHeadline)}>
             {originsHeadline}
           </h2>
           {originsTail && (
-            <p data-reveal data-reveal-delay="240" class="mt-6 md:mt-8 max-w-2xl text-base md:text-lg text-ink/65 italic">
+            <p data-reveal data-reveal-delay="240" class="mt-6 md:mt-8 max-w-2xl text-base md:text-lg text-ink/65 italic" data-i18n={i18nAttr(originsTail)}>
               {originsTail}
             </p>
           )}
@@ -148,15 +149,15 @@ const desc =
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-start">
           <div class="lg:col-span-5 order-2 lg:order-1 space-y-6 md:space-y-7">
             {originsBody && (
-              <p data-reveal class="text-base md:text-lg text-ink/85 leading-[1.75] first-letter:font-heavy first-letter:float-left first-letter:mr-3 first-letter:mt-2 first-letter:text-6xl md:first-letter:text-7xl first-letter:leading-[0.85] first-letter:text-brand-500">
+              <p data-reveal class="text-base md:text-lg text-ink/85 leading-[1.75] first-letter:font-heavy first-letter:float-left first-letter:mr-3 first-letter:mt-2 first-letter:text-6xl md:first-letter:text-7xl first-letter:leading-[0.85] first-letter:text-brand-500" data-i18n={i18nAttr(originsBody)}>
                 {originsBody}
               </p>
             )}
             {intro2 && (
-              <p data-reveal data-reveal-delay="80" class="text-base md:text-lg text-ink/80 leading-[1.75]">{intro2.text}</p>
+              <p data-reveal data-reveal-delay="80" class="text-base md:text-lg text-ink/80 leading-[1.75]" data-i18n={i18nAttr(intro2.text)}>{intro2.text}</p>
             )}
             {intro3 && (
-              <p data-reveal data-reveal-delay="160" class="text-base md:text-lg text-ink/80 leading-[1.75]">{intro3.text}</p>
+              <p data-reveal data-reveal-delay="160" class="text-base md:text-lg text-ink/80 leading-[1.75]" data-i18n={i18nAttr(intro3.text)}>{intro3.text}</p>
             )}
           </div>
 
@@ -168,8 +169,8 @@ const desc =
             />
             <div aria-hidden="true" class="absolute inset-0 bg-gradient-to-t from-ink/55 via-ink/10 to-transparent"></div>
             <figcaption class="absolute bottom-6 md:bottom-8 left-6 md:left-8 right-6 md:right-8 text-surface">
-              <p class="text-[10px] uppercase tracking-[0.3em] text-surface/80">From the workshop</p>
-              <p class="mt-2 font-display font-heavy text-lg md:text-2xl leading-tight">Drippers, sprinklers, fittings</p>
+              <p class="text-[10px] uppercase tracking-[0.3em] text-surface/80" data-i18n={i18nAttr('From the workshop')}>From the workshop</p>
+              <p class="mt-2 font-display font-heavy text-lg md:text-2xl leading-tight" data-i18n={i18nAttr('Drippers, sprinklers, fittings')}>Drippers, sprinklers, fittings</p>
             </figcaption>
           </figure>
         </div>
@@ -177,19 +178,19 @@ const desc =
         {/* 3. FOUNDING FACTS RIBBON — bigger, scannable, primary + secondary text per tile */}
         <dl data-reveal class="mt-16 md:mt-24 grid grid-cols-1 sm:grid-cols-3 gap-px bg-ink/15 border border-ink/15">
           <div class="bg-surface p-6 md:p-8">
-            <dt class="text-[10px] uppercase tracking-[0.3em] text-ink/55">Founded</dt>
+            <dt class="text-[10px] uppercase tracking-[0.3em] text-ink/55" data-i18n={i18nAttr('Founded')}>Founded</dt>
             <dd class="mt-3 font-display font-heavy text-2xl md:text-3xl text-ink leading-tight">16 April 1979</dd>
-            <p class="mt-2 text-xs text-ink/60">Nicosia, Cyprus</p>
+            <p class="mt-2 text-xs text-ink/60" data-i18n={i18nAttr('Nicosia, Cyprus')}>Nicosia, Cyprus</p>
           </div>
           <div class="bg-surface p-6 md:p-8">
-            <dt class="text-[10px] uppercase tracking-[0.3em] text-ink/55">Founder</dt>
+            <dt class="text-[10px] uppercase tracking-[0.3em] text-ink/55" data-i18n={i18nAttr('Founder')}>Founder</dt>
             <dd class="mt-3 font-display font-heavy text-2xl md:text-3xl text-ink leading-tight">Antonis Protopapas</dd>
-            <p class="mt-2 text-xs text-ink/60">Agriculture &amp; physics</p>
+            <p class="mt-2 text-xs text-ink/60" data-i18n={i18nAttr('Agriculture & physics')}>Agriculture &amp; physics</p>
           </div>
           <div class="bg-surface p-6 md:p-8">
-            <dt class="text-[10px] uppercase tracking-[0.3em] text-ink/55">Original venture</dt>
-            <dd class="mt-3 font-display font-heavy text-2xl md:text-3xl text-ink leading-tight">Flowers</dd>
-            <p class="mt-2 text-xs text-ink/60">for the Middle East</p>
+            <dt class="text-[10px] uppercase tracking-[0.3em] text-ink/55" data-i18n={i18nAttr('Original venture')}>Original venture</dt>
+            <dd class="mt-3 font-display font-heavy text-2xl md:text-3xl text-ink leading-tight" data-i18n={i18nAttr('Flowers')}>Flowers</dd>
+            <p class="mt-2 text-xs text-ink/60" data-i18n={i18nAttr('for the Middle East')}>for the Middle East</p>
           </div>
         </dl>
 
@@ -203,8 +204,8 @@ const desc =
       <div aria-hidden="true" class="absolute inset-0 opacity-[0.05]" style="background-image: radial-gradient(circle at center, #000 1px, transparent 1px); background-size: 28px 28px;"></div>
       <Container size="lg" class="relative py-24 md:py-36">
         <div class="max-w-3xl mb-16 md:mb-24">
-          <p data-reveal class="text-[11px] uppercase tracking-[0.3em] text-brand-500 mb-6">A timeline of forty-seven years</p>
-          <h2 data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[0.95] tracking-tight text-ink" style="font-size: clamp(2.25rem, 5.5vw, 4.5rem);">
+          <p data-reveal class="text-[11px] uppercase tracking-[0.3em] text-brand-500 mb-6" data-i18n={i18nAttr('A timeline of forty-seven years')}>A timeline of forty-seven years</p>
+          <h2 data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[0.95] tracking-tight text-ink" style="font-size: clamp(2.25rem, 5.5vw, 4.5rem);" data-i18n={i18nAttr('Milestones, by the decade.')}>
             Milestones, by the decade.
           </h2>
         </div>
@@ -221,6 +222,7 @@ const desc =
                     data-reveal-delay="80"
                     class={`decade-mark font-display font-heavy leading-none tracking-tight ${d.label === 'Today' ? 'is-today' : ''}`}
                     style="font-size: clamp(2.5rem, 4.5vw, 4rem);"
+                    data-i18n={i18nAttr(d.label)}
                   >
                     {d.label}
                   </h3>
@@ -243,15 +245,15 @@ const desc =
                       class="group cursor-default"
                     >
                       <div class="flex items-baseline gap-4 mb-3">
-                        <span class="font-display font-heavy text-2xl md:text-3xl text-brand-500 tracking-tight">
+                        <span class="font-display font-heavy text-2xl md:text-3xl text-brand-500 tracking-tight" data-i18n={i18nAttr(item.year)}>
                           {item.year}
                         </span>
                         <span aria-hidden="true" class="flex-1 h-px bg-ink/15"></span>
                       </div>
                       {item.title && (
-                        <h4 class="font-display font-heavy text-lg md:text-xl text-ink mb-2 max-w-2xl">{item.title}</h4>
+                        <h4 class="font-display font-heavy text-lg md:text-xl text-ink mb-2 max-w-2xl" data-i18n={i18nAttr(item.title)}>{item.title}</h4>
                       )}
-                      <p class="text-base md:text-lg text-ink/80 leading-[1.7] max-w-2xl">{item.body}</p>
+                      <p class="text-base md:text-lg text-ink/80 leading-[1.7] max-w-2xl" data-i18n={i18nAttr(item.body)}>{item.body}</p>
                     </li>
                   );
                 })}
@@ -295,11 +297,11 @@ const desc =
       <div aria-hidden="true" class="absolute inset-0 bg-brand-500/30 mix-blend-multiply"></div>
       <Container size="lg" class="relative py-24 md:py-36 w-full">
         <div class="max-w-4xl mx-auto text-center">
-          <p data-reveal class="text-[11px] md:text-xs uppercase tracking-[0.4em] text-surface/70 mb-10">Our founding conviction</p>
+          <p data-reveal class="text-[11px] md:text-xs uppercase tracking-[0.4em] text-surface/70 mb-10" data-i18n={i18nAttr('Our founding conviction')}>Our founding conviction</p>
           <blockquote data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[1.02] tracking-tight" style="font-size: clamp(2.5rem, 7vw, 6rem);">
             <span aria-hidden="true" class="text-surface/60">&ldquo;</span>{callout.title}<span aria-hidden="true" class="text-surface/60">&rdquo;</span>
           </blockquote>
-          <p data-reveal data-reveal-delay="240" class="mt-10 md:mt-14 mx-auto max-w-2xl text-base md:text-lg text-surface/85 leading-relaxed">{callout.body}</p>
+          <p data-reveal data-reveal-delay="240" class="mt-10 md:mt-14 mx-auto max-w-2xl text-base md:text-lg text-surface/85 leading-relaxed" data-i18n={i18nAttr(callout.body)}>{callout.body}</p>
         </div>
       </Container>
     </section>
@@ -309,8 +311,8 @@ const desc =
   <Section bg="alt" spacing="lg">
     <Container size="lg">
       <div class="max-w-4xl mb-12 md:mb-16">
-        <p data-reveal class="text-[11px] uppercase tracking-[0.3em] text-brand-500 mb-6">Today</p>
-        <h2 data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[1.05] tracking-tight text-ink" style="font-size: clamp(1.75rem, 4vw, 3.25rem);">
+        <p data-reveal class="text-[11px] uppercase tracking-[0.3em] text-brand-500 mb-6" data-i18n={i18nAttr('Today')}>Today</p>
+        <h2 data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[1.05] tracking-tight text-ink" style="font-size: clamp(1.75rem, 4vw, 3.25rem);" data-i18n={i18nAttr('65 markets. Four sectors. Three distribution hubs.')}>
           65 markets. Four sectors. Three distribution hubs.
         </h2>
       </div>
@@ -318,12 +320,12 @@ const desc =
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-px bg-ink/15 border border-ink/15">
         {/* Sectors */}
         <div class="bg-surface p-8 md:p-10">
-          <p data-reveal class="text-[10px] uppercase tracking-[0.3em] text-ink/55 mb-6">Sectors served</p>
+          <p data-reveal class="text-[10px] uppercase tracking-[0.3em] text-ink/55 mb-6" data-i18n={i18nAttr('Sectors served')}>Sectors served</p>
           <ul class="space-y-3">
             {sectors.map((s, i) => (
               <li data-reveal data-reveal-delay={String(i * 60)} class="flex items-baseline gap-4">
                 <span class="font-display font-heavy text-[11px] uppercase tracking-[0.25em] text-brand-500">{String(i + 1).padStart(2, '0')}</span>
-                <span class="font-display font-heavy text-lg md:text-xl text-ink">{s}</span>
+                <span class="font-display font-heavy text-lg md:text-xl text-ink" data-i18n={i18nAttr(s)}>{s}</span>
               </li>
             ))}
           </ul>
@@ -331,16 +333,16 @@ const desc =
 
         {/* Distribution centres */}
         <div class="bg-surface p-8 md:p-10">
-          <p data-reveal class="text-[10px] uppercase tracking-[0.3em] text-ink/55 mb-6">Distribution centres</p>
+          <p data-reveal class="text-[10px] uppercase tracking-[0.3em] text-ink/55 mb-6" data-i18n={i18nAttr('Distribution centres')}>Distribution centres</p>
           <ul class="space-y-3">
             {distributionCentres.map((c, i) => (
               <li data-reveal data-reveal-delay={String(i * 60)} class="flex items-baseline gap-4">
                 <span class="font-display font-heavy text-[11px] uppercase tracking-[0.25em] text-brand-500">{String(i + 1).padStart(2, '0')}</span>
-                <span class="font-display font-heavy text-lg md:text-xl text-ink">{c}</span>
+                <span class="font-display font-heavy text-lg md:text-xl text-ink" data-i18n={i18nAttr(c)}>{c}</span>
               </li>
             ))}
           </ul>
-          <p data-reveal class="mt-8 text-sm text-ink/60 leading-relaxed border-t border-ink/15 pt-5">
+          <p data-reveal class="mt-8 text-sm text-ink/60 leading-relaxed border-t border-ink/15 pt-5" data-i18n={i18nAttr('Plus a network of local agents and sales representatives across all 65 markets.')}>
             Plus a network of local agents and sales representatives across all 65 markets.
           </p>
         </div>
@@ -353,12 +355,12 @@ const desc =
     <Section bg="default" spacing="lg">
       <Container size="lg">
         <header class="max-w-3xl mb-14 md:mb-20">
-          <p data-reveal class="text-[11px] uppercase tracking-[0.3em] text-brand-500 mb-6">Where it started</p>
-          <h2 data-reveal data-reveal-delay="120" class="font-display font-heavy leading-tight tracking-tight text-ink" style="font-size: clamp(2rem, 5vw, 4rem);">
+          <p data-reveal class="text-[11px] uppercase tracking-[0.3em] text-brand-500 mb-6" data-i18n={i18nAttr('Where it started')}>Where it started</p>
+          <h2 data-reveal data-reveal-delay="120" class="font-display font-heavy leading-tight tracking-tight text-ink" style="font-size: clamp(2rem, 5vw, 4rem);" data-i18n={i18nAttr('The original line.')}>
             The original line.
           </h2>
           {productsLeadP && (
-            <p data-reveal data-reveal-delay="240" class="mt-6 text-base md:text-lg text-ink/75 leading-relaxed">{productsLeadP.text}</p>
+            <p data-reveal data-reveal-delay="240" class="mt-6 text-base md:text-lg text-ink/75 leading-relaxed" data-i18n={i18nAttr(productsLeadP.text)}>{productsLeadP.text}</p>
           )}
         </header>
         <ul class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2 md:gap-3">
@@ -374,7 +376,7 @@ const desc =
                   <span class="font-display font-heavy text-[10px] uppercase tracking-[0.3em] text-brand-500 group-hover:text-surface/80 transition-colors duration-300">
                     {String(i + 1).padStart(2, '0')}
                   </span>
-                  <span class="font-display font-heavy leading-tight tracking-tight text-sm md:text-base">{p}</span>
+                  <span class="font-display font-heavy leading-tight tracking-tight text-sm md:text-base" data-i18n={i18nAttr(p)}>{p}</span>
                 </a>
               </li>
             );
@@ -389,14 +391,14 @@ const desc =
     <section class="bg-brand-500/10">
       <Container size="lg" class="py-16 md:py-20">
         <div class="mx-auto max-w-2xl text-center">
-          <p data-reveal class="text-base md:text-lg text-ink/80 leading-relaxed">{closingP.text}</p>
+          <p data-reveal class="text-base md:text-lg text-ink/80 leading-relaxed" data-i18n={i18nAttr(closingP.text)}>{closingP.text}</p>
           <a
             data-reveal
             data-reveal-delay="160"
             href="/contact/local/"
             class="group cursor-pointer mt-8 md:mt-10 inline-flex items-center gap-3 px-6 py-3 border border-ink/40 hover:bg-ink hover:border-ink hover:text-surface text-ink text-[11px] md:text-xs uppercase tracking-[0.25em] transition-colors duration-200"
           >
-            <span>Contact our network</span>
+            <span data-i18n={i18nAttr('Contact our network')}>Contact our network</span>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               class="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1"

@@ -4,6 +4,7 @@ import Container from '../../../components/Container.astro';
 import Section from '../../../components/Section.astro';
 import AboutSubNav from '../../../components/about/AboutSubNav.astro';
 import { aboutUsCompanyStructure } from '../../../data/site-content';
+import { i18nAttr } from '../../../lib/i18n';
 
 const blocks = aboutUsCompanyStructure.blocks;
 const paragraphs = blocks.filter((b): b is Extract<typeof b, { kind: 'paragraph' }> => b.kind === 'paragraph');
@@ -89,14 +90,14 @@ const desc =
         {aboutUsCompanyStructure.eyebrow} · Operations · Built for Quality
       </p>
       <h1 data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[0.92] tracking-tight text-surface" style="font-size: clamp(3rem, 9vw, 8rem); max-width: 14ch;">
-        An efficient team.<br/>A clear structure.
+        <span data-i18n={i18nAttr('An efficient team.')}>An efficient team.</span><br/><span data-i18n={i18nAttr('A clear structure.')}>A clear structure.</span>
       </h1>
-      <p data-reveal data-reveal-delay="240" class="mt-8 max-w-2xl text-base md:text-lg text-surface/85 leading-relaxed">
+      <p data-reveal data-reveal-delay="240" class="mt-8 max-w-2xl text-base md:text-lg text-surface/85 leading-relaxed" data-i18n={i18nAttr('Three divisions, one workshop in Cyprus — engineered around quick response, certified quality, and a growing product range.')}>
         Three divisions, one workshop in Cyprus — engineered around quick response, certified quality, and a growing product range.
       </p>
       <div data-reveal data-reveal-delay="360" class="mt-14 md:mt-20 flex items-center gap-4 text-[11px] uppercase tracking-[0.3em] text-surface/70">
         <span aria-hidden="true" class="h-px w-12 bg-surface/50"></span>
-        <span>{aboutUsCompanyStructure.title}</span>
+        <span data-i18n={i18nAttr(aboutUsCompanyStructure.title)}>{aboutUsCompanyStructure.title}</span>
       </div>
     </Container>
   </section>
@@ -106,23 +107,23 @@ const desc =
   {/* ===== STAT BAND — animated counters ===== */}
   <section class="bg-surface border-b border-ink/10">
     <Container size="xl" class="py-16 md:py-24">
-      <p data-reveal class="text-[11px] md:text-xs uppercase tracking-[0.3em] text-brand-500 mb-10 md:mb-14">By the numbers</p>
+      <p data-reveal class="text-[11px] md:text-xs uppercase tracking-[0.3em] text-brand-500 mb-10 md:mb-14" data-i18n={i18nAttr('By the numbers')}>By the numbers</p>
       <dl class="grid grid-cols-2 md:grid-cols-4 gap-px bg-ink/10 border border-ink/10">
         <div class="bg-surface p-8 md:p-10">
           <dd data-counter="3" class="font-display font-heavy leading-none tracking-tight text-brand-500" style="font-size: clamp(2.5rem, 6vw, 5rem);">3</dd>
-          <dt class="mt-4 md:mt-5 text-[10px] md:text-xs uppercase tracking-[0.25em] text-ink/60">Production divisions</dt>
+          <dt class="mt-4 md:mt-5 text-[10px] md:text-xs uppercase tracking-[0.25em] text-ink/60" data-i18n={i18nAttr('Production divisions')}>Production divisions</dt>
         </div>
         <div class="bg-surface p-8 md:p-10">
           <dd data-counter="1000+" class="font-display font-heavy leading-none tracking-tight text-brand-500" style="font-size: clamp(2.5rem, 6vw, 5rem);">1000+</dd>
-          <dt class="mt-4 md:mt-5 text-[10px] md:text-xs uppercase tracking-[0.25em] text-ink/60">Fittings catalogued</dt>
+          <dt class="mt-4 md:mt-5 text-[10px] md:text-xs uppercase tracking-[0.25em] text-ink/60" data-i18n={i18nAttr('Fittings catalogued')}>Fittings catalogued</dt>
         </div>
         <div class="bg-surface p-8 md:p-10">
           <dd class="font-display font-heavy leading-none tracking-tight text-brand-500 whitespace-nowrap" style="font-size: clamp(2.5rem, 6vw, 5rem);">5–315</dd>
-          <dt class="mt-4 md:mt-5 text-[10px] md:text-xs uppercase tracking-[0.25em] text-ink/60">Pipe diameter range (mm)</dt>
+          <dt class="mt-4 md:mt-5 text-[10px] md:text-xs uppercase tracking-[0.25em] text-ink/60" data-i18n={i18nAttr('Pipe diameter range (mm)')}>Pipe diameter range (mm)</dt>
         </div>
         <div class="bg-surface p-8 md:p-10">
           <dd data-counter="1998" class="font-display font-heavy leading-none tracking-tight text-brand-500" style="font-size: clamp(2.5rem, 6vw, 5rem);">1998</dd>
-          <dt class="mt-4 md:mt-5 text-[10px] md:text-xs uppercase tracking-[0.25em] text-ink/60">ISO 9001 since</dt>
+          <dt class="mt-4 md:mt-5 text-[10px] md:text-xs uppercase tracking-[0.25em] text-ink/60" data-i18n={i18nAttr('ISO 9001 since')}>ISO 9001 since</dt>
         </div>
       </dl>
     </Container>
@@ -134,11 +135,11 @@ const desc =
       <Container size="xl">
 
         <header class="max-w-3xl mb-12 md:mb-16">
-          <p data-reveal class="text-[11px] uppercase tracking-[0.4em] text-brand-500 mb-6 md:mb-8">An efficient team</p>
-          <h2 data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[1.02] tracking-tight text-ink" style="font-size: clamp(2.25rem, 5.5vw, 4.5rem);">
+          <p data-reveal class="text-[11px] uppercase tracking-[0.4em] text-brand-500 mb-6 md:mb-8" data-i18n={i18nAttr('An efficient team')}>An efficient team</p>
+          <h2 data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[1.02] tracking-tight text-ink" style="font-size: clamp(2.25rem, 5.5vw, 4.5rem);" data-i18n={i18nAttr("Built for the customer's call.")}>
             Built for the customer's call.
           </h2>
-          <p data-reveal data-reveal-delay="240" class="mt-6 md:mt-8 text-base md:text-lg text-ink/70 leading-relaxed">
+          <p data-reveal data-reveal-delay="240" class="mt-6 md:mt-8 text-base md:text-lg text-ink/70 leading-relaxed" data-i18n={i18nAttr('Three operating principles that keep our workshop in step with the people we ship to — from a first phone call through a custom order to a long-term partnership.')}>
             Three operating principles that keep our workshop in step with the people we ship to — from a first phone call through a custom order to a long-term partnership.
           </p>
         </header>
@@ -156,10 +157,10 @@ const desc =
             />
             <div aria-hidden="true" class="absolute inset-0 bg-gradient-to-t from-ink/65 via-ink/10 to-transparent"></div>
             <figcaption class="absolute bottom-6 md:bottom-8 left-6 md:left-8 right-6 md:right-8 text-surface">
-              <p class="text-[10px] uppercase tracking-[0.3em] text-surface/80">From the floor</p>
-              <p class="mt-2 font-display font-heavy text-xl md:text-2xl leading-tight">Engineers, consultants, makers</p>
+              <p class="text-[10px] uppercase tracking-[0.3em] text-surface/80" data-i18n={i18nAttr('From the floor')}>From the floor</p>
+              <p class="mt-2 font-display font-heavy text-xl md:text-2xl leading-tight" data-i18n={i18nAttr('Engineers, consultants, makers')}>Engineers, consultants, makers</p>
               <div aria-hidden="true" class="mt-4 h-px w-12 bg-surface/50"></div>
-              <p class="mt-3 text-xs md:text-sm text-surface/80 leading-relaxed max-w-xs">
+              <p class="mt-3 text-xs md:text-sm text-surface/80 leading-relaxed max-w-xs" data-i18n={i18nAttr('Three principles. One workshop in Ergates.')}>
                 Three principles. One workshop in Ergates.
               </p>
             </figcaption>
@@ -181,9 +182,9 @@ const desc =
                       </span>
                       <div class="flex-1 min-w-0">
                         <p class="text-[10px] md:text-[11px] uppercase tracking-[0.25em] text-ink/55">Principle {num}</p>
-                        <h3 class="mt-2 font-display font-heavy text-xl md:text-2xl text-ink leading-tight">{a.title}</h3>
+                        <h3 class="mt-2 font-display font-heavy text-xl md:text-2xl text-ink leading-tight" data-i18n={i18nAttr(a.title)}>{a.title}</h3>
                         <div aria-hidden="true" class="mt-4 h-px w-10 bg-brand-500 transition-[width] duration-500 ease-out group-hover:w-20"></div>
-                        <p class="mt-4 md:mt-5 text-base text-ink/80 leading-[1.7]">{a.body}</p>
+                        <p class="mt-4 md:mt-5 text-base text-ink/80 leading-[1.7]" data-i18n={i18nAttr(a.body)}>{a.body}</p>
                       </div>
                     </div>
                   </article>
@@ -210,11 +211,11 @@ const desc =
       <div aria-hidden="true" class="absolute inset-0 bg-brand-500/30 mix-blend-multiply"></div>
       <Container size="lg" class="relative py-24 md:py-36 w-full">
         <div class="max-w-4xl mx-auto text-center">
-          <p data-reveal class="text-[11px] md:text-xs uppercase tracking-[0.4em] text-surface/70 mb-10">Our operating principle</p>
+          <p data-reveal class="text-[11px] md:text-xs uppercase tracking-[0.4em] text-surface/70 mb-10" data-i18n={i18nAttr('Our operating principle')}>Our operating principle</p>
           <blockquote data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[1.02] tracking-tight" style="font-size: clamp(2.5rem, 7vw, 6rem);">
-            <span aria-hidden="true" class="text-surface/60">&ldquo;</span>{callout.title}<span aria-hidden="true" class="text-surface/60">&rdquo;</span>
+            <span aria-hidden="true" class="text-surface/60">&ldquo;</span><span data-i18n={callout.title ? i18nAttr(callout.title) : undefined}>{callout.title}</span><span aria-hidden="true" class="text-surface/60">&rdquo;</span>
           </blockquote>
-          <p data-reveal data-reveal-delay="240" class="mt-10 md:mt-14 mx-auto max-w-2xl text-base md:text-lg text-surface/85 leading-relaxed">{callout.body}</p>
+          <p data-reveal data-reveal-delay="240" class="mt-10 md:mt-14 mx-auto max-w-2xl text-base md:text-lg text-surface/85 leading-relaxed" data-i18n={i18nAttr(callout.body)}>{callout.body}</p>
         </div>
       </Container>
     </section>
@@ -224,12 +225,12 @@ const desc =
   <section class="bg-surface relative overflow-hidden">
     <Container size="xl" class="relative py-24 md:py-36">
       <div class="max-w-3xl mb-16 md:mb-24">
-        <p data-reveal class="text-[11px] uppercase tracking-[0.3em] text-brand-500 mb-6">Our divisions</p>
-        <h2 data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[0.95] tracking-tight text-ink" style="font-size: clamp(2.25rem, 5.5vw, 4.5rem);">
+        <p data-reveal class="text-[11px] uppercase tracking-[0.3em] text-brand-500 mb-6" data-i18n={i18nAttr('Our divisions')}>Our divisions</p>
+        <h2 data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[0.95] tracking-tight text-ink" style="font-size: clamp(2.25rem, 5.5vw, 4.5rem);" data-i18n={i18nAttr('Three teams, one workshop.')}>
           Three teams, one workshop.
         </h2>
         {divisionsLeadP && (
-          <p data-reveal data-reveal-delay="240" class="mt-6 md:mt-8 text-base md:text-lg text-ink/75 leading-relaxed">{divisionsLeadP.text}</p>
+          <p data-reveal data-reveal-delay="240" class="mt-6 md:mt-8 text-base md:text-lg text-ink/75 leading-relaxed" data-i18n={i18nAttr(divisionsLeadP.text)}>{divisionsLeadP.text}</p>
         )}
       </div>
 
@@ -278,11 +279,11 @@ const desc =
                     {num}
                   </span>
                   <p class="relative text-[11px] uppercase tracking-[0.3em] text-brand-500">Division {num}</p>
-                  <h3 class="relative mt-4 font-display font-heavy text-3xl md:text-4xl text-ink leading-[1.05] tracking-tight">{d.title}</h3>
+                  <h3 class="relative mt-4 font-display font-heavy text-3xl md:text-4xl text-ink leading-[1.05] tracking-tight" data-i18n={i18nAttr(d.title)}>{d.title}</h3>
                   <div aria-hidden="true" class="relative mt-5 h-px w-12 bg-brand-500 transition-[width] duration-500 ease-out group-hover:w-24"></div>
-                  <p class="relative mt-6 text-base md:text-lg text-ink/80 leading-[1.65]">{d.body}</p>
+                  <p class="relative mt-6 text-base md:text-lg text-ink/80 leading-[1.65]" data-i18n={i18nAttr(d.body)}>{d.body}</p>
                   <span class="relative mt-8 inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.25em] text-ink transition-colors duration-300 group-hover:text-brand-500">
-                    <span class="font-heavy">{d.label}</span>
+                    <span class="font-heavy" data-i18n={i18nAttr(d.label)}>{d.label}</span>
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                       <path d="M5 12h14" />
                       <path d="m12 5 7 7-7 7" />
@@ -301,7 +302,7 @@ const desc =
   <section class="bg-brand-500/10">
     <Container size="lg" class="py-16 md:py-20">
       <div class="mx-auto max-w-2xl text-center">
-        <p data-reveal class="text-base md:text-lg text-ink/80 leading-relaxed">
+        <p data-reveal class="text-base md:text-lg text-ink/80 leading-relaxed" data-i18n={i18nAttr('Want to discuss a specific application, a custom OEM run, or a project specification? Our engineers and technical consultants are available to advise.')}>
           Want to discuss a specific application, a custom OEM run, or a project specification? Our engineers and technical consultants are available to advise.
         </p>
         <a
@@ -310,7 +311,7 @@ const desc =
           href="/contact/local/"
           class="group cursor-pointer mt-8 md:mt-10 inline-flex items-center gap-3 px-6 py-3 border border-ink/40 hover:bg-ink hover:border-ink hover:text-surface text-ink text-[11px] md:text-xs uppercase tracking-[0.25em] transition-colors duration-200"
         >
-          <span>Contact our network</span>
+          <span data-i18n={i18nAttr('Contact our network')}>Contact our network</span>
           <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <path d="M5 12h14" />
             <path d="m12 5 7 7-7 7" />

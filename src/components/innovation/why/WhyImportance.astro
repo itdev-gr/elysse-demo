@@ -9,6 +9,7 @@
  */
 import Container from '../../Container.astro';
 import Section from '../../Section.astro';
+import { i18nAttr } from '../../../lib/i18n';
 
 export interface ImportanceItem {
   title: string;
@@ -28,8 +29,8 @@ const { eyebrow = 'Importance', heading, items } = Astro.props;
 <Section bg="default" spacing="lg">
   <Container size="xl">
     <header class="max-w-3xl mb-12 md:mb-16">
-      <p data-reveal class="text-[11px] uppercase tracking-[0.4em] text-brand-500 mb-6">{eyebrow}</p>
-      <h2 data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[1.02] tracking-tight text-ink" style="font-size: clamp(2rem, 4.5vw, 3.5rem);">
+      <p data-reveal data-i18n={i18nAttr(eyebrow)} class="text-[11px] uppercase tracking-[0.4em] text-brand-500 mb-6">{eyebrow}</p>
+      <h2 data-reveal data-reveal-delay="120" data-i18n={i18nAttr(heading)} class="font-display font-heavy leading-[1.02] tracking-tight text-ink" style="font-size: clamp(2rem, 4.5vw, 3.5rem);">
         {heading}
       </h2>
     </header>
@@ -42,20 +43,20 @@ const { eyebrow = 'Importance', heading, items } = Astro.props;
             <article class="group relative bg-surface p-8 md:p-10 min-h-[280px] h-full flex flex-col transition-[background-color] duration-300 hover:bg-surface-alt">
               <span aria-hidden="true" class="pointer-events-none absolute -top-2 right-4 font-display font-heavy text-brand-500/10 leading-none select-none transition-colors duration-500 group-hover:text-brand-500/25" style="font-size: clamp(4.5rem, 7vw, 7rem);">{num}</span>
               <p class="relative text-[10px] uppercase tracking-[0.3em] text-brand-500">Reason {num}</p>
-              <h3 class="relative mt-5 font-display font-heavy leading-tight text-xl md:text-2xl text-ink">{it.title}</h3>
+              <h3 data-i18n={i18nAttr(it.title)} class="relative mt-5 font-display font-heavy leading-tight text-xl md:text-2xl text-ink">{it.title}</h3>
               <div aria-hidden="true" class="relative mt-4 h-px w-10 bg-brand-500 transition-[width] duration-500 ease-out group-hover:w-20"></div>
               {it.bullets && (
                 <ul class="relative mt-5 space-y-2 text-sm md:text-base text-ink/75 leading-[1.55] flex-1">
                   {it.bullets.map((b) => (
                     <li class="flex gap-2">
                       <span aria-hidden="true" class="text-brand-500 mt-1">·</span>
-                      <span>{b}</span>
+                      <span data-i18n={i18nAttr(b)}>{b}</span>
                     </li>
                   ))}
                 </ul>
               )}
               {it.body && (
-                <p class="relative mt-5 text-sm md:text-base text-ink/75 leading-[1.6] flex-1">{it.body}</p>
+                <p data-i18n={i18nAttr(it.body)} class="relative mt-5 text-sm md:text-base text-ink/75 leading-[1.6] flex-1">{it.body}</p>
               )}
             </article>
           </li>

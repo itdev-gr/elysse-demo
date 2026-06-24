@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import type { MegaGroup } from '../../data/navigation';
+import { i18nAttr, i18nAttrFor } from '../../lib/i18n';
 import MegaPanel from './MegaPanel';
 
 type Props = {
@@ -155,7 +156,7 @@ export default function MegaNav({ groups }: Props) {
       }}
       onMouseEnter={cancelClose}
     >
-      <nav aria-label="Primary" className="flex items-stretch gap-1">
+      <nav aria-label="Primary" data-i18n-attr={i18nAttrFor({ 'aria-label': 'Primary' })} className="flex items-stretch gap-1">
         <a
           href="/"
           onMouseEnter={() => {
@@ -163,6 +164,7 @@ export default function MegaNav({ groups }: Props) {
             setActive(null);
           }}
           className="inline-flex items-center px-3 py-2 text-xs uppercase tracking-widest font-medium hover:text-brand-accent transition-colors duration-fast"
+          data-i18n={i18nAttr('Home')}
         >
           Home
         </a>
@@ -205,7 +207,7 @@ export default function MegaNav({ groups }: Props) {
                 }}
                 className="inline-flex items-center gap-1 px-3 py-2 text-xs uppercase tracking-widest font-medium hover:text-brand-accent transition-colors duration-fast cursor-pointer"
               >
-                <span>{group.title}</span>
+                <span data-i18n={i18nAttr(group.title)}>{group.title}</span>
                 {hasItems && (
                   <svg
                     width="10"

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { isSupabaseConfigured } from '../../lib/supabase';
 import { fetchHomeFeatured, hrefFor } from '../../lib/home-featured';
+import { i18nAttr } from '../../lib/i18n';
 
 /** Card shape shared by live data and the server-provided fallback. */
 export interface HomeNewsItem {
@@ -46,6 +47,14 @@ export default function HomeNewsCards({ fallback }: Props) {
     };
   }, []);
 
+  // Re-apply the active language once the data-driven tree has rendered.
+  useEffect(() => {
+    try {
+      const l = localStorage.getItem('elysee.lang');
+      if (l && l !== 'en') document.dispatchEvent(new CustomEvent('elysee:lang', { detail: { lang: l } }));
+    } catch {}
+  }, [items]);
+
   return (
     <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
       {items.map((a, i) => {
@@ -81,7 +90,7 @@ export default function HomeNewsCards({ fallback }: Props) {
               <h3 className="text-2xl md:text-3xl font-display leading-tight">{a.title}</h3>
               {a.href && (
                 <span className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-ink group-hover:text-brand-500 transition-colors duration-fast">
-                  Learn more
+                  <span data-i18n={i18nAttr('Learn more')}>Learn more</span>
                   <span aria-hidden="true" className="transition-transform duration-fast group-hover:translate-x-1">
                     &rarr;
                   </span>

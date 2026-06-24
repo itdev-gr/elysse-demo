@@ -3,6 +3,7 @@ import BaseLayout from '../../../layouts/BaseLayout.astro';
 import Container from '../../../components/Container.astro';
 import Section from '../../../components/Section.astro';
 import BlogList from '../../../components/blog/BlogList.tsx';
+import { i18nAttr } from '../../../lib/i18n';
 ---
 <BaseLayout
   title="Blog — Insights — Elysée"
@@ -11,13 +12,13 @@ import BlogList from '../../../components/blog/BlogList.tsx';
 >
   <section class="relative min-h-[60vh] flex items-end text-surface overflow-hidden bg-ink">
     <Container size="xl" class="relative pt-40 md:pt-48 pb-16 md:pb-24 w-full">
-      <p class="text-[11px] md:text-xs uppercase tracking-[0.4em] text-surface/85 mb-8">
+      <p data-i18n={i18nAttr('Insights · Blog')} class="text-[11px] md:text-xs uppercase tracking-[0.4em] text-surface/85 mb-8">
         Insights · Blog
       </p>
       <h1 class="font-display font-heavy leading-[0.92] tracking-tight text-surface" style="font-size: clamp(3rem, 9vw, 8rem); max-width: 14ch;">
         Blog.
       </h1>
-      <p class="mt-8 max-w-2xl text-base md:text-lg text-surface/85 leading-relaxed">
+      <p data-i18n={i18nAttr('In-depth articles on piping technology, installation best practices, and sustainable solutions.')} class="mt-8 max-w-2xl text-base md:text-lg text-surface/85 leading-relaxed">
         In-depth articles on piping technology, installation best practices, and sustainable solutions.
       </p>
     </Container>

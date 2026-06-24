@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { supabase, isSupabaseConfigured } from '../../lib/supabase';
 import { sortCertifications } from '../../lib/certifications';
+import { i18nAttr } from '../../lib/i18n';
 import type { Certification, CertGroup } from '../../types/certification';
 
 /** Subset of Certification needed to render a card (fallback rows use this). */
@@ -94,6 +95,16 @@ export default function CertificationsGrid({ group, category, columns = 3, fallb
     document.querySelectorAll('[data-cert-count]').forEach((el) => {
       el.textContent = String(state.certs.length);
     });
+  }, [state]);
+
+  // This island swaps its rendered tree (skeleton → cards) after hydration;
+  // re-fire the swap so the already-loaded listener applies the active language
+  // to the freshly-rendered DOM on first load too.
+  useEffect(() => {
+    try {
+      const l = localStorage.getItem('elysee.lang');
+      if (l && l !== 'en') document.dispatchEvent(new CustomEvent('elysee:lang', { detail: { lang: l } }));
+    } catch {}
   }, [state]);
 
   // Stamp-in animation — ported from the page's previous inline GSAP script.
@@ -196,7 +207,7 @@ export default function CertificationsGrid({ group, category, columns = 3, fallb
                   className="max-h-full max-w-full w-auto h-auto object-contain transition-transform duration-500 ease-out group-hover:scale-105"
                 />
               ) : (
-                <span className="text-[10px] uppercase tracking-[0.25em] text-ink/40">Certified</span>
+                <span className="text-[10px] uppercase tracking-[0.25em] text-ink/40" data-i18n={i18nAttr('Certified')}>Certified</span>
               )}
             </div>
 
@@ -217,7 +228,7 @@ export default function CertificationsGrid({ group, category, columns = 3, fallb
                   aria-label={`Download ${c.name} certificate (PDF)`}
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                  <span>Download PDF</span>
+                  <span data-i18n={i18nAttr('Download PDF')}>Download PDF</span>
                 </a>
               )}
             </div>
@@ -232,13 +243,13 @@ export default function CertificationsGrid({ group, category, columns = 3, fallb
             href="/contact/local/"
             className="group/cta cursor-pointer flex flex-1 flex-col items-start justify-center p-7 md:p-10"
           >
-            <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-ink/55">Something missing?</span>
-            <span className="mt-4 font-display font-heavy leading-tight text-xl md:text-2xl text-ink">
+            <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-ink/55" data-i18n={i18nAttr('Something missing?')}>Something missing?</span>
+            <span className="mt-4 font-display font-heavy leading-tight text-xl md:text-2xl text-ink" data-i18n={i18nAttr('Need an older revision or a tender-ready bundle?')}>
               Need an older revision or a tender-ready bundle?
             </span>
             <span aria-hidden="true" className="mt-5 h-px w-10 bg-brand-500 transition-[width] duration-500 ease-out group-hover/cta:w-20"></span>
             <span className="mt-6 inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.25em] text-ink group-hover/cta:text-brand-500 transition-colors duration-200">
-              <span>Request a certificate</span>
+              <span data-i18n={i18nAttr('Request a certificate')}>Request a certificate</span>
               <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5 transition-transform duration-200 group-hover/cta:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
             </span>
           </a>

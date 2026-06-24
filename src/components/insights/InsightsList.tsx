@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { supabase, isSupabaseConfigured } from '../../lib/supabase';
+import { i18nAttr } from '../../lib/i18n';
 import { exhibitionToCard, mediaToCard, ebookToCard, type InsightCard } from '../../lib/insights-cards';
 import type { Exhibition } from '../../types/exhibition';
 import type { Media } from '../../types/media';
@@ -66,6 +67,16 @@ export default function InsightsList({ kind, emptyMessage = 'Nothing here yet â€
     };
   }, [kind]);
 
+  // This island renders its tree after hydration and swaps between
+  // loading / empty / error / ready states; re-fire the swap so the loaded
+  // listener applies the active language to the freshly rendered nodes.
+  useEffect(() => {
+    try {
+      const l = localStorage.getItem('elysee.lang');
+      if (l && l !== 'en') document.dispatchEvent(new CustomEvent('elysee:lang', { detail: { lang: l } }));
+    } catch {}
+  }, [state]);
+
   if (state.kind === 'loading') {
     return (
       <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -85,7 +96,7 @@ export default function InsightsList({ kind, emptyMessage = 'Nothing here yet â€
 
   if (state.kind === 'empty' || state.kind === 'error') {
     const message = state.kind === 'empty' ? emptyMessage : 'Temporarily unavailable â€” please try again shortly.';
-    return <p className="text-center text-ink/60 py-16">{message}</p>;
+    return <p className="text-center text-ink/60 py-16" data-i18n={i18nAttr(message)}>{message}</p>;
   }
 
   return (
@@ -121,7 +132,7 @@ export default function InsightsList({ kind, emptyMessage = 'Nothing here yet â€
               href={it.href}
               className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-brand-500 hover:text-brand-accent transition-colors duration-150"
             >
-              Read more <span aria-hidden="true" className="transition-transform duration-150 group-hover:translate-x-1">â†’</span>
+              <span data-i18n={i18nAttr('Read more')}>Read more</span> <span aria-hidden="true" className="transition-transform duration-150 group-hover:translate-x-1">â†’</span>
             </a>
           </div>
         </li>

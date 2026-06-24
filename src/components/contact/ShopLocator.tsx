@@ -1,6 +1,7 @@
 'use client';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { cn } from '@/lib/utils';
+import { i18nAttr, i18nAttrFor } from '@/lib/i18n';
 
 /**
  * Shop locator for /contact/local/ — three panes:
@@ -69,10 +70,19 @@ export default function ShopLocator({ shops }: Props) {
   const shop = shops[sel];
   const telHref = (n: string) => `tel:${n.replace(/[^+\d]/g, '')}`;
 
+  // This island renders translated nodes after hydration; re-fire the swap so
+  // the already-loaded listener applies the active language on first load.
+  useEffect(() => {
+    try {
+      const l = localStorage.getItem('elysee.lang');
+      if (l && l !== 'en') document.dispatchEvent(new CustomEvent('elysee:lang', { detail: { lang: l } }));
+    } catch {}
+  }, [sel]);
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-px bg-ink/10 border border-ink/10">
       {/* ===== Left — shop list ===== */}
-      <ul className="lg:col-span-3 bg-surface divide-y divide-ink/10" role="tablist" aria-label="Shops">
+      <ul className="lg:col-span-3 bg-surface divide-y divide-ink/10" role="tablist" aria-label="Shops" data-i18n-attr={i18nAttrFor({ 'aria-label': 'Shops' })}>
         {shops.map((s, i) => {
           const isSel = i === sel;
           return (
@@ -117,7 +127,7 @@ export default function ShopLocator({ shops }: Props) {
 
       {/* ===== Right — contact details ===== */}
       <aside className="lg:col-span-3 bg-surface-alt p-6 md:p-8">
-        <h3 className="font-display font-heavy text-xl md:text-2xl text-ink">Contact Details</h3>
+        <h3 className="font-display font-heavy text-xl md:text-2xl text-ink" data-i18n={i18nAttr('Contact Details')}>Contact Details</h3>
         {shop.area && (
           <p className="mt-3 text-sm font-semibold text-brand-500">{shop.area}</p>
         )}

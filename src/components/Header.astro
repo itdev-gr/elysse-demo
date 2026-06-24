@@ -4,13 +4,14 @@ import Container from './Container.astro';
 import PrimaryNav from './PrimaryNav.astro';
 import MobileNav from './MobileNav.astro';
 import LanguageToggle from './LanguageToggle.astro';
+import { i18nAttrFor } from '../lib/i18n';
 ---
 <header
   data-header
   class="fixed inset-x-0 top-0 z-40 transition-[background-color,backdrop-filter,box-shadow,color] duration-base ease-out-quint"
 >
   <Container size="xl" class="flex items-center gap-6 py-3">
-    <a href="/" class="flex items-center shrink-0" aria-label="Elysée — home">
+    <a href="/" class="flex items-center shrink-0" aria-label="Elysée — home" data-i18n-attr={i18nAttrFor({ 'aria-label': 'Elysée — home' })}>
       <img src={logo.src} width={logo.width} height={logo.height} alt="Elysée" class="h-10 w-auto md:h-14" loading="eager" />
     </a>
     <PrimaryNav />

@@ -5,6 +5,8 @@ interface Item {
   image: string;
   alt: string;
 }
+import { i18nAttr } from '../../lib/i18n';
+
 interface Props {
   items: Item[];
 }
@@ -28,7 +30,7 @@ const { items } = Astro.props;
         height="160"
         class="w-24 h-24 md:w-28 md:h-28 mt-4 object-contain transition-transform duration-300 ease-out group-hover:scale-105"
       />
-      <h3 class="mt-4 text-base md:text-lg font-heavy text-ink">{it.title}</h3>
+      <h3 data-i18n={i18nAttr(it.title)} class="mt-4 text-base md:text-lg font-heavy text-ink">{it.title}</h3>
     </li>
   ))}
 </ol>

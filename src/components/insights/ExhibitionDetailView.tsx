@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { supabase, isSupabaseConfigured } from '../../lib/supabase';
+import { i18nAttr } from '../../lib/i18n';
 import { renderPostBody } from '../../lib/posts';
 import type { Exhibition } from '../../types/exhibition';
 
@@ -37,11 +38,20 @@ export default function ExhibitionDetailView({ slug }: Props) {
     };
   }, [slug]);
 
+  // Re-fire the page-wide language swap whenever the rendered tree changes
+  // (loading → ready/not-found/error), so Greek shows on first load too.
+  useEffect(() => {
+    try {
+      const l = localStorage.getItem('elysee.lang');
+      if (l && l !== 'en') document.dispatchEvent(new CustomEvent('elysee:lang', { detail: { lang: l } }));
+    } catch {}
+  }, [state]);
+
   const hero = (title: string) => (
     <section className="pt-32 md:pt-40 pb-12 md:pb-16 bg-brand-500 text-surface">
       <div className="mx-auto max-w-screen-xl px-4 md:px-8">
-        <p className="text-xs md:text-sm uppercase tracking-widest font-medium text-surface/80 mb-3">Insights · Exhibitions</p>
-        <h1 className="text-3xl md:text-5xl lg:text-6xl font-sans font-heavy">{title}</h1>
+        <p data-i18n={i18nAttr('Insights · Exhibitions')} className="text-xs md:text-sm uppercase tracking-widest font-medium text-surface/80 mb-3">Insights · Exhibitions</p>
+        <h1 data-i18n={i18nAttr(title)} className="text-3xl md:text-5xl lg:text-6xl font-sans font-heavy">{title}</h1>
       </div>
     </section>
   );
@@ -66,14 +76,14 @@ export default function ExhibitionDetailView({ slug }: Props) {
       <>
         {hero(heading)}
         <div className="mx-auto max-w-screen-md px-4 md:px-8 py-12 md:py-16">
-          <p className="text-base text-ink/75 leading-relaxed">
+          <p data-i18n={i18nAttr('The exhibition you are looking for may have been moved or unpublished.')} className="text-base text-ink/75 leading-relaxed">
             The exhibition you are looking for may have been moved or unpublished.
           </p>
           <a
             href="/insights/exhibitions/"
             className="mt-6 inline-flex items-center gap-1 text-sm font-medium text-brand-500 hover:text-brand-accent transition-colors duration-150"
           >
-            <span aria-hidden="true">←</span> Back to Exhibitions
+            <span aria-hidden="true">←</span> <span data-i18n={i18nAttr('Back to Exhibitions')}>Back to Exhibitions</span>
           </a>
         </div>
       </>
@@ -113,7 +123,7 @@ export default function ExhibitionDetailView({ slug }: Props) {
 
         <nav aria-label="Back to exhibitions" className="pt-8 mt-8 border-t border-ink/10">
           <a href="/insights/exhibitions/" className="inline-flex items-center gap-1 text-sm font-medium text-brand-500 hover:text-brand-accent transition-colors duration-150">
-            <span aria-hidden="true">←</span> Back to Exhibitions
+            <span aria-hidden="true">←</span> <span data-i18n={i18nAttr('Back to Exhibitions')}>Back to Exhibitions</span>
           </a>
         </nav>
       </article>

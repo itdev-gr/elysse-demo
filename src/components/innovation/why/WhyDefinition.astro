@@ -7,6 +7,7 @@
  */
 import Container from '../../Container.astro';
 import Section from '../../Section.astro';
+import { i18nAttr } from '../../../lib/i18n';
 
 interface Props {
   eyebrow?: string;
@@ -19,14 +20,14 @@ const { eyebrow = 'Definition', heading, body } = Astro.props;
   <Container size="xl">
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16">
       <aside class="lg:col-span-4">
-        <p data-reveal class="text-[11px] uppercase tracking-[0.4em] text-brand-500 mb-6 md:mb-8">{eyebrow}</p>
-        <h2 data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[1.02] tracking-tight text-ink" style="font-size: clamp(2rem, 4.5vw, 3.5rem);">
+        <p data-reveal data-i18n={i18nAttr(eyebrow)} class="text-[11px] uppercase tracking-[0.4em] text-brand-500 mb-6 md:mb-8">{eyebrow}</p>
+        <h2 data-reveal data-reveal-delay="120" data-i18n={i18nAttr(heading)} class="font-display font-heavy leading-[1.02] tracking-tight text-ink" style="font-size: clamp(2rem, 4.5vw, 3.5rem);">
           {heading}
         </h2>
         <div aria-hidden="true" class="mt-8 h-px w-12 bg-brand-500"></div>
       </aside>
       <div class="lg:col-span-8 lg:pt-2">
-        <p data-reveal data-reveal-delay="240" class="text-lg md:text-xl text-ink/85 leading-[1.65] max-w-prose">
+        <p data-reveal data-reveal-delay="240" data-i18n={i18nAttr(body)} class="text-lg md:text-xl text-ink/85 leading-[1.65] max-w-prose">
           {body}
         </p>
       </div>

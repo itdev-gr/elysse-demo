@@ -31,4 +31,20 @@ describe('i18n-text swap', () => {
     setLang('en'); // back to English restores the original
     expect(el.textContent).toBe('Compression Fittings');
   });
+
+  it('swaps a named attribute and restores English', async () => {
+    document.body.innerHTML =
+      `<input data-i18n-attr='{"placeholder":{"el":"Αναζήτηση"}}' placeholder="Search" />`;
+    await import('./i18n-text.client'); // module cached; listener already attached
+
+    const input = document.querySelector('input')!;
+    const setLang = (lang: string) =>
+      document.dispatchEvent(new CustomEvent('elysee:lang', { detail: { lang } }));
+
+    setLang('el');
+    expect(input.getAttribute('placeholder')).toBe('Αναζήτηση');
+
+    setLang('en'); // restores the server-rendered English
+    expect(input.getAttribute('placeholder')).toBe('Search');
+  });
 });

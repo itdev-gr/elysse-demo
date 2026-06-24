@@ -20,6 +20,7 @@ import {
   greenReportItems,
   greenEbookItems,
 } from '../../../data/site-content';
+import { i18nAttr } from '../../../lib/i18n';
 
 const intro = greenElyseeReports.blocks.find(
   (b): b is Extract<typeof b, { kind: 'paragraph' }> => b.kind === 'paragraph',
@@ -46,17 +47,17 @@ const desc =
 
     <Container size="xl" class="relative pt-40 md:pt-48 pb-16 md:pb-24 w-full">
       <p data-reveal class="text-[11px] md:text-xs uppercase tracking-[0.4em] text-surface/85 mb-8">
-        {greenElyseeReports.eyebrow} · Annual reporting
+        {greenElyseeReports.eyebrow}<span data-i18n={i18nAttr(' · Annual reporting')}> · Annual reporting</span>
       </p>
-      <h1 data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[0.92] tracking-tight text-surface" style="font-size: clamp(3rem, 9vw, 8rem); max-width: 14ch;">
+      <h1 data-reveal data-reveal-delay="120" data-i18n={i18nAttr('Reports & eBooks.')} class="font-display font-heavy leading-[0.92] tracking-tight text-surface" style="font-size: clamp(3rem, 9vw, 8rem); max-width: 14ch;">
         Reports &amp; eBooks.
       </h1>
-      <p data-reveal data-reveal-delay="240" class="mt-8 max-w-2xl text-base md:text-lg text-surface/85 leading-relaxed">
+      <p data-reveal data-reveal-delay="240" data-i18n={i18nAttr(greenElyseeReports.subtitle ?? '')} class="mt-8 max-w-2xl text-base md:text-lg text-surface/85 leading-relaxed">
         {greenElyseeReports.subtitle}
       </p>
       <div data-reveal data-reveal-delay="360" class="mt-14 md:mt-20 flex items-center gap-4 text-[11px] uppercase tracking-[0.3em] text-surface/70">
         <span aria-hidden="true" class="h-px w-12 bg-surface/50"></span>
-        <span>Read the latest disclosures</span>
+        <span data-i18n={i18nAttr('Read the latest disclosures')}>Read the latest disclosures</span>
       </div>
     </Container>
   </section>
@@ -66,23 +67,23 @@ const desc =
   {/* ===== STAT BAND ===== */}
   <section class="bg-surface border-b border-ink/10">
     <Container size="xl" class="py-16 md:py-24">
-      <p data-reveal class="text-[11px] md:text-xs uppercase tracking-[0.3em] text-brand-500 mb-10 md:mb-14">Disclosures at a glance</p>
+      <p data-reveal data-i18n={i18nAttr('Disclosures at a glance')} class="text-[11px] md:text-xs uppercase tracking-[0.3em] text-brand-500 mb-10 md:mb-14">Disclosures at a glance</p>
       <dl class="grid grid-cols-2 md:grid-cols-4 gap-px bg-ink/10 border border-ink/10">
         <div class="bg-surface p-8 md:p-10">
           <dd data-counter="2024" class="font-display font-heavy leading-none tracking-tight text-brand-500" style="font-size: clamp(2.5rem, 6vw, 5rem);">2024</dd>
-          <dt class="mt-4 md:mt-5 text-[10px] md:text-xs uppercase tracking-[0.25em] text-ink/60">Latest report</dt>
+          <dt data-i18n={i18nAttr('Latest report')} class="mt-4 md:mt-5 text-[10px] md:text-xs uppercase tracking-[0.25em] text-ink/60">Latest report</dt>
         </div>
         <div class="bg-surface p-8 md:p-10">
           <dd data-counter="6" class="font-display font-heavy leading-none tracking-tight text-brand-500" style="font-size: clamp(2.5rem, 6vw, 5rem);">6</dd>
-          <dt class="mt-4 md:mt-5 text-[10px] md:text-xs uppercase tracking-[0.25em] text-ink/60">Strategic pillars covered</dt>
+          <dt data-i18n={i18nAttr('Strategic pillars covered')} class="mt-4 md:mt-5 text-[10px] md:text-xs uppercase tracking-[0.25em] text-ink/60">Strategic pillars covered</dt>
         </div>
         <div class="bg-surface p-8 md:p-10">
           <dd class="font-display font-heavy leading-none tracking-tight text-brand-500" style="font-size: clamp(2rem, 5vw, 4rem);">PDF</dd>
-          <dt class="mt-4 md:mt-5 text-[10px] md:text-xs uppercase tracking-[0.25em] text-ink/60">Free to download</dt>
+          <dt data-i18n={i18nAttr('Free to download')} class="mt-4 md:mt-5 text-[10px] md:text-xs uppercase tracking-[0.25em] text-ink/60">Free to download</dt>
         </div>
         <div class="bg-surface p-8 md:p-10">
           <dd class="font-display font-heavy leading-none tracking-tight text-brand-500" style="font-size: clamp(2rem, 5vw, 4rem);">Annual</dd>
-          <dt class="mt-4 md:mt-5 text-[10px] md:text-xs uppercase tracking-[0.25em] text-ink/60">Publication cadence</dt>
+          <dt data-i18n={i18nAttr('Publication cadence')} class="mt-4 md:mt-5 text-[10px] md:text-xs uppercase tracking-[0.25em] text-ink/60">Publication cadence</dt>
         </div>
       </dl>
     </Container>
@@ -95,12 +96,12 @@ const desc =
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16">
           <aside class="lg:col-span-4">
             <div class="lg:sticky lg:top-32">
-              <p data-reveal class="text-[11px] uppercase tracking-[0.4em] text-brand-500 mb-6 md:mb-8">Why we publish</p>
-              <h2 data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[1.02] tracking-tight text-ink" style="font-size: clamp(2rem, 4.5vw, 3.5rem);">
+              <p data-reveal data-i18n={i18nAttr('Why we publish')} class="text-[11px] uppercase tracking-[0.4em] text-brand-500 mb-6 md:mb-8">Why we publish</p>
+              <h2 data-reveal data-reveal-delay="120" data-i18n={i18nAttr('Transparency, by document.')} class="font-display font-heavy leading-[1.02] tracking-tight text-ink" style="font-size: clamp(2rem, 4.5vw, 3.5rem);">
                 Transparency, by document.
               </h2>
               <div aria-hidden="true" class="mt-8 h-px w-12 bg-brand-500"></div>
-              <p data-reveal data-reveal-delay="240" class="mt-6 max-w-xs text-sm text-ink/60 leading-relaxed">
+              <p data-reveal data-reveal-delay="240" data-i18n={i18nAttr('Public reports, downloadable PDFs, year-on-year comparable disclosures.')} class="mt-6 max-w-xs text-sm text-ink/60 leading-relaxed">
                 Public reports, downloadable PDFs, year-on-year comparable disclosures.
               </p>
             </div>
@@ -109,6 +110,7 @@ const desc =
             <p
               data-reveal
               data-reveal-delay="160"
+              data-i18n={i18nAttr(intro.text)}
               class="text-lg md:text-xl text-ink leading-[1.65]
                      first-letter:font-display first-letter:font-heavy
                      first-letter:text-7xl md:first-letter:text-8xl
@@ -125,8 +127,8 @@ const desc =
   <Section bg="default" spacing="lg">
     <Container size="xl">
       <header class="max-w-3xl mb-12 md:mb-16">
-        <p data-reveal class="text-[11px] uppercase tracking-[0.4em] text-brand-500 mb-6">Environmental Reports</p>
-        <h2 data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[1.02] tracking-tight text-ink" style="font-size: clamp(2.25rem, 5.5vw, 4.5rem);">
+        <p data-reveal data-i18n={i18nAttr('Environmental Reports')} class="text-[11px] uppercase tracking-[0.4em] text-brand-500 mb-6">Environmental Reports</p>
+        <h2 data-reveal data-reveal-delay="120" data-i18n={i18nAttr('The Environmental Report.')} class="font-display font-heavy leading-[1.02] tracking-tight text-ink" style="font-size: clamp(2.25rem, 5.5vw, 4.5rem);">
           The Environmental Report.
         </h2>
       </header>
@@ -149,7 +151,7 @@ const desc =
               <span class="font-mono text-[10px] uppercase tracking-[0.25em] text-ink/55">Report · {r.year}{r.section ? ` · § ${r.section}` : ''}</span>
               <h3 class="mt-4 font-display font-heavy text-3xl md:text-4xl text-ink leading-tight">{r.title}</h3>
               <div aria-hidden="true" class="mt-5 h-px w-12 bg-brand-500"></div>
-              <p class="mt-6 text-base md:text-lg text-ink/75 leading-[1.65] max-w-xl">{r.description}</p>
+              <p data-i18n={i18nAttr(r.description)} class="mt-6 text-base md:text-lg text-ink/75 leading-[1.65] max-w-xl">{r.description}</p>
               <a
                 href={r.href}
                 target="_blank"
@@ -157,7 +159,7 @@ const desc =
                 class="mt-8 inline-flex items-center gap-3 px-6 py-3 bg-brand-500 text-surface hover:bg-brand-700 text-[11px] md:text-xs uppercase tracking-[0.25em] transition-colors duration-200 self-start cursor-pointer"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                <span>Download PDF</span>
+                <span data-i18n={i18nAttr('Download PDF')}>Download PDF</span>
               </a>
             </div>
           </li>
@@ -170,8 +172,8 @@ const desc =
   <Section bg="alt" spacing="lg">
     <Container size="xl">
       <header class="max-w-3xl mb-12 md:mb-16">
-        <p data-reveal class="text-[11px] uppercase tracking-[0.4em] text-brand-500 mb-6">eBooks</p>
-        <h2 data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[1.02] tracking-tight text-ink" style="font-size: clamp(2.25rem, 5.5vw, 4.5rem);">
+        <p data-reveal data-i18n={i18nAttr('eBooks')} class="text-[11px] uppercase tracking-[0.4em] text-brand-500 mb-6">eBooks</p>
+        <h2 data-reveal data-reveal-delay="120" data-i18n={i18nAttr('Yearly Report library.')} class="font-display font-heavy leading-[1.02] tracking-tight text-ink" style="font-size: clamp(2.25rem, 5.5vw, 4.5rem);">
           Yearly Report library.
         </h2>
       </header>
@@ -194,12 +196,12 @@ const desc =
               <span class="font-mono text-[10px] uppercase tracking-[0.25em] text-ink/55">eBook · {e.year}</span>
               <h3 class="mt-4 font-display font-heavy text-2xl md:text-3xl text-ink leading-tight">{e.title}</h3>
               <div aria-hidden="true" class="mt-4 h-px w-10 bg-brand-500"></div>
-              <p class="mt-5 text-sm md:text-base text-ink/75 leading-[1.6]">{e.description}</p>
+              <p data-i18n={i18nAttr(e.description)} class="mt-5 text-sm md:text-base text-ink/75 leading-[1.6]">{e.description}</p>
               <ul class="mt-6 space-y-2 text-sm text-ink/80">
                 {e.contents.map((line) => (
                   <li class="flex items-start gap-2">
                     <span aria-hidden="true" class="mt-2 inline-block w-1.5 h-1.5 rounded-full bg-brand-500 flex-shrink-0"></span>
-                    <span>{line}</span>
+                    <span data-i18n={i18nAttr(line)}>{line}</span>
                   </li>
                 ))}
               </ul>
@@ -210,7 +212,7 @@ const desc =
                   rel="noopener noreferrer"
                   class="mt-8 inline-flex items-center gap-2 self-start text-[11px] uppercase tracking-[0.25em] text-ink hover:text-brand-500 transition-colors duration-200 cursor-pointer"
                 >
-                  <span>Read the report</span>
+                  <span data-i18n={i18nAttr('Read the report')}>Read the report</span>
                   <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 transition-transform duration-200 group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
                 </a>
               )}
@@ -226,8 +228,8 @@ const desc =
     <Container size="xl" class="py-16 md:py-24">
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-start">
         <div class="lg:pt-4">
-          <p data-reveal class="text-[11px] uppercase tracking-[0.4em] text-brand-500 mb-6">Request an archive copy</p>
-          <p data-reveal data-reveal-delay="120" class="text-base md:text-lg text-ink/80 leading-relaxed max-w-xl">
+          <p data-reveal data-i18n={i18nAttr('Request an archive copy')} class="text-[11px] uppercase tracking-[0.4em] text-brand-500 mb-6">Request an archive copy</p>
+          <p data-reveal data-reveal-delay="120" data-i18n={i18nAttr('Looking for an older annual report or a specific data series? Our sustainability team can share archived editions on request.')} class="text-base md:text-lg text-ink/80 leading-relaxed max-w-xl">
             Looking for an older annual report or a specific data series? Our sustainability team can share archived editions on request.
           </p>
           <a
@@ -236,7 +238,7 @@ const desc =
             href="/contact/local/"
             class="group cursor-pointer mt-8 md:mt-10 inline-flex items-center gap-3 px-6 py-3 border border-ink/40 hover:bg-ink hover:border-ink hover:text-surface text-ink text-[11px] md:text-xs uppercase tracking-[0.25em] transition-colors duration-200"
           >
-            <span>Contact our local network</span>
+            <span data-i18n={i18nAttr('Contact our local network')}>Contact our local network</span>
             <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
           </a>
         </div>

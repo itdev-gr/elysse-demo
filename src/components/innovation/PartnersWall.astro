@@ -3,6 +3,8 @@ interface Partner {
   name: string;
   logo: string;
 }
+import { i18nAttr } from '../../lib/i18n';
+
 interface Props {
   items: Partner[];
   cta?: { label: string; href: string };
@@ -34,12 +36,12 @@ const { items, cta } = Astro.props;
       data-reveal
       class="mt-10 md:mt-14 p-8 md:p-10 bg-brand-500/5 border-l-4 border-brand-500 rounded-sm flex flex-col md:flex-row md:items-center md:justify-between gap-4"
     >
-      <p class="text-lg md:text-xl font-heavy text-ink">{cta.label}</p>
+      <p data-i18n={i18nAttr(cta.label)} class="text-lg md:text-xl font-heavy text-ink">{cta.label}</p>
       <a
         href={cta.href}
         class="inline-flex items-center gap-2 px-6 py-3 bg-brand-500 text-surface text-sm font-medium uppercase tracking-widest rounded-sm cursor-pointer transition-colors duration-200 hover:bg-brand-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-500"
       >
-        Get in touch <span aria-hidden="true">→</span>
+        <span data-i18n={i18nAttr('Get in touch')}>Get in touch</span> <span aria-hidden="true">→</span>
       </a>
     </div>
   )}

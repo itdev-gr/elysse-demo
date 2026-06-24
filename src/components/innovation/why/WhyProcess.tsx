@@ -1,6 +1,7 @@
 'use client';
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { motion, useScroll, useTransform, useReducedMotion, type Variants } from 'motion/react';
+import { i18nAttr } from '../../../lib/i18n';
 
 /**
  * "Our four-step process" — visually matches the existing
@@ -45,6 +46,14 @@ const grid: Variants = {
 export default function WhyProcess({ eyebrow = 'Process', heading, items }: Props) {
   const reduce = useReducedMotion();
   const ref = useRef<HTMLDivElement | null>(null);
+  // Re-apply the language swap once this island has mounted/rendered, so it
+  // shows Greek on first load when a non-English language is stored.
+  useEffect(() => {
+    try {
+      const l = localStorage.getItem('elysee.lang');
+      if (l && l !== 'en') document.dispatchEvent(new CustomEvent('elysee:lang', { detail: { lang: l } }));
+    } catch {}
+  }, [items]);
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ['start 80%', 'end 30%'],
@@ -55,8 +64,8 @@ export default function WhyProcess({ eyebrow = 'Process', heading, items }: Prop
     <section ref={ref} data-testid="why-process" className="bg-surface-alt">
       <div className="mx-auto max-w-screen-xl px-4 md:px-8 py-20 md:py-28">
         <header className="max-w-3xl mb-12 md:mb-16">
-          <p className="text-[11px] uppercase tracking-[0.4em] text-brand-500 mb-6">{eyebrow}</p>
-          <h2 className="font-display font-heavy leading-[1.02] tracking-tight text-ink" style={{ fontSize: 'clamp(2rem, 4.5vw, 3.5rem)' }}>
+          <p data-i18n={i18nAttr(eyebrow)} className="text-[11px] uppercase tracking-[0.4em] text-brand-500 mb-6">{eyebrow}</p>
+          <h2 data-i18n={i18nAttr(heading)} className="font-display font-heavy leading-[1.02] tracking-tight text-ink" style={{ fontSize: 'clamp(2rem, 4.5vw, 3.5rem)' }}>
             {heading}
           </h2>
         </header>
@@ -97,7 +106,7 @@ export default function WhyProcess({ eyebrow = 'Process', heading, items }: Prop
                 height={160}
                 className="w-24 h-24 md:w-28 md:h-28 mt-4 object-contain transition-transform duration-300 ease-out group-hover:scale-105"
               />
-              <h3 className="mt-4 text-base md:text-lg font-heavy text-ink">{it.title}</h3>
+              <h3 data-i18n={i18nAttr(it.title)} className="mt-4 text-base md:text-lg font-heavy text-ink">{it.title}</h3>
             </motion.li>
           ))}
         </motion.ol>

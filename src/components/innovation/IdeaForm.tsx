@@ -1,5 +1,6 @@
-import { useId, useState, type FormEvent } from 'react';
+import { useEffect, useId, useState, type FormEvent } from 'react';
 import { motion, useReducedMotion } from 'motion/react';
+import { i18nAttr } from '../../lib/i18n';
 
 interface Props {
   heroImage?: string;
@@ -37,6 +38,15 @@ export default function IdeaForm(props: Props) {
   const [submitted, setSubmitted] = useState(false);
   const captchaValid = Number(captcha) === CAPTCHA_ANSWER;
 
+  // Re-apply the language swap once this island has rendered its current tree,
+  // so it shows Greek on first load when a non-English language is stored.
+  useEffect(() => {
+    try {
+      const l = localStorage.getItem('elysee.lang');
+      if (l && l !== 'en') document.dispatchEvent(new CustomEvent('elysee:lang', { detail: { lang: l } }));
+    } catch {}
+  }, [submitted]);
+
   const fade = reduce
     ? {}
     : {
@@ -70,10 +80,10 @@ export default function IdeaForm(props: Props) {
           )}
           {props.confidentialityTitle && (
             <div className="mt-6 p-6 bg-brand-500/5 border-l-4 border-brand-500 rounded-sm">
-              <h3 className="text-lg font-heavy text-brand-500 mb-2">
+              <h3 data-i18n={i18nAttr(props.confidentialityTitle ?? '')} className="text-lg font-heavy text-brand-500 mb-2">
                 {props.confidentialityTitle}
               </h3>
-              <p className="text-base text-ink/85 leading-relaxed">
+              <p data-i18n={i18nAttr(props.confidentialityBody ?? '')} className="text-base text-ink/85 leading-relaxed">
                 {props.confidentialityBody}
               </p>
             </div>
@@ -83,7 +93,7 @@ export default function IdeaForm(props: Props) {
               href={props.generalSubmissionHref}
               className="mt-4 inline-block text-sm font-medium text-brand-500 hover:text-brand-accent transition-colors duration-150"
             >
-              {props.generalSubmissionLabel} →
+              <span data-i18n={i18nAttr(props.generalSubmissionLabel ?? '')}>{props.generalSubmissionLabel}</span> →
             </a>
           )}
         </motion.div>
@@ -100,6 +110,7 @@ export default function IdeaForm(props: Props) {
               initial={reduce ? false : { opacity: 0, scale: 0.96 }}
               animate={reduce ? undefined : { opacity: 1, scale: 1 }}
               transition={{ duration: 0.35, ease: EASE }}
+              data-i18n={i18nAttr('Thank you — we will be in touch shortly to discuss your idea confidentially.')}
               className="text-base md:text-lg text-ink"
               role="status"
             >
@@ -114,6 +125,7 @@ export default function IdeaForm(props: Props) {
               <div>
                 <label
                   htmlFor={`${fid}-country`}
+                  data-i18n={i18nAttr('Country *')}
                   className="block text-xs uppercase tracking-widest font-medium text-ink/70 mb-2"
                 >
                   Country *
@@ -126,7 +138,7 @@ export default function IdeaForm(props: Props) {
                   className="w-full px-4 py-3 bg-surface-alt border border-ink/15 rounded-sm text-base text-ink focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/30 transition-colors duration-150"
                 >
                   {COUNTRIES.map((c) => (
-                    <option key={c} value={c}>
+                    <option key={c} value={c} data-i18n={i18nAttr(c)}>
                       {c}
                     </option>
                   ))}
@@ -136,6 +148,7 @@ export default function IdeaForm(props: Props) {
               <div className="md:col-span-2">
                 <label
                   htmlFor={`${fid}-message`}
+                  data-i18n={i18nAttr('Message')}
                   className="block text-xs uppercase tracking-widest font-medium text-ink/70 mb-2"
                 >
                   Message
@@ -150,6 +163,7 @@ export default function IdeaForm(props: Props) {
               <div>
                 <label
                   htmlFor={`${fid}-captcha`}
+                  data-i18n={i18nAttr('Please solve: 7 − 2 *')}
                   className="block text-xs uppercase tracking-widest font-medium text-ink/70 mb-2"
                 >
                   Please solve: 7 − 2 *
@@ -173,7 +187,7 @@ export default function IdeaForm(props: Props) {
                   whileHover={reduce ? undefined : { y: -2 }}
                   className="inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-brand-500 text-surface text-sm font-medium uppercase tracking-widest rounded-sm cursor-pointer transition-colors duration-200 hover:bg-brand-accent disabled:opacity-40 disabled:cursor-not-allowed focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-500"
                 >
-                  Send message <span aria-hidden>→</span>
+                  <span data-i18n={i18nAttr('Send message')}>Send message</span> <span aria-hidden>→</span>
                 </motion.button>
               </div>
             </div>
@@ -199,6 +213,7 @@ function Field({
     <div>
       <label
         htmlFor={id}
+        data-i18n={i18nAttr(label)}
         className="block text-xs uppercase tracking-widest font-medium text-ink/70 mb-2"
       >
         {label}
