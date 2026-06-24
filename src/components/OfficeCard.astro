@@ -1,5 +1,6 @@
 ---
 import type { HTMLAttributes } from 'astro/types';
+import { i18nAttr } from '../lib/i18n';
 
 interface Props extends HTMLAttributes<'article'> {
   city: string;
@@ -43,7 +44,7 @@ const {
   {email && (
     <p class="mt-4">
       <a class="group inline-flex items-center gap-2 text-sm font-medium text-ink hover:text-brand-500 transition-colors duration-fast" href={`mailto:${email}`}>
-        Message
+        <span data-i18n={i18nAttr('Message')}>Message</span>
         <span aria-hidden="true" class="transition-transform duration-fast group-hover:translate-x-1">+</span>
       </a>
     </p>
