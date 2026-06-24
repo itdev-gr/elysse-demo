@@ -1,0 +1,8 @@
+---
+// Convenience wrapper for a brand-new plain-text node. Existing elements should
+// instead get `data-i18n={i18nAttr('…')}` added inline to preserve their markup.
+import { i18nAttr } from '../../lib/i18n';
+interface Props { t: string; as?: keyof HTMLElementTagNameMap; class?: string; }
+const { t, as: Tag = 'span', class: className } = Astro.props;
+---
+<Tag class={className} data-i18n={i18nAttr(t)}>{t}</Tag>
