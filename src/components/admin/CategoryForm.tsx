@@ -5,8 +5,8 @@ import { CATEGORY_I18N_LANGS, cleanI18n, type ProductCategory } from '../../lib/
 
 const EMPTY: ProductCategory = {
   slug: '', name: '', sort_order: 0, image: '', source_image: null,
-  leaflet_pdf: null, blurb: null, product_category_name: null, is_active: true,
-  name_i18n: {}, blurb_i18n: {},
+  leaflet_pdf: null, blurb: null, product_category_name: null, category_letter: null,
+  is_active: true, name_i18n: {}, blurb_i18n: {},
 };
 
 export default function CategoryForm({ initial, onDone, onCancel }:
@@ -69,6 +69,7 @@ export default function CategoryForm({ initial, onDone, onCancel }:
         </label>
         {field('Name', 'name')}
         {field('Sort order', 'sort_order', 'number')}
+        {field('Category letter', 'category_letter', 'text', 'Single letter (A, B, C…). Auto-fills the product form and vice-versa.')}
         {field('Image path', 'image', 'text', '/images/products/categories/<slug>.png')}
         {field('Leaflet PDF', 'leaflet_pdf')}
         {field('Excel category link (advanced)', 'product_category_name', 'text', 'Defaults to the Name. Must equal products.category_name to show catalogue items')}

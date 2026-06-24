@@ -38,6 +38,9 @@ export default function ProductForm({ initial, onDone, onCancel }:
   // by every size of this configuration.
   const [cfgTr, setCfgTr] = useState<ConfigTranslations>({ name: '', description: '', name_i18n: {}, description_i18n: {} });
   const [slugByName, setSlugByName] = useState<Map<string, string>>(new Map());
+  // Category letter ⇄ category name, so picking one auto-fills the other.
+  const [letterByCategory, setLetterByCategory] = useState<Map<string, string>>(new Map());
+  const [categoryByLetter, setCategoryByLetter] = useState<Map<string, string>>(new Map());
   const [loadedKey, setLoadedKey] = useState<string>('');
   const editing = !!initial;
 
@@ -75,15 +78,26 @@ export default function ProductForm({ initial, onDone, onCancel }:
   useEffect(() => {
     (async () => {
       const [{ data: pcats }, { data: psubs }, { data: pfams }] = await Promise.all([
-        supabase.from('product_categories').select('slug, product_category_name'),
+        supabase.from('product_categories').select('slug, product_category_name, category_letter'),
         supabase.from('product_subcategories').select('category_slug, name').eq('is_active', true),
         supabase.from('product_families').select('category_slug, code, image_url').eq('is_active', true),
       ]);
-      const pcatRows = (pcats ?? []) as { slug: string; product_category_name: string | null }[];
+      const pcatRows = (pcats ?? []) as { slug: string; product_category_name: string | null; category_letter: string | null }[];
       const nameBySlug = new Map(pcatRows.map((c) => [c.slug, c.product_category_name]));
       setSlugByName(new Map(
         pcatRows.filter((c) => c.product_category_name).map((c) => [c.product_category_name as string, c.slug]),
       ));
+      // Build the letter ⇄ category-name lookups (only rows that have both).
+      const byCat = new Map<string, string>();
+      const byLetter = new Map<string, string>();
+      for (const c of pcatRows) {
+        if (c.product_category_name && c.category_letter) {
+          byCat.set(c.product_category_name, c.category_letter);
+          byLetter.set(c.category_letter.toUpperCase(), c.product_category_name);
+        }
+      }
+      setLetterByCategory(byCat);
+      setCategoryByLetter(byLetter);
       setManagedSubs(
         ((psubs ?? []) as { category_slug: string; name: string }[])
           .map((s) => ({ category_name: nameBySlug.get(s.category_slug) ?? null, sub_category: s.name }))
@@ -229,6 +243,32 @@ export default function ProductForm({ initial, onDone, onCancel }:
       return { ...p, family_code: v, image_url };
     });
 
+  // Pick a category name: auto-fill its letter and reset the dependent fields.
+  const pickCategory = (v: string | null) =>
+    setD((p) => ({
+      ...p,
+      category_name: v,
+      category: v ? (letterByCategory.get(v) ?? null) : null,
+      sub_category: null,
+      family_code: null,
+    }));
+
+  // Type a category letter: if it maps to a category, auto-fill the name (and
+  // reset dependent fields when it actually changes the category).
+  const pickLetter = (raw: string) =>
+    setD((p) => {
+      const letter = raw.trim() || null;
+      const mapped = letter ? categoryByLetter.get(letter.toUpperCase()) : undefined;
+      if (mapped) {
+        // Store the category's canonical letter; switch the name when it changed.
+        const canonical = letterByCategory.get(mapped) ?? letter;
+        return mapped !== p.category_name
+          ? { ...p, category: canonical, category_name: mapped, sub_category: null, family_code: null }
+          : { ...p, category: canonical };
+      }
+      return { ...p, category: letter };
+    });
+
   const selectField = (label: string, value: string | null, options: string[], onPick: (v: string | null) => void) => (
     <label className="block mb-3">
       <span className="block text-[10px] uppercase tracking-[0.2em] text-ink/55 mb-1">{label}</span>
@@ -250,9 +290,12 @@ export default function ProductForm({ initial, onDone, onCancel }:
           <input value={d.code} disabled={editing} onChange={(e) => set('code', e.currentTarget.value)}
             className="w-full bg-transparent border-b border-ink/25 py-2 text-sm font-mono disabled:opacity-50 focus:outline-none focus:border-brand-500" />
         </label>
-        {selectField('Category name', d.category_name, categoryOpts, (v) =>
-          setD((p) => ({ ...p, category_name: v, sub_category: null, family_code: null })))}
-        {field('Category letter', 'category')}
+        {selectField('Category name', d.category_name, categoryOpts, pickCategory)}
+        <label className="block mb-3">
+          <span className="block text-[10px] uppercase tracking-[0.2em] text-ink/55 mb-1">Category letter</span>
+          <input value={d.category ?? ''} onChange={(e) => pickLetter(e.currentTarget.value)}
+            className="w-full bg-transparent border-b border-ink/25 py-2 text-sm focus:outline-none focus:border-brand-500" />
+        </label>
         {selectField('Sub-category', d.sub_category, subCategoryOpts, (v) =>
           setD((p) => ({ ...p, sub_category: v, family_code: null })))}
         {field('Configuration', 'configuration')}

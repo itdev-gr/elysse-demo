@@ -18,6 +18,9 @@ export interface ProductCategory {
   leaflet_pdf: string | null;
   blurb: string | null;
   product_category_name: string | null;
+  /** Single-letter catalogue code (A, B, C…). Auto-filled with the product's
+   *  category letter in the product form, and vice-versa. */
+  category_letter: string | null;
   is_active: boolean;
   /** Non-English name translations keyed by language code (el/de/es/fr). */
   name_i18n: Record<string, string> | null;
