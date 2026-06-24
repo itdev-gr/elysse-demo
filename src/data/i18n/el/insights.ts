@@ -72,4 +72,36 @@ export const insights: Record<string, string> = {
   // ===== ArticleDetail.astro — shared insights article chrome =====
   'Back to': 'Επιστροφή σε',
   'Share': 'Κοινοποίηση',
+
+  // ===== Blog & News islands — card CTAs / labels =====
+  'Read article': 'Διαβάστε το άρθρο',
+  'Latest': 'Τελευταίο',
+  'Insights · News': 'Άρθρα & Ενημέρωση · Νέα',
+
+  // ===== Blog & News islands — empty / error eyebrows & states =====
+  'Nothing yet': 'Τίποτα ακόμη',
+  'Temporarily unavailable': 'Προσωρινά μη διαθέσιμο',
+  'Not found': 'Δεν βρέθηκε',
+  'No posts yet.': 'Δεν υπάρχουν ακόμη άρθρα.',
+  'No news yet.': 'Δεν υπάρχουν ακόμη νέα.',
+  'Posts are temporarily unavailable.':
+    'Τα άρθρα είναι προσωρινά μη διαθέσιμα.',
+  'Check back soon — we publish new pieces from across the group regularly.':
+    'Επισκεφθείτε μας ξανά σύντομα — δημοσιεύουμε τακτικά νέα άρθρα από όλον τον όμιλο.',
+  'Check back soon — we publish launches, milestones and updates from across the group regularly.':
+    'Επισκεφθείτε μας ξανά σύντομα — δημοσιεύουμε τακτικά λανσαρίσματα, ορόσημα και ενημερώσεις από όλον τον όμιλο.',
+  'Please come back shortly. In the meantime, you can browse our newsroom for the latest updates.':
+    'Παρακαλούμε επιστρέψτε σύντομα. Στο μεταξύ, μπορείτε να περιηγηθείτε στο γραφείο τύπου μας για τις τελευταίες ενημερώσεις.',
+  'Visit the newsroom': 'Επισκεφθείτε το γραφείο τύπου',
+
+  // ===== Blog & News post detail — not-found / error =====
+  'Post not found.': 'Το άρθρο δεν βρέθηκε.',
+  'Article not found.': 'Το άρθρο δεν βρέθηκε.',
+  'Article temporarily unavailable.': 'Το άρθρο είναι προσωρινά μη διαθέσιμο.',
+  'The article you are looking for may have been moved or unpublished. Browse all our latest pieces below.':
+    'Το άρθρο που αναζητάτε ενδέχεται να έχει μετακινηθεί ή να μην είναι πλέον δημοσιευμένο. Δείτε όλα τα πιο πρόσφατα άρθρα μας παρακάτω.',
+  'The article you are looking for may have been moved or unpublished. Browse all our latest news below.':
+    'Το άρθρο που αναζητάτε ενδέχεται να έχει μετακινηθεί ή να μην είναι πλέον δημοσιευμένο. Δείτε όλα τα πιο πρόσφατα νέα μας παρακάτω.',
+  'Back to all posts': 'Επιστροφή σε όλα τα άρθρα',
+  'Back to all news': 'Επιστροφή σε όλα τα νέα',
 };

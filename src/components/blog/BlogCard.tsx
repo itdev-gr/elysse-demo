@@ -1,4 +1,5 @@
 import type { Post } from '../../types/post';
+import { i18nAttr } from '../../lib/i18n';
 
 type Props = { post: Post };
 
@@ -48,7 +49,7 @@ export default function BlogCard({ post }: Props) {
           {post.excerpt}
         </p>
         <span className="mt-6 inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.25em] text-brand-500 font-medium">
-          Read article
+          <span data-i18n={i18nAttr('Read article')}>Read article</span>
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
             <path d="M5 12h14" />
             <path d="m12 5 7 7-7 7" />
