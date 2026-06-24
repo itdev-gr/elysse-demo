@@ -337,6 +337,7 @@ export function configDetailToCard(c: ConfigurationDetail): CatalogProduct {
 /** Shared validation used by ProductForm and the Data-Errors promote flow. */
 export function validateProductDraft(d: Partial<ProductDraft>): string | null {
   if (!d.code || !d.code.trim()) return 'Code is required (it is the primary key).';
+  if (!d.category_name || !d.category_name.trim()) return 'Category name is required.';
   if (!d.description || !d.description.trim()) return 'Description is required.';
   return null;
 }

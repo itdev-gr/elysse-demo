@@ -201,10 +201,12 @@ export default function ProductForm({ initial, onDone, onCancel }:
     ...opts.map((o) => o.category_name),
     ...slugByName.keys(),
   ]);
-  const subCategoryOpts = uniqSorted([
-    ...opts.filter((o) => !d.category_name || o.category_name === d.category_name).map((o) => o.sub_category),
-    ...managedSubs.filter((o) => !d.category_name || o.category_name === d.category_name).map((o) => o.sub_category),
-  ]);
+  // Sub-categories belong to a category, so only show them once a category is
+  // chosen, scoped to that category. (Category name is required — see validateProductDraft.)
+  const subCategoryOpts = d.category_name ? uniqSorted([
+    ...opts.filter((o) => o.category_name === d.category_name).map((o) => o.sub_category),
+    ...managedSubs.filter((o) => o.category_name === d.category_name).map((o) => o.sub_category),
+  ]) : [];
   // Codes already on products (filtered by the chosen category + series) merged
   // with the managed codes for the category (which may have no products yet).
   const familyCodeOpts = mergeFamilyCodes(
