@@ -6,6 +6,7 @@ import OfficeCard from './OfficeCard.astro';
 import Button from './Button.astro';
 import { Image } from 'astro:assets';
 import type { Section as SectionData } from '../data/content';
+import { i18nAttr } from '../lib/i18n';
 
 interface Props {
   section: SectionData;
@@ -16,10 +17,10 @@ const { section } = Astro.props;
   <Section spacing="md">
     <Container size="lg">
       {section.eyebrow && (
-        <p class="text-xs uppercase tracking-widest text-brand-500 mb-3">{section.eyebrow}</p>
+        <p data-i18n={i18nAttr(section.eyebrow)} class="text-xs uppercase tracking-widest text-brand-500 mb-3">{section.eyebrow}</p>
       )}
       {section.heading && (
-        <h2 data-reveal class="font-display text-display-2">{section.heading}</h2>
+        <h2 data-reveal data-i18n={i18nAttr(section.heading)} class="font-display text-display-2">{section.heading}</h2>
       )}
       {section.image && (
         <div class="mt-6 overflow-hidden bg-ink/5">
@@ -33,7 +34,7 @@ const { section } = Astro.props;
         </div>
       )}
       <div class="mt-6 max-w-prose text-ink/80 space-y-4">
-        {section.body.split(/\n\n+/).map((p) => <p>{p}</p>)}
+        {section.body.split(/\n\n+/).map((p) => <p data-i18n={i18nAttr(p)}>{p}</p>)}
       </div>
       {section.cta && (
         <div class="mt-6">
@@ -41,7 +42,7 @@ const { section } = Astro.props;
             href={section.cta.href}
             variant="primary"
             ariaLabel={section.heading ? `${section.cta.label} about ${section.heading}` : section.cta.label}
-          >{section.cta.label}</Button>
+          ><span data-i18n={i18nAttr(section.cta.label)}>{section.cta.label}</span></Button>
         </div>
       )}
     </Container>
@@ -51,10 +52,10 @@ const { section } = Astro.props;
   <Section bg="alt" spacing="lg">
     <Container size="xl">
       {section.eyebrow && (
-        <p class="text-xs uppercase tracking-widest text-brand-500 mb-3">{section.eyebrow}</p>
+        <p data-i18n={i18nAttr(section.eyebrow)} class="text-xs uppercase tracking-widest text-brand-500 mb-3">{section.eyebrow}</p>
       )}
       {section.heading && (
-        <h2 data-reveal class="font-display text-display-2">{section.heading}</h2>
+        <h2 data-reveal data-i18n={i18nAttr(section.heading)} class="font-display text-display-2">{section.heading}</h2>
       )}
       <div class="mt-10 md:mt-14 grid sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
         {section.items.map((item, i) => (
@@ -77,16 +78,16 @@ const { section } = Astro.props;
   <Section spacing="md">
     <Container size="lg">
       {section.eyebrow && (
-        <p class="text-xs uppercase tracking-widest text-brand-500 mb-3">{section.eyebrow}</p>
+        <p data-i18n={i18nAttr(section.eyebrow)} class="text-xs uppercase tracking-widest text-brand-500 mb-3">{section.eyebrow}</p>
       )}
       {section.heading && (
-        <h2 data-reveal class="font-display text-display-2">{section.heading}</h2>
+        <h2 data-reveal data-i18n={i18nAttr(section.heading)} class="font-display text-display-2">{section.heading}</h2>
       )}
       {section.intro && (
-        <p class="mt-6 max-w-prose text-ink/80">{section.intro}</p>
+        <p data-i18n={i18nAttr(section.intro)} class="mt-6 max-w-prose text-ink/80">{section.intro}</p>
       )}
       <ul class="mt-6 space-y-2 list-disc list-inside text-ink/80 max-w-prose">
-        {section.items.map((item) => <li>{item}</li>)}
+        {section.items.map((item) => <li data-i18n={i18nAttr(item)}>{item}</li>)}
       </ul>
     </Container>
   </Section>
@@ -95,7 +96,7 @@ const { section } = Astro.props;
   <Section spacing="lg">
     <Container size="xl">
       {section.heading && (
-        <h2 data-reveal class="font-display text-display-2">{section.heading}</h2>
+        <h2 data-reveal data-i18n={i18nAttr(section.heading)} class="font-display text-display-2">{section.heading}</h2>
       )}
       <div class="mt-10 md:mt-14 grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-8 gap-y-2">
         {section.offices.map((o, i) => (
@@ -117,10 +118,10 @@ const { section } = Astro.props;
   <Section bg="alt" spacing="lg">
     <Container size="xl">
       {section.eyebrow && (
-        <p class="text-xs uppercase tracking-widest text-brand-500 mb-3">{section.eyebrow}</p>
+        <p data-i18n={i18nAttr(section.eyebrow)} class="text-xs uppercase tracking-widest text-brand-500 mb-3">{section.eyebrow}</p>
       )}
       {section.heading && (
-        <h2 data-reveal class="font-display text-display-2">{section.heading}</h2>
+        <h2 data-reveal data-i18n={i18nAttr(section.heading)} class="font-display text-display-2">{section.heading}</h2>
       )}
       <div class="mt-10 md:mt-14 grid sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
         {section.articles.map((a, i) => (
