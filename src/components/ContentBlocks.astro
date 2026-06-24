@@ -14,23 +14,24 @@ import PartnersWall from './innovation/PartnersWall.astro';
 import ProjectsList from './innovation/ProjectsList.astro';
 import IdeaForm from './innovation/IdeaForm.tsx';
 import type { ContentBlock } from '../data/site-content';
+import { i18nAttr } from '../lib/i18n';
 
 interface Props { blocks: ContentBlock[]; }
 const { blocks } = Astro.props;
 ---
 {blocks.map((b) => {
-  if (b.kind === 'heading' && b.level === 2) return <h2 class="text-2xl md:text-3xl font-heavy text-ink mt-8 first:mt-0">{b.text}</h2>;
-  if (b.kind === 'heading' && b.level === 3) return <h3 class="text-xl font-heavy text-ink mt-6">{b.text}</h3>;
-  if (b.kind === 'paragraph') return <p class="text-base md:text-lg text-ink/85 leading-relaxed max-w-screen-md">{b.text}</p>;
+  if (b.kind === 'heading' && b.level === 2) return <h2 data-i18n={i18nAttr(b.text)} class="text-2xl md:text-3xl font-heavy text-ink mt-8 first:mt-0">{b.text}</h2>;
+  if (b.kind === 'heading' && b.level === 3) return <h3 data-i18n={i18nAttr(b.text)} class="text-xl font-heavy text-ink mt-6">{b.text}</h3>;
+  if (b.kind === 'paragraph') return <p data-i18n={i18nAttr(b.text)} class="text-base md:text-lg text-ink/85 leading-relaxed max-w-screen-md">{b.text}</p>;
   if (b.kind === 'list') {
     const Tag = b.ordered ? 'ol' : 'ul';
     const cls = b.ordered ? 'list-decimal' : 'list-disc';
-    return <Tag class={`${cls} pl-6 space-y-2 text-base md:text-lg text-ink/85 max-w-screen-md`}>{b.items.map((i) => <li>{i}</li>)}</Tag>;
+    return <Tag class={`${cls} pl-6 space-y-2 text-base md:text-lg text-ink/85 max-w-screen-md`}>{b.items.map((i) => <li data-i18n={i18nAttr(i)}>{i}</li>)}</Tag>;
   }
   if (b.kind === 'callout') return (
     <aside class="p-6 md:p-8 bg-brand-500/5 border-l-4 border-brand-500 rounded-sm max-w-screen-md">
-      {b.title && <h3 class="text-lg font-heavy text-brand-500 mb-2">{b.title}</h3>}
-      <p class="text-base md:text-lg text-ink/85">{b.body}</p>
+      {b.title && <h3 data-i18n={i18nAttr(b.title)} class="text-lg font-heavy text-brand-500 mb-2">{b.title}</h3>}
+      <p data-i18n={i18nAttr(b.body)} class="text-base md:text-lg text-ink/85">{b.body}</p>
     </aside>
   );
   if (b.kind === 'stats') return <StatGrid items={b.items} />;
@@ -42,7 +43,7 @@ const { blocks } = Astro.props;
       <div class={`overflow-hidden bg-brand-500/5 ${b.ratio === '16/9' ? 'aspect-video' : b.ratio === '1/1' ? 'aspect-square' : 'aspect-[4/3]'}`}>
         <img src={b.src} alt={b.alt} loading="lazy" class="w-full h-full object-cover" />
       </div>
-      {b.caption && <figcaption class="mt-2 text-sm text-ink/65">{b.caption}</figcaption>}
+      {b.caption && <figcaption data-i18n={i18nAttr(b.caption)} class="mt-2 text-sm text-ink/65">{b.caption}</figcaption>}
     </figure>
   );
   if (b.kind === 'imagegrid') return <ImageGrid intro={b.intro} columns={b.columns} items={b.items} />;

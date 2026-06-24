@@ -13,6 +13,7 @@ interface Props {
   compact?: boolean;
 }
 const { title, eyebrow, subtitle, image, imageAlt, compact = false } = Astro.props;
+import { i18nAttr } from '../lib/i18n';
 
 const heroH = compact ? 'min-h-[46vh] md:min-h-[54vh]' : 'min-h-[72vh] md:min-h-[80vh]';
 const heroPad = compact ? 'pt-32 md:pt-36 pb-10 md:pb-12' : 'pt-40 md:pt-48 pb-16 md:pb-20';
@@ -30,20 +31,21 @@ const heroPad = compact ? 'pt-32 md:pt-36 pb-10 md:pb-12' : 'pt-40 md:pt-48 pb-1
 
     <div class={`relative mx-auto max-w-screen-xl w-full px-4 md:px-8 ${heroPad}`}>
       {eyebrow && (
-        <p data-reveal class="text-[11px] md:text-xs uppercase tracking-[0.4em] text-surface/85 mb-6 md:mb-8">{eyebrow}</p>
+        <p data-reveal data-i18n={i18nAttr(eyebrow)} class="text-[11px] md:text-xs uppercase tracking-[0.4em] text-surface/85 mb-6 md:mb-8">{eyebrow}</p>
       )}
       <h1
         data-reveal
         data-reveal-delay="120"
+        data-i18n={i18nAttr(title)}
         class="font-display font-heavy leading-[0.92] tracking-tight text-surface"
         style="font-size: clamp(2.5rem, 8vw, 6.5rem); max-width: 16ch;"
       >{title}</h1>
       {subtitle && (
-        <p data-reveal data-reveal-delay="240" class="mt-6 md:mt-8 max-w-2xl text-base md:text-lg text-surface/90 leading-relaxed">{subtitle}</p>
+        <p data-reveal data-reveal-delay="240" data-i18n={i18nAttr(subtitle)} class="mt-6 md:mt-8 max-w-2xl text-base md:text-lg text-surface/90 leading-relaxed">{subtitle}</p>
       )}
       <div data-reveal data-reveal-delay="360" class="mt-12 md:mt-16 flex items-center gap-4 text-[11px] uppercase tracking-[0.3em] text-surface/70">
         <span aria-hidden="true" class="h-px w-12 bg-surface/50"></span>
-        <span>{eyebrow ?? title}</span>
+        <span data-i18n={i18nAttr(eyebrow ?? title)}>{eyebrow ?? title}</span>
       </div>
     </div>
   </section>
@@ -66,11 +68,11 @@ const heroPad = compact ? 'pt-32 md:pt-36 pb-10 md:pb-12' : 'pt-40 md:pt-48 pb-1
   <section class="pt-32 md:pt-40 pb-12 md:pb-16 bg-brand-500 text-surface">
     <div class="mx-auto max-w-screen-xl px-4 md:px-8">
       {eyebrow && (
-        <p class="text-xs md:text-sm uppercase tracking-widest font-medium text-surface/80 mb-3">{eyebrow}</p>
+        <p data-i18n={i18nAttr(eyebrow)} class="text-xs md:text-sm uppercase tracking-widest font-medium text-surface/80 mb-3">{eyebrow}</p>
       )}
-      <h1 class="text-3xl md:text-5xl lg:text-6xl font-sans font-heavy">{title}</h1>
+      <h1 data-i18n={i18nAttr(title)} class="text-3xl md:text-5xl lg:text-6xl font-sans font-heavy">{title}</h1>
       {subtitle && (
-        <p class="mt-4 text-base md:text-lg text-surface/90 max-w-3xl">{subtitle}</p>
+        <p data-i18n={i18nAttr(subtitle)} class="mt-4 text-base md:text-lg text-surface/90 max-w-3xl">{subtitle}</p>
       )}
     </div>
   </section>
