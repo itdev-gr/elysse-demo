@@ -12,6 +12,7 @@ import ContactSubNav from '../../../components/contact/ContactSubNav.astro';
 import WorldwideExplorer from '../../../components/contact/WorldwideExplorer.tsx';
 import EnquiryForm from '../../../components/contact/EnquiryForm.tsx';
 import { worldwideOffices } from '../../../data/site-content';
+import { i18nAttr } from '../../../lib/i18n';
 
 const [exportDept] = worldwideOffices;
 
@@ -42,18 +43,18 @@ const continents = [
     <div aria-hidden="true" class="absolute inset-0 bg-brand-500/30"></div>
 
     <Container size="xl" class="relative pt-40 md:pt-48 pb-16 md:pb-24 w-full">
-      <p data-reveal class="text-[11px] md:text-xs uppercase tracking-[0.4em] text-surface/85 mb-8">
+      <p data-reveal class="text-[11px] md:text-xs uppercase tracking-[0.4em] text-surface/85 mb-8" data-i18n={i18nAttr('Contact Us · Export hub')}>
         Contact Us · Export hub
       </p>
-      <h1 data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[0.92] tracking-tight text-surface" style="font-size: clamp(3rem, 9vw, 8rem); max-width: 14ch;">
+      <h1 data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[0.92] tracking-tight text-surface" style="font-size: clamp(3rem, 9vw, 8rem); max-width: 14ch;" data-i18n={i18nAttr('Worldwide Network.')}>
         Worldwide Network.
       </h1>
-      <p data-reveal data-reveal-delay="240" class="mt-8 max-w-2xl text-base md:text-lg text-surface/85 leading-relaxed">
+      <p data-reveal data-reveal-delay="240" class="mt-8 max-w-2xl text-base md:text-lg text-surface/85 leading-relaxed" data-i18n={i18nAttr('Elysée ships to more than 65 destinations from a single export hub in Cyprus — coordinated through a network of distributors and representatives across four world regions.')}>
         Elysée ships to more than 65 destinations from a single export hub in Cyprus — coordinated through a network of distributors and representatives across four world regions.
       </p>
       <div data-reveal data-reveal-delay="360" class="mt-14 md:mt-20 flex items-center gap-4 text-[11px] uppercase tracking-[0.3em] text-surface/70">
         <span aria-hidden="true" class="h-px w-12 bg-surface/50"></span>
-        <span>Worldwide Network</span>
+        <span data-i18n={i18nAttr('Worldwide Network')}>Worldwide Network</span>
       </div>
     </Container>
   </section>
@@ -63,23 +64,23 @@ const continents = [
   {/* ===== STAT BAND ===== */}
   <section class="bg-surface border-b border-ink/10">
     <Container size="xl" class="py-16 md:py-24">
-      <p data-reveal class="text-[11px] md:text-xs uppercase tracking-[0.3em] text-brand-500 mb-10 md:mb-14">By the reach</p>
+      <p data-reveal class="text-[11px] md:text-xs uppercase tracking-[0.3em] text-brand-500 mb-10 md:mb-14" data-i18n={i18nAttr('By the reach')}>By the reach</p>
       <dl class="grid grid-cols-2 md:grid-cols-4 gap-px bg-ink/10 border border-ink/10">
         <div class="bg-surface p-8 md:p-10">
           <dd data-counter="65+" class="font-display font-heavy leading-none tracking-tight text-brand-500" style="font-size: clamp(2.5rem, 6vw, 5rem);">65+</dd>
-          <dt class="mt-4 md:mt-5 text-[10px] md:text-xs uppercase tracking-[0.25em] text-ink/60">Destinations</dt>
+          <dt class="mt-4 md:mt-5 text-[10px] md:text-xs uppercase tracking-[0.25em] text-ink/60" data-i18n={i18nAttr('Destinations')}>Destinations</dt>
         </div>
         <div class="bg-surface p-8 md:p-10">
           <dd data-counter="4" class="font-display font-heavy leading-none tracking-tight text-brand-500" style="font-size: clamp(2.5rem, 6vw, 5rem);">4</dd>
-          <dt class="mt-4 md:mt-5 text-[10px] md:text-xs uppercase tracking-[0.25em] text-ink/60">Continents reached</dt>
+          <dt class="mt-4 md:mt-5 text-[10px] md:text-xs uppercase tracking-[0.25em] text-ink/60" data-i18n={i18nAttr('Continents reached')}>Continents reached</dt>
         </div>
         <div class="bg-surface p-8 md:p-10">
           <dd data-counter="1979" class="font-display font-heavy leading-none tracking-tight text-brand-500" style="font-size: clamp(2.5rem, 6vw, 5rem);">1979</dd>
-          <dt class="mt-4 md:mt-5 text-[10px] md:text-xs uppercase tracking-[0.25em] text-ink/60">Exporting since</dt>
+          <dt class="mt-4 md:mt-5 text-[10px] md:text-xs uppercase tracking-[0.25em] text-ink/60" data-i18n={i18nAttr('Exporting since')}>Exporting since</dt>
         </div>
         <div class="bg-surface p-8 md:p-10">
           <dd data-counter="1" class="font-display font-heavy leading-none tracking-tight text-brand-500" style="font-size: clamp(2.5rem, 6vw, 5rem);">1</dd>
-          <dt class="mt-4 md:mt-5 text-[10px] md:text-xs uppercase tracking-[0.25em] text-ink/60">Export hub · Cyprus</dt>
+          <dt class="mt-4 md:mt-5 text-[10px] md:text-xs uppercase tracking-[0.25em] text-ink/60" data-i18n={i18nAttr('Export hub · Cyprus')}>Export hub · Cyprus</dt>
         </div>
       </dl>
     </Container>
@@ -91,12 +92,12 @@ const continents = [
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16">
         <aside class="lg:col-span-4">
           <div class="lg:sticky lg:top-32">
-            <p data-reveal class="text-[11px] uppercase tracking-[0.4em] text-brand-500 mb-6 md:mb-8">Why one hub</p>
-            <h2 data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[1.02] tracking-tight text-ink" style="font-size: clamp(2rem, 4.5vw, 3.5rem);">
+            <p data-reveal class="text-[11px] uppercase tracking-[0.4em] text-brand-500 mb-6 md:mb-8" data-i18n={i18nAttr('Why one hub')}>Why one hub</p>
+            <h2 data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[1.02] tracking-tight text-ink" style="font-size: clamp(2rem, 4.5vw, 3.5rem);" data-i18n={i18nAttr('One workshop. Sixty-five destinations.')}>
               One workshop. Sixty-five destinations.
             </h2>
             <div aria-hidden="true" class="mt-8 h-px w-12 bg-brand-500"></div>
-            <p data-reveal data-reveal-delay="240" class="mt-6 max-w-xs text-sm text-ink/60 leading-relaxed">
+            <p data-reveal data-reveal-delay="240" class="mt-6 max-w-xs text-sm text-ink/60 leading-relaxed" data-i18n={i18nAttr('Everything ships out of Ergates, Cyprus — at the crossroads of three continents.')}>
               Everything ships out of Ergates, Cyprus — at the crossroads of three continents.
             </p>
           </div>
@@ -110,10 +111,11 @@ const continents = [
                    first-letter:text-7xl md:first-letter:text-8xl
                    first-letter:float-left first-letter:mr-3 first-letter:mt-1
                    first-letter:leading-[0.85] first-letter:text-brand-500"
+            data-i18n={i18nAttr('Every Elysée pipe, fitting and irrigation product is manufactured under one ISO 9001 management system in Ergates, Cyprus — then shipped through a network of distributors and representatives covering Europe, the Middle East, Africa and Asia-Pacific.')}
           >
             Every Elysée pipe, fitting and irrigation product is manufactured under one ISO 9001 management system in Ergates, Cyprus — then shipped through a network of distributors and representatives covering Europe, the Middle East, Africa and Asia-Pacific.
           </p>
-          <p data-reveal data-reveal-delay="280" class="text-base md:text-lg text-ink/80 leading-relaxed">
+          <p data-reveal data-reveal-delay="280" class="text-base md:text-lg text-ink/80 leading-relaxed" data-i18n={i18nAttr("For territory enquiries, tender support and OEM programmes, route through the Export Department below — they'll connect you to the right partner in your region.")}>
             For territory enquiries, tender support and OEM programmes, route through the Export Department below — they'll connect you to the right partner in your region.
           </p>
         </div>
@@ -126,8 +128,8 @@ const continents = [
     <section class="bg-surface">
       <Container size="xl" class="py-20 md:py-24">
         <header class="max-w-3xl mb-12 md:mb-14">
-          <p data-reveal class="text-[11px] uppercase tracking-[0.4em] text-brand-500 mb-6">First point of contact</p>
-          <h2 data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[1.02] tracking-tight text-ink" style="font-size: clamp(2rem, 4.5vw, 3.5rem);">
+          <p data-reveal class="text-[11px] uppercase tracking-[0.4em] text-brand-500 mb-6" data-i18n={i18nAttr('First point of contact')}>First point of contact</p>
+          <h2 data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[1.02] tracking-tight text-ink" style="font-size: clamp(2rem, 4.5vw, 3.5rem);" data-i18n={i18nAttr('Export Department.')}>
             Export Department.
           </h2>
         </header>
@@ -136,7 +138,7 @@ const continents = [
           <dl class="grid grid-cols-1 sm:grid-cols-2 gap-x-10 gap-y-6">
             {exportDept.phone && (
               <div>
-                <dt class="text-[10px] uppercase tracking-[0.25em] text-ink/55 mb-1.5">Phone</dt>
+                <dt class="text-[10px] uppercase tracking-[0.25em] text-ink/55 mb-1.5" data-i18n={i18nAttr('Phone')}>Phone</dt>
                 <dd class="font-display font-heavy text-lg text-ink leading-snug">
                   <a href={`tel:${exportDept.phone.replace(/[^+\d]/g, '')}`} class="hover:text-brand-500 transition-colors duration-200">{exportDept.phone}</a>
                 </dd>
@@ -144,7 +146,7 @@ const continents = [
             )}
             {exportDept.email && (
               <div>
-                <dt class="text-[10px] uppercase tracking-[0.25em] text-ink/55 mb-1.5">Email</dt>
+                <dt class="text-[10px] uppercase tracking-[0.25em] text-ink/55 mb-1.5" data-i18n={i18nAttr('Email')}>Email</dt>
                 <dd class="font-display font-heavy text-lg text-ink leading-snug">
                   <a href={`mailto:${exportDept.email}`} class="hover:text-brand-500 transition-colors duration-200">{exportDept.email}</a>
                 </dd>
@@ -152,7 +154,7 @@ const continents = [
             )}
             {exportDept.notes && (
               <div class="sm:col-span-2 border-t border-ink/10 pt-6">
-                <dt class="text-[10px] uppercase tracking-[0.25em] text-ink/55 mb-1.5">Also</dt>
+                <dt class="text-[10px] uppercase tracking-[0.25em] text-ink/55 mb-1.5" data-i18n={i18nAttr('Also')}>Also</dt>
                 <dd class="text-base text-ink/85 leading-relaxed">{exportDept.notes}</dd>
               </div>
             )}
@@ -166,11 +168,11 @@ const continents = [
   <Section bg="alt" spacing="lg">
     <Container size="xl">
       <header class="max-w-3xl mb-12 md:mb-16">
-        <p data-reveal class="text-[11px] uppercase tracking-[0.4em] text-brand-500 mb-6 md:mb-8">Coverage</p>
-        <h2 data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[1.02] tracking-tight text-ink" style="font-size: clamp(2.25rem, 5.5vw, 4.5rem);">
+        <p data-reveal class="text-[11px] uppercase tracking-[0.4em] text-brand-500 mb-6 md:mb-8" data-i18n={i18nAttr('Coverage')}>Coverage</p>
+        <h2 data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[1.02] tracking-tight text-ink" style="font-size: clamp(2.25rem, 5.5vw, 4.5rem);" data-i18n={i18nAttr('Four continents.')}>
           Four continents.
         </h2>
-        <p data-reveal data-reveal-delay="240" class="mt-6 md:mt-8 text-base md:text-lg text-ink/70 leading-relaxed">
+        <p data-reveal data-reveal-delay="240" class="mt-6 md:mt-8 text-base md:text-lg text-ink/70 leading-relaxed" data-i18n={i18nAttr("The Export Department routes enquiries through the closest local partner. Tell us your continent and we'll connect you.")}>
           The Export Department routes enquiries through the closest local partner. Tell us your continent and we'll connect you.
         </p>
       </header>
@@ -182,9 +184,9 @@ const continents = [
               <article class="group relative bg-surface p-8 md:p-10 min-h-[220px] h-full flex flex-col transition-[background-color] duration-300 hover:bg-surface-alt">
                 <span aria-hidden="true" class="pointer-events-none absolute -top-2 right-4 font-display font-heavy text-brand-500/10 leading-none select-none transition-colors duration-500 group-hover:text-brand-500/25" style="font-size: clamp(4.5rem, 7vw, 7rem);">{num}</span>
                 <p class="relative text-[10px] uppercase tracking-[0.3em] text-brand-500">Continent {num}</p>
-                <h3 class="relative mt-5 font-display font-heavy leading-tight text-xl md:text-2xl text-ink">{c.name}</h3>
+                <h3 class="relative mt-5 font-display font-heavy leading-tight text-xl md:text-2xl text-ink" data-i18n={i18nAttr(c.name)}>{c.name}</h3>
                 <div aria-hidden="true" class="relative mt-4 h-px w-10 bg-brand-500 transition-[width] duration-500 ease-out group-hover:w-20"></div>
-                <p class="relative mt-5 text-sm md:text-base text-ink/75 leading-[1.6] flex-1">{c.blurb}</p>
+                <p class="relative mt-5 text-sm md:text-base text-ink/75 leading-[1.6] flex-1" data-i18n={i18nAttr(c.blurb)}>{c.blurb}</p>
               </article>
             </li>
           );
@@ -201,11 +203,11 @@ const continents = [
   <section class="bg-surface">
     <Container size="xl" class="py-20 md:py-28">
       <header class="max-w-3xl mb-12 md:mb-16">
-        <p data-reveal class="text-[11px] uppercase tracking-[0.4em] text-brand-500 mb-6">Where we ship</p>
-        <h2 data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[1.02] tracking-tight text-ink" style="font-size: clamp(2rem, 4.5vw, 3.5rem);">
+        <p data-reveal class="text-[11px] uppercase tracking-[0.4em] text-brand-500 mb-6" data-i18n={i18nAttr('Where we ship')}>Where we ship</p>
+        <h2 data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[1.02] tracking-tight text-ink" style="font-size: clamp(2rem, 4.5vw, 3.5rem);" data-i18n={i18nAttr('Sixty-five destinations.')}>
           Sixty-five destinations.
         </h2>
-        <p data-reveal data-reveal-delay="240" class="mt-6 max-w-2xl text-base md:text-lg text-ink/70 leading-relaxed">
+        <p data-reveal data-reveal-delay="240" class="mt-6 max-w-2xl text-base md:text-lg text-ink/70 leading-relaxed" data-i18n={i18nAttr("Tap any marker — Elysée's four subsidiaries or any of the partner countries — and the local contact details appear under the map, with a pre-written message ready to send from the form on the right.")}>
           Tap any marker — Elysée's four subsidiaries or any of the partner countries — and the local contact details appear under the map, with a pre-written message ready to send from the form on the right.
         </p>
       </header>
@@ -220,11 +222,11 @@ const continents = [
 
         {/* Left — copy + subsidiary link */}
         <div>
-          <p data-reveal class="text-[11px] uppercase tracking-[0.4em] text-brand-500 mb-6">Export enquiries</p>
-          <h2 data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[1.02] tracking-tight text-ink" style="font-size: clamp(2rem, 4.5vw, 3.25rem);">
+          <p data-reveal class="text-[11px] uppercase tracking-[0.4em] text-brand-500 mb-6" data-i18n={i18nAttr('Export enquiries')}>Export enquiries</p>
+          <h2 data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[1.02] tracking-tight text-ink" style="font-size: clamp(2rem, 4.5vw, 3.25rem);" data-i18n={i18nAttr('Reach our export team.')}>
             Reach our export team.
           </h2>
-          <p data-reveal data-reveal-delay="200" class="mt-6 text-base md:text-lg text-ink/80 leading-relaxed max-w-md">
+          <p data-reveal data-reveal-delay="200" class="mt-6 text-base md:text-lg text-ink/80 leading-relaxed max-w-md" data-i18n={i18nAttr('Tell us about your market and requirements and the export department will get back to you. Looking for one of our regional manufacturing subsidiaries? Visit Elysée WISE in Lebanon, PRIME in Egypt, or Rohrsysteme in Austria.')}>
             Tell us about your market and requirements and the export department will get back to you. Looking for one of our regional manufacturing subsidiaries? Visit Elysée WISE in Lebanon, PRIME in Egypt, or Rohrsysteme in Austria.
           </p>
           <a
@@ -233,7 +235,7 @@ const continents = [
             href="/contact/wise/"
             class="group cursor-pointer mt-8 inline-flex items-center gap-3 px-6 py-3 border border-ink/40 hover:bg-ink hover:border-ink hover:text-surface text-ink text-[11px] md:text-xs uppercase tracking-[0.25em] transition-colors duration-200"
           >
-            <span>Visit Elysée WISE</span>
+            <span data-i18n={i18nAttr('Visit Elysée WISE')}>Visit Elysée WISE</span>
             <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <path d="M5 12h14" />
               <path d="m12 5 7 7-7 7" />

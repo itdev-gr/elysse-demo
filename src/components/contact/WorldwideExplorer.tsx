@@ -9,6 +9,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import ElyseeWorldMap from './ElyseeWorldMap';
 import { supabase, isSupabaseConfigured } from '../../lib/supabase';
+import { i18nAttr, i18nAttrFor } from '../../lib/i18n';
 import type { Country } from '../../types/country';
 
 const FALLBACK_EMAIL = 'yerolemos@elysee.com.cy';
@@ -48,6 +49,16 @@ export default function WorldwideExplorer() {
       cancelled = true;
     };
   }, []);
+
+  // This island renders translated nodes after hydration (and re-renders when a
+  // country is picked); re-fire the swap so the loaded listener applies the
+  // active language to the freshly rendered tree.
+  useEffect(() => {
+    try {
+      const l = localStorage.getItem('elysee.lang');
+      if (l && l !== 'en') document.dispatchEvent(new CustomEvent('elysee:lang', { detail: { lang: l } }));
+    } catch {}
+  }, [state, code]);
 
   const markers = useMemo(() => {
     if (state.kind !== 'ready') return [];
@@ -99,7 +110,7 @@ export default function WorldwideExplorer() {
 
         {state.kind === 'error' && (
           <div className="aspect-[16/9] bg-surface-alt border-l-4 border-brand-500/40 flex items-center justify-center">
-            <p className="text-[11px] uppercase tracking-[0.25em] text-ink/60">Map temporarily unavailable</p>
+            <p className="text-[11px] uppercase tracking-[0.25em] text-ink/60" data-i18n={i18nAttr('Map temporarily unavailable')}>Map temporarily unavailable</p>
           </div>
         )}
 
@@ -111,8 +122,8 @@ export default function WorldwideExplorer() {
         <div className="mt-8 md:mt-10">
           {!contact && (
             <div className="bg-surface-alt border-l-4 border-brand-500/40 p-6 md:p-8">
-              <p className="text-[10px] uppercase tracking-[0.3em] text-brand-500 font-semibold mb-3">Tap any country</p>
-              <p className="text-base text-ink/75 leading-relaxed">
+              <p className="text-[10px] uppercase tracking-[0.3em] text-brand-500 font-semibold mb-3" data-i18n={i18nAttr('Tap any country')}>Tap any country</p>
+              <p className="text-base text-ink/75 leading-relaxed" data-i18n={i18nAttr('Pick a marker on the map to see local contact details — we will route your message to the closest Elysée office or partner.')}>
                 Pick a marker on the map to see local contact details — we will route your
                 message to the closest Elysée office or partner.
               </p>
@@ -121,7 +132,7 @@ export default function WorldwideExplorer() {
 
           {contact && (
             <div className="bg-surface border-l-4 border-brand-500 p-6 md:p-8">
-              <p className="text-[10px] uppercase tracking-[0.3em] text-brand-500 font-semibold">
+              <p className="text-[10px] uppercase tracking-[0.3em] text-brand-500 font-semibold" data-i18n={i18nAttr(contact.kind === 'subsidiary' ? 'Subsidiary' : 'Partner country')}>
                 {contact.kind === 'subsidiary' ? 'Subsidiary' : 'Partner country'}
               </p>
               <h3 className="mt-2 font-display font-heavy text-xl md:text-2xl text-ink leading-tight">{contact.label}</h3>
@@ -130,24 +141,24 @@ export default function WorldwideExplorer() {
 
               <dl className="mt-5 grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-5 text-sm">
                 <div className="sm:col-span-2">
-                  <dt className="text-[10px] uppercase tracking-[0.25em] text-ink/55">Address</dt>
+                  <dt className="text-[10px] uppercase tracking-[0.25em] text-ink/55" data-i18n={i18nAttr('Address')}>Address</dt>
                   <dd className="mt-1 text-ink whitespace-pre-line leading-relaxed">{contact.address}</dd>
                 </div>
                 <div>
-                  <dt className="text-[10px] uppercase tracking-[0.25em] text-ink/55">Phone</dt>
+                  <dt className="text-[10px] uppercase tracking-[0.25em] text-ink/55" data-i18n={i18nAttr('Phone')}>Phone</dt>
                   <dd className="mt-1 text-ink">
                     <a href={`tel:${contact.phone.replace(/[^+\d]/g, '')}`} className="hover:text-brand-500 transition-colors duration-200">{contact.phone}</a>
                   </dd>
                 </div>
                 <div>
-                  <dt className="text-[10px] uppercase tracking-[0.25em] text-ink/55">Email</dt>
+                  <dt className="text-[10px] uppercase tracking-[0.25em] text-ink/55" data-i18n={i18nAttr('Email')}>Email</dt>
                   <dd className="mt-1 text-ink break-all">
                     <a href={`mailto:${contact.email}`} className="hover:text-brand-500 transition-colors duration-200">{contact.email}</a>
                   </dd>
                 </div>
                 {contact.website && (
                   <div className="sm:col-span-2">
-                    <dt className="text-[10px] uppercase tracking-[0.25em] text-ink/55">Website</dt>
+                    <dt className="text-[10px] uppercase tracking-[0.25em] text-ink/55" data-i18n={i18nAttr('Website')}>Website</dt>
                     <dd className="mt-1 text-ink">
                       <a href={`https://${contact.website.replace(/^https?:\/\//, '')}`} target="_blank" rel="noopener noreferrer" className="hover:text-brand-500 transition-colors duration-200">{contact.website}</a>
                     </dd>
@@ -167,10 +178,10 @@ export default function WorldwideExplorer() {
           encType="text/plain"
           className="bg-surface-alt p-6 md:p-8"
         >
-          <p className="text-[10px] uppercase tracking-[0.3em] text-brand-500 font-semibold mb-5">Send a message</p>
+          <p className="text-[10px] uppercase tracking-[0.3em] text-brand-500 font-semibold mb-5" data-i18n={i18nAttr('Send a message')}>Send a message</p>
 
           <label className="block mb-4">
-            <span className="text-[10px] uppercase tracking-[0.25em] text-ink/55">Country</span>
+            <span className="text-[10px] uppercase tracking-[0.25em] text-ink/55" data-i18n={i18nAttr('Country')}>Country</span>
             <select
               name="country"
               value={code ?? ''}
@@ -178,7 +189,7 @@ export default function WorldwideExplorer() {
               disabled={state.kind !== 'ready'}
               className={`mt-1 w-full bg-transparent border-b border-ink/25 px-1 py-2 text-sm focus:outline-none focus:border-brand-500 cursor-pointer ${code ? 'text-ink' : 'text-ink/40'}`}
             >
-              <option value="">
+              <option value="" data-i18n={i18nAttr(state.kind === 'ready' ? 'Select a country…' : 'Loading countries…')}>
                 {state.kind === 'ready' ? 'Select a country…' : 'Loading countries…'}
               </option>
               {sortedCountries.map((c) => (
@@ -190,7 +201,7 @@ export default function WorldwideExplorer() {
           </label>
 
           <label className="block mb-4">
-            <span className="text-[10px] uppercase tracking-[0.25em] text-ink/55">Your name</span>
+            <span className="text-[10px] uppercase tracking-[0.25em] text-ink/55" data-i18n={i18nAttr('Your name')}>Your name</span>
             <input
               type="text"
               name="name"
@@ -203,7 +214,7 @@ export default function WorldwideExplorer() {
           </label>
 
           <label className="block mb-4">
-            <span className="text-[10px] uppercase tracking-[0.25em] text-ink/55">Email</span>
+            <span className="text-[10px] uppercase tracking-[0.25em] text-ink/55" data-i18n={i18nAttr('Email')}>Email</span>
             <input
               type="email"
               name="email"
@@ -216,7 +227,7 @@ export default function WorldwideExplorer() {
           </label>
 
           <label className="block mb-6">
-            <span className="text-[10px] uppercase tracking-[0.25em] text-ink/55">Message</span>
+            <span className="text-[10px] uppercase tracking-[0.25em] text-ink/55" data-i18n={i18nAttr('Message')}>Message</span>
             <textarea
               name="message"
               required
@@ -224,6 +235,7 @@ export default function WorldwideExplorer() {
               value={message}
               onChange={(e) => setMessage(e.currentTarget.value)}
               placeholder={contact ? '' : 'Pick a country on the map to pre-fill, or write your enquiry here.'}
+              data-i18n-attr={contact ? undefined : i18nAttrFor({ placeholder: 'Pick a country on the map to pre-fill, or write your enquiry here.' })}
               className="mt-1 w-full bg-transparent border-b border-ink/25 px-1 py-2 text-sm text-ink placeholder:text-ink/40 focus:outline-none focus:border-brand-500 resize-none"
             />
           </label>
@@ -232,7 +244,7 @@ export default function WorldwideExplorer() {
             type="submit"
             className="inline-flex items-center justify-center gap-2 bg-brand-500 text-surface px-5 py-2.5 text-[11px] uppercase tracking-[0.25em] font-medium hover:bg-brand-700 transition-colors duration-200 cursor-pointer"
           >
-            Send message
+            <span data-i18n={i18nAttr('Send message')}>Send message</span>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
               <path d="M5 12h14" />
               <path d="m12 5 7 7-7 7" />
@@ -240,7 +252,7 @@ export default function WorldwideExplorer() {
           </button>
 
           {!contact && (
-            <p className="mt-5 text-[11px] text-ink/55 leading-relaxed">
+            <p className="mt-5 text-[11px] text-ink/55 leading-relaxed" data-i18n={i18nAttr('No country picked — your message will be routed to the Export Department in Cyprus.')}>
               No country picked — your message will be routed to the Export Department in Cyprus.
             </p>
           )}

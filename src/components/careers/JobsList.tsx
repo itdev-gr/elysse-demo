@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { supabase, isSupabaseConfigured } from '../../lib/supabase';
+import { i18nAttr } from '../../lib/i18n';
 import type { Job } from '../../types/job';
 import JobCard from './JobCard';
 
@@ -45,6 +46,16 @@ export default function JobsList() {
     };
   }, []);
 
+  // This island renders translated nodes after hydration (and swaps between
+  // loading / empty / error / ready states); re-fire the swap so the loaded
+  // listener applies the active language to the freshly rendered tree.
+  useEffect(() => {
+    try {
+      const l = localStorage.getItem('elysee.lang');
+      if (l && l !== 'en') document.dispatchEvent(new CustomEvent('elysee:lang', { detail: { lang: l } }));
+    } catch {}
+  }, [state]);
+
   if (state.kind === 'loading') {
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
@@ -71,16 +82,16 @@ export default function JobsList() {
       : 'Please reach out by email and we will reply with the current openings.';
     return (
       <div className="bg-surface-alt border-l-4 border-brand-500/40 p-8 md:p-10 max-w-3xl">
-        <p className="text-[10px] uppercase tracking-[0.3em] text-brand-500 font-semibold mb-3">
+        <p className="text-[10px] uppercase tracking-[0.3em] text-brand-500 font-semibold mb-3" data-i18n={i18nAttr(state.kind === 'empty' ? 'No openings' : 'Temporarily unavailable')}>
           {state.kind === 'empty' ? 'No openings' : 'Temporarily unavailable'}
         </p>
-        <h3 className="font-display font-heavy text-xl md:text-2xl text-ink leading-tight">{heading}</h3>
-        <p className="mt-4 text-base text-ink/75 leading-relaxed">{body}</p>
+        <h3 className="font-display font-heavy text-xl md:text-2xl text-ink leading-tight" data-i18n={i18nAttr(heading)}>{heading}</h3>
+        <p className="mt-4 text-base text-ink/75 leading-relaxed" data-i18n={i18nAttr(body)}>{body}</p>
         <a
           href="mailto:recruitment@elysee.com.cy"
           className="mt-6 inline-flex items-center gap-2 bg-brand-500 text-surface px-5 py-2.5 text-[11px] uppercase tracking-[0.25em] font-medium hover:bg-brand-700 transition-colors duration-200"
         >
-          Email recruitment@elysee.com.cy
+          <span data-i18n={i18nAttr('Email recruitment@elysee.com.cy')}>Email recruitment@elysee.com.cy</span>
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
             <path d="M5 12h14" />
             <path d="m12 5 7 7-7 7" />
