@@ -30,6 +30,10 @@ export default function CategoryForm({ initial, onDone, onCancel }:
     const payload = {
       ...d,
       slug: d.slug.trim(),
+      // The Excel link is what ties products to this category and populates the
+      // product form's category dropdown. Default it to the name when left blank
+      // so every category is selectable/linkable without touching the advanced field.
+      product_category_name: d.product_category_name?.trim() || d.name.trim(),
       name_i18n: cleanI18n(d.name_i18n),
       blurb_i18n: cleanI18n(d.blurb_i18n),
     };
@@ -67,7 +71,7 @@ export default function CategoryForm({ initial, onDone, onCancel }:
         {field('Sort order', 'sort_order', 'number')}
         {field('Image path', 'image', 'text', '/images/products/categories/<slug>.png')}
         {field('Leaflet PDF', 'leaflet_pdf')}
-        {field('Excel category link (advanced)', 'product_category_name', 'text', 'Must equal products.category_name to show catalogue items')}
+        {field('Excel category link (advanced)', 'product_category_name', 'text', 'Defaults to the Name. Must equal products.category_name to show catalogue items')}
       </div>
       <label className="block mb-4">
         <span className="block text-[10px] uppercase tracking-[0.2em] text-ink/55 mb-1">Blurb</span>
