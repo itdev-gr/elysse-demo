@@ -357,7 +357,13 @@ export default function ProductForm({ initial, onDone, onCancel }:
           {GROUPS.map((g) => (
             <label key={g} className="flex items-center gap-1.5 text-sm">
               <input type="checkbox" checked={groups.includes(g)} className="accent-brand-500"
-                onChange={(e) => setGroups((prev) => e.currentTarget.checked ? [...prev, g] : prev.filter((x) => x !== g))} />
+                onChange={(e) => {
+                  // Read `checked` synchronously: React nulls e.currentTarget once the
+                  // handler returns, so reading it inside the deferred setGroups updater
+                  // would throw and crash the form.
+                  const checked = e.currentTarget.checked;
+                  setGroups((prev) => (checked ? [...prev, g] : prev.filter((x) => x !== g)));
+                }} />
               {g}
             </label>
           ))}
