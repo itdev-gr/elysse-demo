@@ -195,7 +195,12 @@ export default function ProductForm({ initial, onDone, onCancel }:
 
   const uniqSorted = (vals: (string | null)[]) =>
     [...new Set(vals.filter((v): v is string => !!v))].sort((a, b) => a.localeCompare(b));
-  const categoryOpts = uniqSorted(opts.map((o) => o.category_name));
+  // Category names from existing products merged with the managed categories
+  // (product_categories), so newly-added ones with no products yet are selectable.
+  const categoryOpts = uniqSorted([
+    ...opts.map((o) => o.category_name),
+    ...slugByName.keys(),
+  ]);
   const subCategoryOpts = uniqSorted([
     ...opts.filter((o) => !d.category_name || o.category_name === d.category_name).map((o) => o.sub_category),
     ...managedSubs.filter((o) => !d.category_name || o.category_name === d.category_name).map((o) => o.sub_category),
