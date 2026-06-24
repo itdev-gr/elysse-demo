@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { supabase, isSupabaseConfigured } from '../../lib/supabase';
+import { i18nAttr } from '../../lib/i18n';
 import { renderPostBody } from '../../lib/posts';
 import type { Ebook } from '../../types/ebook';
 
@@ -37,11 +38,20 @@ export default function EbookDetailView({ slug }: Props) {
     };
   }, [slug]);
 
+  // Re-fire the page-wide language swap whenever the rendered tree changes
+  // (loading → ready/not-found/error), so Greek shows on first load too.
+  useEffect(() => {
+    try {
+      const l = localStorage.getItem('elysee.lang');
+      if (l && l !== 'en') document.dispatchEvent(new CustomEvent('elysee:lang', { detail: { lang: l } }));
+    } catch {}
+  }, [state]);
+
   const hero = (title: string) => (
     <section className="pt-32 md:pt-40 pb-12 md:pb-16 bg-brand-500 text-surface">
       <div className="mx-auto max-w-screen-xl px-4 md:px-8">
-        <p className="text-xs md:text-sm uppercase tracking-widest font-medium text-surface/80 mb-3">Insights · eBooks</p>
-        <h1 className="text-3xl md:text-5xl lg:text-6xl font-sans font-heavy">{title}</h1>
+        <p data-i18n={i18nAttr('Insights · eBooks')} className="text-xs md:text-sm uppercase tracking-widest font-medium text-surface/80 mb-3">Insights · eBooks</p>
+        <h1 data-i18n={i18nAttr(title)} className="text-3xl md:text-5xl lg:text-6xl font-sans font-heavy">{title}</h1>
       </div>
     </section>
   );
@@ -67,14 +77,14 @@ export default function EbookDetailView({ slug }: Props) {
       <>
         {hero(heading)}
         <div className="mx-auto max-w-screen-lg px-4 md:px-8 py-12 md:py-16">
-          <p className="text-base text-ink/75 leading-relaxed">
+          <p data-i18n={i18nAttr('The publication you are looking for may have been moved or unpublished.')} className="text-base text-ink/75 leading-relaxed">
             The publication you are looking for may have been moved or unpublished.
           </p>
           <a
             href="/insights/ebooks/"
             className="mt-6 inline-flex items-center gap-1 text-sm font-medium text-brand-500 hover:text-brand-accent transition-colors duration-150"
           >
-            <span aria-hidden="true">←</span> Back to eBooks
+            <span aria-hidden="true">←</span> <span data-i18n={i18nAttr('Back to eBooks')}>Back to eBooks</span>
           </a>
         </div>
       </>
@@ -94,11 +104,11 @@ export default function EbookDetailView({ slug }: Props) {
                   <img src={b.cover_image} alt={b.image_alt ?? `${b.title} cover`} loading="eager" className="w-full h-full object-cover" />
                 </figure>
               )}
-              {b.year && <p className="text-xs uppercase tracking-widest text-ink/60">Published {b.year}</p>}
+              {b.year && <p className="text-xs uppercase tracking-widest text-ink/60"><span data-i18n={i18nAttr('Published')}>Published</span> {b.year}</p>}
               {b.download_url ? (
-                <a href={b.download_url} download className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-brand-500 text-surface text-[11px] uppercase tracking-[0.25em] font-medium hover:bg-brand-700 transition-colors duration-200">Download PDF</a>
+                <a href={b.download_url} download className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-brand-500 text-surface text-[11px] uppercase tracking-[0.25em] font-medium hover:bg-brand-700 transition-colors duration-200" data-i18n={i18nAttr('Download PDF')}>Download PDF</a>
               ) : (
-                <a href="/contact/local/" className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-brand-500 text-surface text-[11px] uppercase tracking-[0.25em] font-medium hover:bg-brand-700 transition-colors duration-200">Request a copy</a>
+                <a href="/contact/local/" className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-brand-500 text-surface text-[11px] uppercase tracking-[0.25em] font-medium hover:bg-brand-700 transition-colors duration-200" data-i18n={i18nAttr('Request a copy')}>Request a copy</a>
               )}
             </div>
           </aside>
@@ -109,7 +119,7 @@ export default function EbookDetailView({ slug }: Props) {
             />
             <nav aria-label="Back to eBooks" className="pt-8 mt-8 border-t border-ink/10">
               <a href="/insights/ebooks/" className="inline-flex items-center gap-1 text-sm font-medium text-brand-500 hover:text-brand-accent transition-colors duration-150">
-                <span aria-hidden="true">←</span> Back to eBooks
+                <span aria-hidden="true">←</span> <span data-i18n={i18nAttr('Back to eBooks')}>Back to eBooks</span>
               </a>
             </nav>
           </div>
