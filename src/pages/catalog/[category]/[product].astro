@@ -10,7 +10,7 @@ import BaseLayout from '../../../layouts/BaseLayout.astro';
 import ConfigDetail from '../../../components/catalog/ConfigDetail.astro';
 import { fetchConfigurationDetails, configDetailToCard } from '../../../lib/products';
 import { getCategories, getSubcategories } from '../../../lib/categories';
-import type { CatalogProduct } from '../../../scripts/catalog/types';
+import type { CatalogProduct, CategorySlug } from '../../../scripts/catalog/types';
 import '../../../styles/catalog.css';
 
 // Rendered on-demand so a newly added/edited product is live immediately — no
@@ -24,7 +24,7 @@ if (!categoryEntry || !categoryEntry.product_category_name) return new Response(
 
 let configs;
 try {
-  configs = await fetchConfigurationDetails(categoryEntry.product_category_name);
+  configs = await fetchConfigurationDetails(categoryEntry.product_category_name, categoryEntry.slug as CategorySlug);
 } catch (err) {
   console.error(`catalog product "${product}": fetch failed`, err);
   return new Response(null, { status: 404 });

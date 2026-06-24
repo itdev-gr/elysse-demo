@@ -24,7 +24,7 @@ const excelName = categoryEntry.product_category_name ?? undefined;
 let products: CatalogProduct[] = [];
 if (excelName) {
   try {
-    products = await fetchCatalogConfigurations(excelName);
+    products = await fetchCatalogConfigurations(excelName, categoryEntry.slug as CategorySlug);
   } catch (err) {
     console.error(`catalog "${category}": product fetch failed, rendering empty`, err);
     products = [];

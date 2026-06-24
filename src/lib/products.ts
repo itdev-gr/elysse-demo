@@ -9,12 +9,6 @@ import {
   resolveDescriptionI18n,
 } from './product-configurations';
 
-const CATEGORY_SLUG_BY_NAME: Record<string, CategorySlug> = {
-  'Compression Fittings': 'compression-fittings',
-  'Hydraulic Fittings': 'hydraulic-fittings',
-  'Saddles': 'saddles',
-};
-
 const PLACEHOLDER_IMAGE = '/images/products/categories/compression-fittings.png';
 
 /** Catalogue slug → Excel "Category Description" for the Supabase-backed categories. */
@@ -42,15 +36,13 @@ export function parseDnFromSize(size: string | null): [number, number] | undefin
 }
 
 /** Map a DB product + its expanded country list into the existing CatalogProduct shape. */
-export function toCatalogProduct(p: Product, countries: string[]): CatalogProduct {
+export function toCatalogProduct(p: Product, countries: string[], categorySlug: CategorySlug): CatalogProduct {
   const pn = parsePnFromSubCategory(p.sub_category);
-  const slug = CATEGORY_SLUG_BY_NAME[p.category_name ?? ''];
-  if (!slug && p.category_name) console.warn(`toCatalogProduct: unmapped category_name "${p.category_name}" for ${p.code}`);
   return {
     slug: p.code,
     name: p.description ?? [p.configuration, p.size].filter(Boolean).join(' — '),
     code: p.code,
-    categorySlug: (slug ?? 'compression-fittings'),
+    categorySlug,
     sectors: [],
     material: p.sub_category ?? undefined,   // reused as the "Series" facet group
     dnRange: parseDnFromSize(p.size),
@@ -125,25 +117,25 @@ async function loadCategory(
 }
 
 /** Build-time fetch: one CatalogProduct per SKU (every size variant). */
-export async function fetchCatalogProducts(categoryName: string): Promise<CatalogProduct[]> {
+export async function fetchCatalogProducts(categoryName: string, categorySlug: CategorySlug): Promise<CatalogProduct[]> {
   const { products, countriesByCode } = await loadCategory(categoryName);
-  return products.map((p) => toCatalogProduct(p, countriesByCode.get(p.code) ?? []));
+  return products.map((p) => toCatalogProduct(p, countriesByCode.get(p.code) ?? [], categorySlug));
 }
 
 /** A product configuration (catalogue No.) as a card — sizes collapsed away. */
 function configToCatalogProduct(
   rep: Product,
   countries: string[],
+  categorySlug: CategorySlug,
   nameI18n?: Record<string, string>,
 ): CatalogProduct {
-  const slug = CATEGORY_SLUG_BY_NAME[rep.category_name ?? ''];
   const ref = rep.family_code ?? rep.code; // catalogue number, e.g. "330A"
   return {
     slug: configSlug(rep.sub_category, ref),
     name: nameI18n?.en ?? rep.configuration ?? rep.description ?? ref,
     nameI18n,
     code: ref,
-    categorySlug: slug ?? 'compression-fittings',
+    categorySlug,
     sectors: [],
     material: rep.sub_category ?? undefined, // series facet
     dnRange: undefined,
@@ -169,8 +161,7 @@ function configToCatalogProduct(
  * collapsing all size variants. A configuration is shown for a country when any
  * of its sizes is available there (union of memberships).
  */
-export async function fetchCatalogConfigurations(categoryName: string): Promise<CatalogProduct[]> {
-  const categorySlug = CATEGORY_SLUG_BY_NAME[categoryName] ?? 'compression-fittings';
+export async function fetchCatalogConfigurations(categoryName: string, categorySlug: CategorySlug): Promise<CatalogProduct[]> {
   const [{ products, countriesByCode }, configRecords] = await Promise.all([
     loadCategory(categoryName),
     fetchConfigsByCategorySlug(categorySlug),
@@ -204,7 +195,7 @@ export async function fetchCatalogConfigurations(categoryName: string): Promise<
       // Same resolution as the detail page: product_configurations record wins,
       // per-row merged map is the fallback, English always present.
       const nameI18n = resolveNameI18n(derivedName, g.perRow, configRecords.get(key));
-      return configToCatalogProduct(g.rep, [...g.countries], nameI18n);
+      return configToCatalogProduct(g.rep, [...g.countries], categorySlug, nameI18n);
     });
 }
 
@@ -242,8 +233,7 @@ export interface ConfigurationDetail {
 const I18N_LANGS = ['el', 'de', 'es', 'fr'] as const;
 
 /** Build-time fetch: every configuration in a category, each with its sizes. */
-export async function fetchConfigurationDetails(categoryName: string): Promise<ConfigurationDetail[]> {
-  const categorySlug = CATEGORY_SLUG_BY_NAME[categoryName] ?? 'compression-fittings';
+export async function fetchConfigurationDetails(categoryName: string, categorySlug: CategorySlug): Promise<ConfigurationDetail[]> {
   const [{ products, countriesByCode }, configRecords] = await Promise.all([
     loadCategory(categoryName),
     fetchConfigsByCategorySlug(categorySlug),
@@ -264,7 +254,7 @@ export async function fetchConfigurationDetails(categoryName: string): Promise<C
         nameI18n: { en: enName },
         descriptionI18n: p.description ? { en: p.description } : {},
         subCategory: p.sub_category ?? '',
-        categorySlug: CATEGORY_SLUG_BY_NAME[p.category_name ?? ''] ?? 'compression-fittings',
+        categorySlug,
         categoryName: p.category_name ?? categoryName,
         image: p.image_url ?? null,
         availableCountries: [],

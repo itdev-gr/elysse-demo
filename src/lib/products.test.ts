@@ -48,7 +48,7 @@ describe('toCatalogProduct', () => {
     is_active: true, is_hidden: false, created_at: '', updated_at: '',
   };
   it('maps fields and country availability', () => {
-    const cp = toCatalogProduct(p, ['gr', 'au']);
+    const cp = toCatalogProduct(p, ['gr', 'au'], 'compression-fittings');
     expect(cp.slug).toBe('330001610');
     expect(cp.code).toBe('330001610');
     expect(cp.categorySlug).toBe('compression-fittings');
@@ -60,5 +60,15 @@ describe('toCatalogProduct', () => {
     expect(cp.specs).toContainEqual({ key: 'MOQ', value: '0' });
     expect(cp.specs).toContainEqual({ key: 'Packing (bag)', value: '25' });
     expect(cp.specs).toContainEqual({ key: 'Packing (box)', value: '750' });
+  });
+
+  // Regression: the catalogue slug must come from the passed argument, not a
+  // hardcoded name→slug map. A category added after launch (e.g. Light-Weight
+  // Fittings) used to fall back to 'compression-fittings', so the client's
+  // by-category filter hid the product after SSR painted it.
+  it('uses the supplied category slug for newer categories', () => {
+    const lw: Product = { ...p, code: 'LW1', category_name: 'Light-Weight Fittings', category: 'D' };
+    const cp = toCatalogProduct(lw, ['gr'], 'light-weight-fittings');
+    expect(cp.categorySlug).toBe('light-weight-fittings');
   });
 });
