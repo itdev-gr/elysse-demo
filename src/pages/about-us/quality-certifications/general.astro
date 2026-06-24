@@ -22,6 +22,7 @@ import {
   QUALITY_CATEGORIES,
   QUALITY_CERTIFICATE_SEED,
 } from '../../../data/quality-certificates';
+import { i18nAttr } from '../../../lib/i18n';
 
 const meta = QUALITY_CATEGORIES.find((c) => c.slug === 'general')!;
 const seed = QUALITY_CERTIFICATE_SEED['general'] ?? [];
@@ -75,15 +76,15 @@ const desc = `${meta.blurb} ${certCount} recognitions covering people, productiv
       <p data-reveal class="text-[11px] md:text-xs uppercase tracking-[0.4em] text-surface/85 mb-8">
         Quality &amp; Certifications · {meta.title} · Independently awarded
       </p>
-      <h1 data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[0.92] tracking-tight text-surface" style="font-size: clamp(3rem, 9vw, 8rem); max-width: 14ch;">
+      <h1 data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[0.92] tracking-tight text-surface" style="font-size: clamp(3rem, 9vw, 8rem); max-width: 14ch;" data-i18n={i18nAttr('Recognised, by certificate.')}>
         Recognised, by certificate.
       </h1>
-      <p data-reveal data-reveal-delay="240" class="mt-8 max-w-2xl text-base md:text-lg text-surface/85 leading-relaxed">
+      <p data-reveal data-reveal-delay="240" class="mt-8 max-w-2xl text-base md:text-lg text-surface/85 leading-relaxed" data-i18n={i18nAttr(meta.blurb)}>
         {meta.blurb}
       </p>
       <div data-reveal data-reveal-delay="360" class="mt-14 md:mt-20 flex items-center gap-4 text-[11px] uppercase tracking-[0.3em] text-surface/70">
         <span aria-hidden="true" class="h-px w-12 bg-surface/50"></span>
-        <span><span data-cert-count>{certCount}</span> certified recognitions</span>
+        <span><span data-cert-count>{certCount}</span> <span data-i18n={i18nAttr('certified recognitions')}>certified recognitions</span></span>
       </div>
     </Container>
   </section>
@@ -93,23 +94,23 @@ const desc = `${meta.blurb} ${certCount} recognitions covering people, productiv
   {/* ===== STAT BAND ===== */}
   <section class="bg-surface border-b border-ink/10">
     <Container size="xl" class="py-16 md:py-24">
-      <p data-reveal class="text-[11px] md:text-xs uppercase tracking-[0.3em] text-brand-500 mb-10 md:mb-14">Beyond the product line</p>
+      <p data-reveal class="text-[11px] md:text-xs uppercase tracking-[0.3em] text-brand-500 mb-10 md:mb-14" data-i18n={i18nAttr('Beyond the product line')}>Beyond the product line</p>
       <dl class="grid grid-cols-2 md:grid-cols-4 gap-px bg-ink/10 border border-ink/10">
         <div class="bg-surface p-8 md:p-10">
           <dd data-counter={String(certCount)} data-cert-count class="font-display font-heavy leading-none tracking-tight text-brand-500" style="font-size: clamp(2.5rem, 6vw, 5rem);">{certCount}</dd>
-          <dt class="mt-4 md:mt-5 text-[10px] md:text-xs uppercase tracking-[0.25em] text-ink/60">Recognitions</dt>
+          <dt class="mt-4 md:mt-5 text-[10px] md:text-xs uppercase tracking-[0.25em] text-ink/60" data-i18n={i18nAttr('Recognitions')}>Recognitions</dt>
         </div>
         <div class="bg-surface p-8 md:p-10">
           <dd class="font-display font-heavy leading-none tracking-tight text-brand-500" style="font-size: clamp(2rem, 5vw, 4rem);">HRDA</dd>
-          <dt class="mt-4 md:mt-5 text-[10px] md:text-xs uppercase tracking-[0.25em] text-ink/60">Productivity programme</dt>
+          <dt class="mt-4 md:mt-5 text-[10px] md:text-xs uppercase tracking-[0.25em] text-ink/60" data-i18n={i18nAttr('Productivity programme')}>Productivity programme</dt>
         </div>
         <div class="bg-surface p-8 md:p-10">
           <dd class="font-display font-heavy leading-none tracking-tight text-brand-500" style="font-size: clamp(2rem, 5vw, 4rem);">Green Dot</dd>
-          <dt class="mt-4 md:mt-5 text-[10px] md:text-xs uppercase tracking-[0.25em] text-ink/60">Packaging recovery</dt>
+          <dt class="mt-4 md:mt-5 text-[10px] md:text-xs uppercase tracking-[0.25em] text-ink/60" data-i18n={i18nAttr('Packaging recovery')}>Packaging recovery</dt>
         </div>
         <div class="bg-surface p-8 md:p-10">
-          <dd class="font-display font-heavy leading-none tracking-tight text-brand-500" style="font-size: clamp(2rem, 5vw, 4rem);">Annual</dd>
-          <dt class="mt-4 md:mt-5 text-[10px] md:text-xs uppercase tracking-[0.25em] text-ink/60">Review cadence</dt>
+          <dd class="font-display font-heavy leading-none tracking-tight text-brand-500" style="font-size: clamp(2rem, 5vw, 4rem);" data-i18n={i18nAttr('Annual')}>Annual</dd>
+          <dt class="mt-4 md:mt-5 text-[10px] md:text-xs uppercase tracking-[0.25em] text-ink/60" data-i18n={i18nAttr('Review cadence')}>Review cadence</dt>
         </div>
       </dl>
     </Container>
@@ -121,12 +122,12 @@ const desc = `${meta.blurb} ${certCount} recognitions covering people, productiv
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16">
         <aside class="lg:col-span-4">
           <div class="lg:sticky lg:top-32">
-            <p data-reveal class="text-[11px] uppercase tracking-[0.4em] text-brand-500 mb-6 md:mb-8">Beyond the product</p>
-            <h2 data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[1.02] tracking-tight text-ink" style="font-size: clamp(2rem, 4.5vw, 3.5rem);">
+            <p data-reveal class="text-[11px] uppercase tracking-[0.4em] text-brand-500 mb-6 md:mb-8" data-i18n={i18nAttr('Beyond the product')}>Beyond the product</p>
+            <h2 data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[1.02] tracking-tight text-ink" style="font-size: clamp(2rem, 4.5vw, 3.5rem);" data-i18n={i18nAttr('Quality, outside the box.')}>
               Quality, outside the box.
             </h2>
             <div aria-hidden="true" class="mt-8 h-px w-12 bg-brand-500"></div>
-            <p data-reveal data-reveal-delay="240" class="mt-6 max-w-xs text-sm text-ink/60 leading-relaxed">
+            <p data-reveal data-reveal-delay="240" class="mt-6 max-w-xs text-sm text-ink/60 leading-relaxed" data-i18n={i18nAttr('Not every certificate fits a product family — some recognise how the company works, trains, and takes responsibility.')}>
               Not every certificate fits a product family — some recognise how the company works, trains, and takes responsibility.
             </p>
           </div>
@@ -140,10 +141,11 @@ const desc = `${meta.blurb} ${certCount} recognitions covering people, productiv
                    first-letter:text-7xl md:first-letter:text-8xl
                    first-letter:float-left first-letter:mr-3 first-letter:mt-1
                    first-letter:leading-[0.85] first-letter:text-brand-500"
+            data-i18n={i18nAttr("Pipes and fittings carry most of Elysée's certificates — but quality runs wider than the product catalogue. The recognitions on this page cover the company itself: the national productivity-improvement programme we take part in, and our membership of the Green Dot packaging recovery scheme.")}
           >
             Pipes and fittings carry most of Elysée's certificates — but quality runs wider than the product catalogue. The recognitions on this page cover the company itself: the national productivity-improvement programme we take part in, and our membership of the Green Dot packaging recovery scheme.
           </p>
-          <p data-reveal data-reveal-delay="280" class="text-base md:text-lg text-ink/80 leading-relaxed">
+          <p data-reveal data-reveal-delay="280" class="text-base md:text-lg text-ink/80 leading-relaxed" data-i18n={i18nAttr('Like every other certificate we hold, each one is issued by an independent body and downloadable below — the same documents we provide for tenders, partnerships, and corporate due diligence.')}>
             Like every other certificate we hold, each one is issued by an independent body and downloadable below — the same documents we provide for tenders, partnerships, and corporate due diligence.
           </p>
         </div>
@@ -158,9 +160,9 @@ const desc = `${meta.blurb} ${certCount} recognitions covering people, productiv
     <div aria-hidden="true" class="absolute inset-0 bg-brand-500/35 mix-blend-multiply"></div>
     <Container size="lg" class="relative py-20 md:py-28 w-full">
       <div class="max-w-4xl mx-auto text-center">
-        <p data-reveal class="text-[11px] md:text-xs uppercase tracking-[0.4em] text-surface/75 mb-8">The wider picture</p>
+        <p data-reveal class="text-[11px] md:text-xs uppercase tracking-[0.4em] text-surface/75 mb-8" data-i18n={i18nAttr('The wider picture')}>The wider picture</p>
         <blockquote data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[1.05] tracking-tight" style="font-size: clamp(2rem, 5vw, 4.5rem);">
-          <span aria-hidden="true" class="text-surface/55">&ldquo;</span>Quality is a habit, not a category.<span aria-hidden="true" class="text-surface/55">&rdquo;</span>
+          <span aria-hidden="true" class="text-surface/55">&ldquo;</span><span data-i18n={i18nAttr('Quality is a habit, not a category.')}>Quality is a habit, not a category.</span><span aria-hidden="true" class="text-surface/55">&rdquo;</span>
         </blockquote>
       </div>
     </Container>
@@ -175,15 +177,15 @@ const desc = `${meta.blurb} ${certCount} recognitions covering people, productiv
         class="group cursor-pointer inline-flex items-center gap-2 mb-10 md:mb-12 text-[11px] uppercase tracking-[0.25em] text-ink/60 hover:text-brand-500 transition-colors duration-200"
       >
         <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 transition-transform duration-200 group-hover:-translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>
-        <span>All certificate categories</span>
+        <span data-i18n={i18nAttr('All certificate categories')}>All certificate categories</span>
       </a>
 
       <header class="max-w-3xl mb-12 md:mb-16">
-        <p data-reveal class="text-[11px] uppercase tracking-[0.4em] text-brand-500 mb-6 md:mb-8">Our General Certifications</p>
+        <p data-reveal class="text-[11px] uppercase tracking-[0.4em] text-brand-500 mb-6 md:mb-8" data-i18n={i18nAttr('Our General Certifications')}>Our General Certifications</p>
         <h2 data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[1.02] tracking-tight text-ink" style="font-size: clamp(2.25rem, 5.5vw, 4.5rem);">
-          <span data-cert-count>{certCount}</span> standards. <span data-cert-count>{certCount}</span> PDFs.
+          <span data-cert-count>{certCount}</span> <span data-i18n={i18nAttr('standards.')}>standards.</span> <span data-cert-count>{certCount}</span> <span data-i18n={i18nAttr('PDFs.')}>PDFs.</span>
         </h2>
-        <p data-reveal data-reveal-delay="240" class="mt-6 md:mt-8 text-base md:text-lg text-ink/70 leading-relaxed">
+        <p data-reveal data-reveal-delay="240" class="mt-6 md:mt-8 text-base md:text-lg text-ink/70 leading-relaxed" data-i18n={i18nAttr('Tap any badge below to download the current certificate.')}>
           Tap any badge below to download the current certificate.
         </p>
       </header>
@@ -198,8 +200,8 @@ const desc = `${meta.blurb} ${certCount} recognitions covering people, productiv
     <Container size="xl" class="py-16 md:py-24">
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-start">
         <div class="lg:pt-4">
-          <p data-reveal class="text-[11px] uppercase tracking-[0.4em] text-brand-500 mb-6">Request a certificate</p>
-          <p data-reveal data-reveal-delay="120" class="text-base md:text-lg text-ink/80 leading-relaxed max-w-xl">
+          <p data-reveal class="text-[11px] uppercase tracking-[0.4em] text-brand-500 mb-6" data-i18n={i18nAttr('Request a certificate')}>Request a certificate</p>
+          <p data-reveal data-reveal-delay="120" class="text-base md:text-lg text-ink/80 leading-relaxed max-w-xl" data-i18n={i18nAttr("Need an older certificate, a tender-ready bundle, or evidence of a recognition you don't see here? Our team can prepare it on request.")}>
             Need an older certificate, a tender-ready bundle, or evidence of a recognition you don't see here? Our team can prepare it on request.
           </p>
           <a
@@ -208,7 +210,7 @@ const desc = `${meta.blurb} ${certCount} recognitions covering people, productiv
             href="/contact/local/"
             class="group cursor-pointer mt-8 md:mt-10 inline-flex items-center gap-3 px-6 py-3 border border-ink/40 hover:bg-ink hover:border-ink hover:text-surface text-ink text-[11px] md:text-xs uppercase tracking-[0.25em] transition-colors duration-200"
           >
-            <span>Contact our local network</span>
+            <span data-i18n={i18nAttr('Contact our local network')}>Contact our local network</span>
             <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
           </a>
         </div>
