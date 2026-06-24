@@ -1,4 +1,6 @@
 ---
+import { i18nAttrFor } from '../lib/i18n';
+
 export interface SnapNavItem {
   /** id of the target panel — must match the id of a [data-snap] element on the page */
   id: string;
@@ -16,6 +18,7 @@ const { items } = Astro.props;
   data-snapnav
   class="pointer-events-none fixed right-3 md:right-6 top-1/2 z-30 hidden md:flex -translate-y-1/2 flex-col items-center gap-4"
   aria-label="Page sections"
+  data-i18n-attr={i18nAttrFor({ 'aria-label': 'Page sections' })}
 >
   {items.map((item) => (
     <button

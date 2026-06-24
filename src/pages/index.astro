@@ -7,6 +7,7 @@ import SnapNav, { type SnapNavItem } from '../components/SnapNav.astro';
 import Container from '../components/Container.astro';
 import HomeNewsCards from '../components/news/HomeNewsCards.tsx';
 import Footer from '../components/Footer.astro';
+import { i18nAttr } from '../lib/i18n';
 import { homePage as page, servicesCards } from '../data/content';
 
 // Split sections so text sections become full-screen image panels
@@ -88,13 +89,13 @@ const navItems: SnapNavItem[] = [
         <Container size="xl" class="relative z-10 flex flex-col justify-between w-full pt-28 md:pt-32 pb-12 md:pb-16">
           <div class="max-w-3xl">
             {s.eyebrow && (
-              <p data-reveal class="text-xs md:text-sm uppercase tracking-widest text-surface/80 mb-3 md:mb-4">{s.eyebrow}</p>
+              <p data-reveal class="text-xs md:text-sm uppercase tracking-widest text-surface/80 mb-3 md:mb-4" data-i18n={i18nAttr(s.eyebrow)}>{s.eyebrow}</p>
             )}
-            <h2 data-reveal data-reveal-delay="80" class="font-display leading-[1.05] text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-surface">
+            <h2 data-reveal data-reveal-delay="80" class="font-display leading-[1.05] text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-surface" data-i18n={s.heading ? i18nAttr(s.heading) : undefined}>
               {s.heading}
             </h2>
             {s.body && (
-              <p data-reveal data-reveal-delay="160" class="mt-5 md:mt-7 max-w-prose text-base md:text-lg text-surface/90">
+              <p data-reveal data-reveal-delay="160" class="mt-5 md:mt-7 max-w-prose text-base md:text-lg text-surface/90" data-i18n={i18nAttr(s.body.split(/\n\n+/)[0])}>
                 {s.body.split(/\n\n+/)[0]}
               </p>
             )}
@@ -123,10 +124,10 @@ const navItems: SnapNavItem[] = [
                   style="background: linear-gradient(180deg, rgba(10,10,10,0.05) 0%, rgba(10,10,10,0.35) 55%, rgba(10,10,10,0.85) 100%);"
                 ></div>
                 <div class="relative z-10 flex h-full flex-col justify-end p-5 md:p-6">
-                  <h3 class="font-display leading-tight text-xl md:text-2xl">{c.label}</h3>
-                  <p class="mt-2 text-sm text-surface/85 leading-relaxed line-clamp-3">{c.blurb}</p>
+                  <h3 class="font-display leading-tight text-xl md:text-2xl" data-i18n={i18nAttr(c.label)}>{c.label}</h3>
+                  <p class="mt-2 text-sm text-surface/85 leading-relaxed line-clamp-3" data-i18n={i18nAttr(c.blurb)}>{c.blurb}</p>
                   <span class="mt-4 inline-flex items-center gap-1 text-xs uppercase tracking-[0.25em] font-medium text-surface group-hover:text-brand-500 transition-colors duration-fast">
-                    Learn more
+                    <span data-i18n={i18nAttr('Learn more')}>Learn more</span>
                     <span aria-hidden="true" class="transition-transform duration-fast group-hover:translate-x-1">&rarr;</span>
                   </span>
                 </div>
@@ -158,7 +159,7 @@ const navItems: SnapNavItem[] = [
     >
       <Container size="xl" class="w-full">
         {newsSection.eyebrow && (
-          <p data-reveal class="text-xs uppercase tracking-widest text-brand-500 mb-3">
+          <p data-reveal class="text-xs uppercase tracking-widest text-brand-500 mb-3" data-i18n={i18nAttr(newsSection.eyebrow)}>
             {newsSection.eyebrow}
           </p>
         )}
@@ -167,6 +168,7 @@ const navItems: SnapNavItem[] = [
             data-reveal
             data-reveal-delay="80"
             class="font-display text-4xl md:text-5xl lg:text-6xl"
+            data-i18n={i18nAttr(newsSection.heading)}
           >
             {newsSection.heading}
           </h2>
