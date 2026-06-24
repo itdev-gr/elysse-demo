@@ -1,5 +1,6 @@
 ---
 import ProjectCard from './ProjectCard.astro';
+import { i18nAttr } from '../../lib/i18n';
 
 interface Project {
   name: string;
@@ -19,7 +20,7 @@ const { heading, items } = Astro.props;
 ---
 <section class="my-10 md:my-14">
   {heading && (
-    <h2 data-reveal class="text-2xl md:text-3xl font-heavy text-ink mb-6">{heading}</h2>
+    <h2 data-reveal data-i18n={i18nAttr(heading)} class="text-2xl md:text-3xl font-heavy text-ink mb-6">{heading}</h2>
   )}
   <div class="space-y-6 md:space-y-8">
     {items.map((p, i) => <ProjectCard project={p} index={i} />)}

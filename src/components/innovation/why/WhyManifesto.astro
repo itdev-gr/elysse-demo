@@ -7,6 +7,7 @@
  */
 import Container from '../../Container.astro';
 import Section from '../../Section.astro';
+import { i18nAttr } from '../../../lib/i18n';
 
 interface Props {
   eyebrow?: string;
@@ -22,13 +23,13 @@ const { eyebrow = 'Why innovation', heading, summary, paragraphs, callout } = As
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16">
       <aside class="lg:col-span-4">
         <div class="lg:sticky lg:top-32">
-          <p data-reveal class="text-[11px] uppercase tracking-[0.4em] text-brand-500 mb-6 md:mb-8">{eyebrow}</p>
-          <h2 data-reveal data-reveal-delay="120" class="font-display font-heavy leading-[1.02] tracking-tight text-ink" style="font-size: clamp(2rem, 4.5vw, 3.5rem);">
+          <p data-reveal data-i18n={i18nAttr(eyebrow)} class="text-[11px] uppercase tracking-[0.4em] text-brand-500 mb-6 md:mb-8">{eyebrow}</p>
+          <h2 data-reveal data-reveal-delay="120" data-i18n={i18nAttr(heading)} class="font-display font-heavy leading-[1.02] tracking-tight text-ink" style="font-size: clamp(2rem, 4.5vw, 3.5rem);">
             {heading}
           </h2>
           <div aria-hidden="true" class="mt-8 h-px w-12 bg-brand-500"></div>
           {summary && (
-            <p data-reveal data-reveal-delay="240" class="mt-6 max-w-xs text-sm text-ink/60 leading-relaxed">{summary}</p>
+            <p data-reveal data-reveal-delay="240" data-i18n={i18nAttr(summary)} class="mt-6 max-w-xs text-sm text-ink/60 leading-relaxed">{summary}</p>
           )}
         </div>
       </aside>
@@ -38,6 +39,7 @@ const { eyebrow = 'Why innovation', heading, summary, paragraphs, callout } = As
           <p
             data-reveal
             data-reveal-delay={String(160 + i * 120)}
+            data-i18n={i18nAttr(p)}
             class={
               i === 0
                 ? "text-lg md:text-xl text-ink leading-[1.65] first-letter:font-display first-letter:font-heavy first-letter:text-7xl md:first-letter:text-8xl first-letter:float-left first-letter:mr-3 first-letter:mt-1 first-letter:leading-[0.85] first-letter:text-brand-500"
@@ -50,7 +52,7 @@ const { eyebrow = 'Why innovation', heading, summary, paragraphs, callout } = As
 
         {callout && (
           <aside data-reveal data-reveal-delay="500" class="mt-10 md:mt-12 p-6 md:p-8 bg-brand-500/5 border-l-4 border-brand-500">
-            <p class="text-base md:text-lg text-ink/90 leading-relaxed italic">{callout}</p>
+            <p data-i18n={i18nAttr(callout)} class="text-base md:text-lg text-ink/90 leading-relaxed italic">{callout}</p>
           </aside>
         )}
       </div>

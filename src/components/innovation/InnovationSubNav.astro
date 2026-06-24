@@ -6,6 +6,7 @@
  */
 import Container from '../Container.astro';
 import { innovationSiblings } from '../../data/content';
+import { i18nAttr, i18nAttrFor } from '../../lib/i18n';
 
 interface Props {
   /** Current pathname; pass Astro.url.pathname. */
@@ -17,12 +18,13 @@ const here = normalize(currentPath);
 ---
 <nav
   aria-label="Innovation section"
+  data-i18n-attr={i18nAttrFor({ 'aria-label': 'Innovation section' })}
   class="sticky top-[76px] md:top-20 z-30 bg-surface/95 backdrop-blur-sm border-b border-ink/10"
 >
   <Container size="xl">
     <ul class="flex items-center gap-1 md:gap-2 overflow-x-auto whitespace-nowrap -mx-2 px-2 py-3 md:py-4 scrollbar-none">
       <li class="hidden lg:flex items-center pr-4 mr-2 border-r border-ink/15">
-        <span class="text-[10px] uppercase tracking-[0.3em] text-ink/50">In this section</span>
+        <span data-i18n={i18nAttr('In this section')} class="text-[10px] uppercase tracking-[0.3em] text-ink/50">In this section</span>
       </li>
       {innovationSiblings.map((item) => {
         const isActive = normalize(item.href) === here;
@@ -31,6 +33,7 @@ const here = normalize(currentPath);
             <a
               href={item.href}
               aria-current={isActive ? 'page' : undefined}
+              data-i18n={i18nAttr(item.label)}
               class={`cursor-pointer inline-flex items-center px-4 py-2 text-xs md:text-sm transition-colors duration-200 ${
                 isActive
                   ? 'bg-brand-500 text-surface font-heavy'

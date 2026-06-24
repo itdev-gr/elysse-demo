@@ -1,5 +1,6 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
+import { i18nAttr, i18nAttrFor } from '../../lib/i18n';
 
 type Cat = 'Innovation News' | 'Success Stories' | 'Activities';
 
@@ -28,9 +29,18 @@ export default function InsightsFilter({ items }: Props) {
   const [active, setActive] = useState<Cat | typeof ALL>(ALL);
   const visible = active === ALL ? items : items.filter((i) => i.category === active);
 
+  // Re-apply the language swap once this island has rendered its current tree,
+  // so it shows Greek on first load when a non-English language is stored.
+  useEffect(() => {
+    try {
+      const l = localStorage.getItem('elysee.lang');
+      if (l && l !== 'en') document.dispatchEvent(new CustomEvent('elysee:lang', { detail: { lang: l } }));
+    } catch {}
+  }, [active, items]);
+
   return (
     <>
-      <div role="tablist" aria-label="Filter insights" className="flex flex-wrap gap-2 mb-8">
+      <div role="tablist" aria-label="Filter insights" data-i18n-attr={i18nAttrFor({ 'aria-label': 'Filter insights' })} className="flex flex-wrap gap-2 mb-8">
         {([ALL, ...cats] as const).map((c) => {
           const isActive = active === c;
           return (
@@ -40,6 +50,7 @@ export default function InsightsFilter({ items }: Props) {
               role="tab"
               aria-selected={isActive}
               onClick={() => setActive(c)}
+              data-i18n={i18nAttr(c)}
               className={`px-4 py-2 text-xs uppercase tracking-widest font-medium border rounded-sm cursor-pointer transition-colors duration-200 ${
                 isActive
                   ? 'bg-brand-500 text-surface border-brand-500'
@@ -76,7 +87,7 @@ export default function InsightsFilter({ items }: Props) {
               )}
               <div className="p-6 flex-1 flex flex-col">
                 {it.category && (
-                  <span className="text-[10px] uppercase tracking-widest text-brand-500 font-medium mb-2">
+                  <span data-i18n={i18nAttr(it.category)} className="text-[10px] uppercase tracking-widest text-brand-500 font-medium mb-2">
                     {it.category}
                   </span>
                 )}
@@ -89,7 +100,7 @@ export default function InsightsFilter({ items }: Props) {
                     href={it.href}
                     className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-brand-500 hover:text-brand-accent transition-colors duration-150"
                   >
-                    Read more →
+                    <span data-i18n={i18nAttr('Read more')}>Read more</span> <span aria-hidden>→</span>
                   </a>
                 )}
               </div>

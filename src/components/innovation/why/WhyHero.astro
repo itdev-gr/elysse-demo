@@ -6,6 +6,7 @@
  * co-located <script> below, mirroring PageHero.astro's pattern.
  */
 import Container from '../../Container.astro';
+import { i18nAttr } from '../../../lib/i18n';
 import heroImg from '../../../assets/images/background-6-new.jpg';
 
 interface Props {
@@ -28,24 +29,25 @@ const { eyebrow, title, subtitle } = Astro.props;
 
   <Container size="xl" class="relative pt-40 md:pt-48 pb-16 md:pb-24 w-full">
     {eyebrow && (
-      <p data-reveal class="text-[11px] md:text-xs uppercase tracking-[0.4em] text-surface/85 mb-8">{eyebrow}</p>
+      <p data-reveal data-i18n={i18nAttr(eyebrow)} class="text-[11px] md:text-xs uppercase tracking-[0.4em] text-surface/85 mb-8">{eyebrow}</p>
     )}
     <h1
       data-reveal
       data-reveal-delay="120"
+      data-i18n={i18nAttr(title)}
       class="font-display font-heavy leading-[0.92] tracking-tight text-surface"
       style="font-size: clamp(3rem, 9vw, 8rem); max-width: 14ch;"
     >
       {title}
     </h1>
     {subtitle && (
-      <p data-reveal data-reveal-delay="240" class="mt-8 max-w-2xl text-base md:text-lg text-surface/85 leading-relaxed">
+      <p data-reveal data-reveal-delay="240" data-i18n={i18nAttr(subtitle)} class="mt-8 max-w-2xl text-base md:text-lg text-surface/85 leading-relaxed">
         {subtitle}
       </p>
     )}
     <div data-reveal data-reveal-delay="360" class="mt-14 md:mt-20 flex items-center gap-4 text-[11px] uppercase tracking-[0.3em] text-surface/70">
       <span aria-hidden="true" class="h-px w-12 bg-surface/50"></span>
-      <span>Scroll to read</span>
+      <span data-i18n={i18nAttr('Scroll to read')}>Scroll to read</span>
     </div>
   </Container>
 </section>
