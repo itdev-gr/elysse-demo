@@ -3,7 +3,7 @@ import * as XLSX from 'xlsx';
 import { supabase } from '../../lib/supabase';
 import { triggerPublish } from '../../lib/publish';
 import { validateProductDraft } from '../../lib/products';
-import { PRODUCT_COLUMNS, productToRow, rowToDraft, templateExampleRow, type ProductRow } from '../../lib/product-xlsx';
+import { PRODUCT_COLUMNS, productToRow, rowToDraft, templateExampleRow, findDuplicateCodes, type ProductRow } from '../../lib/product-xlsx';
 import { configKey } from '../../lib/product-configurations';
 import type { ProductConfiguration, ConfigTranslations } from '../../lib/product-configurations';
 import { cleanI18n } from '../../lib/categories';
@@ -162,6 +162,12 @@ export default function ProductBulkBar({ onChanged }: { onChanged: () => void })
           if (cErr) errors.push(`Translations: ${cErr.message}`);
         }
       }
+
+      // Record duplicate codes within the uploaded file (the PK collapses stored
+      // dupes), then run the full server-side data check so Data Errors is current.
+      const dupes = findDuplicateCodes(rows.map((r) => String((r as Record<string, unknown>).code ?? '')));
+      await supabase.rpc('record_file_duplicate_codes', { p_codes: dupes });
+      await supabase.rpc('run_product_data_checks');
 
       const ok = okCodes.length;
       setResult({ total: rows.length, ok, failed: rows.length - ok, errors: errors.slice(0, 25) });

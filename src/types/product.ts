@@ -50,12 +50,15 @@ export interface GroupCountry {
 export type GroupCountryDraft = Omit<GroupCountry, 'id' | 'created_at' | 'updated_at'>;
 
 export type IssueType =
-  | 'duplicate_code' | 'missing_code' | 'missing_field' | 'missing_group' | 'invalid_value';
+  | 'duplicate_code' | 'missing_code' | 'missing_field' | 'missing_group' | 'invalid_value'
+  | 'orphan_category' | 'orphan_series' | 'orphan_family' | 'letter_mismatch'
+  | 'no_visible_country' | 'duplicate_category_link' | 'orphan_membership';
 export type IssueSeverity = 'error' | 'warning';
 export type IssueStatus = 'open' | 'resolved' | 'ignored';
 
 export interface ProductImportIssue {
   id: string;
+  check_key: string | null;
   code: string | null;
   raw: Record<string, unknown>;
   issue_type: IssueType;

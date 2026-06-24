@@ -5,6 +5,21 @@ import type { ProductImportIssue } from '../../types/product';
 export default function DataErrorsTab() {
   const [rows, setRows] = useState<ProductImportIssue[] | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [running, setRunning] = useState(false);
+  const [lastRun, setLastRun] = useState<string | null>(null);
+
+  const loadState = async () => {
+    const { data } = await supabase.from('data_check_state').select('last_run_at').eq('id', 1).maybeSingle();
+    setLastRun((data as { last_run_at: string | null } | null)?.last_run_at ?? null);
+  };
+
+  const runCheck = async () => {
+    setRunning(true); setError(null);
+    const { error: err } = await supabase.rpc('run_product_data_checks');
+    setRunning(false);
+    if (err) return setError(err.message);
+    await Promise.all([load(), loadState()]);
+  };
 
   const load = async () => {
     setError(null);
@@ -18,7 +33,7 @@ export default function DataErrorsTab() {
     setRows((data ?? []) as ProductImportIssue[]);
   };
 
-  useEffect(() => { load(); }, []);
+  useEffect(() => { load(); loadState(); }, []);
 
   const setStatus = async (id: string, status: 'resolved' | 'ignored') => {
     const patch: Record<string, unknown> = { status };
@@ -52,6 +67,19 @@ export default function DataErrorsTab() {
           {error}
         </p>
       )}
+      <div className="flex items-center justify-between gap-4 mb-4">
+        <p className="text-[11px] text-ink/55">
+          {lastRun ? `Last checked ${new Date(lastRun).toLocaleString()}` : 'Never checked'}
+        </p>
+        <button
+          type="button"
+          onClick={runCheck}
+          disabled={running}
+          className="text-[11px] uppercase tracking-[0.2em] px-4 py-2 border border-ink/15 hover:border-brand-500 hover:text-brand-500 transition-colors duration-200 disabled:opacity-50"
+        >
+          {running ? 'Checking…' : 'Run check now'}
+        </button>
+      </div>
       <p className="text-sm text-ink/70 mb-6">
         {errors.length} errors · {warnings.length} warnings open.
       </p>

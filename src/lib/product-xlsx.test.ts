@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { PRODUCT_COLUMNS, productToRow, rowToDraft, type ProductRow } from './product-xlsx';
+import { PRODUCT_COLUMNS, productToRow, rowToDraft, findDuplicateCodes, type ProductRow } from './product-xlsx';
 import type { Product } from '../types/product';
 import type { ProductConfiguration } from './product-configurations';
 
@@ -83,5 +83,14 @@ describe('rowToDraft', () => {
   it('defaults is_hidden to false when the column is absent', () => {
     const { draft } = rowToDraft({ code: 'X', configuration: 'c', description: 'd' });
     expect(draft?.is_hidden).toBe(false);
+  });
+});
+
+describe('findDuplicateCodes', () => {
+  it('reports codes that appear more than once (trimmed)', () => {
+    expect(findDuplicateCodes(['A1', 'A2', 'A1', ' A2 ', 'A3'])).toEqual(['A1', 'A2']);
+  });
+  it('ignores blanks and returns [] when unique', () => {
+    expect(findDuplicateCodes(['A1', '', '  ', 'A2'])).toEqual([]);
   });
 });

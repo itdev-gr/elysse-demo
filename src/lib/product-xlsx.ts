@@ -176,3 +176,16 @@ export function templateExampleRow(): ProductRow {
     sort_order: 1,
   };
 }
+
+/** Codes that appear more than once in an uploaded sheet (trimmed; blanks ignored).
+ *  The products primary key collapses stored duplicates, so they can only be
+ *  caught at import time — surfaced as data errors so the admin can fix the file. */
+export function findDuplicateCodes(codes: string[]): string[] {
+  const seen = new Map<string, number>();
+  for (const raw of codes) {
+    const c = (raw ?? '').trim();
+    if (!c) continue;
+    seen.set(c, (seen.get(c) ?? 0) + 1);
+  }
+  return [...seen.entries()].filter(([, n]) => n > 1).map(([c]) => c);
+}
