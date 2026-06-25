@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { PRODUCT_COLUMNS, productToRow, rowToDraft, findDuplicateCodes, type ProductRow } from './product-xlsx';
+import { PRODUCT_COLUMNS, productToRow, rowToDraft, findDuplicateCodes, normalizeHeaderRow, HEADER_ROW, COLUMN_LABELS, type ProductRow } from './product-xlsx';
 import type { Product } from '../types/product';
 import type { ProductConfiguration } from './product-configurations';
 
@@ -92,5 +92,57 @@ describe('findDuplicateCodes', () => {
   });
   it('ignores blanks and returns [] when unique', () => {
     expect(findDuplicateCodes(['A1', '', '  ', 'A2'])).toEqual([]);
+  });
+});
+
+describe('friendly headers (client template)', () => {
+  it('HEADER_ROW exposes the friendly labels in column order', () => {
+    expect(HEADER_ROW[0]).toBe('Category');
+    expect(HEADER_ROW).toContain('Category_name_EL');
+    expect(HEADER_ROW).toContain('Sub_Category_EL');
+    expect(HEADER_ROW).toContain('Primary Code');
+    expect(HEADER_ROW).toContain('Configuration_EL');
+    expect(HEADER_ROW).toContain('Extra_Details_EN');
+  });
+
+  it('normalizeHeaderRow maps friendly headers back to machine keys', () => {
+    const norm = normalizeHeaderRow({
+      'Primary Code': '330001610', 'Category_name_EN': 'Compression Fittings',
+      'Category_name_EL': 'Εξαρτήματα Σύσφιξης', 'Sub_Category_EN': 'Epsilon', 'Sub_Category_EL': 'Σειρά Epsilon',
+      'Configuration_EN': 'Adaptor Male', 'Configuration_EL': 'Αρσενικός', 'Extra_Details_EN': 'desc',
+      'Country Groups': 'A,B', 'Is_Active': 'TRUE',
+    });
+    expect(norm.code).toBe('330001610');
+    expect(norm.category_name).toBe('Compression Fittings');
+    expect(norm.category_name_el).toBe('Εξαρτήματα Σύσφιξης');
+    expect(norm.sub_category_el).toBe('Σειρά Epsilon');
+    expect(norm.name_el).toBe('Αρσενικός');
+    expect(norm.display_description).toBe('desc');
+  });
+
+  it('rowToDraft parses a friendly-headered row incl. category + series translations', () => {
+    const { draft, categoryI18n, subCategoryI18n, translations } = rowToDraft({
+      'Primary Code': '330001610', 'Category': 'A', 'Category_name_EN': 'Compression Fittings',
+      'Category_name_EL': 'Εξαρτήματα Σύσφιξης', 'Sub_Category_EN': 'Epsilon Series PN 16 bar',
+      'Sub_Category_EL': 'Σειρά Epsilon', 'Configuration_EN': 'Adaptor Male', 'Configuration_EL': 'Αρσενικός',
+      'Full Description_EN': 'd', 'Country Groups': 'A,C', 'Is_Active': 'TRUE',
+    });
+    expect(draft?.code).toBe('330001610');
+    expect(draft?.category_name).toBe('Compression Fittings');
+    expect(draft?.sub_category).toBe('Epsilon Series PN 16 bar');
+    expect(categoryI18n).toEqual({ el: 'Εξαρτήματα Σύσφιξης' });
+    expect(subCategoryI18n).toEqual({ el: 'Σειρά Epsilon' });
+    expect(translations?.name_i18n).toEqual({ el: 'Αρσενικός' });
+  });
+
+  it('productToRow emits category + series translations from the passed maps', () => {
+    const r = productToRow(product, ['A'], null, { el: 'Εξαρτήματα Σύσφιξης' }, { el: 'Σειρά Epsilon' });
+    expect(r.category_name_el).toBe('Εξαρτήματα Σύσφιξης');
+    expect(r.sub_category_el).toBe('Σειρά Epsilon');
+    expect(r.category_name_de).toBe('');
+  });
+
+  it('COLUMN_LABELS covers every machine column', () => {
+    for (const c of PRODUCT_COLUMNS) expect(typeof COLUMN_LABELS[c]).toBe('string');
   });
 });
