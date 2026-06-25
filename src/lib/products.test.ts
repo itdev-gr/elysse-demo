@@ -20,7 +20,7 @@ describe('expandCountriesForGroups', () => {
   });
 });
 
-import { parsePnFromSubCategory, parseDnFromSize, toCatalogProduct } from './products';
+import { parsePnFromSubCategory, parseDnFromSize, toCatalogProduct, orderConfigEntries } from './products';
 import type { Product } from '../types/product';
 
 describe('parsePnFromSubCategory', () => {
@@ -70,5 +70,29 @@ describe('toCatalogProduct', () => {
     const lw: Product = { ...p, code: 'LW1', category_name: 'Light-Weight Fittings', category: 'D' };
     const cp = toCatalogProduct(lw, ['gr'], 'light-weight-fittings');
     expect(cp.categorySlug).toBe('light-weight-fittings');
+  });
+});
+
+describe('orderConfigEntries', () => {
+  const mk = (sub: string, fam: string, order: number) =>
+    ({ rep: { sub_category: sub, family_code: fam, code: fam }, order, id: `${sub}/${fam}` });
+
+  it('orders families within a series by famSort; preserves series order; falls back to product order', () => {
+    const entries = [
+      mk('A', '330', 10),   // family sort 2
+      mk('A', '330A', 11),  // family sort 3
+      mk('A', '330B', 1),   // family sort 1 (also lowest product order → series A rank = 1)
+      mk('B', '550', 5),    // series B (rank 5, after A)
+      mk('B', '551', 6),    // no famSort entry → fallback product order
+    ];
+    const famSort = new Map([['330', 2], ['330A', 3], ['330B', 1], ['550', 9]]);
+    expect(orderConfigEntries(entries, famSort).map((e) => e.id))
+      .toEqual(['A/330B', 'A/330', 'A/330A', 'B/550', 'B/551']);
+  });
+
+  it('within a series, families missing a famSort sort after the ordered ones by product order', () => {
+    const entries = [mk('X', 'a', 1), mk('X', 'b', 2), mk('X', 'c', 3)];
+    const famSort = new Map([['b', 1]]);
+    expect(orderConfigEntries(entries, famSort).map((e) => e.id)).toEqual(['X/b', 'X/a', 'X/c']);
   });
 });
