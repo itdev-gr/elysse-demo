@@ -12,6 +12,12 @@ import { i18nAttr, i18nAttrFor } from '@/lib/i18n';
  * Selecting a shop on the left updates both the map and the details panel.
  * The map is an embedded Google map (no API key — the classic `output=embed`
  * endpoint), centred on the shop's coordinates with a marker.
+ *
+ * Clicking the marker inside that embed triggers Google's place-details card,
+ * which fails with "place info couldn't load" (the reverse-geocoded place ID is
+ * stale → Places API NOT_FOUND). To avoid it, a transparent overlay covers the
+ * map and intercepts clicks, opening the location in Google Maps in a new tab
+ * instead — so the broken in-embed card can never fire.
  */
 
 export interface ShopNode {
@@ -29,12 +35,20 @@ interface Props {
   shops: ShopNode[];
 }
 
+/** Query for the embedded map: precise coordinates when known, else the address. */
+function mapQuery(s: ShopNode): string {
+  return s.lat != null && s.lng != null
+    ? `${s.lat},${s.lng}`
+    : encodeURIComponent([s.street, s.area, 'Cyprus'].filter(Boolean).join(', '));
+}
+
 function mapSrc(s: ShopNode): string {
-  const q =
-    s.lat != null && s.lng != null
-      ? `${s.lat},${s.lng}`
-      : encodeURIComponent([s.street, s.area, 'Cyprus'].filter(Boolean).join(', '));
-  return `https://maps.google.com/maps?q=${q}&t=&z=14&ie=UTF8&iwloc=&output=embed`;
+  return `https://maps.google.com/maps?q=${mapQuery(s)}&t=&z=14&ie=UTF8&iwloc=&output=embed`;
+}
+
+/** Full Google Maps URL the click-overlay opens in a new tab (with Directions). */
+function mapsLink(s: ShopNode): string {
+  return `https://www.google.com/maps/search/?api=1&query=${mapQuery(s)}`;
 }
 
 const PinIcon = () => (
@@ -123,6 +137,26 @@ export default function ShopLocator({ shops }: Props) {
           referrerPolicy="no-referrer-when-downgrade"
           allowFullScreen
         />
+        {/* Transparent overlay: intercepts clicks so the embed's broken
+            place-details card never fires; opens full Google Maps instead. */}
+        <a
+          href={mapsLink(shop)}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label={`Open the Elysée ${shop.name} location in Google Maps`}
+          className="group absolute inset-0 z-10 block cursor-pointer"
+        >
+          <span
+            className="pointer-events-none absolute bottom-3 right-3 inline-flex items-center gap-1.5 rounded-full bg-ink/85 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.15em] text-surface opacity-0 shadow-sm backdrop-blur-sm transition-opacity duration-200 group-hover:opacity-100 group-focus-visible:opacity-100"
+            data-i18n={i18nAttr('Open in Google Maps')}
+          >
+            Open in Google Maps
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="M7 17 17 7" />
+              <path d="M7 7h10v10" />
+            </svg>
+          </span>
+        </a>
       </div>
 
       {/* ===== Right — contact details ===== */}
