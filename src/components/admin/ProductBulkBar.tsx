@@ -130,7 +130,7 @@ export default function ProductBulkBar({ onChanged }: { onChanged: () => void })
       const rows = XLSX.utils.sheet_to_json<ProductRow>(sheet, { defval: '' }).map(normalizeHeaderRow);
       const errors: string[] = [];
       const valid: {
-        draft: ProductDraft; groups: string[]; translations: ConfigTranslations | null;
+        draft: Omit<ProductDraft, 'sort_order'>; groups: string[]; translations: ConfigTranslations | null;
         categoryI18n: Record<string, string>; subCategoryI18n: Record<string, string>;
       }[] = [];
       rows.forEach((row, i) => {
