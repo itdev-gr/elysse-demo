@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '../../lib/supabase';
 import { triggerPublish } from '../../lib/publish';
-import type { ProductCategory } from '../../lib/categories';
+import { getSubcategories, applySubcategoryOverlay } from '../../lib/categories';
+import type { ProductCategory, ProductSubcategory } from '../../lib/categories';
 import type { ProductFamily } from '../../lib/families';
 import { LibraryGrid, type ProductImage } from './ImageLibraryGrid';
 import { planConfigSlugRemap, applyConfigSlugRemap } from '../../lib/remap-config-slugs';
@@ -14,6 +15,7 @@ interface CodeFacts {
 
 export default function FamiliesTab() {
   const [cats, setCats] = useState<ProductCategory[] | null>(null);
+  const [subcats, setSubcats] = useState<ProductSubcategory[]>([]);
   const [families, setFamilies] = useState<ProductFamily[]>([]);
   const [images, setImages] = useState<ProductImage[] | null>(null);
   // Keyed by `${excelCategoryName}|${code}` — product count + series from products.
@@ -37,6 +39,7 @@ export default function FamiliesTab() {
     setCats((c ?? []) as ProductCategory[]);
     setFamilies((f ?? []) as ProductFamily[]);
     setImages((imgs ?? []) as ProductImage[]);
+    setSubcats(await getSubcategories({ includeHidden: true }));   // for series order + grouping
 
     // product-derived counts + series (paginated past the 1000-row cap)
     const PAGE = 1000;
@@ -115,6 +118,17 @@ export default function FamiliesTab() {
     await load(); triggerPublish();
   };
 
+  // Set the display order of a family code within its series (drives the live
+  // catalog card order). No-op when unchanged or not a number.
+  const setOrder = async (fam: ProductFamily, value: string) => {
+    const n = Math.trunc(Number(value));
+    if (!Number.isFinite(n) || n === fam.sort_order) return;
+    const { error: err } = await supabase.from('product_families')
+      .update({ sort_order: n }).eq('id', fam.id);
+    if (err) return setError(err.message);
+    await load(); triggerPublish();
+  };
+
   const deleteCode = async (cat: ProductCategory, fam: ProductFamily) => {
     const count = factsFor(cat, fam.code).count;
     if (count > 0) return setError(`Code "${fam.code}" still has ${count} products — hide it instead of deleting.`);
@@ -163,6 +177,21 @@ export default function FamiliesTab() {
         <div className="space-y-6">
           {cats.map((cat) => {
             const codes = families.filter((f) => f.category_slug === cat.slug);
+            // Group family codes under their (product-derived) series; null → no series yet.
+            const bySeries = new Map<string | null, ProductFamily[]>();
+            for (const fam of codes) {
+              const s = factsFor(cat, fam.code).series;
+              const arr = bySeries.get(s) ?? []; arr.push(fam); bySeries.set(s, arr);
+            }
+            const overlay = subcats.filter((s) => s.category_slug === cat.slug);
+            const presentSeries = [...bySeries.keys()].filter((s): s is string => !!s);
+            const orderedSeries = applySubcategoryOverlay(presentSeries, overlay);
+            const sortFams = (arr: ProductFamily[]) =>
+              [...arr].sort((a, b) => a.sort_order - b.sort_order || a.code.localeCompare(b.code));
+            const groups: { series: string | null; fams: ProductFamily[] }[] = [
+              ...orderedSeries.map((series) => ({ series: series as string | null, fams: sortFams(bySeries.get(series) ?? []) })),
+              ...(bySeries.has(null) ? [{ series: null, fams: sortFams(bySeries.get(null) ?? []) }] : []),
+            ];
             return (
               <section key={cat.slug} className={`border p-5 ${cat.is_active ? 'border-ink/10' : 'border-ink/10 bg-ink/[0.03] opacity-70'}`}>
                 <header className="flex items-center justify-between mb-3">
@@ -198,28 +227,46 @@ export default function FamiliesTab() {
 
                 {codes.length === 0 && addingFor !== cat.slug && <p className="text-sm text-ink/50">No codes yet.</p>}
 
-                <ul className="flex flex-col gap-1">
-                  {codes.map((fam) => {
-                    const { count, series } = factsFor(cat, fam.code);
-                    return (
-                      <li key={fam.id} className={`flex items-center gap-3 text-sm border-b border-ink/5 py-1.5 ${fam.is_active ? '' : 'opacity-60'}`}>
-                        {fam.image_url ? (
-                          <img src={fam.image_url} alt="" className="w-9 h-9 object-contain bg-surface-alt border border-ink/10 shrink-0" />
-                        ) : (
-                          <div className="w-9 h-9 bg-surface-alt border border-ink/10 shrink-0 flex items-center justify-center text-[9px] text-ink/30">None</div>
-                        )}
-                        <span className="font-mono">{fam.code}</span>
-                        <span className="flex-1 text-ink/55 text-[12px] truncate">{series ?? '—'}</span>
-                        <span className="font-mono text-[10px] text-ink/45">{count} prod</span>
-                        {!fam.is_active && <span className="text-[10px] uppercase tracking-[0.2em] text-ink/45">hidden</span>}
-                        <button type="button" onClick={() => { setAssignTarget(fam); setAssignError(null); }} className="text-[11px] text-brand-500 uppercase tracking-[0.15em]">Allocate image</button>
-                        <button type="button" onClick={() => renameCode(cat, fam)} className="text-[11px] text-brand-500 uppercase tracking-[0.15em]">Rename</button>
-                        <button type="button" onClick={() => toggleCode(fam)} className="text-[11px] text-ink/60 uppercase tracking-[0.15em]">{fam.is_active ? 'Hide' : 'Show'}</button>
-                        <button type="button" onClick={() => deleteCode(cat, fam)} className="text-red-600" aria-label={`Delete ${fam.code}`}>×</button>
-                      </li>
-                    );
-                  })}
-                </ul>
+                {groups.map(({ series, fams }) => (
+                  <div key={series ?? '__none'} className="mb-4 last:mb-0">
+                    <p className="text-[11px] font-semibold text-ink/70 border-b border-ink/10 pb-1 mb-1.5">
+                      {series ?? '— No series yet'}
+                      <span className="ml-2 font-normal text-ink/40">{fams.length}</span>
+                    </p>
+                    <ul className="flex flex-col gap-1">
+                      {fams.map((fam) => {
+                        const { count } = factsFor(cat, fam.code);
+                        return (
+                          <li key={fam.id} className={`flex items-center gap-3 text-sm border-b border-ink/5 py-1.5 ${fam.is_active ? '' : 'opacity-60'}`}>
+                            <label className="flex items-center gap-1 shrink-0" title="Display order within this series (lower shows first)">
+                              <span className="text-[9px] uppercase tracking-[0.15em] text-ink/40">Order</span>
+                              <input
+                                key={fam.sort_order}
+                                type="number"
+                                defaultValue={fam.sort_order}
+                                onBlur={(e) => setOrder(fam, e.currentTarget.value)}
+                                onKeyDown={(e) => { if (e.key === 'Enter') e.currentTarget.blur(); }}
+                                className="w-14 bg-transparent border-b border-ink/25 py-1 text-sm text-center focus:outline-none focus:border-brand-500" />
+                            </label>
+                            {fam.image_url ? (
+                              <img src={fam.image_url} alt="" className="w-9 h-9 object-contain bg-surface-alt border border-ink/10 shrink-0" />
+                            ) : (
+                              <div className="w-9 h-9 bg-surface-alt border border-ink/10 shrink-0 flex items-center justify-center text-[9px] text-ink/30">None</div>
+                            )}
+                            <span className="font-mono">{fam.code}</span>
+                            <span className="flex-1" />
+                            <span className="font-mono text-[10px] text-ink/45">{count} prod</span>
+                            {!fam.is_active && <span className="text-[10px] uppercase tracking-[0.2em] text-ink/45">hidden</span>}
+                            <button type="button" onClick={() => { setAssignTarget(fam); setAssignError(null); }} className="text-[11px] text-brand-500 uppercase tracking-[0.15em]">Allocate image</button>
+                            <button type="button" onClick={() => renameCode(cat, fam)} className="text-[11px] text-brand-500 uppercase tracking-[0.15em]">Rename</button>
+                            <button type="button" onClick={() => toggleCode(fam)} className="text-[11px] text-ink/60 uppercase tracking-[0.15em]">{fam.is_active ? 'Hide' : 'Show'}</button>
+                            <button type="button" onClick={() => deleteCode(cat, fam)} className="text-red-600" aria-label={`Delete ${fam.code}`}>×</button>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  </div>
+                ))}
               </section>
             );
           })}

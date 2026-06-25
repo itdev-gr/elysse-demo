@@ -2,6 +2,7 @@ import { supabase } from './supabase';
 import type { CatalogProduct, CategorySlug } from '../scripts/catalog/types';
 import type { Product, ProductGroup, GroupCountry, ProductDraft } from '../types/product';
 import { expandCountriesForGroups } from './product-groups';
+import { getFamilies } from './families';
 import {
   configSlug,
   fetchConfigsByCategorySlug,
@@ -156,15 +157,53 @@ function configToCatalogProduct(
   };
 }
 
+/** Minimal shape needed to order configuration cards. */
+export interface ConfigOrderEntry {
+  rep: { sub_category: string | null; family_code: string | null; code: string };
+  /** Aggregated product sort_order for this configuration (min across sizes). */
+  order: number;
+}
+
+/**
+ * Order configuration cards for display: series order is preserved (by the
+ * series' lowest product sort_order, as before), then WITHIN each series cards
+ * are ordered by their family code's `sort_order` (admin-controlled, from
+ * product_families), falling back to the product sort_order. Pure + testable.
+ */
+export function orderConfigEntries<T extends ConfigOrderEntry>(entries: T[], famSort: Map<string, number>): T[] {
+  const seriesRank = new Map<string, number>();
+  for (const e of entries) {
+    const s = e.rep.sub_category ?? '';
+    const cur = seriesRank.get(s);
+    if (cur === undefined || e.order < cur) seriesRank.set(s, e.order);
+  }
+  return [...entries].sort((a, b) => {
+    const sa = seriesRank.get(a.rep.sub_category ?? '') ?? 0;
+    const sb = seriesRank.get(b.rep.sub_category ?? '') ?? 0;
+    if (sa !== sb) return sa - sb;                                  // series order (unchanged)
+    const fa = famSort.get(a.rep.family_code ?? a.rep.code) ?? Infinity;
+    const fb = famSort.get(b.rep.family_code ?? b.rep.code) ?? Infinity;
+    if (fa !== fb) return fa - fb;                                  // family order within series
+    return a.order - b.order;                                       // fallback: product sort_order
+  });
+}
+
+/** code → sort_order for one category's managed family codes. */
+async function familySortMap(categorySlug: string): Promise<Map<string, number>> {
+  const fams = await getFamilies({ includeHidden: true });
+  return new Map(fams.filter((f) => f.category_slug === categorySlug).map((f) => [f.code, f.sort_order]));
+}
+
 /**
  * Build-time fetch: one CatalogProduct per configuration (catalogue No.),
  * collapsing all size variants. A configuration is shown for a country when any
  * of its sizes is available there (union of memberships).
  */
 export async function fetchCatalogConfigurations(categoryName: string, categorySlug: CategorySlug): Promise<CatalogProduct[]> {
-  const [{ products, countriesByCode }, configRecords] = await Promise.all([
+  const [{ products, countriesByCode }, configRecords, famSort] = await Promise.all([
     loadCategory(categoryName),
     fetchConfigsByCategorySlug(categorySlug),
+    familySortMap(categorySlug),
   ]);
   const groups = new Map<
     string,
@@ -188,9 +227,9 @@ export async function fetchCatalogConfigurations(categoryName: string, categoryS
       if (ni[lang]?.trim() && !g.perRow[lang]) g.perRow[lang] = ni[lang]!.trim();
     }
   }
-  return [...groups.entries()]
-    .sort((a, b) => a[1].order - b[1].order)
-    .map(([key, g]) => {
+  const entries = [...groups.entries()].map(([key, g]) => ({ key, rep: g.rep, order: g.order, g }));
+  return orderConfigEntries(entries, famSort)
+    .map(({ key, g }) => {
       const derivedName = g.rep.configuration ?? g.rep.description ?? (g.rep.family_code ?? g.rep.code);
       // Same resolution as the detail page: product_configurations record wins,
       // per-row merged map is the fallback, English always present.
@@ -234,14 +273,17 @@ const I18N_LANGS = ['el', 'de', 'es', 'fr'] as const;
 
 /** Build-time fetch: every configuration in a category, each with its sizes. */
 export async function fetchConfigurationDetails(categoryName: string, categorySlug: CategorySlug): Promise<ConfigurationDetail[]> {
-  const [{ products, countriesByCode }, configRecords] = await Promise.all([
+  const [{ products, countriesByCode }, configRecords, famSort] = await Promise.all([
     loadCategory(categoryName),
     fetchConfigsByCategorySlug(categorySlug),
+    familySortMap(categorySlug),
   ]);
   const map = new Map<string, ConfigurationDetail>();
+  const cfgOrder = new Map<string, number>();   // slug → min product sort_order
   for (const p of products) {
     const familyCode = p.family_code ?? p.code;
     const slug = configSlug(p.sub_category, familyCode);
+    cfgOrder.set(slug, Math.min(cfgOrder.get(slug) ?? Infinity, p.sort_order));
     const countries = countriesByCode.get(p.code) ?? [];
     let cfg = map.get(slug);
     if (!cfg) {
@@ -293,7 +335,14 @@ export async function fetchConfigurationDetails(categoryName: string, categorySl
     cfg.descriptionI18n = resolveDescriptionI18n(derivedDesc, perRowDesc, rec);
     cfg.description = cfg.descriptionI18n.en ?? null;
   }
-  return [...map.values()];
+  // Order configurations the same way as the listing: series order, then by the
+  // family code's admin-set sort_order within each series.
+  const entries = [...map.values()].map((cfg) => ({
+    rep: { sub_category: cfg.subCategory || null, family_code: cfg.familyCode, code: cfg.familyCode },
+    order: cfgOrder.get(cfg.slug) ?? 0,
+    cfg,
+  }));
+  return orderConfigEntries(entries, famSort).map((e) => e.cfg);
 }
 
 /** Map a configuration to a catalogue card (for "Related products"). */
