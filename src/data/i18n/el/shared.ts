@@ -8,6 +8,8 @@ export const shared: Record<string, string> = {
   'Insights': 'Άρθρα & Ενημέρωση',
   'Contact': 'Επικοινωνία',
   'Home': 'Αρχική',
+  'Search…': 'Αναζήτηση…',
+  'Site search': 'Αναζήτηση στον ιστότοπο',
   'Read more': 'Διαβάστε περισσότερα',
   'Learn more': 'Μάθετε περισσότερα',
   'Privacy Policy': 'Πολιτική Απορρήτου',
