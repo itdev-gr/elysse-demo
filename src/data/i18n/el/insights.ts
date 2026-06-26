@@ -31,6 +31,7 @@ export const insights: Record<string, string> = {
     'Δεν έχουν καταχωριστεί ακόμη εκθέσεις — επισκεφθείτε μας ξανά σύντομα.',
 
   // ===== Media index =====
+  'Media.': 'Πολυμέσα.',
   'Videos, photographs, and broadcast coverage featuring Elysée.':
     'Βίντεο, φωτογραφίες και τηλεοπτική κάλυψη με την Elysée.',
   'No media published yet — check back soon.':
