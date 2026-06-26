@@ -57,6 +57,17 @@ export default function CategoriesTab() {
     await load(); triggerPublish();
   };
 
+  // Display order of a category on the live site (lower shows first). No-op when
+  // unchanged or not a number.
+  const setCatOrder = async (cat: ProductCategory, value: string) => {
+    const n = Math.trunc(Number(value));
+    if (!Number.isFinite(n) || n === cat.sort_order) return;
+    const { error: err } = await supabase.from('product_categories')
+      .update({ sort_order: n }).eq('slug', cat.slug);
+    if (err) return setError(err.message);
+    await load(); triggerPublish();
+  };
+
   const deleteCat = async (cat: ProductCategory) => {
     const count = cat.product_category_name ? (catCounts[cat.product_category_name] ?? 0) : 0;
     if (count > 0) return setError(`"${cat.name}" still has ${count} products — hide it instead of deleting.`);
@@ -69,6 +80,17 @@ export default function CategoriesTab() {
   const toggleSub = async (sub: ProductSubcategory) => {
     const { error: err } = await supabase.from('product_subcategories')
       .update({ is_active: !sub.is_active }).eq('id', sub.id);
+    if (err) return setError(err.message);
+    await load(); triggerPublish();
+  };
+
+  // Display order of a series WITHIN its category (each category numbers its own
+  // series 1,2,3…). Lower shows first on the live site.
+  const setSubOrder = async (sub: ProductSubcategory, value: string) => {
+    const n = Math.trunc(Number(value));
+    if (!Number.isFinite(n) || n === sub.sort_order) return;
+    const { error: err } = await supabase.from('product_subcategories')
+      .update({ sort_order: n }).eq('id', sub.id);
     if (err) return setError(err.message);
     await load(); triggerPublish();
   };
@@ -138,11 +160,23 @@ export default function CategoriesTab() {
             return (
               <section key={cat.slug} className={`border p-5 ${cat.is_active ? 'border-ink/10' : 'border-ink/10 bg-ink/[0.03] opacity-70'}`}>
                 <header className="flex items-center justify-between mb-3">
-                  <h3 className="font-heavy text-lg">
-                    {cat.name}{' '}
-                    <span className="font-mono text-[11px] text-ink/45">/{cat.slug}</span>
-                    {!cat.is_active && <span className="ml-2 text-[10px] uppercase tracking-[0.2em] text-ink/45">hidden</span>}
-                  </h3>
+                  <div className="flex items-center gap-3">
+                    <label className="flex items-center gap-1 shrink-0" title="Display order on the site (lower shows first)">
+                      <span className="text-[9px] uppercase tracking-[0.15em] text-ink/40">Order</span>
+                      <input
+                        key={cat.sort_order}
+                        type="number"
+                        defaultValue={cat.sort_order}
+                        onBlur={(e) => setCatOrder(cat, e.currentTarget.value)}
+                        onKeyDown={(e) => { if (e.key === 'Enter') e.currentTarget.blur(); }}
+                        className="w-14 bg-transparent border-b border-ink/25 py-1 text-sm text-center focus:outline-none focus:border-brand-500" />
+                    </label>
+                    <h3 className="font-heavy text-lg">
+                      {cat.name}{' '}
+                      <span className="font-mono text-[11px] text-ink/45">/{cat.slug}</span>
+                      {!cat.is_active && <span className="ml-2 text-[10px] uppercase tracking-[0.2em] text-ink/45">hidden</span>}
+                    </h3>
+                  </div>
                   <div className="flex items-center gap-3 text-[11px] uppercase tracking-[0.2em]">
                     <button type="button" onClick={() => { setEditing(cat.slug); setCreating(false); }} className="text-brand-500">Edit</button>
                     <button type="button" onClick={() => toggleCat(cat)} className="text-ink/70">{cat.is_active ? 'Hide' : 'Show'}</button>
@@ -190,6 +224,16 @@ export default function CategoriesTab() {
                     return (
                       <li key={sub.id} className={`border-b border-ink/5 ${sub.is_active ? '' : 'opacity-60'}`}>
                         <div className="flex items-center gap-3 text-sm py-1.5">
+                          <label className="flex items-center gap-1 shrink-0" title="Order within this category (lower shows first)">
+                            <span className="text-[9px] uppercase tracking-[0.15em] text-ink/40">Order</span>
+                            <input
+                              key={sub.sort_order}
+                              type="number"
+                              defaultValue={sub.sort_order}
+                              onBlur={(e) => setSubOrder(sub, e.currentTarget.value)}
+                              onKeyDown={(e) => { if (e.key === 'Enter') e.currentTarget.blur(); }}
+                              className="w-14 bg-transparent border-b border-ink/25 py-1 text-sm text-center focus:outline-none focus:border-brand-500" />
+                          </label>
                           <span className="flex-1">{sub.name}</span>
                           {langCount > 0 && <span className="text-[10px] uppercase tracking-[0.15em] text-brand-500/70">{langCount} lang</span>}
                           <span className="font-mono text-[10px] text-ink/45">{count} prod</span>
