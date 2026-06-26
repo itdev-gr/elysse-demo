@@ -2,46 +2,28 @@
 /**
  * Insights — Media.
  *
- * Cinematic hero (matching the Blog/News index pages) + client island. The grid
+ * Shared cinematic chassis (`InsightsIndex`) + the InsightsList island. The grid
  * is fetched in the browser from the `media` table, managed in the admin
  * dashboard, so newly published entries appear with no rebuild.
  */
 import BaseLayout from '../../../layouts/BaseLayout.astro';
-import Container from '../../../components/Container.astro';
-import Section from '../../../components/Section.astro';
+import InsightsIndex from '../../../components/InsightsIndex.astro';
 import InsightsList from '../../../components/insights/InsightsList.tsx';
-import { i18nAttr } from '../../../lib/i18n';
 ---
 <BaseLayout
   title="Media — Insights — Elysée"
   description="Videos, photographs, and broadcast coverage featuring Elysée."
   padForHeader={false}
 >
-  <section class="relative min-h-[60vh] flex items-end text-surface overflow-hidden bg-ink">
-    <img
-      src="/images/insights/media/hero.jpg"
-      alt="A professional cinema camera being operated on set."
-      class="absolute inset-0 w-full h-full object-cover"
-    />
-    <div aria-hidden="true" class="absolute inset-0 bg-gradient-to-b from-ink/45 via-ink/20 to-ink/80"></div>
-    <div aria-hidden="true" class="absolute inset-0 bg-brand-500/30"></div>
-
-    <Container size="xl" class="relative pt-40 md:pt-48 pb-16 md:pb-24 w-full">
-      <p data-i18n={i18nAttr('Insights · Media')} class="text-[11px] md:text-xs uppercase tracking-[0.4em] text-surface/85 mb-8">
-        Insights · Media
-      </p>
-      <h1 data-i18n={i18nAttr('Media.')} class="font-display font-heavy leading-[0.92] tracking-tight text-surface" style="font-size: clamp(3rem, 9vw, 8rem); max-width: 14ch;">
-        Media.
-      </h1>
-      <p data-i18n={i18nAttr('Videos, photographs, and broadcast coverage featuring Elysée.')} class="mt-8 max-w-2xl text-base md:text-lg text-surface/85 leading-relaxed">
-        Videos, photographs, and broadcast coverage featuring Elysée.
-      </p>
-    </Container>
-  </section>
-
-  <Section bg="default" spacing="lg">
-    <Container size="xl">
-      <InsightsList kind="media" emptyMessage="No media published yet — check back soon." client:visible />
-    </Container>
-  </Section>
+  <InsightsIndex
+    heroImage="/images/insights/media/hero.jpg"
+    heroImageAlt="A professional cinema camera being operated on set."
+    eyebrow="Insights · Media"
+    title="Media."
+    subtitle="Videos, photographs, and broadcast coverage featuring Elysée."
+    sectionEyebrow="From the media library"
+    sectionHeading="Elysée in pictures and film."
+  >
+    <InsightsList kind="media" emptyMessage="No media published yet — check back soon." client:visible />
+  </InsightsIndex>
 </BaseLayout>

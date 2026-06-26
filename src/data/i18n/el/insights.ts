@@ -9,6 +9,8 @@ export const insights: Record<string, string> = {
   'Insights · Blog': 'Άρθρα & Ενημέρωση · Blog',
   'In-depth articles on piping technology, installation best practices, and sustainable solutions.':
     'Εμπεριστατωμένα άρθρα για την τεχνολογία σωληνώσεων, τις βέλτιστες πρακτικές εγκατάστασης και τις βιώσιμες λύσεις.',
+  'From the blog': 'Από το blog',
+  'Notes from our engineers.': 'Σημειώσεις από τους μηχανικούς μας.',
 
   // ===== News index =====
   'Insights · Newsroom': 'Άρθρα & Ενημέρωση · Νέα',
@@ -23,12 +25,17 @@ export const insights: Record<string, string> = {
     'Εκθέσεις, οδηγοί και εκδόσεις από την Elysée.',
   'No eBooks published yet — check back soon.':
     'Δεν έχουν δημοσιευτεί ακόμη eBooks — επισκεφθείτε μας ξανά σύντομα.',
+  'From the library': 'Από τη βιβλιοθήκη',
+  'Guides, reports and publications.': 'Οδηγοί, εκθέσεις και εκδόσεις.',
 
   // ===== Exhibitions index =====
+  'Exhibitions.': 'Εκθέσεις & Εκδηλώσεις.',
   'Where to meet Elysée — trade fairs and exhibitions across the group.':
     'Πού θα συναντήσετε την Elysée — εμπορικές εκθέσεις και εκδηλώσεις σε όλον τον όμιλο.',
   'No exhibitions listed yet — check back soon.':
     'Δεν έχουν καταχωριστεί ακόμη εκθέσεις — επισκεφθείτε μας ξανά σύντομα.',
+  'On the calendar': 'Στο ημερολόγιο',
+  'Meet Elysée in person.': 'Συναντήστε την Elysée από κοντά.',
 
   // ===== Media index =====
   'Media.': 'Πολυμέσα.',
@@ -36,6 +43,8 @@ export const insights: Record<string, string> = {
     'Βίντεο, φωτογραφίες και τηλεοπτική κάλυψη με την Elysée.',
   'No media published yet — check back soon.':
     'Δεν έχουν δημοσιευτεί ακόμη πολυμέσα — επισκεφθείτε μας ξανά σύντομα.',
+  'From the media library': 'Από τη βιβλιοθήκη πολυμέσων',
+  'Elysée in pictures and film.': 'Η Elysée σε εικόνες και βίντεο.',
 
   // ===== InsightsList island — empty / error states =====
   'Nothing here yet — check back soon.':

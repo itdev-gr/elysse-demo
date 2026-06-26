@@ -1,0 +1,92 @@
+---
+/**
+ * Shared chassis for the Insights index pages (News, Blog, Exhibitions, Media,
+ * eBooks) so all five share one cinematic layout:
+ *   - scroll-progress bar
+ *   - parallax cover hero (eyebrow + big title + subtitle, staggered reveals)
+ *   - editorial section header (eyebrow + h2)
+ *   - <slot/> for the page's list island
+ *   - motion script (scroll bar + hero parallax)
+ *
+ * Each page supplies its copy + hero image via props and drops its own list
+ * component into the default slot. Originally lifted verbatim from the News
+ * index so the pages render identically.
+ */
+import Container from './Container.astro';
+import Section from './Section.astro';
+import { i18nAttr } from '../lib/i18n';
+
+interface Props {
+  /** Hero background image (public path). */
+  heroImage: string;
+  heroImageAlt: string;
+  /** Hero eyebrow, e.g. "Insights · Newsroom". */
+  eyebrow: string;
+  /** Big hero title, e.g. "News." */
+  title: string;
+  /** Hero subtitle paragraph. */
+  subtitle: string;
+  /** Section eyebrow above the grid, e.g. "From the newsroom". */
+  sectionEyebrow: string;
+  /** Section heading above the grid, e.g. "The latest from Elysée." */
+  sectionHeading: string;
+}
+const { heroImage, heroImageAlt, eyebrow, title, subtitle, sectionEyebrow, sectionHeading } = Astro.props;
+---
+<div aria-hidden="true" data-scroll-progress class="fixed top-0 left-0 right-0 h-[2px] bg-brand-500 z-50 origin-left pointer-events-none" style="transform: scaleX(0);"></div>
+
+{/* ===== COVER HERO ===== */}
+<section class="relative min-h-[62vh] md:min-h-[70vh] flex items-end text-surface overflow-hidden bg-ink">
+  <img
+    data-hero-parallax
+    src={heroImage}
+    alt={heroImageAlt}
+    class="absolute inset-0 w-full h-full object-cover will-change-transform"
+  />
+  <div aria-hidden="true" class="absolute inset-0 bg-gradient-to-b from-ink/45 via-ink/20 to-ink/80"></div>
+  <div aria-hidden="true" class="absolute inset-0 bg-brand-500/30"></div>
+
+  <Container size="xl" class="relative pt-40 md:pt-48 pb-14 md:pb-20 w-full">
+    <p data-reveal data-i18n={i18nAttr(eyebrow)} class="text-[11px] md:text-xs uppercase tracking-[0.4em] text-surface/85 mb-8">
+      {eyebrow}
+    </p>
+    <h1 data-reveal data-reveal-delay="120" data-i18n={i18nAttr(title)} class="font-display font-heavy leading-[0.92] tracking-tight text-surface" style="font-size: clamp(3rem, 9vw, 8rem); max-width: 14ch;">
+      {title}
+    </h1>
+    <p data-reveal data-reveal-delay="240" data-i18n={i18nAttr(subtitle)} class="mt-8 max-w-2xl text-base md:text-lg text-surface/85 leading-relaxed">
+      {subtitle}
+    </p>
+  </Container>
+</section>
+
+{/* ===== GRID — managed in the admin dashboard ===== */}
+<Section bg="default" spacing="lg">
+  <Container size="xl">
+    <header class="max-w-3xl mb-12 md:mb-16">
+      <p data-reveal data-i18n={i18nAttr(sectionEyebrow)} class="text-[11px] uppercase tracking-[0.4em] text-brand-500 mb-6 md:mb-8">{sectionEyebrow}</p>
+      <h2 data-reveal data-reveal-delay="120" data-i18n={i18nAttr(sectionHeading)} class="font-display font-heavy leading-[1.02] tracking-tight text-ink" style="font-size: clamp(2rem, 5vw, 3.75rem);">
+        {sectionHeading}
+      </h2>
+    </header>
+
+    <slot />
+  </Container>
+</Section>
+
+{/* ===== motion (scroll bar + hero parallax) ===== */}
+<script>
+  import { animate, scroll } from 'motion';
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (!reduce) {
+    const bar = document.querySelector('[data-scroll-progress]') as HTMLElement | null;
+    if (bar) scroll(animate(bar, { transform: ['scaleX(0)', 'scaleX(1)'] }, { ease: 'linear' }));
+    const heroImg = document.querySelector('[data-hero-parallax]') as HTMLElement | null;
+    const heroSection = heroImg?.closest('section') as HTMLElement | null;
+    if (heroImg && heroSection) {
+      scroll(
+        animate(heroImg, { transform: ['translateY(0)', 'translateY(15%)'] }, { ease: 'linear' }),
+        { target: heroSection, offset: ['start start', 'end start'] },
+      );
+    }
+  }
+</script>
