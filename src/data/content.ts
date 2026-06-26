@@ -24,7 +24,7 @@ import heroPrivacy from '../assets/images/shutterstock-377226832-privacy-policy.
 import imgServicesPanel from '../assets/images/landscape.jpg';
 import imgGreenElysee from '../assets/images/forest-canopy-shutterstock-1240618612.jpg';
 import imgResponsiblePartner from '../assets/images/shutterstock-377226832-responsible-partner.jpg';
-import imgWeCare from '../assets/images/shutterstock-377226832-we-care.jpg';
+import imgKnowledgeExperience from '../assets/images/dreamstime-118069486-knowledge-experience.jpg';
 
 import imgArticlePanama from '../assets/images/untitled-1.png';
 import imgArticleHsbc from '../assets/images/barge-graphic.jpg';
@@ -258,7 +258,7 @@ export const homePage: PageContent = {
       eyebrow: 'Knowledge & Experience',
       heading: 'With knowledge and experience',
       body: 'Founded in 1979, Elysée combines 40+ years of experience with continuous in-house R&D. We serve 65+ countries with 5000+ product codes, supported by 215+ team members. Our products are certified by DVGW, KIWA, WRAS, SII, OVGW, and the most reputable international standards organizations.',
-      image: imgWeCare,
+      image: imgKnowledgeExperience,
       cta: { label: 'LEARN MORE ABOUT US', href: '/about-us/' },
     },
     {
