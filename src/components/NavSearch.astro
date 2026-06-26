@@ -1,12 +1,15 @@
 ---
-// Demo search bar shown in the nav, right after the language toggle.
+// Demo search bar in the nav, right after the language toggle.
 //
-// VISUAL SHOWCASE ONLY — submission is disabled and nothing is queried yet;
-// the real search wiring is a later task. Styling inherits the header's
-// `currentColor`, so the field adapts to both header states: light text over
-// the transparent (over-hero) bar and dark text once the bar turns opaque.
+// Editorial style: a magnifier + field resting on a hairline baseline; on focus
+// a brand-green underline sweeps in from the left (echoing the site's thin-rule
+// + green-accent motif). No box — it reads as part of the nav, not bolted on.
 //
-// Desktop-only (`hidden lg:flex`) to keep the mobile bar uncluttered.
+// VISUAL SHOWCASE ONLY — submission is disabled and nothing is queried yet; the
+// real search wiring is a later task. Styling inherits the header's
+// `currentColor`, so it adapts to both header states: light over the transparent
+// (over-hero) bar, dark once the bar turns opaque. Desktop-only (`hidden
+// lg:flex`) to keep the mobile bar uncluttered.
 import { i18nAttrFor } from '../lib/i18n';
 ---
 <form
@@ -14,22 +17,32 @@ import { i18nAttrFor } from '../lib/i18n';
   data-nav-search
   aria-label="Site search"
   data-i18n-attr={i18nAttrFor({ 'aria-label': 'Site search' })}
-  class="relative hidden lg:flex items-center shrink-0"
+  class="group relative hidden lg:flex items-center gap-2.5 w-44 xl:w-56 shrink-0"
 >
-  <span class="pointer-events-none absolute left-3 flex items-center text-current/55">
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-      <circle cx="11" cy="11" r="7" />
-      <path d="m21 21-4.3-4.3" />
-    </svg>
-  </span>
+  <svg
+    class="h-3.5 w-3.5 shrink-0 text-current/55 transition-colors duration-200 group-focus-within:text-brand-500"
+    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"
+  >
+    <circle cx="11" cy="11" r="7" />
+    <path d="m21 21-4.3-4.3" />
+  </svg>
+
   <input
     type="search"
     name="q"
     autocomplete="off"
     placeholder="Search…"
     data-i18n-attr={i18nAttrFor({ placeholder: 'Search…' })}
-    class="w-40 xl:w-52 rounded-full border border-current/25 bg-transparent py-1.5 pl-9 pr-3 text-[12px] leading-none text-current placeholder:text-current/55 transition-colors duration-200 focus:border-brand-500 focus:outline-none"
+    class="w-full bg-transparent py-1.5 text-[12px] leading-none tracking-wide text-current placeholder:text-current/50 focus:outline-none [&::-webkit-search-cancel-button]:appearance-none"
   />
+
+  {/* Resting hairline baseline. */}
+  <span aria-hidden="true" class="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-current/25"></span>
+  {/* Brand-green underline — sweeps in from the left on focus. */}
+  <span
+    aria-hidden="true"
+    class="pointer-events-none absolute inset-x-0 bottom-0 h-px origin-left scale-x-0 bg-brand-500 transition-transform duration-300 ease-out-quint group-focus-within:scale-x-100"
+  ></span>
 </form>
 
 <script>
