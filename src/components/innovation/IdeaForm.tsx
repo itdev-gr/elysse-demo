@@ -6,8 +6,6 @@ interface Props {
   heroImage?: string;
   confidentialityTitle?: string;
   confidentialityBody?: string;
-  generalSubmissionLabel?: string;
-  generalSubmissionHref?: string;
 }
 
 const COUNTRIES = [
@@ -202,16 +200,6 @@ export default function IdeaForm(props: Props) {
           <span data-i18n={i18nAttr('Click to submit your idea!')}>Click to submit your idea!</span>
           <span aria-hidden>→</span>
         </motion.a>
-
-        {/* Alternative: general technical submission */}
-        {props.generalSubmissionHref && (
-          <a
-            href={props.generalSubmissionHref}
-            className="inline-block text-sm font-medium text-brand-500 hover:text-brand-accent transition-colors duration-150"
-          >
-            <span data-i18n={i18nAttr(props.generalSubmissionLabel ?? '')}>{props.generalSubmissionLabel}</span> →
-          </a>
-        )}
       </div>
     </section>
   );

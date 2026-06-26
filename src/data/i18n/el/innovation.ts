@@ -148,7 +148,6 @@ export const innovation: Record<string, string> = {
   'Confidentiality': 'Εμπιστευτικότητα',
   'We only need basic information in your initial submission and will not ask for any details that compromise confidentiality. We could establish a separate confidentiality agreement with you before asking you to share any confidential information.':
     'Χρειαζόμαστε μόνο βασικές πληροφορίες στην αρχική σας υποβολή και δεν θα ζητήσουμε στοιχεία που θέτουν σε κίνδυνο την εμπιστευτικότητα. Μπορούμε να συνάψουμε ξεχωριστή συμφωνία εμπιστευτικότητας μαζί σας προτού σας ζητήσουμε να μοιραστείτε οποιαδήποτε εμπιστευτική πληροφορία.',
-  'Make a general technical submission': 'Κάντε μια γενική τεχνική υποβολή',
   'Click to submit your idea!': 'Κάντε κλικ για να υποβάλετε την ιδέα σας!',
   'Name *': 'Όνομα *',
   'Email *': 'Email *',

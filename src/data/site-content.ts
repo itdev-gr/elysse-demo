@@ -104,8 +104,6 @@ export interface IdeaFormBlock {
   heroImage?: string;
   confidentialityTitle?: string;
   confidentialityBody?: string;
-  generalSubmissionLabel?: string;
-  generalSubmissionHref?: string;
 }
 
 export type ContentBlock =
@@ -1629,8 +1627,6 @@ export const innovationInnovateWithUs: ContentPage = {
       confidentialityTitle: 'Confidentiality',
       confidentialityBody:
         'We only need basic information in your initial submission and will not ask for any details that compromise confidentiality. We could establish a separate confidentiality agreement with you before asking you to share any confidential information.',
-      generalSubmissionLabel: 'Make a general technical submission',
-      generalSubmissionHref: 'mailto:info@elysee.com.cy?subject=General%20technical%20submission',
     },
   ],
 };
