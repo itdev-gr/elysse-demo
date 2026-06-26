@@ -144,19 +144,8 @@ export default function ShopLocator({ shops }: Props) {
           target="_blank"
           rel="noopener noreferrer"
           aria-label={`Open the Elysée ${shop.name} location in Google Maps`}
-          className="group absolute inset-0 z-10 block cursor-pointer"
-        >
-          <span
-            className="pointer-events-none absolute bottom-3 right-3 inline-flex items-center gap-1.5 rounded-full bg-ink/85 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.15em] text-surface opacity-0 shadow-sm backdrop-blur-sm transition-opacity duration-200 group-hover:opacity-100 group-focus-visible:opacity-100"
-            data-i18n={i18nAttr('Open in Google Maps')}
-          >
-            Open in Google Maps
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-              <path d="M7 17 17 7" />
-              <path d="M7 7h10v10" />
-            </svg>
-          </span>
-        </a>
+          className="absolute inset-0 z-10 block cursor-pointer"
+        />
       </div>
 
       {/* ===== Right — contact details ===== */}

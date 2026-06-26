@@ -56,7 +56,6 @@ export const contact: Record<string, string> = {
   // ============================================================================
   'Shops': 'Καταστήματα',
   'Contact Details': 'Στοιχεία επικοινωνίας',
-  'Open in Google Maps': 'Άνοιγμα στους Χάρτες Google',
 
   // ============================================================================
   // Worldwide Network — /contact/worldwide/

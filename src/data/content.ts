@@ -22,7 +22,7 @@ import heroPrivacy from '../assets/images/shutterstock-377226832-privacy-policy.
 
 // Section/article images.
 import imgServicesPanel from '../assets/images/landscape.jpg';
-import imgGreenElysee from '../assets/images/green-hydrogen-shutterstock-1938738706.jpg';
+import imgGreenElysee from '../assets/images/forest-canopy-shutterstock-1240618612.jpg';
 import imgResponsiblePartner from '../assets/images/shutterstock-377226832-responsible-partner.jpg';
 import imgWeCare from '../assets/images/shutterstock-377226832-we-care.jpg';
 
