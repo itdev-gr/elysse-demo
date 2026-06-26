@@ -8,6 +8,8 @@ export interface RichBlock {
   /** Paragraph of body copy. */
   kind: 'paragraph';
   text: string;
+  /** Horizontal alignment. Defaults to left-aligned; 'center' centers the block and its text. */
+  align?: 'center';
 }
 
 export interface HeadingBlock {
@@ -1617,6 +1619,7 @@ export const innovationInnovateWithUs: ContentPage = {
   blocks: [
     {
       kind: 'paragraph',
+      align: 'center',
       text:
         "We innovate with partners, concentrating on exceptional ideas related to disruptive technologies. Are you working on something valuable that could match our field? Let's join forces to turn your breakthrough concept into a market-ready reality. Reach out to our team with a brief overview of your project and let's explore how we can shape the future together.",
     },

@@ -22,7 +22,7 @@ const { blocks } = Astro.props;
 {blocks.map((b) => {
   if (b.kind === 'heading' && b.level === 2) return <h2 data-i18n={i18nAttr(b.text)} class="text-2xl md:text-3xl font-heavy text-ink mt-8 first:mt-0">{b.text}</h2>;
   if (b.kind === 'heading' && b.level === 3) return <h3 data-i18n={i18nAttr(b.text)} class="text-xl font-heavy text-ink mt-6">{b.text}</h3>;
-  if (b.kind === 'paragraph') return <p data-i18n={i18nAttr(b.text)} class="text-base md:text-lg text-ink/85 leading-relaxed max-w-screen-md">{b.text}</p>;
+  if (b.kind === 'paragraph') return <p data-i18n={i18nAttr(b.text)} class={`text-base md:text-lg text-ink/85 leading-relaxed max-w-screen-md${b.align === 'center' ? ' mx-auto text-center' : ''}`}>{b.text}</p>;
   if (b.kind === 'list') {
     const Tag = b.ordered ? 'ol' : 'ul';
     const cls = b.ordered ? 'list-decimal' : 'list-disc';

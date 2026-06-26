@@ -68,40 +68,35 @@ export default function IdeaForm(props: Props) {
 
   return (
     <section id="idea-form" className="my-10 md:my-14 scroll-mt-28">
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
-        <motion.div {...fade} className="lg:col-span-5">
-          {props.heroImage && (
-            <img
-              src={props.heroImage}
-              alt=""
-              loading="lazy"
-              className="w-full h-auto rounded-sm"
-            />
-          )}
-          {props.confidentialityTitle && (
-            <div className="mt-6 p-6 bg-brand-500/5 border-l-4 border-brand-500 rounded-sm">
-              <h3 data-i18n={i18nAttr(props.confidentialityTitle ?? '')} className="text-lg font-heavy text-brand-500 mb-2">
-                {props.confidentialityTitle}
-              </h3>
-              <p data-i18n={i18nAttr(props.confidentialityBody ?? '')} className="text-base text-ink/85 leading-relaxed">
-                {props.confidentialityBody}
-              </p>
-            </div>
-          )}
-          {props.generalSubmissionHref && (
-            <a
-              href={props.generalSubmissionHref}
-              className="mt-4 inline-block text-sm font-medium text-brand-500 hover:text-brand-accent transition-colors duration-150"
-            >
-              <span data-i18n={i18nAttr(props.generalSubmissionLabel ?? '')}>{props.generalSubmissionLabel}</span> →
-            </a>
-          )}
-        </motion.div>
+      <div className="max-w-screen-md mx-auto space-y-8 md:space-y-10">
+        {/* Illustration — sits under the intro copy, enlarged */}
+        {props.heroImage && (
+          <motion.img
+            {...fade}
+            src={props.heroImage}
+            alt=""
+            loading="lazy"
+            className="block w-full h-auto rounded-sm"
+          />
+        )}
 
+        {/* Confidentiality note */}
+        {props.confidentialityTitle && (
+          <motion.div {...fade} className="p-6 bg-brand-500/5 border-l-4 border-brand-500 rounded-sm">
+            <h3 data-i18n={i18nAttr(props.confidentialityTitle ?? '')} className="text-lg font-heavy text-brand-500 mb-2">
+              {props.confidentialityTitle}
+            </h3>
+            <p data-i18n={i18nAttr(props.confidentialityBody ?? '')} className="text-base text-ink/85 leading-relaxed">
+              {props.confidentialityBody}
+            </p>
+          </motion.div>
+        )}
+
+        {/* Submission form */}
         <motion.form
           {...fade}
           transition={{ duration: 0.5, ease: EASE, delay: reduce ? 0 : 0.08 }}
-          className="lg:col-span-7 bg-surface border border-ink/10 rounded-sm p-6 md:p-10"
+          className="bg-surface border border-ink/10 rounded-sm p-6 md:p-10"
           onSubmit={handleSubmit}
           noValidate
         >
@@ -193,6 +188,30 @@ export default function IdeaForm(props: Props) {
             </div>
           )}
         </motion.form>
+
+        {/* Primary CTA — submit the idea via the SurveyMonkey form */}
+        <motion.a
+          {...fade}
+          href="https://www.surveymonkey.com/r/5LF2YPM"
+          target="_blank"
+          rel="noopener noreferrer"
+          whileTap={reduce ? undefined : { scale: 0.98 }}
+          whileHover={reduce ? undefined : { y: -2 }}
+          className="flex items-center justify-center gap-3 w-full px-8 py-5 bg-brand-500 text-surface text-base md:text-lg font-heavy uppercase tracking-widest rounded-sm text-center transition-colors duration-200 hover:bg-brand-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-500"
+        >
+          <span data-i18n={i18nAttr('Click to submit your idea!')}>Click to submit your idea!</span>
+          <span aria-hidden>→</span>
+        </motion.a>
+
+        {/* Alternative: general technical submission */}
+        {props.generalSubmissionHref && (
+          <a
+            href={props.generalSubmissionHref}
+            className="inline-block text-sm font-medium text-brand-500 hover:text-brand-accent transition-colors duration-150"
+          >
+            <span data-i18n={i18nAttr(props.generalSubmissionLabel ?? '')}>{props.generalSubmissionLabel}</span> →
+          </a>
+        )}
       </div>
     </section>
   );
