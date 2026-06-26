@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { supabase, isSupabaseConfigured } from '../../lib/supabase';
 import { i18nAttr } from '../../lib/i18n';
+import FeaturedCard from '../FeaturedCard';
 import { exhibitionToCard, mediaToCard, ebookToCard, type InsightCard } from '../../lib/insights-cards';
 import type { Exhibition } from '../../types/exhibition';
 import type { Media } from '../../types/media';
@@ -99,44 +100,62 @@ export default function InsightsList({ kind, emptyMessage = 'Nothing here yet �
     return <p className="text-center text-ink/60 py-16" data-i18n={i18nAttr(message)}>{message}</p>;
   }
 
+  const [featured, ...rest] = state.items;
+
   return (
-    <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {state.items.map((it) => (
-        <li
-          key={it.href}
-          className="group border border-ink/10 rounded-sm overflow-hidden bg-surface transition-all duration-200 ease-out hover:border-brand-500/40 hover:-translate-y-1 hover:shadow-[0_18px_40px_-20px_rgba(0,0,0,0.18)]"
-        >
-          <a href={it.href} className="block">
-            <div className="aspect-[16/9] bg-brand-500/5 overflow-hidden">
-              {it.image ? (
-                <img
-                  src={it.image}
-                  alt=""
-                  loading="lazy"
-                  className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
-                />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center">
-                  <span className="font-display font-heavy text-brand-500/25" style={{ fontSize: 'clamp(2.5rem, 6vw, 5rem)' }}>E</span>
-                </div>
-              )}
-            </div>
-          </a>
-          <div className="p-5">
-            {it.date && <time className="text-xs uppercase tracking-widest text-ink/60">{it.date}</time>}
-            <h3 className="mt-2 text-lg font-heavy text-ink">
-              <a href={it.href} className="hover:text-brand-500 transition-colors duration-150">{it.title}</a>
-            </h3>
-            {it.excerpt && <p className="mt-2 text-sm text-ink/75 line-clamp-3">{it.excerpt}</p>}
-            <a
-              href={it.href}
-              className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-brand-500 hover:text-brand-accent transition-colors duration-150"
+    <div>
+      {/* ===== FEATURED — latest item ===== */}
+      <FeaturedCard
+        href={featured.href}
+        image={featured.image}
+        title={featured.title}
+        excerpt={featured.excerpt}
+        meta={featured.date}
+        badgeLabel="Latest"
+        ctaLabel="Read more"
+      />
+
+      {/* ===== REST — card grid ===== */}
+      {rest.length > 0 && (
+        <ul className="mt-8 md:mt-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {rest.map((it) => (
+            <li
+              key={it.href}
+              className="group border border-ink/10 rounded-sm overflow-hidden bg-surface transition-all duration-200 ease-out hover:border-brand-500/40 hover:-translate-y-1 hover:shadow-[0_18px_40px_-20px_rgba(0,0,0,0.18)]"
             >
-              <span data-i18n={i18nAttr('Read more')}>Read more</span> <span aria-hidden="true" className="transition-transform duration-150 group-hover:translate-x-1">→</span>
-            </a>
-          </div>
-        </li>
-      ))}
-    </ul>
+              <a href={it.href} className="block">
+                <div className="aspect-[16/9] bg-brand-500/5 overflow-hidden">
+                  {it.image ? (
+                    <img
+                      src={it.image}
+                      alt=""
+                      loading="lazy"
+                      className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center">
+                      <span className="font-display font-heavy text-brand-500/25" style={{ fontSize: 'clamp(2.5rem, 6vw, 5rem)' }}>E</span>
+                    </div>
+                  )}
+                </div>
+              </a>
+              <div className="p-5">
+                {it.date && <time className="text-xs uppercase tracking-widest text-ink/60">{it.date}</time>}
+                <h3 className="mt-2 text-lg font-heavy text-ink">
+                  <a href={it.href} className="hover:text-brand-500 transition-colors duration-150">{it.title}</a>
+                </h3>
+                {it.excerpt && <p className="mt-2 text-sm text-ink/75 line-clamp-3">{it.excerpt}</p>}
+                <a
+                  href={it.href}
+                  className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-brand-500 hover:text-brand-accent transition-colors duration-150"
+                >
+                  <span data-i18n={i18nAttr('Read more')}>Read more</span> <span aria-hidden="true" className="transition-transform duration-150 group-hover:translate-x-1">→</span>
+                </a>
+              </div>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
   );
 }

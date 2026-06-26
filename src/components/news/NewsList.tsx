@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { supabase, isSupabaseConfigured } from '../../lib/supabase';
 import type { NewsArticle } from '../../types/news';
 import { i18nAttr } from '../../lib/i18n';
+import FeaturedCard from '../FeaturedCard';
 
 /** Card shape shared by live data and the server-provided fallback. */
 export interface NewsCardNode {
@@ -140,35 +141,19 @@ export default function NewsList({ fallback }: Props) {
 
   const [featured, ...rest] = state.items;
   const featuredHref = featured.slug ? `/insights/news/${featured.slug}/` : undefined;
-  const FeaturedTag = featuredHref ? 'a' : 'div';
 
   return (
     <div>
       {/* ===== FEATURED — latest article ===== */}
-      <FeaturedTag
-        {...(featuredHref ? { href: featuredHref } : {})}
-        className={`group grid grid-cols-1 lg:grid-cols-2 bg-surface border border-ink/10 overflow-hidden ${featuredHref ? 'cursor-pointer' : ''}`}
-      >
-        <div className="relative aspect-[16/10] lg:aspect-auto lg:min-h-[380px] bg-surface-alt overflow-hidden">
-          <CoverOrMark src={featured.cover_image} className="transition-transform duration-700 ease-out group-hover:scale-105" />
-          <span data-i18n={i18nAttr('Latest')} className="absolute top-4 left-4 inline-block bg-brand-500 text-surface text-[10px] uppercase tracking-[0.25em] px-3 py-1.5">
-            Latest
-          </span>
-        </div>
-        <div className="p-7 md:p-10 lg:p-12 flex flex-col justify-center">
-          <p className="text-[10px] uppercase tracking-[0.3em] text-brand-500 font-semibold">{meta(featured)}</p>
-          <h2 className="mt-4 font-display font-heavy leading-[1.05] tracking-tight text-ink transition-colors duration-300 group-hover:text-brand-500" style={{ fontSize: 'clamp(1.75rem, 3.5vw, 3rem)' }}>
-            {featured.title}
-          </h2>
-          <div aria-hidden="true" className="mt-6 h-px w-12 bg-brand-500 transition-[width] duration-500 ease-out group-hover:w-24"></div>
-          <p className="mt-6 text-base md:text-lg text-ink/70 leading-[1.6] line-clamp-3">{featured.excerpt}</p>
-          {featuredHref && (
-            <span className="mt-8 inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.25em] text-brand-500 font-medium">
-              <span data-i18n={i18nAttr('Read article')}>Read article</span> <ArrowR className="w-3.5 h-3.5 transition-transform duration-200 group-hover:translate-x-1" />
-            </span>
-          )}
-        </div>
-      </FeaturedTag>
+      <FeaturedCard
+        href={featuredHref}
+        image={featured.cover_image}
+        title={featured.title}
+        excerpt={featured.excerpt}
+        meta={meta(featured)}
+        badgeLabel="Latest"
+        ctaLabel="Read article"
+      />
 
       {/* ===== REST — card grid ===== */}
       {rest.length > 0 && (

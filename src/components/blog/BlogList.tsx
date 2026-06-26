@@ -3,6 +3,18 @@ import { supabase, isSupabaseConfigured } from '../../lib/supabase';
 import type { Post } from '../../types/post';
 import { i18nAttr } from '../../lib/i18n';
 import BlogCard from './BlogCard';
+import FeaturedCard from '../FeaturedCard';
+
+function formatDate(iso: string | null): string {
+  if (!iso) return '';
+  return new Date(iso).toLocaleDateString('en-GB', { year: 'numeric', month: 'short', day: 'numeric' });
+}
+
+/** Author · date · read-time line, matching BlogCard. */
+function postMeta(post: Post): string {
+  const author = post.author?.trim() || 'Elysée Group';
+  return [author, formatDate(post.published_at), `${post.reading_minutes ?? 1} min read`].filter(Boolean).join(' · ');
+}
 
 type State =
   | { kind: 'loading' }
@@ -98,11 +110,29 @@ export default function BlogList() {
     );
   }
 
+  const [featured, ...rest] = state.posts;
+
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
-      {state.posts.map((post) => (
-        <BlogCard key={post.id} post={post} />
-      ))}
+    <div>
+      {/* ===== FEATURED — latest post ===== */}
+      <FeaturedCard
+        href={`/insights/blog/${featured.slug}/`}
+        image={featured.cover_image}
+        title={featured.title}
+        excerpt={featured.excerpt}
+        meta={postMeta(featured)}
+        badgeLabel="Latest"
+        ctaLabel="Read article"
+      />
+
+      {/* ===== REST — card grid ===== */}
+      {rest.length > 0 && (
+        <div className="mt-8 md:mt-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+          {rest.map((post) => (
+            <BlogCard key={post.id} post={post} />
+          ))}
+        </div>
+      )}
     </div>
   );
 }
