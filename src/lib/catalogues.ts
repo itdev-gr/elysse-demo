@@ -33,6 +33,29 @@ export function validateCataloguePdf(file: { type: string; size: number }): stri
   return null;
 }
 
+type CataloguePdfRow = {
+  pdf_url_black: string | null;
+  pdf_url_blue: string | null;
+  groups_black: string[] | null;
+  groups_blue: string[] | null;
+};
+
+/** Resolve which PDF (if any) to serve the visitor.
+ *  Black wins when the visitor's group appears in both slots. */
+export function pickCataloguePdf(
+  row: CataloguePdfRow,
+  groupCode: string | null,
+): { url: string; slot: 'black' | 'blue' } | null {
+  if (!groupCode) return null;
+  const black = row.groups_black ?? [];
+  const blue = row.groups_blue ?? [];
+  if (row.pdf_url_black && black.includes(groupCode))
+    return { url: row.pdf_url_black, slot: 'black' };
+  if (row.pdf_url_blue && blue.includes(groupCode))
+    return { url: row.pdf_url_blue, slot: 'blue' };
+  return null;
+}
+
 /** Upload a catalogue PDF and return its public URL. */
 export async function uploadCataloguePdf(
   file: File,

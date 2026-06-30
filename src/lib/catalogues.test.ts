@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { buildCatalogueTree, validateCataloguePdf } from './catalogues';
+import { buildCatalogueTree, validateCataloguePdf, pickCataloguePdf } from './catalogues';
 import type { Catalogue } from '../types/catalogue';
 
 const row = (over: Partial<Catalogue>): Catalogue => ({
@@ -49,5 +49,58 @@ describe('validateCataloguePdf', () => {
   });
   it('rejects PDFs over 25 MB', () => {
     expect(validateCataloguePdf({ type: 'application/pdf', size: 26 * 1024 * 1024 })).toMatch(/25 MB/);
+  });
+});
+
+describe('pickCataloguePdf', () => {
+  const make = (over: Parameters<typeof pickCataloguePdf>[0]) => over;
+
+  it('returns Black when only Black matches', () => {
+    expect(pickCataloguePdf(make({
+      pdf_url_black: 'BLACK.pdf', pdf_url_blue: null,
+      groups_black: ['A', 'B'], groups_blue: null,
+    }), 'A')).toEqual({ url: 'BLACK.pdf', slot: 'black' });
+  });
+
+  it('returns Blue when only Blue matches', () => {
+    expect(pickCataloguePdf(make({
+      pdf_url_black: 'BLACK.pdf', pdf_url_blue: 'BLUE.pdf',
+      groups_black: ['A'], groups_blue: ['C', 'D'],
+    }), 'C')).toEqual({ url: 'BLUE.pdf', slot: 'blue' });
+  });
+
+  it('returns Black when both slots match (Black wins)', () => {
+    expect(pickCataloguePdf(make({
+      pdf_url_black: 'BLACK.pdf', pdf_url_blue: 'BLUE.pdf',
+      groups_black: ['A', 'B'], groups_blue: ['B', 'C'],
+    }), 'B')).toEqual({ url: 'BLACK.pdf', slot: 'black' });
+  });
+
+  it('returns null when the group matches neither slot', () => {
+    expect(pickCataloguePdf(make({
+      pdf_url_black: 'BLACK.pdf', pdf_url_blue: 'BLUE.pdf',
+      groups_black: ['A'], groups_blue: ['C'],
+    }), 'E')).toBeNull();
+  });
+
+  it('returns null when the matching slot has no PDF set', () => {
+    expect(pickCataloguePdf(make({
+      pdf_url_black: null, pdf_url_blue: null,
+      groups_black: ['A'], groups_blue: ['A'],
+    }), 'A')).toBeNull();
+  });
+
+  it('returns null when both slots are empty', () => {
+    expect(pickCataloguePdf(make({
+      pdf_url_black: null, pdf_url_blue: null,
+      groups_black: null, groups_blue: null,
+    }), 'A')).toBeNull();
+  });
+
+  it('returns null when groupCode is null', () => {
+    expect(pickCataloguePdf(make({
+      pdf_url_black: 'BLACK.pdf', pdf_url_blue: null,
+      groups_black: ['A'], groups_blue: null,
+    }), null)).toBeNull();
   });
 });
