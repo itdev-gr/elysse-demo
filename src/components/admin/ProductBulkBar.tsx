@@ -60,14 +60,8 @@ export default function ProductBulkBar({ onChanged }: { onChanged: () => void })
     setBusy('export'); setError(null); setResult(null);
     try {
       const products: Product[] = [];
-      // sort_order monotonically increments (nextProductSortOrder = max + 1),
-      // so DESC puts the newest products first. `code` is the deterministic
-      // tiebreaker required for stable PostgREST range paging across chunks.
       for (let from = 0; ; from += PAGE) {
-        const { data, error: e } = await supabase.from('products').select('*')
-          .order('sort_order', { ascending: false })
-          .order('code', { ascending: true })
-          .range(from, from + PAGE - 1);
+        const { data, error: e } = await supabase.from('products').select('*').order('sort_order').range(from, from + PAGE - 1);
         if (e) throw new Error(e.message);
         if (!data || data.length === 0) break;
         products.push(...(data as Product[]));
