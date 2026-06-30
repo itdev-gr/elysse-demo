@@ -12,6 +12,8 @@ import { fetchConfigurationDetails, configDetailToCard } from '../../../lib/prod
 import { getCategories, getSubcategories } from '../../../lib/categories';
 import type { CatalogProduct, CategorySlug } from '../../../scripts/catalog/types';
 import '../../../styles/catalog.css';
+import { supabase } from '../../../lib/supabase';
+import CatalogueButton from '../../../components/catalog/CatalogueButton.astro';
 
 // Rendered on-demand so a newly added/edited product is live immediately — no
 // rebuild. Edge-cached for speed; revalidates within a minute.
@@ -31,6 +33,34 @@ try {
 }
 const config = configs.find((x) => x.slug === product);
 if (!config) return new Response(null, { status: 404 });
+
+type CatalogueSubRow = {
+  pdf_url_black: string | null;
+  pdf_url_blue: string | null;
+  groups_black: string[] | null;
+  groups_blue: string[] | null;
+};
+let subRow: CatalogueSubRow | null = null;
+if (config.subCategory) {
+  const { data } = await supabase
+    .from('catalogues')
+    .select(`
+      pdf_url_black, pdf_url_blue, groups_black, groups_blue,
+      parent:parent_id!inner ( category_slug )
+    `)
+    .eq('product_sub_category', config.subCategory)
+    .eq('parent.category_slug', categoryEntry.slug)
+    .eq('is_active', true)
+    .maybeSingle();
+  if (data) {
+    subRow = {
+      pdf_url_black: data.pdf_url_black,
+      pdf_url_blue: data.pdf_url_blue,
+      groups_black: data.groups_black,
+      groups_blue: data.groups_blue,
+    };
+  }
+}
 
 const categoryName = categoryEntry.name;
 const categoryNameI18n = JSON.stringify(categoryEntry.name_i18n ?? {});
@@ -64,7 +94,9 @@ const desc = `${config.configuration} (No.${config.familyCode}) — ${config.sub
         <span>Back to <span data-i18n={categoryNameI18n}>{categoryName}</span></span>
       </a>
 
-      <ConfigDetail config={config} related={related} subCategoryI18n={subCategoryI18n} />
+      <ConfigDetail config={config} related={related} subCategoryI18n={subCategoryI18n}>
+        <CatalogueButton slot="catalogue-button" catalogue={subRow} />
+      </ConfigDetail>
     </section>
   </div>
 </BaseLayout>
