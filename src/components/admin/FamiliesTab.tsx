@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '../../lib/supabase';
 import { triggerPublish } from '../../lib/publish';
-import { getSubcategories, applySubcategoryOverlay } from '../../lib/categories';
+import { getSubcategories } from '../../lib/categories';
 import type { ProductCategory, ProductSubcategory } from '../../lib/categories';
 import type { ProductFamily } from '../../lib/families';
 import { LibraryGrid, type ProductImage } from './ImageLibraryGrid';
@@ -184,13 +184,32 @@ export default function FamiliesTab() {
               const arr = bySeries.get(s) ?? []; arr.push(fam); bySeries.set(s, arr);
             }
             const overlay = subcats.filter((s) => s.category_slug === cat.slug);
+            const byName = new Map(overlay.map((s) => [s.name, s]));
             const presentSeries = [...bySeries.keys()].filter((s): s is string => !!s);
-            const orderedSeries = applySubcategoryOverlay(presentSeries, overlay);
+            // Admin view: keep hidden series rendered too (otherwise their family
+            // codes silently disappear). Sort by overlay order; hidden series sink
+            // to the bottom and carry a chip so the admin can spot them.
+            const orderedSeries = presentSeries
+              .map((name, i) => ({ name, i, o: byName.get(name) }))
+              .sort((a, b) => {
+                const aHidden = a.o ? !a.o.is_active : false;
+                const bHidden = b.o ? !b.o.is_active : false;
+                if (aHidden !== bHidden) return aHidden ? 1 : -1;
+                const oa = a.o?.sort_order; const ob = b.o?.sort_order;
+                if (oa == null && ob == null) return a.i - b.i;
+                if (oa == null) return 1;
+                if (ob == null) return -1;
+                return oa - ob;
+              });
             const sortFams = (arr: ProductFamily[]) =>
               [...arr].sort((a, b) => a.sort_order - b.sort_order || a.code.localeCompare(b.code));
-            const groups: { series: string | null; fams: ProductFamily[] }[] = [
-              ...orderedSeries.map((series) => ({ series: series as string | null, fams: sortFams(bySeries.get(series) ?? []) })),
-              ...(bySeries.has(null) ? [{ series: null, fams: sortFams(bySeries.get(null) ?? []) }] : []),
+            const groups: { series: string | null; fams: ProductFamily[]; hidden: boolean }[] = [
+              ...orderedSeries.map(({ name, o }) => ({
+                series: name as string | null,
+                fams: sortFams(bySeries.get(name) ?? []),
+                hidden: o ? !o.is_active : false,
+              })),
+              ...(bySeries.has(null) ? [{ series: null, fams: sortFams(bySeries.get(null) ?? []), hidden: false }] : []),
             ];
             return (
               <section key={cat.slug} className={`border p-5 ${cat.is_active ? 'border-ink/10' : 'border-ink/10 bg-ink/[0.03] opacity-70'}`}>
@@ -227,11 +246,12 @@ export default function FamiliesTab() {
 
                 {codes.length === 0 && addingFor !== cat.slug && <p className="text-sm text-ink/50">No codes yet.</p>}
 
-                {groups.map(({ series, fams }) => (
+                {groups.map(({ series, fams, hidden }) => (
                   <div key={series ?? '__none'} className="mb-4 last:mb-0">
                     <p className="text-[11px] font-semibold text-ink/70 border-b border-ink/10 pb-1 mb-1.5">
                       {series ?? '— No series yet'}
                       <span className="ml-2 font-normal text-ink/40">{fams.length}</span>
+                      {hidden && <span className="ml-2 inline-block px-1.5 py-0.5 text-[9px] font-normal uppercase tracking-[0.15em] bg-ink/[0.08] text-ink/55 rounded">hidden series</span>}
                     </p>
                     <ul className="flex flex-col gap-1">
                       {fams.map((fam) => {
