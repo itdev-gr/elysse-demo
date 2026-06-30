@@ -8,6 +8,8 @@ import UtilityBar from '../../../components/catalog/UtilityBar.astro';
 import ProductGrid from '../../../components/catalog/ProductGrid.astro';
 import CountryModal from '../../../components/catalog/CountryModal.astro';
 import CategoriesNav from '../../../components/catalog/CategoriesNav.astro';
+import { supabase } from '../../../lib/supabase';
+import CatalogueButton from '../../../components/catalog/CatalogueButton.astro';
 
 // Rendered on-demand so new/edited/hidden categories and products are live
 // immediately — no rebuild. Edge-cached for speed; revalidates within a minute.
@@ -17,6 +19,14 @@ Astro.response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-re
 const { category } = Astro.params as { category: CategorySlug };
 const categoryEntry = (await getCategories()).find((c) => c.slug === category);
 if (!categoryEntry) return new Response(null, { status: 404 });
+
+const { data: catalogueRow } = await supabase
+  .from('catalogues')
+  .select('pdf_url_black, pdf_url_blue, groups_black, groups_blue')
+  .eq('category_slug', categoryEntry.slug)
+  .is('parent_id', null)
+  .eq('is_active', true)
+  .maybeSingle();
 
 const excelName = categoryEntry.product_category_name ?? undefined;
 // One card per configuration (catalogue No.), sizes collapsed — matches the
@@ -66,8 +76,9 @@ const productsJson = JSON.stringify(products);
         <span aria-current="page" data-i18n={JSON.stringify(categoryEntry.name_i18n ?? {})}>{categoryEntry.name}</span>
       </nav>
 
-      <header class="mt-6 mb-8">
+      <header class="mt-6 mb-8 flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2">
         <h1 class="text-3xl md:text-4xl font-heavy text-ink" data-i18n={JSON.stringify(categoryEntry.name_i18n ?? {})}>{categoryEntry.name}</h1>
+        <CatalogueButton catalogue={catalogueRow ?? null} />
       </header>
 
       {isEmpty ? (
