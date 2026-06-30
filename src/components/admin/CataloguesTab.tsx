@@ -85,19 +85,41 @@ export default function CataloguesTab() {
     </div>
   );
 
-  const pdfCell = (cat: Catalogue) =>
-    cat.pdf_url ? (
-      <a
-        href={cat.pdf_url}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="text-[11px] uppercase tracking-[0.2em] text-brand-700 hover:text-brand-500 cursor-pointer"
-      >
-        View PDF
-      </a>
-    ) : (
-      <span className="text-ink/40">—</span>
+  const pdfSlotCell = (cat: Catalogue, slot: 'black' | 'blue') => {
+    const url = slot === 'black' ? cat.pdf_url_black : cat.pdf_url_blue;
+    const groups = ((slot === 'black' ? cat.groups_black : cat.groups_blue) ?? []) as string[];
+    if (!url) return <span className="text-ink/40">—</span>;
+    return (
+      <div className="flex items-center gap-2 flex-wrap">
+        <a
+          href={url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-[11px] uppercase tracking-[0.2em] text-brand-700 hover:text-brand-500 cursor-pointer"
+        >
+          View ↗
+        </a>
+        {groups.length > 0 && (
+          <span className="flex gap-0.5">
+            {groups.map((g) => (
+              <span key={g} className="inline-block px-1.5 py-0.5 text-[9px] uppercase tracking-[0.15em] bg-ink/8 text-ink/70 rounded">{g}</span>
+            ))}
+          </span>
+        )}
+      </div>
     );
+  };
+
+  const unlinkedChip = (cat: Catalogue) => {
+    const isCategory = !cat.parent_id;
+    const linked = isCategory ? !!cat.category_slug : !!cat.product_sub_category;
+    if (linked) return null;
+    return (
+      <span className="inline-block ml-2 px-2 py-0.5 text-[9px] uppercase tracking-[0.2em] bg-amber-100 text-amber-800 rounded">
+        unlinked
+      </span>
+    );
+  };
 
   return (
     <>
@@ -133,7 +155,8 @@ export default function CataloguesTab() {
                   <tr>
                     <th className="px-4 py-3">#</th>
                     <th className="px-4 py-3">Name</th>
-                    <th className="px-4 py-3">PDF</th>
+                    <th className="px-4 py-3">Black</th>
+                    <th className="px-4 py-3">Blue</th>
                     <th className="px-4 py-3">Active</th>
                     <th className="px-4 py-3 text-right">Actions</th>
                   </tr>
@@ -144,12 +167,13 @@ export default function CataloguesTab() {
                       <tr className="border-b border-ink/5 bg-surface-alt/40">
                         <td className="px-4 py-3 text-ink/60">{cat.sort_order}</td>
                         <td className="px-4 py-3">
-                          <span className="font-medium text-ink">{cat.name}</span>
+                          <span className="font-medium text-ink">{cat.name}{unlinkedChip(cat)}</span>
                           {cat.description && (
                             <span className="block text-[11px] text-ink/55">{cat.description}</span>
                           )}
                         </td>
-                        <td className="px-4 py-3">{pdfCell(cat)}</td>
+                        <td className="px-4 py-3">{pdfSlotCell(cat, 'black')}</td>
+                        <td className="px-4 py-3">{pdfSlotCell(cat, 'blue')}</td>
                         <td className="px-4 py-3">
                           <span className={statusChip(cat.is_active)}>{cat.is_active ? 'Live' : 'Hidden'}</span>
                         </td>
@@ -162,14 +186,15 @@ export default function CataloguesTab() {
                             <span className="inline-flex items-start gap-2 pl-5">
                               <span aria-hidden="true" className="text-ink/35">↳</span>
                               <span>
-                                <span className="text-ink">{sub.name}</span>
+                                <span className="text-ink">{sub.name}{unlinkedChip(sub)}</span>
                                 {sub.description && (
                                   <span className="block text-[11px] text-ink/55">{sub.description}</span>
                                 )}
                               </span>
                             </span>
                           </td>
-                          <td className="px-4 py-3">{pdfCell(sub)}</td>
+                          <td className="px-4 py-3">{pdfSlotCell(sub, 'black')}</td>
+                          <td className="px-4 py-3">{pdfSlotCell(sub, 'blue')}</td>
                           <td className="px-4 py-3">
                             <span className={statusChip(sub.is_active)}>{sub.is_active ? 'Live' : 'Hidden'}</span>
                           </td>
