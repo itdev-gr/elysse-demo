@@ -1,0 +1,49 @@
+---
+// SSR-hidden anchor that becomes a download link once the client resolves
+// the visitor's country → group → matching PDF (Black wins overlap).
+type CatalogueRow = {
+  pdf_url_black: string | null;
+  pdf_url_blue: string | null;
+  groups_black: string[] | null;
+  groups_blue: string[] | null;
+};
+const { catalogue } = Astro.props as { catalogue: CatalogueRow | null };
+const dataJson = JSON.stringify(catalogue ?? null);
+---
+<a
+  data-catalogue-button
+  hidden
+  href="#"
+  target="_blank"
+  rel="noopener noreferrer"
+  class="inline-flex items-center gap-1.5 text-[11px] uppercase tracking-[0.25em] text-ink/70 hover:text-brand-500 transition-colors duration-200"
+>
+  <span aria-hidden="true">↓</span>
+  <span>Download catalogue</span>
+</a>
+<script type="application/json" data-catalogue-payload set:html={dataJson} />
+
+<script>
+  import { readCountry } from '../../scripts/catalog/country';
+  import { groupForCountry } from '../../scripts/catalog/country-group';
+  import { pickCataloguePdf } from '../../lib/catalogues';
+
+  async function hydrate() {
+    const anchors = document.querySelectorAll<HTMLAnchorElement>('[data-catalogue-button]');
+    if (!anchors.length) return;
+    const country = readCountry();
+    const group = await groupForCountry(country);
+    anchors.forEach((a) => {
+      const payloadEl = a.nextElementSibling as HTMLScriptElement | null;
+      if (!payloadEl || payloadEl.getAttribute('data-catalogue-payload') === null) return;
+      const row = JSON.parse(payloadEl.textContent ?? 'null');
+      if (!row) return;
+      const picked = pickCataloguePdf(row, group);
+      if (!picked) return;
+      a.href = picked.url;
+      a.removeAttribute('hidden');
+    });
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', hydrate);
+  else hydrate();
+</script>
