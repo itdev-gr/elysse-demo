@@ -56,12 +56,15 @@ export function pickCataloguePdf(
   return null;
 }
 
-/** Upload a catalogue PDF and return its public URL. */
+/** Upload a catalogue PDF and return its public URL.
+ *  Storage path: `{catalogueId}/{slot}-{uuid}.pdf` — slot visible in the URL
+ *  helps debugging and rules out cross-slot collisions. */
 export async function uploadCataloguePdf(
   file: File,
   catalogueId: string,
+  slot: 'black' | 'blue' = 'black',
 ): Promise<{ url: string }> {
-  const path = `${catalogueId}/${crypto.randomUUID()}.pdf`;
+  const path = `${catalogueId}/${slot}-${crypto.randomUUID()}.pdf`;
   const { error } = await supabase.storage
     .from('catalogues')
     .upload(path, file, { upsert: false, contentType: file.type });
