@@ -15,6 +15,10 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 export default defineConfig({
   site: 'https://elysse-demo.vercel.app',
 
+  // Dev-only toolbar; its stale optimize-dep requests 504 in every console
+  // check and it isn't used — off.
+  devToolbar: { enabled: false },
+
   // Static by default; data-driven routes opt into on-demand rendering with
   // `export const prerender = false` so dashboard changes go live with no
   // rebuild. The Vercel adapter provides the serverless runtime for those.

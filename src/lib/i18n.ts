@@ -34,3 +34,18 @@ export function i18nAttrFor(attrs: Record<string, string>): string | undefined {
 export function missingGreek(strings: string[]): string[] {
   return [...new Set(strings)].filter((s) => !EL[s] || !EL[s].trim());
 }
+
+/**
+ * Resolve an English UI string for the given language, for React islands that
+ * render their own translations instead of carrying `data-i18n` (the nav).
+ * Keeping `data-i18n` off island-rendered nodes stops the global swap script
+ * from mutating them before hydration — the cause of React hydration
+ * mismatches that reverted the nav to English for Greek visitors.
+ */
+export function tFor(lang: string, en: string): string {
+  if (lang === 'el') {
+    const t = EL[en];
+    if (t && t.trim()) return t;
+  }
+  return en;
+}

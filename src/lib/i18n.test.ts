@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { i18nAttr, i18nAttrFor, missingGreek } from './i18n';
+import { i18nAttr, i18nAttrFor, missingGreek, tFor } from './i18n';
 import { EL } from '../data/i18n/el';
 
 describe('i18nAttr', () => {
@@ -18,6 +18,24 @@ describe('i18nAttrFor', () => {
   });
   it('returns undefined when nothing maps', () => {
     expect(i18nAttrFor({ alt: 'No Such String 12345' })).toBeUndefined();
+  });
+});
+
+describe('tFor', () => {
+  it('returns Greek for a known string', () => {
+    expect(tFor('el', 'About Us')).toBe('Σχετικά με εμάς');
+  });
+  it('falls back to English for unknown strings', () => {
+    expect(tFor('el', 'No Such String 12345')).toBe('No Such String 12345');
+  });
+  it('returns English for en and unsupported languages', () => {
+    expect(tFor('en', 'About Us')).toBe('About Us');
+    expect(tFor('de', 'About Us')).toBe('About Us');
+  });
+  it('covers the nav labels used by the Mega navs', () => {
+    for (const label of ['Home', 'Menu', 'About Us', 'Innovation', 'Products', 'Insights', 'Contact Us']) {
+      expect(tFor('el', label)).not.toBe(label);
+    }
   });
 });
 
