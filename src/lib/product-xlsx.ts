@@ -12,8 +12,7 @@ export const I18N_LANGS = ['el', 'de', 'es', 'fr'] as const;
  *
  * Per-row (size) product fields: identity, category fields, the per-size English
  * `configuration` name + `description`, packaging, country visibility (groups
- * A–E), image, `is_active`, `is_hidden`. (sort_order is managed by the app, not
- * the sheet — it is neither exported nor imported.)
+ * A–E), image, `is_active`, `is_hidden`, `sort_order`.
  *
  * Configuration-level fields (shared by every size of a configuration, stored in
  * product_configurations): `display_name` + `display_description` are the English
@@ -45,6 +44,7 @@ export const PRODUCT_COLUMNS = [
   'image_url',
   'is_active',
   'is_hidden',
+  'sort_order',
 ] as const;
 
 /** Human-friendly header text written to the sheet, keyed by machine column. */
@@ -83,6 +83,7 @@ export const COLUMN_LABELS: Record<string, string> = {
   image_url: 'Image_url',
   is_active: 'Is_Active',
   is_hidden: 'Is_Hidden',
+  sort_order: 'Sort_Order',
 };
 
 /** The header row written to the sheet (friendly labels, in PRODUCT_COLUMNS order). */
@@ -180,13 +181,12 @@ export function productToRow(
     image_url: p.image_url ?? '',
     is_active: p.is_active ? 'TRUE' : 'FALSE',
     is_hidden: p.is_hidden ? 'TRUE' : 'FALSE',
+    sort_order: p.sort_order ?? 0,
   };
 }
 
 export interface ParsedRow {
-  // sort_order is intentionally NOT imported from the sheet — existing products
-  // keep their order, new ones get the DB default. (Removed from the template.)
-  draft: Omit<ProductDraft, 'sort_order'> | null;
+  draft: ProductDraft | null;
   groups: string[];
   /** Configuration-level translations parsed from the row, or null when the
    *  sheet has no translation columns at all (so importing an old template
@@ -215,7 +215,7 @@ export function rowToDraft(rawRow: ProductRow): ParsedRow {
   const is_active = activeRaw === null ? true : !/^(false|0|no|n)$/i.test(activeRaw);
   // Hidden defaults to false (visible) when the column is absent or empty.
   const is_hidden = /^(true|1|yes|y)$/i.test(str(row.is_hidden) ?? '');
-  const draft: Omit<ProductDraft, 'sort_order'> = {
+  const draft: ProductDraft = {
     code,
     category: str(row.category),
     category_name: str(row.category_name),
@@ -235,6 +235,7 @@ export function rowToDraft(rawRow: ProductRow): ParsedRow {
     image_url: str(row.image_url),
     is_active,
     is_hidden,
+    sort_order: intOrNull(row.sort_order) ?? 0,
   };
   // Only build configuration translations when the sheet carries those columns.
   const hasTrCols = TRANSLATION_COLUMNS.some((c) => c in row);
@@ -276,6 +277,7 @@ export function templateExampleRow(): ProductRow {
     image_url: '',
     is_active: 'TRUE',
     is_hidden: 'FALSE',
+    sort_order: 1,
   };
 }
 
