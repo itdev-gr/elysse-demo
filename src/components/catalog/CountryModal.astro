@@ -4,7 +4,7 @@ import { supabase } from '../../lib/supabase';
 
 const { data: mapped } = await supabase
   .from('group_countries').select('country_code, country').order('country', { ascending: true });
-const codes = new Set((mapped ?? []).map((m: { country_code: string | null }) => m.country_code).filter(Boolean));
+const codes = new Set((mapped ?? []).map((m: { country_code: string | null }) => m.country_code?.toLowerCase()).filter(Boolean));
 const selectable = codes.size > 0
   ? COUNTRIES.filter((c) => codes.has(c.code)).slice().sort((a, b) => a.label.localeCompare(b.label))
   : (() => {
