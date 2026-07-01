@@ -13,6 +13,12 @@ interface CodeFacts {
   series: string | null;
 }
 
+function chunk<T>(arr: T[], n: number): T[][] {
+  const out: T[][] = [];
+  for (let i = 0; i < arr.length; i += n) out.push(arr.slice(i, i + n));
+  return out;
+}
+
 export default function FamiliesTab() {
   const [cats, setCats] = useState<ProductCategory[] | null>(null);
   const [subcats, setSubcats] = useState<ProductSubcategory[]>([]);
@@ -27,38 +33,87 @@ export default function FamiliesTab() {
   const [assignTarget, setAssignTarget] = useState<ProductFamily | null>(null);
   const [assignError, setAssignError] = useState<string | null>(null);
 
+  // Country-group coverage per family (drives the public catalog's country
+  // gating). Group codes come from product_groups; coverage counts how many of
+  // the family's products belong to each group.
+  const [groupCodes, setGroupCodes] = useState<string[]>([]);
+  const [groupCountries, setGroupCountries] = useState<Record<string, string>>({});
+  const [famProducts, setFamProducts] = useState<Record<string, string[]>>({});
+  const [groupCover, setGroupCover] = useState<Record<string, Record<string, number>>>({});
+  const [busyGroup, setBusyGroup] = useState<string | null>(null);
+
   const load = async () => {
     setError(null);
-    const [{ data: c, error: cErr }, { data: f, error: fErr }, { data: imgs, error: iErr }] =
-      await Promise.all([
-        supabase.from('product_categories').select('*').order('sort_order'),
-        supabase.from('product_families').select('*').order('category_slug').order('sort_order'),
-        supabase.from('product_images').select('*').order('created_at', { ascending: false }),
-      ]);
-    if (cErr || fErr || iErr) return setError((cErr ?? fErr ?? iErr)!.message);
+    const [
+      { data: c, error: cErr }, { data: f, error: fErr }, { data: imgs, error: iErr },
+      { data: grps, error: gErr }, { data: gcRows, error: gcErr },
+    ] = await Promise.all([
+      supabase.from('product_categories').select('*').order('sort_order'),
+      supabase.from('product_families').select('*').order('category_slug').order('sort_order'),
+      supabase.from('product_images').select('*').order('created_at', { ascending: false }),
+      supabase.from('product_groups').select('code').order('sort_order'),
+      supabase.from('group_countries').select('group_code, country').order('group_code').order('country'),
+    ]);
+    if (cErr || fErr || iErr || gErr || gcErr) return setError((cErr ?? fErr ?? iErr ?? gErr ?? gcErr)!.message);
     setCats((c ?? []) as ProductCategory[]);
     setFamilies((f ?? []) as ProductFamily[]);
     setImages((imgs ?? []) as ProductImage[]);
+    setGroupCodes(((grps ?? []) as { code: string }[]).map((g) => g.code));
+    const gcMap: Record<string, string> = {};
+    for (const r of (gcRows ?? []) as { group_code: string; country: string }[]) {
+      gcMap[r.group_code] = gcMap[r.group_code] ? `${gcMap[r.group_code]}, ${r.country}` : r.country;
+    }
+    setGroupCountries(gcMap);
     setSubcats(await getSubcategories({ includeHidden: true }));   // for series order + grouping
 
     // product-derived counts + series (paginated past the 1000-row cap)
     const PAGE = 1000;
-    const rows: { category_name: string | null; sub_category: string | null; family_code: string | null }[] = [];
+    const rows: { code: string; category_name: string | null; sub_category: string | null; family_code: string | null }[] = [];
     for (let from = 0; ; from += PAGE) {
       const { data } = await supabase.from('products')
-        .select('category_name, sub_category, family_code').range(from, from + PAGE - 1);
+        .select('code, category_name, sub_category, family_code')
+        .order('code').range(from, from + PAGE - 1);
       if (!data || data.length === 0) break;
       rows.push(...data);
       if (data.length < PAGE) break;
     }
     const fx: Record<string, CodeFacts> = {};
+    const codesByFam: Record<string, string[]> = {};
     for (const r of rows) {
       if (!r.category_name || !r.family_code) continue;
       const k = `${r.category_name}|${r.family_code}`;
       const cur = fx[k] ?? { count: 0, series: null };
       fx[k] = { count: cur.count + 1, series: cur.series ?? r.sub_category };
+      (codesByFam[k] ??= []).push(r.code);
     }
     setFacts(fx);
+    setFamProducts(codesByFam);
+
+    // Memberships (paginated; PK order keeps the pages stable).
+    const memb: { product_code: string; group_code: string }[] = [];
+    for (let from = 0; ; from += PAGE) {
+      const { data } = await supabase.from('product_group_memberships')
+        .select('product_code, group_code')
+        .order('product_code').order('group_code').range(from, from + PAGE - 1);
+      if (!data || data.length === 0) break;
+      memb.push(...(data as { product_code: string; group_code: string }[]));
+      if (data.length < PAGE) break;
+    }
+    const groupsByProduct = new Map<string, Set<string>>();
+    for (const m of memb) {
+      const s = groupsByProduct.get(m.product_code) ?? new Set<string>();
+      s.add(m.group_code);
+      groupsByProduct.set(m.product_code, s);
+    }
+    const cover: Record<string, Record<string, number>> = {};
+    for (const [k, codes] of Object.entries(codesByFam)) {
+      const per: Record<string, number> = {};
+      for (const code of codes) {
+        for (const g of groupsByProduct.get(code) ?? []) per[g] = (per[g] ?? 0) + 1;
+      }
+      cover[k] = per;
+    }
+    setGroupCover(cover);
   };
 
   useEffect(() => { load(); }, []);
@@ -66,8 +121,44 @@ export default function FamiliesTab() {
   const excelName = (cat: ProductCategory) => cat.product_category_name;
   const factsFor = (cat: ProductCategory, code: string): CodeFacts =>
     (excelName(cat) ? facts[`${excelName(cat)}|${code}`] : undefined) ?? { count: 0, series: null };
+  const famKey = (cat: ProductCategory, code: string) => `${excelName(cat)}|${code}`;
 
   // ── mutations ──────────────────────────────────────────────────────────────
+
+  /** Tick/untick a country group for a whole family: applies the membership to
+   *  every product in the family. Full coverage → remove the market; partial or
+   *  none → make it full. */
+  const toggleFamilyGroup = async (cat: ProductCategory, fam: ProductFamily, g: string) => {
+    const key = famKey(cat, fam.code);
+    const codes = famProducts[key] ?? [];
+    if (!codes.length) return;
+    const busyKey = `${key}|${g}`;
+    setBusyGroup(busyKey);
+    setError(null);
+    try {
+      const covered = groupCover[key]?.[g] ?? 0;
+      if (covered === codes.length) {
+        for (const part of chunk(codes, 500)) {
+          const { error: err } = await supabase.from('product_group_memberships')
+            .delete().in('product_code', part).eq('group_code', g);
+          if (err) throw new Error(err.message);
+        }
+      } else {
+        const rows = codes.map((code) => ({ product_code: code, group_code: g }));
+        for (const part of chunk(rows, 500)) {
+          const { error: err } = await supabase.from('product_group_memberships')
+            .upsert(part, { onConflict: 'product_code,group_code', ignoreDuplicates: true });
+          if (err) throw new Error(err.message);
+        }
+      }
+      await load();
+      triggerPublish();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Updating country groups failed.');
+    } finally {
+      setBusyGroup(null);
+    }
+  };
 
   const addCode = async (cat: ProductCategory) => {
     const code = newCode.trim();
@@ -169,7 +260,9 @@ export default function FamiliesTab() {
         Each category is a <strong>family</strong>; the codes below (e.g. 330, 330A, 330T) are its
         <strong> family codes</strong>. Add a code to make it selectable in the product form, and
         allocate it an image — the image applies to every product in that code and stays in the
-        Images library.
+        Images library. The <strong>country-group checkboxes</strong> control which markets see the
+        family on the website: ticking a group applies it to every product in the code, unticking
+        removes it. A dash means only some of the family's products carry that group.
       </p>
 
       {cats === null && <p className="text-sm text-ink/60">Loading…</p>}
@@ -275,6 +368,33 @@ export default function FamiliesTab() {
                             )}
                             <span className="font-mono">{fam.code}</span>
                             <span className="flex-1" />
+                            <span className="flex items-center gap-1.5 shrink-0" aria-label={`Country groups for ${fam.code}`}>
+                              {groupCodes.map((g) => {
+                                const key = famKey(cat, fam.code);
+                                const total = (famProducts[key] ?? []).length;
+                                const covered = groupCover[key]?.[g] ?? 0;
+                                const all = total > 0 && covered === total;
+                                const some = covered > 0 && !all;
+                                const saving = busyGroup === `${key}|${g}`;
+                                return (
+                                  <label
+                                    key={g}
+                                    title={`Group ${g}${groupCountries[g] ? ` — ${groupCountries[g]}` : ''}${some ? ` (${covered}/${total} products)` : ''}`}
+                                    className={`flex items-center gap-0.5 ${total === 0 ? 'opacity-40' : 'cursor-pointer'}`}
+                                  >
+                                    <input
+                                      type="checkbox"
+                                      checked={all}
+                                      ref={(el) => { if (el) el.indeterminate = some; }}
+                                      disabled={total === 0 || saving}
+                                      onChange={() => toggleFamilyGroup(cat, fam, g)}
+                                      className="accent-brand-500"
+                                    />
+                                    <span className="text-[9px] uppercase text-ink/50">{g}</span>
+                                  </label>
+                                );
+                              })}
+                            </span>
                             <span className="font-mono text-[10px] text-ink/45">{count} prod</span>
                             {!fam.is_active && <span className="text-[10px] uppercase tracking-[0.2em] text-ink/45">hidden</span>}
                             <button type="button" onClick={() => { setAssignTarget(fam); setAssignError(null); }} className="text-[11px] text-brand-500 uppercase tracking-[0.15em]">Allocate image</button>
