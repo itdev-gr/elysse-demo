@@ -89,7 +89,7 @@ const desc = `${config.configuration} (No.${config.familyCode}) — ${config.sub
         <span aria-current="page">{config.configuration}</span>
       </nav>
 
-      <a href={`/catalog/${config.categorySlug}/`} class="group mt-5 inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.25em] text-ink/60 hover:text-brand-500 transition-colors duration-200">
+      <a href={`/catalog/${config.categorySlug}/`} data-back-link class="group mt-5 inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.25em] text-ink/60 hover:text-brand-500 transition-colors duration-200">
         <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 transition-transform duration-200 group-hover:-translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>
         <span>Back to <span data-i18n={categoryNameI18n}>{categoryName}</span></span>
       </a>
@@ -100,3 +100,27 @@ const desc = `${config.configuration} (No.${config.familyCode}) — ${config.sub
     </section>
   </div>
 </BaseLayout>
+
+<script>
+  // "Back" returns the visitor to the exact page they came from (restoring its
+  // scroll position and any applied filters) when they arrived from elsewhere on
+  // this site. Otherwise — a direct landing, external referrer, or a reload —
+  // the anchor's href navigates to the category listing as a sensible fallback.
+  const backLink = document.querySelector<HTMLAnchorElement>('[data-back-link]');
+  if (backLink && document.referrer) {
+    try {
+      const from = new URL(document.referrer);
+      const cameFromSite = from.origin === location.origin && from.pathname !== location.pathname;
+      if (cameFromSite) {
+        backLink.addEventListener('click', (e) => {
+          // Let modified clicks (open in new tab, etc.) follow the href instead.
+          if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
+          e.preventDefault();
+          history.back();
+        });
+      }
+    } catch {
+      /* Malformed referrer — keep the href fallback. */
+    }
+  }
+</script>
