@@ -292,9 +292,11 @@ export async function fetchConfigurationDetails(categoryName: string, categorySl
         slug,
         familyCode,
         configuration: enName,
-        description: p.description ?? null,
+        // Description is sourced solely from the configuration record below
+        // (Extra_Details), never from the per-size `products.description`.
+        description: null,
         nameI18n: { en: enName },
-        descriptionI18n: p.description ? { en: p.description } : {},
+        descriptionI18n: {},
         subCategory: p.sub_category ?? '',
         categorySlug,
         categoryName: p.category_name ?? categoryName,
@@ -305,12 +307,13 @@ export async function fetchConfigurationDetails(categoryName: string, categorySl
       map.set(slug, cfg);
     }
     if (!cfg.image && p.image_url) cfg.image = p.image_url;
-    // Merge in any per-language translations from this row (first non-empty wins).
+    // Merge in any per-language NAME translations from this row (first non-empty
+    // wins) as a fallback for configurations with no record. Description
+    // translations are intentionally NOT merged here — the description comes
+    // exclusively from the configuration record (Extra_Details) below.
     const ni = p.name_i18n ?? {};
-    const di = p.description_i18n ?? {};
     for (const lang of I18N_LANGS) {
       if (ni[lang]?.trim() && !cfg.nameI18n[lang]) cfg.nameI18n[lang] = ni[lang].trim();
-      if (di[lang]?.trim() && !cfg.descriptionI18n[lang]) cfg.descriptionI18n[lang] = di[lang].trim();
     }
     cfg.sizes.push({
       code: p.code, size: p.size, packing_bag: p.packing_bag, packing_box: p.packing_box,
@@ -329,10 +332,14 @@ export async function fetchConfigurationDetails(categoryName: string, categorySl
     cfg.nameI18n = resolveNameI18n(derivedName, perRowName, rec);
     cfg.configuration = cfg.nameI18n.en;
 
-    const derivedDesc = cfg.description;
-    const perRowDesc = { ...cfg.descriptionI18n };
-    delete perRowDesc.en;
-    cfg.descriptionI18n = resolveDescriptionI18n(derivedDesc, perRowDesc, rec);
+    // The description shown on the detail page comes ONLY from the configuration
+    // record — Extra_Details_EN (`rec.description`) plus its Extra_Details_*
+    // translations (`rec.description_i18n`). We deliberately pass no derived
+    // English so it never falls back to the per-size `products.description`
+    // ("Full Description", e.g. "Coupling Epsilon Series PN16 - 16 x 16"), which
+    // is size-specific and redundant with the title/series. A configuration with
+    // no Extra_Details simply shows no description line.
+    cfg.descriptionI18n = resolveDescriptionI18n(null, {}, rec);
     cfg.description = cfg.descriptionI18n.en ?? null;
   }
   // Order configurations the same way as the listing: series order, then by the
