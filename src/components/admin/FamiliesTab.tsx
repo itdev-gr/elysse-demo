@@ -11,6 +11,8 @@ import { planConfigSlugRemap, applyConfigSlugRemap } from '../../lib/remap-confi
 interface CodeFacts {
   count: number;
   series: string | null;
+  /** English configuration name (products.configuration), first non-empty. */
+  configuration: string | null;
 }
 
 function chunk<T>(arr: T[], n: number): T[][] {
@@ -68,10 +70,10 @@ export default function FamiliesTab() {
 
     // product-derived counts + series (paginated past the 1000-row cap)
     const PAGE = 1000;
-    const rows: { code: string; category_name: string | null; sub_category: string | null; family_code: string | null }[] = [];
+    const rows: { code: string; category_name: string | null; sub_category: string | null; family_code: string | null; configuration: string | null }[] = [];
     for (let from = 0; ; from += PAGE) {
       const { data } = await supabase.from('products')
-        .select('code, category_name, sub_category, family_code')
+        .select('code, category_name, sub_category, family_code, configuration')
         .order('code').range(from, from + PAGE - 1);
       if (!data || data.length === 0) break;
       rows.push(...data);
@@ -82,8 +84,12 @@ export default function FamiliesTab() {
     for (const r of rows) {
       if (!r.category_name || !r.family_code) continue;
       const k = `${r.category_name}|${r.family_code}`;
-      const cur = fx[k] ?? { count: 0, series: null };
-      fx[k] = { count: cur.count + 1, series: cur.series ?? r.sub_category };
+      const cur = fx[k] ?? { count: 0, series: null, configuration: null };
+      fx[k] = {
+        count: cur.count + 1,
+        series: cur.series ?? r.sub_category,
+        configuration: cur.configuration ?? (r.configuration?.trim() || null),
+      };
       (codesByFam[k] ??= []).push(r.code);
     }
     setFacts(fx);
@@ -120,7 +126,7 @@ export default function FamiliesTab() {
 
   const excelName = (cat: ProductCategory) => cat.product_category_name;
   const factsFor = (cat: ProductCategory, code: string): CodeFacts =>
-    (excelName(cat) ? facts[`${excelName(cat)}|${code}`] : undefined) ?? { count: 0, series: null };
+    (excelName(cat) ? facts[`${excelName(cat)}|${code}`] : undefined) ?? { count: 0, series: null, configuration: null };
   const famKey = (cat: ProductCategory, code: string) => `${excelName(cat)}|${code}`;
 
   // ── mutations ──────────────────────────────────────────────────────────────
@@ -348,7 +354,7 @@ export default function FamiliesTab() {
                     </p>
                     <ul className="flex flex-col gap-1">
                       {fams.map((fam) => {
-                        const { count } = factsFor(cat, fam.code);
+                        const { count, configuration } = factsFor(cat, fam.code);
                         return (
                           <li key={fam.id} className={`flex items-center gap-3 text-sm border-b border-ink/5 py-1.5 ${fam.is_active ? '' : 'opacity-60'}`}>
                             <label className="flex items-center gap-1 shrink-0" title="Display order within this series (lower shows first)">
@@ -366,8 +372,9 @@ export default function FamiliesTab() {
                             ) : (
                               <div className="w-9 h-9 bg-surface-alt border border-ink/10 shrink-0 flex items-center justify-center text-[9px] text-ink/30">None</div>
                             )}
-                            <span className="font-mono">{fam.code}</span>
-                            <span className="flex-1" />
+                            <span className="font-mono w-16 shrink-0">{fam.code}</span>
+                            {/* Configuration (English) — display only. */}
+                            <span className="flex-1 min-w-0 truncate text-ink/70" title={configuration ?? undefined}>{configuration ?? '—'}</span>
                             <span className="flex items-center gap-1.5 shrink-0" aria-label={`Country groups for ${fam.code}`}>
                               {groupCodes.map((g) => {
                                 const key = famKey(cat, fam.code);
