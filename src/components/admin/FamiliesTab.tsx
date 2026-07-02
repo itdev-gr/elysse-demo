@@ -3,17 +3,10 @@ import { supabase } from '../../lib/supabase';
 import { triggerPublish } from '../../lib/publish';
 import { getSubcategories } from '../../lib/categories';
 import type { ProductCategory, ProductSubcategory } from '../../lib/categories';
-import type { ProductFamily } from '../../lib/families';
+import type { ProductFamily, CodeFacts, ProductFactRow } from '../../lib/families';
+import { buildCodeFacts } from '../../lib/families';
 import { LibraryGrid, type ProductImage } from './ImageLibraryGrid';
 import { planConfigSlugRemap, applyConfigSlugRemap } from '../../lib/remap-config-slugs';
-
-// A family code's derived facts from the products that use it.
-interface CodeFacts {
-  count: number;
-  series: string | null;
-  /** English configuration name (products.configuration), first non-empty. */
-  configuration: string | null;
-}
 
 function chunk<T>(arr: T[], n: number): T[][] {
   const out: T[][] = [];
@@ -70,28 +63,16 @@ export default function FamiliesTab() {
 
     // product-derived counts + series (paginated past the 1000-row cap)
     const PAGE = 1000;
-    const rows: { code: string; category_name: string | null; sub_category: string | null; family_code: string | null; configuration: string | null }[] = [];
+    const rows: ProductFactRow[] = [];
     for (let from = 0; ; from += PAGE) {
       const { data } = await supabase.from('products')
         .select('code, category_name, sub_category, family_code, configuration')
         .order('code').range(from, from + PAGE - 1);
       if (!data || data.length === 0) break;
-      rows.push(...data);
+      rows.push(...(data as ProductFactRow[]));
       if (data.length < PAGE) break;
     }
-    const fx: Record<string, CodeFacts> = {};
-    const codesByFam: Record<string, string[]> = {};
-    for (const r of rows) {
-      if (!r.category_name || !r.family_code) continue;
-      const k = `${r.category_name}|${r.family_code}`;
-      const cur = fx[k] ?? { count: 0, series: null, configuration: null };
-      fx[k] = {
-        count: cur.count + 1,
-        series: cur.series ?? r.sub_category,
-        configuration: cur.configuration ?? (r.configuration?.trim() || null),
-      };
-      (codesByFam[k] ??= []).push(r.code);
-    }
+    const { facts: fx, codesByFam } = buildCodeFacts(rows);
     setFacts(fx);
     setFamProducts(codesByFam);
 
@@ -126,7 +107,8 @@ export default function FamiliesTab() {
 
   const excelName = (cat: ProductCategory) => cat.product_category_name;
   const factsFor = (cat: ProductCategory, code: string): CodeFacts =>
-    (excelName(cat) ? facts[`${excelName(cat)}|${code}`] : undefined) ?? { count: 0, series: null, configuration: null };
+    (excelName(cat) ? facts[`${excelName(cat)}|${code}`] : undefined) ??
+    { count: 0, configuration: null, series: [], perSeries: new Map() };
   const famKey = (cat: ProductCategory, code: string) => `${excelName(cat)}|${code}`;
 
   // ── mutations ──────────────────────────────────────────────────────────────
@@ -276,11 +258,15 @@ export default function FamiliesTab() {
         <div className="space-y-6">
           {cats.map((cat) => {
             const codes = families.filter((f) => f.category_slug === cat.slug);
-            // Group family codes under their (product-derived) series; null → no series yet.
+            // Group family codes under EACH (product-derived) series they have
+            // products in — a code with SKUs in two series (e.g. its A/M/Z code
+            // variants) appears under both. No products yet → the null bucket.
             const bySeries = new Map<string | null, ProductFamily[]>();
             for (const fam of codes) {
-              const s = factsFor(cat, fam.code).series;
-              const arr = bySeries.get(s) ?? []; arr.push(fam); bySeries.set(s, arr);
+              const seriesList = factsFor(cat, fam.code).series;
+              for (const s of seriesList.length ? seriesList : [null]) {
+                const arr = bySeries.get(s) ?? []; arr.push(fam); bySeries.set(s, arr);
+              }
             }
             const overlay = subcats.filter((s) => s.category_slug === cat.slug);
             const byName = new Map(overlay.map((s) => [s.name, s]));
@@ -354,7 +340,12 @@ export default function FamiliesTab() {
                     </p>
                     <ul className="flex flex-col gap-1">
                       {fams.map((fam) => {
-                        const { count, configuration } = factsFor(cat, fam.code);
+                        // Show the count + configuration name for THIS series (the
+                        // code may also have products under another series' heading).
+                        const f = factsFor(cat, fam.code);
+                        const sf = series ? f.perSeries.get(series) : undefined;
+                        const count = sf?.count ?? f.count;
+                        const configuration = sf?.configuration ?? f.configuration;
                         return (
                           <li key={fam.id} className={`flex items-center gap-3 text-sm border-b border-ink/5 py-1.5 ${fam.is_active ? '' : 'opacity-60'}`}>
                             <label className="flex items-center gap-1 shrink-0" title="Display order within this series (lower shows first)">
