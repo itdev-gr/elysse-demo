@@ -273,28 +273,20 @@ export default function FamiliesTab() {
     await load();
   };
 
-  // Persist the whole ordered list: rewrite the family's rows, then mirror the
-  // primary onto product_families.image_url + every member product.image_url.
+  // Persist the whole ordered list atomically: the set_family_images RPC rewrites
+  // the family's rows and mirrors the primary onto product_families.image_url +
+  // every member product.image_url in one transaction, so a mid-save failure
+  // can't leave the images out of sync with the mirror.
   const persistImages = async (fam: ProductFamily, list: string[]) => {
     setAssignError(null);
-    const { error: delErr } = await supabase
-      .from('product_family_images').delete().eq('family_id', fam.id);
-    if (delErr) return failResync(fam, delErr.message);
-    if (list.length) {
-      const rows = list.map((url, i) => ({ family_id: fam.id, url, sort_order: i }));
-      const { error: insErr } = await supabase.from('product_family_images').insert(rows);
-      if (insErr) return failResync(fam, insErr.message);
-    }
-    const primary = list[0] ?? null;
-    const { error: e1 } = await supabase
-      .from('product_families').update({ image_url: primary }).eq('id', fam.id);
-    if (e1) return failResync(fam, e1.message);
     const excel = catForFamily(fam)?.product_category_name ?? null;
-    if (excel) {
-      const { error: e2 } = await supabase.from('products')
-        .update({ image_url: primary }).eq('category_name', excel).eq('family_code', fam.code);
-      if (e2) return failResync(fam, `Images saved, but updating products failed: ${e2.message}`);
-    }
+    const { error } = await supabase.rpc('set_family_images', {
+      p_family_id: fam.id,
+      p_category_name: excel,
+      p_family_code: fam.code,
+      p_urls: list,
+    });
+    if (error) return failResync(fam, error.message);
     await load(); triggerPublish();
   };
 
