@@ -101,7 +101,7 @@ describe('friendly headers (client template)', () => {
     expect(HEADER_ROW).toContain('Category_name_EL');
     expect(HEADER_ROW).toContain('Sub_Category_EL');
     expect(HEADER_ROW).toContain('Primary Code');
-    expect(HEADER_ROW).toContain('Configuration_EL');
+    expect(HEADER_ROW).toContain('Display_Name_EL');
     expect(HEADER_ROW).toContain('Extra_Details_EN');
   });
 
@@ -144,5 +144,41 @@ describe('friendly headers (client template)', () => {
 
   it('COLUMN_LABELS covers every machine column', () => {
     for (const c of PRODUCT_COLUMNS) expect(typeof COLUMN_LABELS[c]).toBe('string');
+  });
+});
+
+describe('Display Name translation block', () => {
+  it('groups Display_Name_EN + all four language columns together, after Configuration_EN', () => {
+    const i = HEADER_ROW.indexOf('Display_Name_EN');
+    expect(i).toBeGreaterThan(-1);
+    expect(HEADER_ROW.slice(i, i + 5)).toEqual([
+      'Display_Name_EN', 'Display_Name_EL', 'Display_Name_DE', 'Display_Name_ES', 'Display_Name_FR',
+    ]);
+    expect(HEADER_ROW[i - 1]).toBe('Configuration_EN');   // per-size base title precedes the block
+    expect(HEADER_ROW[i + 5]).toBe('Extra_Details_EN');   // the description block follows it
+    expect(HEADER_ROW).not.toContain('Configuration_EL'); // old translation label retired
+  });
+
+  it('imports the new Display_Name_* headers into the configuration name + name_i18n', () => {
+    const { translations } = rowToDraft({
+      'Primary Code': '330001610', 'Full Description_EN': 'd', 'Is_Active': 'TRUE',
+      'Display_Name_EN': 'Adaptor Male Epsilon Series PN 16 bar',
+      'Display_Name_EL': 'Αρσενικός', 'Display_Name_DE': 'Übergangsnippel',
+      'Display_Name_ES': 'Adaptador macho', 'Display_Name_FR': 'Adaptateur mâle',
+    });
+    expect(translations?.name).toBe('Adaptor Male Epsilon Series PN 16 bar');
+    expect(translations?.name_i18n).toEqual({
+      el: 'Αρσενικός', de: 'Übergangsnippel', es: 'Adaptador macho', fr: 'Adaptateur mâle',
+    });
+  });
+
+  it('still imports legacy display_name / Configuration_* headers (backward compatible)', () => {
+    const { translations } = rowToDraft({
+      'Primary Code': '330001610', 'Full Description_EN': 'd', 'Is_Active': 'TRUE',
+      'display_name': 'Adaptor Male Epsilon Series PN 16 bar',
+      'Configuration_EL': 'Αρσενικός', 'Configuration_DE': 'Übergangsnippel',
+    });
+    expect(translations?.name).toBe('Adaptor Male Epsilon Series PN 16 bar');
+    expect(translations?.name_i18n).toEqual({ el: 'Αρσενικός', de: 'Übergangsnippel' });
   });
 });

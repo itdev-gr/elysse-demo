@@ -15,9 +15,13 @@ export const I18N_LANGS = ['el', 'de', 'es', 'fr'] as const;
  * A–E), image, `is_active`, `is_hidden`, `sort_order`.
  *
  * Configuration-level fields (shared by every size of a configuration, stored in
- * product_configurations): `display_name` + `display_description` are the English
- * overrides shown on the product page, `name_*` / `description_*` their per-language
- * translations.
+ * product_configurations): the display name (English `display_name` = header
+ * `Display_Name_EN`, translations `name_*` = `Display_Name_EL/DE/ES/FR`) and the
+ * display description (`display_description` = `Extra_Details_EN`, `description_*`
+ * = `Extra_Details_EL/DE/ES/FR`) are the title + description shown on the product
+ * page, each with all four language translations. The English values are optional
+ * overrides — blank falls back to the per-size `Configuration_EN` / representative
+ * description.
  *
  * Category / sub-category translation fields (`category_name_*`, `sub_category_*`):
  * these describe the CATEGORY and SERIES, not the size — they repeat across every
@@ -33,8 +37,8 @@ export const PRODUCT_COLUMNS = [
   'code',
   'family_code',
   'configuration',
-  'name_el', 'name_de', 'name_es', 'name_fr',
   'display_name',
+  'name_el', 'name_de', 'name_es', 'name_fr',
   'display_description',
   'description_el', 'description_de', 'description_es', 'description_fr',
   'size',
@@ -63,11 +67,11 @@ export const COLUMN_LABELS: Record<string, string> = {
   code: 'Primary Code',
   family_code: 'Configuration_Code',
   configuration: 'Configuration_EN',
-  name_el: 'Configuration_EL',
-  name_de: 'Configuration_DE',
-  name_es: 'Configuration_ES',
-  name_fr: 'Configuration_FR',
-  display_name: 'display_name',
+  display_name: 'Display_Name_EN',
+  name_el: 'Display_Name_EL',
+  name_de: 'Display_Name_DE',
+  name_es: 'Display_Name_ES',
+  name_fr: 'Display_Name_FR',
   display_description: 'Extra_Details_EN',
   description_el: 'Extra_Details_EL',
   description_de: 'Extra_Details_DE',
@@ -89,6 +93,21 @@ export const COLUMN_LABELS: Record<string, string> = {
 /** The header row written to the sheet (friendly labels, in PRODUCT_COLUMNS order). */
 export const HEADER_ROW: string[] = PRODUCT_COLUMNS.map((k) => COLUMN_LABELS[k]);
 
+/**
+ * Legacy friendly headers no longer written to the sheet but still accepted on
+ * import, so a previously-exported file keeps working. Before the display name
+ * was split into its own block, its per-language translations lived under the
+ * `Configuration_EL/DE/ES/FR` headers (they always fed the configuration's
+ * name_i18n, never the per-size Configuration_EN). Map them to the same machine
+ * keys the new `Display_Name_EL/…` headers use.
+ */
+const LEGACY_HEADER_ALIASES: Record<string, string> = {
+  configuration_el: 'name_el',
+  configuration_de: 'name_de',
+  configuration_es: 'name_es',
+  configuration_fr: 'name_fr',
+};
+
 /** Any accepted header (friendly label OR machine key, case-insensitive) → machine key. */
 const HEADER_TO_KEY: Record<string, string> = (() => {
   const m: Record<string, string> = {};
@@ -96,6 +115,7 @@ const HEADER_TO_KEY: Record<string, string> = (() => {
     m[key.toLowerCase()] = key;                       // legacy machine-key header
     m[COLUMN_LABELS[key].toLowerCase()] = key;        // new friendly header
   }
+  for (const [header, key] of Object.entries(LEGACY_HEADER_ALIASES)) m[header] = key;
   return m;
 })();
 
