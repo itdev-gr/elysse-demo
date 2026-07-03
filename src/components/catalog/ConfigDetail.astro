@@ -28,6 +28,9 @@ const skuRows: SkuRow[] = c.sizes.map((s) => ({
 const nameI18nJson = JSON.stringify(c.nameI18n);
 const descI18nJson = JSON.stringify(c.descriptionI18n);
 const hasDescription = !!c.description || Object.values(c.descriptionI18n).some((v) => !!v);
+
+// Gallery: prefer the family's ordered images; fall back to the single image.
+const galleryImages = c.images && c.images.length ? c.images : (c.image ? [c.image] : []);
 ---
 {/* Title — above the image, full width */}
 <header class="mt-6 md:mt-8">
@@ -48,8 +51,8 @@ const hasDescription = !!c.description || Object.values(c.descriptionI18n).some(
   {/* Image — sticky so it follows the scroll while the sizes column is taller */}
   <div class="lg:col-span-7 lg:sticky lg:top-24 self-start">
     <div class="bg-surface-alt border border-ink/10 rounded-md aspect-square flex items-center justify-center text-ink/15 overflow-hidden">
-      {c.image ? (
-        <img src={c.image} alt={c.configuration} width="800" height="800" class="w-full h-full object-contain p-8 scale-[0.85]" />
+      {galleryImages.length > 0 ? (
+        <img id="cfg-main-image" src={galleryImages[0]} alt={c.configuration} width="800" height="800" class="w-full h-full object-contain p-8 scale-[0.85]" />
       ) : (
         <svg xmlns="http://www.w3.org/2000/svg" class="w-28 h-28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <rect x="3" y="7" width="18" height="10" rx="2" />
@@ -58,6 +61,16 @@ const hasDescription = !!c.description || Object.values(c.descriptionI18n).some(
         </svg>
       )}
     </div>
+    {galleryImages.length > 1 && (
+      <div class="mt-3 flex flex-wrap gap-2" role="group" aria-label="Product images">
+        {galleryImages.map((src, i) => (
+          <button type="button" data-thumb data-src={src} aria-current={i === 0 ? 'true' : 'false'}
+            class="w-16 h-16 border border-ink/10 bg-surface-alt overflow-hidden aria-[current=true]:border-brand-500 aria-[current=true]:ring-1 aria-[current=true]:ring-brand-500">
+            <img src={src} alt={`${c.configuration} — view ${i + 1}`} class="w-full h-full object-contain p-1" loading="lazy" />
+          </button>
+        ))}
+      </div>
+    )}
   </div>
 
   {/* Sizes — the tall column the sticky image follows down */}
@@ -88,4 +101,19 @@ const hasDescription = !!c.description || Object.values(c.descriptionI18n).some(
     const next = (e as CustomEvent<{ lang: string }>).detail?.lang;
     if (next) applyLang(next);
   });
+</script>
+
+<script>
+  // Swap the main product image when a thumbnail is clicked. All images are
+  // server-rendered; this only toggles the visible src + active state.
+  const main = document.getElementById('cfg-main-image') as HTMLImageElement | null;
+  const thumbs = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-thumb]'));
+  for (const t of thumbs) {
+    t.addEventListener('click', () => {
+      const src = t.getAttribute('data-src');
+      if (!main || !src) return;
+      main.src = src;
+      for (const o of thumbs) o.setAttribute('aria-current', o === t ? 'true' : 'false');
+    });
+  }
 </script>
