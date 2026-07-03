@@ -33,6 +33,10 @@ export default function FamiliesTab() {
   const [assignError, setAssignError] = useState<string | null>(null);
   // Ordered image URLs for the family open in the manager modal.
   const [assignImages, setAssignImages] = useState<string[]>([]);
+  // True while the family's current images are being fetched — guards against
+  // clicks on the (already-mounted) library grid racing the fetch and wiping
+  // out images that haven't loaded into assignImages yet.
+  const [imagesLoading, setImagesLoading] = useState(false);
   // family_id → image count, for the row badge.
   const [imageCounts, setImageCounts] = useState<Record<string, number>>({});
 
@@ -239,16 +243,23 @@ export default function FamiliesTab() {
   const catForFamily = (fam: ProductFamily | null) =>
     fam ? (cats ?? []).find((c) => c.slug === fam.category_slug) ?? null : null;
 
-  // Open the manager: load the family's current images (ordered).
+  // Open the manager: load the family's current images (ordered). Guarded by
+  // imagesLoading so the library grid (already interactive from page mount)
+  // can't be clicked mid-fetch and persist a truncated list.
   const openImageManager = async (fam: ProductFamily) => {
     setAssignTarget(fam);
     setAssignError(null);
     setAssignImages([]);
-    const { data, error } = await supabase
-      .from('product_family_images').select('id, family_id, url, sort_order')
-      .eq('family_id', fam.id);
-    if (error) return setAssignError(error.message);
-    setAssignImages(orderFamilyImages((data ?? []) as FamilyImageRow[]));
+    setImagesLoading(true);
+    try {
+      const { data, error } = await supabase
+        .from('product_family_images').select('id, family_id, url, sort_order')
+        .eq('family_id', fam.id);
+      if (error) return setAssignError(error.message);
+      setAssignImages(orderFamilyImages((data ?? []) as FamilyImageRow[]));
+    } finally {
+      setImagesLoading(false);
+    }
   };
 
   // On any persist failure, re-sync the modal + row badges to the DB's actual
@@ -287,8 +298,11 @@ export default function FamiliesTab() {
     await load(); triggerPublish();
   };
 
-  // Apply a pure mutation, update local state, then persist.
+  // Apply a pure mutation, update local state, then persist. Safety net: while
+  // the family's images are still loading, assignImages may not yet reflect
+  // the DB — bail out so a stray click can't persist a truncated list.
   const mutateImages = async (fam: ProductFamily, next: string[]) => {
+    if (imagesLoading) return;
     setAssignImages(next);
     await persistImages(fam, next);
   };
@@ -492,55 +506,61 @@ export default function FamiliesTab() {
                 <p role="alert" className="text-sm text-red-700 bg-red-50 border-l-2 border-red-500 px-3 py-2 mb-4">{assignError}</p>
               )}
 
-              {/* Selected images, in order — first is the primary. */}
-              <p className="text-[10px] uppercase tracking-[0.25em] text-ink/45 mb-2">
-                Selected ({assignImages.length}/{MAX_FAMILY_IMAGES}) — first is primary
-              </p>
-              {assignImages.length === 0 ? (
-                <p className="text-sm text-ink/50 mb-4">No images yet. Pick from the library below.</p>
-              ) : (
-                <div className="flex flex-wrap gap-3 mb-6">
-                  {assignImages.map((url, i) => (
-                    <div key={url} className="relative w-24">
-                      <div className="aspect-square bg-surface-alt border border-ink/10 overflow-hidden flex items-center justify-center">
-                        <img src={url} alt="" className="w-full h-full object-contain" />
-                      </div>
-                      {i === 0 && (
-                        <span className="absolute top-1 left-1 bg-brand-500 text-surface text-[9px] uppercase tracking-[0.15em] px-1 py-0.5">Primary</span>
-                      )}
-                      <div className="flex items-center justify-between mt-1 text-[11px]">
-                        <button type="button" aria-label="Move left" disabled={i === 0}
-                          onClick={() => assignTarget && mutateImages(assignTarget, moveFamilyImage(assignImages, i, 'left'))}
-                          className="px-1 text-ink/60 disabled:opacity-30">←</button>
-                        {i !== 0 && (
-                          <button type="button"
-                            onClick={() => assignTarget && mutateImages(assignTarget, setPrimaryFamilyImage(assignImages, i))}
-                            className="text-brand-500 uppercase tracking-[0.1em]">★</button>
-                        )}
-                        <button type="button" aria-label="Remove"
-                          onClick={() => assignTarget && mutateImages(assignTarget, removeFamilyImage(assignImages, i))}
-                          className="px-1 text-red-600">×</button>
-                        <button type="button" aria-label="Move right" disabled={i === assignImages.length - 1}
-                          onClick={() => assignTarget && mutateImages(assignTarget, moveFamilyImage(assignImages, i, 'right'))}
-                          className="px-1 text-ink/60 disabled:opacity-30">→</button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-
-              {/* Add from the library (disabled when full). */}
-              <p className="text-[10px] uppercase tracking-[0.25em] text-ink/45 mb-2">
-                {assignImages.length >= MAX_FAMILY_IMAGES ? 'Maximum reached — remove one to add another' : 'Add from library'}
-              </p>
-              {images === null ? (
+              {imagesLoading ? (
                 <p className="text-sm text-ink/60">Loading…</p>
-              ) : assignImages.length >= MAX_FAMILY_IMAGES ? null : (
-                <LibraryGrid
-                  images={images}
-                  onPick={(img) => assignTarget && mutateImages(assignTarget, addFamilyImage(assignImages, img.url))}
-                  emptyLabel="No images in the library. Upload some in the Images tab first."
-                />
+              ) : (
+                <>
+                  {/* Selected images, in order — first is the primary. */}
+                  <p className="text-[10px] uppercase tracking-[0.25em] text-ink/45 mb-2">
+                    Selected ({assignImages.length}/{MAX_FAMILY_IMAGES}) — first is primary
+                  </p>
+                  {assignImages.length === 0 ? (
+                    <p className="text-sm text-ink/50 mb-4">No images yet. Pick from the library below.</p>
+                  ) : (
+                    <div className="flex flex-wrap gap-3 mb-6">
+                      {assignImages.map((url, i) => (
+                        <div key={url} className="relative w-24">
+                          <div className="aspect-square bg-surface-alt border border-ink/10 overflow-hidden flex items-center justify-center">
+                            <img src={url} alt="" className="w-full h-full object-contain" />
+                          </div>
+                          {i === 0 && (
+                            <span className="absolute top-1 left-1 bg-brand-500 text-surface text-[9px] uppercase tracking-[0.15em] px-1 py-0.5">Primary</span>
+                          )}
+                          <div className="flex items-center justify-between mt-1 text-[11px]">
+                            <button type="button" aria-label="Move left" disabled={i === 0}
+                              onClick={() => assignTarget && mutateImages(assignTarget, moveFamilyImage(assignImages, i, 'left'))}
+                              className="px-1 text-ink/60 disabled:opacity-30">←</button>
+                            {i !== 0 && (
+                              <button type="button"
+                                onClick={() => assignTarget && mutateImages(assignTarget, setPrimaryFamilyImage(assignImages, i))}
+                                className="text-brand-500 uppercase tracking-[0.1em]">★</button>
+                            )}
+                            <button type="button" aria-label="Remove"
+                              onClick={() => assignTarget && mutateImages(assignTarget, removeFamilyImage(assignImages, i))}
+                              className="px-1 text-red-600">×</button>
+                            <button type="button" aria-label="Move right" disabled={i === assignImages.length - 1}
+                              onClick={() => assignTarget && mutateImages(assignTarget, moveFamilyImage(assignImages, i, 'right'))}
+                              className="px-1 text-ink/60 disabled:opacity-30">→</button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* Add from the library (disabled when full). */}
+                  <p className="text-[10px] uppercase tracking-[0.25em] text-ink/45 mb-2">
+                    {assignImages.length >= MAX_FAMILY_IMAGES ? 'Maximum reached — remove one to add another' : 'Add from library'}
+                  </p>
+                  {images === null ? (
+                    <p className="text-sm text-ink/60">Loading…</p>
+                  ) : assignImages.length >= MAX_FAMILY_IMAGES ? null : (
+                    <LibraryGrid
+                      images={images}
+                      onPick={(img) => assignTarget && mutateImages(assignTarget, addFamilyImage(assignImages, img.url))}
+                      emptyLabel="No images in the library. Upload some in the Images tab first."
+                    />
+                  )}
+                </>
               )}
             </div>
           </div>

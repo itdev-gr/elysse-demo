@@ -351,7 +351,8 @@ export async function fetchConfigurationDetails(categoryName: string, categorySl
   // product_families rows. A family shared across two series gets the same gallery.
   const fams = (await getFamilies({ includeHidden: true })).filter((f) => f.category_slug === categorySlug);
   const { data: imgRows } = await supabase
-    .from('product_family_images').select('id, family_id, url, sort_order');
+    .from('product_family_images').select('id, family_id, url, sort_order')
+    .in('family_id', fams.map((f) => f.id));
   const byCode = imagesByCode(fams, groupImagesByFamily((imgRows ?? []) as FamilyImageRow[]));
   for (const cfg of map.values()) {
     const { images, image } = resolveConfigImages(byCode.get(cfg.familyCode), cfg.image);
