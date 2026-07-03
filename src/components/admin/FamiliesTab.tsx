@@ -234,7 +234,7 @@ export default function FamiliesTab() {
     await load(); triggerPublish();
   };
 
-  // ── image allocation ─────────────────────────────────────────────────────
+  // ── image management ─────────────────────────────────────────────────────
 
   const catForFamily = (fam: ProductFamily | null) =>
     fam ? (cats ?? []).find((c) => c.slug === fam.category_slug) ?? null : null;
@@ -251,27 +251,38 @@ export default function FamiliesTab() {
     setAssignImages(orderFamilyImages((data ?? []) as FamilyImageRow[]));
   };
 
+  // On any persist failure, re-sync the modal + row badges to the DB's actual
+  // state (a partial delete/insert can diverge from the optimistic list).
+  const failResync = async (fam: ProductFamily, message: string) => {
+    setAssignError(message);
+    const { data } = await supabase
+      .from('product_family_images').select('id, family_id, url, sort_order')
+      .eq('family_id', fam.id);
+    setAssignImages(orderFamilyImages((data ?? []) as FamilyImageRow[]));
+    await load();
+  };
+
   // Persist the whole ordered list: rewrite the family's rows, then mirror the
   // primary onto product_families.image_url + every member product.image_url.
   const persistImages = async (fam: ProductFamily, list: string[]) => {
     setAssignError(null);
     const { error: delErr } = await supabase
       .from('product_family_images').delete().eq('family_id', fam.id);
-    if (delErr) return setAssignError(delErr.message);
+    if (delErr) return failResync(fam, delErr.message);
     if (list.length) {
       const rows = list.map((url, i) => ({ family_id: fam.id, url, sort_order: i }));
       const { error: insErr } = await supabase.from('product_family_images').insert(rows);
-      if (insErr) return setAssignError(insErr.message);
+      if (insErr) return failResync(fam, insErr.message);
     }
     const primary = list[0] ?? null;
     const { error: e1 } = await supabase
       .from('product_families').update({ image_url: primary }).eq('id', fam.id);
-    if (e1) return setAssignError(e1.message);
+    if (e1) return failResync(fam, e1.message);
     const excel = catForFamily(fam)?.product_category_name ?? null;
     if (excel) {
       const { error: e2 } = await supabase.from('products')
         .update({ image_url: primary }).eq('category_name', excel).eq('family_code', fam.code);
-      if (e2) return setAssignError(`Images saved, but updating products failed: ${e2.message}`);
+      if (e2) return failResync(fam, `Images saved, but updating products failed: ${e2.message}`);
     }
     await load(); triggerPublish();
   };
