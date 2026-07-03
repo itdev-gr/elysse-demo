@@ -43,3 +43,29 @@ export function moveFamilyImage(list: string[], index: number, dir: 'left' | 'ri
   [next[index], next[target]] = [next[target], next[index]];
   return next;
 }
+
+/** Group raw image rows by family_id → ordered URL list (primary first). */
+export function groupImagesByFamily(rows: FamilyImageRow[]): Map<string, string[]> {
+  const byId = new Map<string, FamilyImageRow[]>();
+  for (const r of rows) {
+    const arr = byId.get(r.family_id) ?? [];
+    arr.push(r);
+    byId.set(r.family_id, arr);
+  }
+  const out = new Map<string, string[]>();
+  for (const [id, rs] of byId) out.set(id, orderFamilyImages(rs));
+  return out;
+}
+
+/** Re-key a family_id→urls map to family_code→urls. Families with no images are omitted. */
+export function imagesByCode(
+  families: { id: string; code: string }[],
+  byFamilyId: Map<string, string[]>,
+): Map<string, string[]> {
+  const out = new Map<string, string[]>();
+  for (const f of families) {
+    const urls = byFamilyId.get(f.id);
+    if (urls && urls.length) out.set(f.code, urls);
+  }
+  return out;
+}

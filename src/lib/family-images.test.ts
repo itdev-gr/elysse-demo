@@ -3,6 +3,7 @@ import {
   MAX_FAMILY_IMAGES, orderFamilyImages, addFamilyImage,
   removeFamilyImage, setPrimaryFamilyImage, moveFamilyImage,
 } from './family-images';
+import { groupImagesByFamily, imagesByCode, type FamilyImageRow } from './family-images';
 
 describe('orderFamilyImages', () => {
   it('sorts by sort_order, primary (lowest) first', () => {
@@ -54,5 +55,32 @@ describe('moveFamilyImage', () => {
   it('clamps at the edges (no-op)', () => {
     expect(moveFamilyImage(['a', 'b'], 0, 'left')).toEqual(['a', 'b']);
     expect(moveFamilyImage(['a', 'b'], 1, 'right')).toEqual(['a', 'b']);
+  });
+});
+
+describe('groupImagesByFamily', () => {
+  const rows: FamilyImageRow[] = [
+    { id: '1', family_id: 'F1', url: 'a', sort_order: 1 },
+    { id: '2', family_id: 'F1', url: 'p', sort_order: 0 },
+    { id: '3', family_id: 'F2', url: 'x', sort_order: 0 },
+  ];
+  it('groups by family_id with primary first', () => {
+    const m = groupImagesByFamily(rows);
+    expect(m.get('F1')).toEqual(['p', 'a']);
+    expect(m.get('F2')).toEqual(['x']);
+  });
+});
+
+describe('imagesByCode', () => {
+  it('re-keys a family_id→urls map to code→urls', () => {
+    const byId = new Map<string, string[]>([['F1', ['p', 'a']], ['F2', ['x']]]);
+    const fams = [{ id: 'F1', code: '382B' }, { id: 'F2', code: '380C' }];
+    const byCode = imagesByCode(fams, byId);
+    expect(byCode.get('382B')).toEqual(['p', 'a']);
+    expect(byCode.get('380C')).toEqual(['x']);
+  });
+  it('omits families that have no images', () => {
+    const byCode = imagesByCode([{ id: 'F3', code: '999' }], new Map());
+    expect(byCode.has('999')).toBe(false);
   });
 });
