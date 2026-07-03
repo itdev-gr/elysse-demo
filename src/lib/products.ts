@@ -3,6 +3,7 @@ import type { CatalogProduct, CategorySlug } from '../scripts/catalog/types';
 import type { Product, ProductGroup, GroupCountry, ProductDraft } from '../types/product';
 import { expandCountriesForGroups } from './product-groups';
 import { getFamilies } from './families';
+import { imagesByCode, groupImagesByFamily, type FamilyImageRow } from './family-images';
 import {
   configSlug,
   fetchConfigsByCategorySlug,
@@ -264,6 +265,8 @@ export interface ConfigurationDetail {
   categorySlug: CategorySlug;
   categoryName: string;
   image: string | null;
+  /** Ordered family images (primary first); [] when the family has none. */
+  images: string[];
   availableCountries: string[];
   sizes: ConfigSize[];
 }
@@ -301,6 +304,7 @@ export async function fetchConfigurationDetails(categoryName: string, categorySl
         categorySlug,
         categoryName: p.category_name ?? categoryName,
         image: p.image_url ?? null,
+        images: [],
         availableCountries: [],
         sizes: [],
       };
@@ -342,6 +346,18 @@ export async function fetchConfigurationDetails(categoryName: string, categorySl
     cfg.descriptionI18n = resolveDescriptionI18n(null, {}, rec);
     cfg.description = cfg.descriptionI18n.en ?? null;
   }
+  // Attach each family's ordered images (primary first). Keyed by family_code:
+  // product_family_images is keyed by family_id, so join through the category's
+  // product_families rows. A family shared across two series gets the same gallery.
+  const fams = (await getFamilies({ includeHidden: true })).filter((f) => f.category_slug === categorySlug);
+  const { data: imgRows } = await supabase
+    .from('product_family_images').select('id, family_id, url, sort_order');
+  const byCode = imagesByCode(fams, groupImagesByFamily((imgRows ?? []) as FamilyImageRow[]));
+  for (const cfg of map.values()) {
+    const { images, image } = resolveConfigImages(byCode.get(cfg.familyCode), cfg.image);
+    cfg.images = images;
+    cfg.image = image;
+  }
   // Order configurations the same way as the listing: series order, then by the
   // family code's admin-set sort_order within each series.
   const entries = [...map.values()].map((cfg) => ({
@@ -350,6 +366,15 @@ export async function fetchConfigurationDetails(categoryName: string, categorySl
     cfg,
   }));
   return orderConfigEntries(entries, famSort).map((e) => e.cfg);
+}
+
+/** A configuration's ordered images + primary, from its family's image list. */
+export function resolveConfigImages(
+  familyImages: string[] | undefined,
+  fallbackImage: string | null,
+): { images: string[]; image: string | null } {
+  const images = familyImages ?? [];
+  return { images, image: images[0] ?? fallbackImage };
 }
 
 /** Map a configuration to a catalogue card (for "Related products"). */

@@ -96,3 +96,17 @@ describe('orderConfigEntries', () => {
     expect(orderConfigEntries(entries, famSort).map((e) => e.id)).toEqual(['X/b', 'X/a', 'X/c']);
   });
 });
+
+import { resolveConfigImages } from './products';
+
+describe('resolveConfigImages', () => {
+  it('uses the family images and makes the first the primary', () => {
+    expect(resolveConfigImages(['p', 'a', 'b'], '/old.png')).toEqual({
+      images: ['p', 'a', 'b'], image: 'p',
+    });
+  });
+  it('falls back to the existing single image when the family has none', () => {
+    expect(resolveConfigImages(undefined, '/old.png')).toEqual({ images: [], image: '/old.png' });
+    expect(resolveConfigImages([], null)).toEqual({ images: [], image: null });
+  });
+});
