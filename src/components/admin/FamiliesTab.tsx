@@ -7,6 +7,10 @@ import type { ProductFamily, CodeFacts, ProductFactRow } from '../../lib/familie
 import { buildCodeFacts } from '../../lib/families';
 import { LibraryGrid, type ProductImage } from './ImageLibraryGrid';
 import { planConfigSlugRemap, applyConfigSlugRemap } from '../../lib/remap-config-slugs';
+import {
+  MAX_FAMILY_IMAGES, orderFamilyImages, addFamilyImage,
+  removeFamilyImage, setPrimaryFamilyImage, moveFamilyImage, type FamilyImageRow,
+} from '../../lib/family-images';
 
 function chunk<T>(arr: T[], n: number): T[][] {
   const out: T[][] = [];
@@ -27,6 +31,10 @@ export default function FamiliesTab() {
   const [newCode, setNewCode] = useState('');
   const [assignTarget, setAssignTarget] = useState<ProductFamily | null>(null);
   const [assignError, setAssignError] = useState<string | null>(null);
+  // Ordered image URLs for the family open in the manager modal.
+  const [assignImages, setAssignImages] = useState<string[]>([]);
+  // family_id → image count, for the row badge.
+  const [imageCounts, setImageCounts] = useState<Record<string, number>>({});
 
   // Country-group coverage per family (drives the public catalog's country
   // gating). Group codes come from product_groups; coverage counts how many of
@@ -101,6 +109,15 @@ export default function FamiliesTab() {
       cover[k] = per;
     }
     setGroupCover(cover);
+
+    // Image counts per family (for the row badge).
+    const { data: imgRows } = await supabase
+      .from('product_family_images').select('family_id');
+    const counts: Record<string, number> = {};
+    for (const r of (imgRows ?? []) as { family_id: string }[]) {
+      counts[r.family_id] = (counts[r.family_id] ?? 0) + 1;
+    }
+    setImageCounts(counts);
   };
 
   useEffect(() => { load(); }, []);
@@ -222,20 +239,47 @@ export default function FamiliesTab() {
   const catForFamily = (fam: ProductFamily | null) =>
     fam ? (cats ?? []).find((c) => c.slug === fam.category_slug) ?? null : null;
 
-  const applyImage = async (url: string | null) => {
-    if (!assignTarget) return;
+  // Open the manager: load the family's current images (ordered).
+  const openImageManager = async (fam: ProductFamily) => {
+    setAssignTarget(fam);
     setAssignError(null);
-    const { error: e1 } = await supabase.from('product_families')
-      .update({ image_url: url }).eq('id', assignTarget.id);
+    setAssignImages([]);
+    const { data, error } = await supabase
+      .from('product_family_images').select('id, family_id, url, sort_order')
+      .eq('family_id', fam.id);
+    if (error) return setAssignError(error.message);
+    setAssignImages(orderFamilyImages((data ?? []) as FamilyImageRow[]));
+  };
+
+  // Persist the whole ordered list: rewrite the family's rows, then mirror the
+  // primary onto product_families.image_url + every member product.image_url.
+  const persistImages = async (fam: ProductFamily, list: string[]) => {
+    setAssignError(null);
+    const { error: delErr } = await supabase
+      .from('product_family_images').delete().eq('family_id', fam.id);
+    if (delErr) return setAssignError(delErr.message);
+    if (list.length) {
+      const rows = list.map((url, i) => ({ family_id: fam.id, url, sort_order: i }));
+      const { error: insErr } = await supabase.from('product_family_images').insert(rows);
+      if (insErr) return setAssignError(insErr.message);
+    }
+    const primary = list[0] ?? null;
+    const { error: e1 } = await supabase
+      .from('product_families').update({ image_url: primary }).eq('id', fam.id);
     if (e1) return setAssignError(e1.message);
-    const excel = catForFamily(assignTarget)?.product_category_name ?? null;
+    const excel = catForFamily(fam)?.product_category_name ?? null;
     if (excel) {
       const { error: e2 } = await supabase.from('products')
-        .update({ image_url: url }).eq('category_name', excel).eq('family_code', assignTarget.code);
-      if (e2) return setAssignError(`Image saved on the family, but updating products failed: ${e2.message}`);
+        .update({ image_url: primary }).eq('category_name', excel).eq('family_code', fam.code);
+      if (e2) return setAssignError(`Images saved, but updating products failed: ${e2.message}`);
     }
-    setAssignTarget(null);
     await load(); triggerPublish();
+  };
+
+  // Apply a pure mutation, update local state, then persist.
+  const mutateImages = async (fam: ProductFamily, next: string[]) => {
+    setAssignImages(next);
+    await persistImages(fam, next);
   };
 
   // ── render ────────────────────────────────────────────────────────────────
@@ -359,7 +403,12 @@ export default function FamiliesTab() {
                                 className="w-14 bg-transparent border-b border-ink/25 py-1 text-sm text-center focus:outline-none focus:border-brand-500" />
                             </label>
                             {fam.image_url ? (
-                              <img src={fam.image_url} alt="" className="w-9 h-9 object-contain bg-surface-alt border border-ink/10 shrink-0" />
+                              <div className="relative w-9 h-9 shrink-0">
+                                <img src={fam.image_url} alt="" className="w-9 h-9 object-contain bg-surface-alt border border-ink/10" />
+                                {(imageCounts[fam.id] ?? 0) > 1 && (
+                                  <span className="absolute -top-1 -right-1 bg-brand-500 text-surface text-[9px] leading-none px-1 py-0.5 rounded-full">{imageCounts[fam.id]}</span>
+                                )}
+                              </div>
                             ) : (
                               <div className="w-9 h-9 bg-surface-alt border border-ink/10 shrink-0 flex items-center justify-center text-[9px] text-ink/30">None</div>
                             )}
@@ -395,7 +444,7 @@ export default function FamiliesTab() {
                             </span>
                             <span className="font-mono text-[10px] text-ink/45">{count} prod</span>
                             {!fam.is_active && <span className="text-[10px] uppercase tracking-[0.2em] text-ink/45">hidden</span>}
-                            <button type="button" onClick={() => { setAssignTarget(fam); setAssignError(null); }} className="text-[11px] text-brand-500 uppercase tracking-[0.15em]">Allocate image</button>
+                            <button type="button" onClick={() => openImageManager(fam)} className="text-[11px] text-brand-500 uppercase tracking-[0.15em]">Manage images</button>
                             <button type="button" onClick={() => renameCode(cat, fam)} className="text-[11px] text-brand-500 uppercase tracking-[0.15em]">Rename</button>
                             <button type="button" onClick={() => toggleCode(fam)} className="text-[11px] text-ink/60 uppercase tracking-[0.15em]">{fam.is_active ? 'Hide' : 'Show'}</button>
                             <button type="button" onClick={() => deleteCode(cat, fam)} className="text-red-600" aria-label={`Delete ${fam.code}`}>×</button>
@@ -411,22 +460,18 @@ export default function FamiliesTab() {
         </div>
       )}
 
-      {/* Modal: choose image for a family code */}
+      {/* Modal: manage images for a family code */}
       {assignTarget && (
         <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/50 p-4 sm:p-8">
           <div className="relative w-full max-w-4xl bg-surface border border-ink/15 shadow-xl">
             <div className="sticky top-0 bg-surface border-b border-ink/10 px-5 py-4 flex items-center justify-between gap-4 z-10">
               <div>
-                <p className="text-[10px] uppercase tracking-[0.25em] text-brand-500 font-semibold mb-0.5">Allocate image</p>
+                <p className="text-[10px] uppercase tracking-[0.25em] text-brand-500 font-semibold mb-0.5">Manage images</p>
                 <p className="text-sm text-ink font-medium">
                   {catForFamily(assignTarget)?.name} · No.{assignTarget.code}
                 </p>
               </div>
               <div className="flex items-center gap-3">
-                {assignTarget.image_url && (
-                  <button type="button" onClick={() => applyImage(null)}
-                    className="text-[11px] uppercase tracking-[0.2em] text-red-600 hover:text-red-800 transition-colors duration-200 cursor-pointer">Clear</button>
-                )}
                 <button type="button" onClick={() => setAssignTarget(null)}
                   className="text-[11px] uppercase tracking-[0.2em] text-ink/60 hover:text-ink transition-colors duration-200 cursor-pointer">Cancel</button>
               </div>
@@ -435,12 +480,54 @@ export default function FamiliesTab() {
               {assignError && (
                 <p role="alert" className="text-sm text-red-700 bg-red-50 border-l-2 border-red-500 px-3 py-2 mb-4">{assignError}</p>
               )}
+
+              {/* Selected images, in order — first is the primary. */}
+              <p className="text-[10px] uppercase tracking-[0.25em] text-ink/45 mb-2">
+                Selected ({assignImages.length}/{MAX_FAMILY_IMAGES}) — first is primary
+              </p>
+              {assignImages.length === 0 ? (
+                <p className="text-sm text-ink/50 mb-4">No images yet. Pick from the library below.</p>
+              ) : (
+                <div className="flex flex-wrap gap-3 mb-6">
+                  {assignImages.map((url, i) => (
+                    <div key={url} className="relative w-24">
+                      <div className="aspect-square bg-surface-alt border border-ink/10 overflow-hidden flex items-center justify-center">
+                        <img src={url} alt="" className="w-full h-full object-contain" />
+                      </div>
+                      {i === 0 && (
+                        <span className="absolute top-1 left-1 bg-brand-500 text-surface text-[9px] uppercase tracking-[0.15em] px-1 py-0.5">Primary</span>
+                      )}
+                      <div className="flex items-center justify-between mt-1 text-[11px]">
+                        <button type="button" aria-label="Move left" disabled={i === 0}
+                          onClick={() => assignTarget && mutateImages(assignTarget, moveFamilyImage(assignImages, i, 'left'))}
+                          className="px-1 text-ink/60 disabled:opacity-30">←</button>
+                        {i !== 0 && (
+                          <button type="button"
+                            onClick={() => assignTarget && mutateImages(assignTarget, setPrimaryFamilyImage(assignImages, i))}
+                            className="text-brand-500 uppercase tracking-[0.1em]">★</button>
+                        )}
+                        <button type="button" aria-label="Remove"
+                          onClick={() => assignTarget && mutateImages(assignTarget, removeFamilyImage(assignImages, i))}
+                          className="px-1 text-red-600">×</button>
+                        <button type="button" aria-label="Move right" disabled={i === assignImages.length - 1}
+                          onClick={() => assignTarget && mutateImages(assignTarget, moveFamilyImage(assignImages, i, 'right'))}
+                          className="px-1 text-ink/60 disabled:opacity-30">→</button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* Add from the library (disabled when full). */}
+              <p className="text-[10px] uppercase tracking-[0.25em] text-ink/45 mb-2">
+                {assignImages.length >= MAX_FAMILY_IMAGES ? 'Maximum reached — remove one to add another' : 'Add from library'}
+              </p>
               {images === null ? (
                 <p className="text-sm text-ink/60">Loading…</p>
-              ) : (
+              ) : assignImages.length >= MAX_FAMILY_IMAGES ? null : (
                 <LibraryGrid
                   images={images}
-                  onPick={(img) => applyImage(img.url)}
+                  onPick={(img) => assignTarget && mutateImages(assignTarget, addFamilyImage(assignImages, img.url))}
                   emptyLabel="No images in the library. Upload some in the Images tab first."
                 />
               )}
