@@ -130,6 +130,7 @@ function configToCatalogProduct(
   countries: string[],
   categorySlug: CategorySlug,
   nameI18n?: Record<string, string>,
+  cardImage?: string,
 ): CatalogProduct {
   const ref = rep.family_code ?? rep.code; // catalogue number, e.g. "330A"
   return {
@@ -144,7 +145,7 @@ function configToCatalogProduct(
     pnRating: parsePnFromSubCategory(rep.sub_category),
     standards: [],
     imageUrls: [],
-    image: rep.image_url ?? '', // real photo when assigned, else card placeholder
+    image: cardImage ?? rep.image_url ?? '', // assigned photo → gallery primary → card placeholder
     blurb: '',
     pressure: '',
     sizeRange: '',
@@ -196,30 +197,57 @@ async function familySortMap(categorySlug: string): Promise<Map<string, number>>
 }
 
 /**
+ * family_code → ordered gallery URLs (primary first) for one category.
+ * product_family_images is keyed by family_id, so join through the category's
+ * product_families rows. Shared by the grid and the detail page.
+ */
+async function familyGalleryByCode(categorySlug: string): Promise<Map<string, string[]>> {
+  const fams = (await getFamilies({ includeHidden: true })).filter((f) => f.category_slug === categorySlug);
+  const { data: imgRows } = await supabase
+    .from('product_family_images').select('id, family_id, url, sort_order')
+    .in('family_id', fams.map((f) => f.id));
+  return imagesByCode(fams, groupImagesByFamily((imgRows ?? []) as FamilyImageRow[]));
+}
+
+/**
+ * Grid-card image: the per-configuration assignment (products.image_url) wins,
+ * the family gallery primary is the fallback — the reverse of the detail
+ * page's resolveConfigImages, deliberately, so per-series card images assigned
+ * in the admin keep working while a wiped/blank product URL no longer blanks
+ * the card when the family has a gallery.
+ */
+export function resolveCardImage(repUrl: string | null, familyImages: string[] | undefined): string {
+  return repUrl ?? familyImages?.[0] ?? '';
+}
+
+/**
  * Build-time fetch: one CatalogProduct per configuration (catalogue No.),
  * collapsing all size variants. A configuration is shown for a country when any
  * of its sizes is available there (union of memberships).
  */
 export async function fetchCatalogConfigurations(categoryName: string, categorySlug: CategorySlug): Promise<CatalogProduct[]> {
-  const [{ products, countriesByCode }, configRecords, famSort] = await Promise.all([
+  const [{ products, countriesByCode }, configRecords, famSort, galleryByCode] = await Promise.all([
     loadCategory(categoryName),
     fetchConfigsByCategorySlug(categorySlug),
     familySortMap(categorySlug),
+    familyGalleryByCode(categorySlug),
   ]);
   const groups = new Map<
     string,
-    { rep: Product; countries: Set<string>; order: number; perRow: Record<string, string> }
+    { rep: Product; countries: Set<string>; order: number; perRow: Record<string, string>; image: string | null }
   >();
   for (const p of products) {
     const key = configSlug(p.sub_category, p.family_code ?? p.code);
     const countries = countriesByCode.get(p.code) ?? [];
     let g = groups.get(key);
     if (!g) {
-      g = { rep: p, countries: new Set(countries), order: p.sort_order, perRow: {} };
+      g = { rep: p, countries: new Set(countries), order: p.sort_order, perRow: {}, image: p.image_url };
       groups.set(key, g);
     } else {
       for (const c of countries) g.countries.add(c);
       if (p.sort_order < g.order) g.order = p.sort_order;
+      // First non-null image across the size rows (mirrors the detail page).
+      if (!g.image && p.image_url) g.image = p.image_url;
     }
     // Merge per-row name translations (first non-empty wins) — the fallback for
     // any configuration without a product_configurations record.
@@ -235,7 +263,8 @@ export async function fetchCatalogConfigurations(categoryName: string, categoryS
       // Same resolution as the detail page: product_configurations record wins,
       // per-row merged map is the fallback, English always present.
       const nameI18n = resolveNameI18n(derivedName, g.perRow, configRecords.get(key));
-      return configToCatalogProduct(g.rep, [...g.countries], categorySlug, nameI18n);
+      const cardImage = resolveCardImage(g.image, galleryByCode.get(g.rep.family_code ?? g.rep.code));
+      return configToCatalogProduct(g.rep, [...g.countries], categorySlug, nameI18n, cardImage);
     });
 }
 
@@ -346,14 +375,9 @@ export async function fetchConfigurationDetails(categoryName: string, categorySl
     cfg.descriptionI18n = resolveDescriptionI18n(null, {}, rec);
     cfg.description = cfg.descriptionI18n.en ?? null;
   }
-  // Attach each family's ordered images (primary first). Keyed by family_code:
-  // product_family_images is keyed by family_id, so join through the category's
-  // product_families rows. A family shared across two series gets the same gallery.
-  const fams = (await getFamilies({ includeHidden: true })).filter((f) => f.category_slug === categorySlug);
-  const { data: imgRows } = await supabase
-    .from('product_family_images').select('id, family_id, url, sort_order')
-    .in('family_id', fams.map((f) => f.id));
-  const byCode = imagesByCode(fams, groupImagesByFamily((imgRows ?? []) as FamilyImageRow[]));
+  // Attach each family's ordered images (primary first). A family shared
+  // across two series gets the same gallery.
+  const byCode = await familyGalleryByCode(categorySlug);
   for (const cfg of map.values()) {
     const { images, image } = resolveConfigImages(byCode.get(cfg.familyCode), cfg.image);
     cfg.images = images;
