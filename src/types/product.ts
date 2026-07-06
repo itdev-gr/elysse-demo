@@ -26,9 +26,10 @@ export interface Product {
   created_at: string;
   updated_at: string;
 }
-// `image_url` is optional: bulk-import drafts OMIT it when the sheet cell is
-// blank so an upsert leaves the stored image untouched (explicit clears use
-// the CLEAR sentinel → null).
+// `image_url` is optional and VESTIGIAL: the site renders from the family
+// galleries (product_family_images) only. The bulk importer never sets it;
+// only the single-product form still writes it, until the column-retirement
+// migration drops it.
 export type ProductDraft = Omit<Product, 'created_at' | 'updated_at' | 'image_url'> & {
   image_url?: string | null;
 };

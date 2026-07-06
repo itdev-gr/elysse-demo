@@ -41,6 +41,26 @@ test('catalog grid renders no broken product images', async ({ page }) => {
   expect(broken, `broken images: ${JSON.stringify(broken)}`).toEqual([]);
 });
 
+test('sibling series of a multi-series family show different primary images', async ({ page }) => {
+  // Family 380 (compression fittings) has a Zeta-tagged gallery image and an
+  // untagged (Epsilon) one — the tagging pipeline (admin tag → RPC → resolver
+  // → page) must surface different primaries per series. If this family's
+  // gallery is re-tagged in the admin, update the fixture below.
+  await page.addInitScript(() => localStorage.setItem('elysee.country', 'cy'));
+  const primarySrc = async (path: string) => {
+    await page.goto(path);
+    await page.waitForLoadState('load');
+    const img = page.locator('img[src*="/storage/v1/object/public/product-images/"]').first();
+    await expect(img, `no storage image on ${path}`).toBeVisible({ timeout: 15_000 });
+    return img.getAttribute('src');
+  };
+  const epsilon = await primarySrc('/catalog/compression-fittings/epsilon-series-pn-16-bar-380');
+  const zeta = await primarySrc('/catalog/compression-fittings/zeta-series-pn-16-bar-380');
+  expect(epsilon).toBeTruthy();
+  expect(zeta).toBeTruthy();
+  expect(zeta, 'series-tagged image must differ from the general one').not.toBe(epsilon);
+});
+
 test('a product detail page renders no broken gallery images', async ({ page }) => {
   await page.addInitScript(() => localStorage.setItem('elysee.country', 'cy'));
   await page.goto('/catalog/compression-fittings/');

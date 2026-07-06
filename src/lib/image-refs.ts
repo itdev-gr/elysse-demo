@@ -40,5 +40,6 @@ export function deleteBlockedMessage(filename: string, usage: ImageUsage): strin
     parts.push(`${usage.gallery_rows} family gallery image${usage.gallery_rows === 1 ? '' : 's'}${fams}`);
   }
   return `Cannot delete "${filename}" — still used by ${parts.join(', ')}. ` +
-    'Remove those references first (Families tab → Manage images, or Images tab → Allocate).';
+    'Remove it from the family galleries first (Families tab → Manage images). ' +
+    'Legacy per-product references can only be cleared in the product form until the image-column retirement.';
 }

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { supabase } from '../../lib/supabase';
 import { triggerPublish } from '../../lib/publish';
 import { getSubcategories } from '../../lib/categories';
@@ -47,6 +47,11 @@ export default function FamiliesTab() {
   // clicks on the (already-mounted) library grid racing the fetch and wiping
   // out images that haven't loaded into assignImages yet.
   const [imagesLoading, setImagesLoading] = useState(false);
+  // True only after the current family's images fetched SUCCESSFULLY — a
+  // failed load must keep mutations disarmed (empty list ≠ empty gallery).
+  const [imagesLoaded, setImagesLoaded] = useState(false);
+  // Ref (not state) so mutateImages sees it synchronously during an upload.
+  const uploadingRef = useRef(false);
   // family_id → image count, for the row badge.
   const [imageCounts, setImageCounts] = useState<Record<string, number>>({});
   // family_id → primary (lowest sort_order) image url, for the row thumbnail.
@@ -267,6 +272,7 @@ export default function FamiliesTab() {
     setAssignError(null);
     setAssignImages([]);
     setAssignSeries([]);
+    setImagesLoaded(false);
     setImagesLoading(true);
     try {
       const { data, error } = await supabase
@@ -274,12 +280,18 @@ export default function FamiliesTab() {
         .eq('family_id', fam.id);
       if (error) return setAssignError(error.message);
       setAssignImages(orderFamilyImages((data ?? []) as FamilyImageRow[]));
+      // Mutations stay blocked until this succeeds — a failed load would
+      // otherwise leave an empty list armed, and one click could wipe the
+      // family's real gallery.
+      setImagesLoaded(true);
 
       const excel = catForFamily(fam)?.product_category_name ?? null;
       if (excel) {
+        // Products link to a family via family_code OR (legacy) their bare code.
         const { data: srows } = await supabase
           .from('products').select('sub_category')
-          .eq('category_name', excel).eq('family_code', fam.code);
+          .eq('category_name', excel)
+          .or(`family_code.eq.${fam.code},and(family_code.is.null,code.eq.${fam.code})`);
         const uniq = Array.from(new Set(
           ((srows ?? []) as { sub_category: string | null }[])
             .map((r) => r.sub_category)
@@ -316,11 +328,13 @@ export default function FamiliesTab() {
     await load(); triggerPublish();
   };
 
-  // Apply a pure mutation, update local state, then persist. Safety net: while
-  // the family's images are still loading, assignImages may not yet reflect
-  // the DB — bail out so a stray click can't persist a truncated list.
+  // Apply a pure mutation, update local state, then persist. Safety nets:
+  // mutations are blocked until the family's images LOADED SUCCESSFULLY (a
+  // failed fetch leaves an empty list that one click would persist), and
+  // while an in-modal upload is in flight (its completion adds to the list —
+  // concurrent edits would be resurrected from a stale closure).
   const mutateImages = async (fam: ProductFamily, next: FamilyImageEntry[]) => {
-    if (imagesLoading) return;
+    if (imagesLoading || !imagesLoaded || uploadingRef.current) return;
     setAssignImages(next);
     await persistImages(fam, next);
   };
@@ -332,7 +346,9 @@ export default function FamiliesTab() {
     e.currentTarget.value = '';
     if (!file || !assignTarget) return;
     setAssignUploading(true);
+    uploadingRef.current = true; // blocks concurrent gallery edits (see mutateImages)
     setAssignError(null);
+    let uploadedUrl: string | null = null;
     try {
       const path = `uploads/${crypto.randomUUID()}-${sanitiseName(file.name)}`;
       const { error: upErr } = await supabase.storage
@@ -351,10 +367,14 @@ export default function FamiliesTab() {
       });
       if (insErr) return setAssignError(`Uploaded "${file.name}" but failed to save record: ${insErr.message}`);
 
-      await mutateImages(assignTarget, addFamilyImage(assignImages, publicUrl));
+      uploadedUrl = publicUrl;
     } finally {
+      uploadingRef.current = false;
       setAssignUploading(false);
     }
+    // Safe against stale state: edits were blocked for the whole upload, so
+    // assignImages cannot have changed since the handler captured it.
+    if (uploadedUrl) await mutateImages(assignTarget, addFamilyImage(assignImages, uploadedUrl));
   };
 
   // ── render ────────────────────────────────────────────────────────────────
@@ -598,8 +618,11 @@ export default function FamiliesTab() {
                               onClick={() => {
                                 if (!assignTarget) return;
                                 const next = removeFamilyImage(assignImages, i);
-                                if (next.length === 0
-                                  && !confirm(`Remove the last image for No.${assignTarget.code}? Its products will show the placeholder image on the catalog.`)) return;
+                                if (next.length === 0) {
+                                  const cat = catForFamily(assignTarget);
+                                  const n = cat ? (famProducts[famKey(cat, assignTarget.code)] ?? []).length : 0;
+                                  if (!confirm(`Remove the last image for No.${assignTarget.code}? ${n ? `All ${n}` : 'Its'} products will show the placeholder image on the catalog.`)) return;
+                                }
                                 mutateImages(assignTarget, next);
                               }}
                               className="px-1 text-red-600">×</button>

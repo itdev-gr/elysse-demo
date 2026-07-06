@@ -36,7 +36,7 @@ describe('deleteBlockedMessage', () => {
       products: 1, family_mirrors: 0, gallery_rows: 0, families: [],
     });
     expect(msg).toContain('1 product');
-    expect(msg).not.toContain('cover');
-    expect(msg).not.toContain('gallery');
+    expect(msg).not.toContain('family cover');
+    expect(msg).not.toContain('gallery image');
   });
 });
