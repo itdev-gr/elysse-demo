@@ -139,4 +139,14 @@ export const shared: Record<string, string> = {
   'Something missing?': 'Λείπει κάτι;',
   'Need an older revision or a tender-ready bundle?':
     'Χρειάζεστε παλαιότερη έκδοση ή πακέτο έτοιμο για διαγωνισμό;',
+
+  // Header search — live dropdown results
+  'View all results': 'Όλα τα αποτελέσματα',
+  'No results for': 'Κανένα αποτέλεσμα για',
+  'Search is temporarily unavailable. Please try again.': 'Η αναζήτηση δεν είναι διαθέσιμη αυτή τη στιγμή. Δοκιμάστε ξανά.',
+
+  // Search result kind labels
+  'Series': 'Σειρές',
+  'Pages': 'Σελίδες',
+  'Catalogues': 'Κατάλογοι',
 };

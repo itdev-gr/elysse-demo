@@ -1,53 +1,8 @@
 ---
-// Demo search bar in the nav, right after the language toggle.
-//
-// Editorial style: a magnifier + field resting on a hairline baseline; on focus
-// a brand-green underline sweeps in from the left (echoing the site's thin-rule
-// + green-accent motif). No box — it reads as part of the nav, not bolted on.
-//
-// VISUAL SHOWCASE ONLY — submission is disabled and nothing is queried yet; the
-// real search wiring is a later task. Styling inherits the header's
-// `currentColor`, so it adapts to both header states: light over the transparent
-// (over-hero) bar, dark once the bar turns opaque. Desktop-only (`hidden
-// lg:flex`) to keep the mobile bar uncluttered.
-import { i18nAttrFor } from '../lib/i18n';
+// Header search — real site-wide search. The island reproduces the original
+// editorial field design (hairline + green underline) and adds live results;
+// see src/components/search/NavSearch.tsx. Keeping this .astro wrapper means
+// Header.astro's import stays unchanged.
+import NavSearchIsland from './search/NavSearch.tsx';
 ---
-<form
-  role="search"
-  data-nav-search
-  aria-label="Site search"
-  data-i18n-attr={i18nAttrFor({ 'aria-label': 'Site search' })}
-  class="group relative hidden lg:flex items-center gap-2.5 w-44 xl:w-56 shrink-0"
->
-  <svg
-    class="h-3.5 w-3.5 shrink-0 text-current/55 transition-colors duration-200 group-focus-within:text-brand-500"
-    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"
-  >
-    <circle cx="11" cy="11" r="7" />
-    <path d="m21 21-4.3-4.3" />
-  </svg>
-
-  <input
-    type="search"
-    name="q"
-    autocomplete="off"
-    placeholder="Search…"
-    data-i18n-attr={i18nAttrFor({ placeholder: 'Search…' })}
-    class="w-full bg-transparent py-1.5 text-[12px] leading-none tracking-wide text-current placeholder:text-current/50 focus:outline-none [&::-webkit-search-cancel-button]:appearance-none"
-  />
-
-  {/* Resting hairline baseline. */}
-  <span aria-hidden="true" class="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-current/25"></span>
-  {/* Brand-green underline — sweeps in from the left on focus. */}
-  <span
-    aria-hidden="true"
-    class="pointer-events-none absolute inset-x-0 bottom-0 h-px origin-left scale-x-0 bg-brand-500 transition-transform duration-300 ease-out-quint group-focus-within:scale-x-100"
-  ></span>
-</form>
-
-<script>
-  // Demo only: stop the form from submitting / navigating until search exists.
-  document.querySelectorAll<HTMLFormElement>('[data-nav-search]').forEach((f) => {
-    f.addEventListener('submit', (e) => e.preventDefault());
-  });
-</script>
+<NavSearchIsland client:load />
