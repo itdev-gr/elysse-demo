@@ -57,7 +57,8 @@ export type GroupCountryDraft = Omit<GroupCountry, 'id' | 'created_at' | 'update
 export type IssueType =
   | 'duplicate_code' | 'missing_code' | 'missing_field' | 'missing_group' | 'invalid_value'
   | 'orphan_category' | 'orphan_series' | 'orphan_family' | 'letter_mismatch'
-  | 'no_visible_country' | 'duplicate_category_link' | 'orphan_membership';
+  | 'no_visible_country' | 'duplicate_category_link' | 'orphan_membership'
+  | 'broken_image_ref' | 'family_gallery_empty' | 'mirror_drift';
 export type IssueSeverity = 'error' | 'warning';
 export type IssueStatus = 'open' | 'resolved' | 'ignored';
 
