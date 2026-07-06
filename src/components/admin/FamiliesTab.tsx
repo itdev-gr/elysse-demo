@@ -9,13 +9,18 @@ import { LibraryGrid, type ProductImage } from './ImageLibraryGrid';
 import { planConfigSlugRemap, applyConfigSlugRemap } from '../../lib/remap-config-slugs';
 import {
   MAX_FAMILY_IMAGES, orderFamilyImages, addFamilyImage,
-  removeFamilyImage, setPrimaryFamilyImage, moveFamilyImage, type FamilyImageRow,
+  removeFamilyImage, setPrimaryFamilyImage, moveFamilyImage, setFamilyImageSeries,
+  type FamilyImageRow, type FamilyImageEntry,
 } from '../../lib/family-images';
 
 function chunk<T>(arr: T[], n: number): T[][] {
   const out: T[][] = [];
   for (let i = 0; i < arr.length; i += n) out.push(arr.slice(i, i + n));
   return out;
+}
+
+function sanitiseName(name: string) {
+  return name.replace(/[^a-zA-Z0-9.\-]+/g, '-');
 }
 
 export default function FamiliesTab() {
@@ -31,14 +36,21 @@ export default function FamiliesTab() {
   const [newCode, setNewCode] = useState('');
   const [assignTarget, setAssignTarget] = useState<ProductFamily | null>(null);
   const [assignError, setAssignError] = useState<string | null>(null);
-  // Ordered image URLs for the family open in the manager modal.
-  const [assignImages, setAssignImages] = useState<string[]>([]);
+  // Ordered gallery entries (url + series tag) for the family open in the manager modal.
+  const [assignImages, setAssignImages] = useState<FamilyImageEntry[]>([]);
+  // Distinct series (products.sub_category) the open family has products in —
+  // drives the per-image series `<select>` (hidden when there's only one).
+  const [assignSeries, setAssignSeries] = useState<string[]>([]);
+  // True while an in-modal file upload is in flight.
+  const [assignUploading, setAssignUploading] = useState(false);
   // True while the family's current images are being fetched — guards against
   // clicks on the (already-mounted) library grid racing the fetch and wiping
   // out images that haven't loaded into assignImages yet.
   const [imagesLoading, setImagesLoading] = useState(false);
   // family_id → image count, for the row badge.
   const [imageCounts, setImageCounts] = useState<Record<string, number>>({});
+  // family_id → primary (lowest sort_order) image url, for the row thumbnail.
+  const [primaryByFam, setPrimaryByFam] = useState<Record<string, string>>({});
 
   // Country-group coverage per family (drives the public catalog's country
   // gating). Group codes come from product_groups; coverage counts how many of
@@ -114,14 +126,18 @@ export default function FamiliesTab() {
     }
     setGroupCover(cover);
 
-    // Image counts per family (for the row badge).
+    // Image counts + primary thumbnail per family (for the row badge/thumbnail).
     const { data: imgRows } = await supabase
-      .from('product_family_images').select('family_id');
+      .from('product_family_images').select('family_id, url, sort_order');
     const counts: Record<string, number> = {};
-    for (const r of (imgRows ?? []) as { family_id: string }[]) {
+    const primary: Record<string, { url: string; sort_order: number }> = {};
+    for (const r of (imgRows ?? []) as { family_id: string; url: string; sort_order: number }[]) {
       counts[r.family_id] = (counts[r.family_id] ?? 0) + 1;
+      const cur = primary[r.family_id];
+      if (!cur || r.sort_order < cur.sort_order) primary[r.family_id] = { url: r.url, sort_order: r.sort_order };
     }
     setImageCounts(counts);
+    setPrimaryByFam(Object.fromEntries(Object.entries(primary).map(([id, p]) => [id, p.url])));
   };
 
   useEffect(() => { load(); }, []);
@@ -250,13 +266,27 @@ export default function FamiliesTab() {
     setAssignTarget(fam);
     setAssignError(null);
     setAssignImages([]);
+    setAssignSeries([]);
     setImagesLoading(true);
     try {
       const { data, error } = await supabase
-        .from('product_family_images').select('id, family_id, url, sort_order')
+        .from('product_family_images').select('id, family_id, url, series, sort_order')
         .eq('family_id', fam.id);
       if (error) return setAssignError(error.message);
       setAssignImages(orderFamilyImages((data ?? []) as FamilyImageRow[]));
+
+      const excel = catForFamily(fam)?.product_category_name ?? null;
+      if (excel) {
+        const { data: srows } = await supabase
+          .from('products').select('sub_category')
+          .eq('category_name', excel).eq('family_code', fam.code);
+        const uniq = Array.from(new Set(
+          ((srows ?? []) as { sub_category: string | null }[])
+            .map((r) => r.sub_category)
+            .filter((s): s is string => !!s && s.trim() !== ''),
+        )).sort();
+        setAssignSeries(uniq);
+      }
     } finally {
       setImagesLoading(false);
     }
@@ -267,24 +297,20 @@ export default function FamiliesTab() {
   const failResync = async (fam: ProductFamily, message: string) => {
     setAssignError(message);
     const { data } = await supabase
-      .from('product_family_images').select('id, family_id, url, sort_order')
+      .from('product_family_images').select('id, family_id, url, series, sort_order')
       .eq('family_id', fam.id);
     setAssignImages(orderFamilyImages((data ?? []) as FamilyImageRow[]));
     await load();
   };
 
-  // Persist the whole ordered list atomically: the set_family_images RPC rewrites
-  // the family's rows and mirrors the primary onto product_families.image_url +
-  // every member product.image_url in one transaction, so a mid-save failure
-  // can't leave the images out of sync with the mirror.
-  const persistImages = async (fam: ProductFamily, list: string[]) => {
+  // Persist the whole ordered list atomically: set_family_images rewrites the
+  // family's gallery rows (url + series tag) in one transaction, so a mid-save
+  // failure can't leave the images half-written.
+  const persistImages = async (fam: ProductFamily, list: FamilyImageEntry[]) => {
     setAssignError(null);
-    const excel = catForFamily(fam)?.product_category_name ?? null;
     const { error } = await supabase.rpc('set_family_images', {
       p_family_id: fam.id,
-      p_category_name: excel,
-      p_family_code: fam.code,
-      p_urls: list,
+      p_images: list,
     });
     if (error) return failResync(fam, error.message);
     await load(); triggerPublish();
@@ -293,10 +319,42 @@ export default function FamiliesTab() {
   // Apply a pure mutation, update local state, then persist. Safety net: while
   // the family's images are still loading, assignImages may not yet reflect
   // the DB — bail out so a stray click can't persist a truncated list.
-  const mutateImages = async (fam: ProductFamily, next: string[]) => {
+  const mutateImages = async (fam: ProductFamily, next: FamilyImageEntry[]) => {
     if (imagesLoading) return;
     setAssignImages(next);
     await persistImages(fam, next);
+  };
+
+  // In-modal upload: adds straight to this family's gallery (untagged) and
+  // records the file in the shared library so it's reusable elsewhere too.
+  const handleModalUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.currentTarget.files?.[0];
+    e.currentTarget.value = '';
+    if (!file || !assignTarget) return;
+    setAssignUploading(true);
+    setAssignError(null);
+    try {
+      const path = `uploads/${crypto.randomUUID()}-${sanitiseName(file.name)}`;
+      const { error: upErr } = await supabase.storage
+        .from('product-images')
+        .upload(path, file, { upsert: true, contentType: file.type });
+      if (upErr) return setAssignError(`Failed to upload "${file.name}": ${upErr.message}`);
+
+      const { data: urlData } = supabase.storage.from('product-images').getPublicUrl(path);
+      const publicUrl = urlData.publicUrl;
+
+      const { error: insErr } = await supabase.from('product_images').insert({
+        url: publicUrl,
+        filename: file.name,
+        family_code: assignTarget.code,
+        source: 'upload',
+      });
+      if (insErr) return setAssignError(`Uploaded "${file.name}" but failed to save record: ${insErr.message}`);
+
+      await mutateImages(assignTarget, addFamilyImage(assignImages, publicUrl));
+    } finally {
+      setAssignUploading(false);
+    }
   };
 
   // ── render ────────────────────────────────────────────────────────────────
@@ -407,6 +465,7 @@ export default function FamiliesTab() {
                         const sf = series ? f.perSeries.get(series) : undefined;
                         const count = sf?.count ?? f.count;
                         const configuration = sf?.configuration ?? f.configuration;
+                        const thumb = primaryByFam[fam.id] ?? fam.image_url;
                         return (
                           <li key={fam.id} className={`flex items-center gap-3 text-sm border-b border-ink/5 py-1.5 ${fam.is_active ? '' : 'opacity-60'}`}>
                             <label className="flex items-center gap-1 shrink-0" title="Display order within this series (lower shows first)">
@@ -419,9 +478,9 @@ export default function FamiliesTab() {
                                 onKeyDown={(e) => { if (e.key === 'Enter') e.currentTarget.blur(); }}
                                 className="w-14 bg-transparent border-b border-ink/25 py-1 text-sm text-center focus:outline-none focus:border-brand-500" />
                             </label>
-                            {fam.image_url ? (
+                            {thumb ? (
                               <div className="relative w-9 h-9 shrink-0">
-                                <img src={fam.image_url} alt="" className="w-9 h-9 object-contain bg-surface-alt border border-ink/10" />
+                                <img src={thumb} alt="" className="w-9 h-9 object-contain bg-surface-alt border border-ink/10" />
                                 {(imageCounts[fam.id] ?? 0) > 1 && (
                                   <span className="absolute -top-1 -right-1 bg-brand-500 text-surface text-[9px] leading-none px-1 py-0.5 rounded-full">{imageCounts[fam.id]}</span>
                                 )}
@@ -510,13 +569,21 @@ export default function FamiliesTab() {
                     <p className="text-sm text-ink/50 mb-4">No images yet. Pick from the library below.</p>
                   ) : (
                     <div className="flex flex-wrap gap-3 mb-6">
-                      {assignImages.map((url, i) => (
-                        <div key={url} className="relative w-24">
+                      {assignImages.map((entry, i) => (
+                        <div key={entry.url} className="relative w-24">
                           <div className="aspect-square bg-surface-alt border border-ink/10 overflow-hidden flex items-center justify-center">
-                            <img src={url} alt="" className="w-full h-full object-contain" />
+                            <img src={entry.url} alt="" className="w-full h-full object-contain" />
                           </div>
                           {i === 0 && (
                             <span className="absolute top-1 left-1 bg-brand-500 text-surface text-[9px] uppercase tracking-[0.15em] px-1 py-0.5">Primary</span>
+                          )}
+                          {entry.series && (
+                            <span
+                              title={entry.series}
+                              className="absolute bottom-1 right-1 max-w-[calc(100%-0.5rem)] truncate bg-ink/80 text-surface text-[9px] px-1 py-0.5"
+                            >
+                              {entry.series}
+                            </span>
                           )}
                           <div className="flex items-center justify-between mt-1 text-[11px]">
                             <button type="button" aria-label="Move left" disabled={i === 0}
@@ -531,14 +598,8 @@ export default function FamiliesTab() {
                               onClick={() => {
                                 if (!assignTarget) return;
                                 const next = removeFamilyImage(assignImages, i);
-                                // Emptying the gallery also nulls the cover +
-                                // every member product's catalog image (RPC
-                                // mirror) — make that explicit.
-                                if (next.length === 0) {
-                                  const cat = catForFamily(assignTarget);
-                                  const n = cat ? (famProducts[famKey(cat, assignTarget.code)] ?? []).length : 0;
-                                  if (!confirm(`Remove the last image for No.${assignTarget.code}? This clears the catalog image for ${n ? `all ${n}` : 'all'} products of this family.`)) return;
-                                }
+                                if (next.length === 0
+                                  && !confirm(`Remove the last image for No.${assignTarget.code}? Its products will show the placeholder image on the catalog.`)) return;
                                 mutateImages(assignTarget, next);
                               }}
                               className="px-1 text-red-600">×</button>
@@ -546,15 +607,41 @@ export default function FamiliesTab() {
                               onClick={() => assignTarget && mutateImages(assignTarget, moveFamilyImage(assignImages, i, 'right'))}
                               className="px-1 text-ink/60 disabled:opacity-30">→</button>
                           </div>
+                          {assignSeries.length >= 2 && (
+                            <select
+                              value={entry.series ?? ''}
+                              onChange={(e) => assignTarget && mutateImages(assignTarget, setFamilyImageSeries(assignImages, i, e.currentTarget.value || null))}
+                              className="mt-1 w-full bg-transparent border border-ink/15 text-[10px] px-1 py-0.5 focus:outline-none focus:border-brand-500"
+                            >
+                              <option value="">All series</option>
+                              {assignSeries.map((s) => (
+                                <option key={s} value={s}>{s}</option>
+                              ))}
+                            </select>
+                          )}
                         </div>
                       ))}
                     </div>
                   )}
 
-                  {/* Add from the library (disabled when full). */}
-                  <p className="text-[10px] uppercase tracking-[0.25em] text-ink/45 mb-2">
-                    {assignImages.length >= MAX_FAMILY_IMAGES ? 'Maximum reached — remove one to add another' : 'Add from library'}
-                  </p>
+                  {/* Add from the library (disabled when full), or upload directly. */}
+                  <div className="flex items-center justify-between mb-2">
+                    <p className="text-[10px] uppercase tracking-[0.25em] text-ink/45">
+                      {assignImages.length >= MAX_FAMILY_IMAGES ? 'Maximum reached — remove one to add another' : 'Add from library'}
+                    </p>
+                    <label
+                      className={`text-[11px] uppercase tracking-[0.15em] text-brand-500 cursor-pointer ${assignUploading || assignImages.length >= MAX_FAMILY_IMAGES ? 'opacity-40 pointer-events-none' : ''}`}
+                    >
+                      {assignUploading ? 'Uploading…' : '+ Upload image'}
+                      <input
+                        type="file"
+                        accept="image/*"
+                        className="sr-only"
+                        disabled={assignUploading || assignImages.length >= MAX_FAMILY_IMAGES}
+                        onChange={handleModalUpload}
+                      />
+                    </label>
+                  </div>
                   {images === null ? (
                     <p className="text-sm text-ink/60">Loading…</p>
                   ) : assignImages.length >= MAX_FAMILY_IMAGES ? null : (

@@ -1,28 +1,8 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { supabase } from '../../lib/supabase';
 import { triggerPublish } from '../../lib/publish';
 import { storagePathFromUrl, deleteBlockedMessage, type ImageUsage } from '../../lib/image-refs';
 import { LibraryGrid, type ProductImage } from './ImageLibraryGrid';
-
-// ─── Local types ────────────────────────────────────────────────────────────
-
-interface ProductRow {
-  code: string;
-  category_name: string | null;
-  sub_category: string | null;
-  family_code: string | null;
-  configuration: string | null;
-  image_url: string | null;
-}
-
-interface ConfigEntry {
-  key: string;
-  category_name: string | null;
-  sub_category: string;
-  family_code: string;
-  configuration: string | null;
-  currentImage: string | null;
-}
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
 
@@ -43,15 +23,6 @@ export default function ImagesTab() {
   const [uploadLog, setUploadLog] = useState<string[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // ── configurations state ──
-  const [products, setProducts] = useState<ProductRow[] | null>(null);
-  const [prodError, setProdError] = useState<string | null>(null);
-  const [configQuery, setConfigQuery] = useState('');
-
-  // ── assign modal state ──
-  const [assignTarget, setAssignTarget] = useState<ConfigEntry | null>(null);
-  const [assignError, setAssignError] = useState<string | null>(null);
-
   // ── loaders ──────────────────────────────────────────────────────────────
 
   const loadImages = useCallback(async () => {
@@ -64,27 +35,9 @@ export default function ImagesTab() {
     setImages((data ?? []) as ProductImage[]);
   }, []);
 
-  const loadProducts = useCallback(async () => {
-    setProdError(null);
-    const PAGE = 1000;
-    const all: ProductRow[] = [];
-    for (let from = 0; ; from += PAGE) {
-      const { data, error } = await supabase
-        .from('products')
-        .select('code,category_name,sub_category,family_code,configuration,image_url')
-        .range(from, from + PAGE - 1);
-      if (error) { setProdError(error.message); return; }
-      if (!data || data.length === 0) break;
-      all.push(...(data as ProductRow[]));
-      if (data.length < PAGE) break;
-    }
-    setProducts(all);
-  }, []);
-
   useEffect(() => {
     loadImages();
-    loadProducts();
-  }, [loadImages, loadProducts]);
+  }, [loadImages]);
 
   // ── upload handler ───────────────────────────────────────────────────────
 
@@ -160,83 +113,6 @@ export default function ImagesTab() {
     triggerPublish();
   };
 
-  // ── configurations ───────────────────────────────────────────────────────
-
-  const configs = useMemo<ConfigEntry[]>(() => {
-    if (!products) return [];
-    const map = new Map<string, ConfigEntry>();
-    for (const p of products) {
-      const sub = p.sub_category ?? '';
-      const fam = p.family_code ?? '';
-      const key = `${p.category_name ?? ''}|${sub}|${fam}`;
-      if (!map.has(key)) {
-        map.set(key, {
-          key,
-          category_name: p.category_name,
-          sub_category: sub,
-          family_code: fam,
-          configuration: p.configuration,
-          currentImage: p.image_url,
-        });
-      } else {
-        // update currentImage if this product has one and the stored one doesn't
-        const existing = map.get(key)!;
-        if (!existing.currentImage && p.image_url) {
-          map.set(key, { ...existing, currentImage: p.image_url });
-        }
-      }
-    }
-    return Array.from(map.values()).sort((a, b) =>
-      (a.sub_category + a.family_code).localeCompare(b.sub_category + b.family_code),
-    );
-  }, [products]);
-
-  const filteredConfigs = useMemo(() => {
-    const q = configQuery.trim().toLowerCase();
-    if (!q) return configs.slice(0, 60);
-    return configs
-      .filter(
-        (c) =>
-          c.family_code.toLowerCase().includes(q) ||
-          (c.configuration ?? '').toLowerCase().includes(q) ||
-          c.sub_category.toLowerCase().includes(q),
-      )
-      .slice(0, 200);
-  }, [configs, configQuery]);
-
-  // ── assign actions ───────────────────────────────────────────────────────
-
-  const handleChooseImage = (target: ConfigEntry) => {
-    setAssignTarget(target);
-    setAssignError(null);
-  };
-
-  const handleAssign = async (img: ProductImage) => {
-    if (!assignTarget) return;
-    const { category_name: cat, sub_category: subCat, family_code: fam } = assignTarget;
-    let q = supabase.from('products').update({ image_url: img.url })
-      .eq('category_name', cat).eq('sub_category', subCat);
-    q = fam ? q.eq('family_code', fam) : q.is('family_code', null);
-    const { error } = await q;
-    if (error) { setAssignError(error.message); return; }
-    setAssignTarget(null);
-    await loadProducts();
-    triggerPublish();
-  };
-
-  const handleClear = async () => {
-    if (!assignTarget) return;
-    const { category_name: cat, sub_category: subCat, family_code: fam } = assignTarget;
-    let q = supabase.from('products').update({ image_url: null })
-      .eq('category_name', cat).eq('sub_category', subCat);
-    q = fam ? q.eq('family_code', fam) : q.is('family_code', null);
-    const { error } = await q;
-    if (error) { setAssignError(error.message); return; }
-    setAssignTarget(null);
-    await loadProducts();
-    triggerPublish();
-  };
-
   // ── render ───────────────────────────────────────────────────────────────
 
   return (
@@ -304,148 +180,10 @@ export default function ImagesTab() {
         )}
       </section>
 
-      {/* ── 3. Allocate to products ────────────────────────────────────── */}
-      <section className="order-2">
-        <h2 className="font-display font-heavy text-base text-ink mb-4">
-          Allocate images to configurations
-        </h2>
-
-        {prodError && (
-          <p role="alert" className="text-sm text-red-700 bg-red-50 border-l-2 border-red-500 px-3 py-2 mb-4">
-            {prodError}
-          </p>
-        )}
-
-        <div className="mb-5">
-          <input
-            type="search"
-            value={configQuery}
-            onChange={(e) => setConfigQuery(e.currentTarget.value)}
-            placeholder="Search by family code, configuration, or series…"
-            className="w-full max-w-md bg-transparent border-b border-ink/25 px-1 py-2 text-sm text-ink placeholder:text-ink/40 focus:outline-none focus:border-brand-500"
-          />
-          {!configQuery && configs.length > 60 && (
-            <p className="text-[11px] text-ink/50 mt-2">
-              Showing first 60 — search to narrow.
-            </p>
-          )}
-        </div>
-
-        {products === null ? (
-          <p className="text-sm text-ink/60">Loading…</p>
-        ) : filteredConfigs.length === 0 ? (
-          <p className="text-sm text-ink/60">No configurations match.</p>
-        ) : (
-          <div className="overflow-x-auto bg-surface border border-ink/10">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="text-left text-[10px] uppercase tracking-[0.2em] text-ink/55 border-b border-ink/10">
-                  <th className="px-4 py-3">Image</th>
-                  <th className="px-4 py-3">Configuration</th>
-                  <th className="px-4 py-3">Series</th>
-                  <th className="px-4 py-3">Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredConfigs.map((c) => (
-                  <tr key={c.key} className="border-b border-ink/5 last:border-b-0">
-                    <td className="px-4 py-3">
-                      {c.currentImage ? (
-                        <img
-                          src={c.currentImage}
-                          alt=""
-                          className="w-12 h-12 object-contain bg-surface-alt border border-ink/10"
-                        />
-                      ) : (
-                        <div className="w-12 h-12 bg-surface-alt border border-ink/10 flex items-center justify-center text-[10px] text-ink/30">
-                          None
-                        </div>
-                      )}
-                    </td>
-                    <td className="px-4 py-3">
-                      <span className="text-ink">
-                        No.{c.family_code} · {c.configuration ?? '—'}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3 text-ink/60 text-[12px]">
-                      {c.sub_category}
-                    </td>
-                    <td className="px-4 py-3">
-                      <button
-                        type="button"
-                        onClick={() => handleChooseImage(c)}
-                        className="text-[11px] uppercase tracking-[0.2em] text-brand-500 hover:text-brand-700 transition-colors duration-200 cursor-pointer"
-                      >
-                        Choose image
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
-      </section>
-
-      {/* ── Modal: choose image ────────────────────────────────────────── */}
-      {assignTarget && (
-        <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/50 p-4 sm:p-8">
-          <div className="relative w-full max-w-4xl bg-surface border border-ink/15 shadow-xl">
-            {/* Header */}
-            <div className="sticky top-0 bg-surface border-b border-ink/10 px-5 py-4 flex items-center justify-between gap-4 z-10">
-              <div>
-                <p className="text-[10px] uppercase tracking-[0.25em] text-brand-500 font-semibold mb-0.5">
-                  Choose image
-                </p>
-                <p className="text-sm text-ink font-medium">
-                  No.{assignTarget.family_code} · {assignTarget.configuration ?? assignTarget.sub_category}
-                </p>
-              </div>
-              <div className="flex items-center gap-3">
-                {assignTarget.currentImage && (
-                  <button
-                    type="button"
-                    onClick={handleClear}
-                    className="text-[11px] uppercase tracking-[0.2em] text-red-600 hover:text-red-800 transition-colors duration-200 cursor-pointer"
-                  >
-                    Clear
-                  </button>
-                )}
-                <button
-                  type="button"
-                  onClick={() => setAssignTarget(null)}
-                  className="text-[11px] uppercase tracking-[0.2em] text-ink/60 hover:text-ink transition-colors duration-200 cursor-pointer"
-                >
-                  Cancel
-                </button>
-              </div>
-            </div>
-
-            {/* Body */}
-            <div className="p-5">
-              {assignError && (
-                <p role="alert" className="text-sm text-red-700 bg-red-50 border-l-2 border-red-500 px-3 py-2 mb-4">
-                  {assignError}
-                </p>
-              )}
-
-              {images === null ? (
-                <p className="text-sm text-ink/60">Loading…</p>
-              ) : images.length === 0 ? (
-                <p className="text-sm text-ink/60">
-                  No images in the library. Upload some first.
-                </p>
-              ) : (
-                <LibraryGrid
-                  images={images}
-                  onDelete={handleDelete}
-                  onPick={handleAssign}
-                />
-              )}
-            </div>
-          </div>
-        </div>
-      )}
+      {/* ── 3. Allocation now lives on the family (Families tab) ────────── */}
+      <p className="order-2 text-sm text-ink/50">
+        Images are assigned per family in the Families tab (Manage images).
+      </p>
     </div>
   );
 }
