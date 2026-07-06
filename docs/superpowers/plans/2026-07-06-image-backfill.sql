@@ -26,16 +26,19 @@ fam_urls as (
     and not exists (select 1 from product_family_images i where i.family_id = f.id)
   group by f.id, p.sub_category, p.image_url
 ),
+fam_multi as (
+  -- DISTINCT isn't allowed in window functions — grouped join instead.
+  select family_id, count(distinct image_url) > 1 as multi
+  from fam_urls
+  group by family_id
+),
 cand as (
-  select family_id, image_url as url,
-         case when multi then sub_category else null end as series,
-         min(ord) as ord
-  from (
-    select fu.*,
-           count(distinct fu.image_url) over (partition by fu.family_id) > 1 as multi
-    from fam_urls fu
-  ) z
-  group by family_id, image_url, (case when multi then sub_category else null end)
+  select fu.family_id, fu.image_url as url,
+         case when fm.multi then fu.sub_category else null end as series,
+         min(fu.ord) as ord
+  from fam_urls fu
+  join fam_multi fm using (family_id)
+  group by fu.family_id, fu.image_url, (case when fm.multi then fu.sub_category else null end)
 ),
 ranked as (
   select *, row_number() over (partition by family_id order by ord, series nulls first, url) as rn
