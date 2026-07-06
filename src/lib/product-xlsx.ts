@@ -5,6 +5,28 @@ import type { ProductConfiguration, ConfigTranslations } from './product-configu
 export const I18N_LANGS = ['el', 'de', 'es', 'fr'] as const;
 
 /**
+ * Sentinel for the Image_url column: a blank cell leaves the stored image
+ * unchanged; this literal value erases it. Guards against partial sheets
+ * silently mass-wiping `products.image_url` on upsert.
+ */
+export const CLEAR_IMAGE = 'CLEAR';
+
+/**
+ * Partition drafts by whether they carry the `image_url` key. Callers MUST
+ * upsert the two partitions separately: supabase-js derives the `?columns=`
+ * list from the union of row keys, so a mixed batch would write
+ * `image_url = DEFAULT` (null) for rows that omitted it.
+ */
+export function splitDraftsByImagePresence<T extends { image_url?: string | null }>(
+  drafts: T[],
+): { withImage: T[]; withoutImage: T[] } {
+  const withImage: T[] = [];
+  const withoutImage: T[] = [];
+  for (const d of drafts) ('image_url' in d ? withImage : withoutImage).push(d);
+  return { withImage, withoutImage };
+}
+
+/**
  * The full column set for the bulk template / import / export, in the order the
  * sheet presents them. Machine keys here are the canonical names the parser
  * uses; the human-friendly header text actually written to the sheet comes from
@@ -252,11 +274,14 @@ export function rowToDraft(rawRow: ProductRow): ParsedRow {
     packing_box: intOrNull(row.packing_box),
     moq: intOrNull(row.moq),
     box_size: str(row.box_size),
-    image_url: str(row.image_url),
     is_active,
     is_hidden,
     sort_order: intOrNull(row.sort_order) ?? 0,
   };
+  // Image semantics: blank cell = leave the stored image unchanged (key omitted
+  // so the upsert doesn't touch the column); the CLEAR sentinel erases it.
+  const imageRaw = str(row.image_url);
+  if (imageRaw !== null) draft.image_url = imageRaw === CLEAR_IMAGE ? null : imageRaw;
   // Only build configuration translations when the sheet carries those columns.
   const hasTrCols = TRANSLATION_COLUMNS.some((c) => c in row);
   const translations: ConfigTranslations | null = hasTrCols ? {

@@ -26,7 +26,12 @@ export interface Product {
   created_at: string;
   updated_at: string;
 }
-export type ProductDraft = Omit<Product, 'created_at' | 'updated_at'>;
+// `image_url` is optional: bulk-import drafts OMIT it when the sheet cell is
+// blank so an upsert leaves the stored image untouched (explicit clears use
+// the CLEAR sentinel → null).
+export type ProductDraft = Omit<Product, 'created_at' | 'updated_at' | 'image_url'> & {
+  image_url?: string | null;
+};
 
 export interface ProductGroup {
   code: string;                   // 'A'..'E'

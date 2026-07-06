@@ -3,7 +3,7 @@ import * as XLSX from 'xlsx';
 import { supabase } from '../../lib/supabase';
 import { triggerPublish } from '../../lib/publish';
 import { validateProductDraft } from '../../lib/products';
-import { PRODUCT_COLUMNS, productToRow, rowToDraft, templateExampleRow, findDuplicateCodes, normalizeHeaderRow, HEADER_ROW, type ProductRow } from '../../lib/product-xlsx';
+import { PRODUCT_COLUMNS, productToRow, rowToDraft, templateExampleRow, findDuplicateCodes, normalizeHeaderRow, splitDraftsByImagePresence, HEADER_ROW, type ProductRow } from '../../lib/product-xlsx';
 import { configKey } from '../../lib/product-configurations';
 import type { ProductConfiguration, ConfigTranslations } from '../../lib/product-configurations';
 import { cleanI18n } from '../../lib/categories';
@@ -142,14 +142,20 @@ export default function ProductBulkBar({ onChanged }: { onChanged: () => void })
       });
 
       // Upsert products in chunks; on a chunk failure, retry that chunk row-by-row
-      // so one bad row doesn't reject the whole batch.
+      // so one bad row doesn't reject the whole batch. Drafts with and without
+      // an image_url key are upserted SEPARATELY: supabase-js builds the
+      // columns list from the union of row keys, so mixing them would write
+      // image_url = null for rows whose sheet cell was blank.
       const okCodes: string[] = [];
-      for (const part of chunk(valid, CHUNK)) {
-        const { error: upErr } = await supabase.from('products').upsert(part.map((v) => v.draft), { onConflict: 'code' });
-        if (!upErr) { okCodes.push(...part.map((v) => v.draft.code)); continue; }
-        for (const v of part) {
-          const { error: e2 } = await supabase.from('products').upsert(v.draft, { onConflict: 'code' });
-          if (e2) errors.push(`${v.draft.code}: ${e2.message}`); else okCodes.push(v.draft.code);
+      const { withImage, withoutImage } = splitDraftsByImagePresence(valid.map((v) => v.draft));
+      for (const partition of [withImage, withoutImage]) {
+        for (const part of chunk(partition, CHUNK)) {
+          const { error: upErr } = await supabase.from('products').upsert(part, { onConflict: 'code' });
+          if (!upErr) { okCodes.push(...part.map((d) => d.code)); continue; }
+          for (const d of part) {
+            const { error: e2 } = await supabase.from('products').upsert(d, { onConflict: 'code' });
+            if (e2) errors.push(`${d.code}: ${e2.message}`); else okCodes.push(d.code);
+          }
         }
       }
 
@@ -274,7 +280,7 @@ export default function ProductBulkBar({ onChanged }: { onChanged: () => void })
         <button type="button" onClick={downloadTemplate} disabled={!!busy} className={btn}>
           Download template
         </button>
-        <span className="text-[11px] text-ink/45">Import matches by <code className="font-mono">code</code> (adds new, updates existing).</span>
+        <span className="text-[11px] text-ink/45">Import matches by <code className="font-mono">code</code> (adds new, updates existing). Blank <code className="font-mono">Image_url</code> keeps the current image; type <code className="font-mono">CLEAR</code> to remove it.</span>
       </div>
 
       {error && (
