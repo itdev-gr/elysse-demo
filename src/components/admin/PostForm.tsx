@@ -209,7 +209,7 @@ export default function PostForm({ initial, onSaved, onCancel }: Props) {
         />
       </Field>
 
-      <Field label="Cover image" hint="JPEG, PNG, or WebP. Max 4 MB.">
+      <Field label="Cover image" hint="Recommended 1600 × 900 px (16:9 — shown cropped to this ratio). JPEG, PNG, or WebP. Max 4 MB.">
         <div className="mt-2 flex items-center gap-4">
           {previewUrl ? (
             <div className="relative w-40 aspect-video bg-surface-alt rounded overflow-hidden border border-ink/10">
