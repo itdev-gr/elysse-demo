@@ -3,14 +3,13 @@ import { supabase } from '../../lib/supabase';
 import type { Post } from '../../types/post';
 import PostForm from './PostForm';
 import FeaturedToggle from './FeaturedToggle';
+import ListFilterBar, { filterRows, type StatusFilter } from './ListFilterBar';
 import { triggerPublish } from '../../lib/publish';
 
 type Mode =
   | { kind: 'list' }
   | { kind: 'create' }
   | { kind: 'edit'; post: Post };
-
-type StatusFilter = 'all' | 'live' | 'draft';
 
 function formatDate(iso: string | null): string {
   if (!iso) return '—';
@@ -28,18 +27,10 @@ export default function PostsTab() {
   const [query, setQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('all');
 
-  const filtered = useMemo(() => {
-    if (!posts) return [];
-    const q = query.trim().toLowerCase();
-    return posts.filter((p) => {
-      if (statusFilter === 'live' && !p.is_published) return false;
-      if (statusFilter === 'draft' && p.is_published) return false;
-      if (!q) return true;
-      return [p.title, p.author, p.excerpt, p.slug].some((v) =>
-        v?.toLowerCase().includes(q),
-      );
-    });
-  }, [posts, query, statusFilter]);
+  const filtered = useMemo(
+    () => filterRows(posts, query, statusFilter, (p) => [p.title, p.author, p.excerpt, p.slug]),
+    [posts, query, statusFilter],
+  );
 
   const load = async () => {
     setError(null);
@@ -96,34 +87,15 @@ export default function PostsTab() {
             </button>
           </div>
 
-          <div className="mb-6 flex flex-wrap items-center gap-4">
-            <input
-              type="search"
-              value={query}
-              onChange={(e) => setQuery(e.currentTarget.value)}
-              placeholder="Search title, author, excerpt…"
-              className="w-full max-w-md bg-transparent border-b border-ink/25 px-1 py-2 text-sm text-ink placeholder:text-ink/40 focus:outline-none focus:border-brand-500"
-            />
-            <div className="flex items-center gap-1 border border-ink/10">
-              {(['all', 'live', 'draft'] as const).map((s) => (
-                <button
-                  key={s}
-                  type="button"
-                  onClick={() => setStatusFilter(s)}
-                  className={`px-3 py-1.5 text-[10px] uppercase tracking-[0.2em] cursor-pointer transition-colors duration-200 ${
-                    statusFilter === s ? 'bg-ink text-surface' : 'text-ink/60 hover:text-brand-500'
-                  }`}
-                >
-                  {s}
-                </button>
-              ))}
-            </div>
-            {posts && (query.trim() || statusFilter !== 'all') && (
-              <span className="text-xs text-ink/55">
-                {filtered.length} of {posts.length}
-              </span>
-            )}
-          </div>
+          <ListFilterBar
+            query={query}
+            onQueryChange={setQuery}
+            status={statusFilter}
+            onStatusChange={setStatusFilter}
+            placeholder="Search title, author, excerpt…"
+            shown={filtered.length}
+            total={posts?.length ?? null}
+          />
 
           {posts === null ? (
             <p className="text-sm text-ink/60">Loading…</p>

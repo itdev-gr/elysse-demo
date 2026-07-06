@@ -1,8 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { supabase } from '../../lib/supabase';
 import type { NewsArticle } from '../../types/news';
 import NewsForm from './NewsForm';
 import FeaturedToggle from './FeaturedToggle';
+import ListFilterBar, { filterRows, type StatusFilter } from './ListFilterBar';
 import { triggerPublish } from '../../lib/publish';
 
 type Mode =
@@ -23,6 +24,13 @@ export default function NewsTab() {
   const [items, setItems] = useState<NewsArticle[] | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [mode, setMode] = useState<Mode>({ kind: 'list' });
+  const [query, setQuery] = useState('');
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>('all');
+
+  const filtered = useMemo(
+    () => filterRows(items, query, statusFilter, (a) => [a.title, a.author, a.excerpt, a.slug]),
+    [items, query, statusFilter],
+  );
 
   const load = async () => {
     setError(null);
@@ -79,6 +87,16 @@ export default function NewsTab() {
             </button>
           </div>
 
+          <ListFilterBar
+            query={query}
+            onQueryChange={setQuery}
+            status={statusFilter}
+            onStatusChange={setStatusFilter}
+            placeholder="Search title, author, excerpt…"
+            shown={filtered.length}
+            total={items?.length ?? null}
+          />
+
           {items === null ? (
             <p className="text-sm text-ink/60">Loading…</p>
           ) : items.length === 0 ? (
@@ -97,7 +115,14 @@ export default function NewsTab() {
                   </tr>
                 </thead>
                 <tbody>
-                  {items.map((a) => {
+                  {filtered.length === 0 && (
+                    <tr>
+                      <td colSpan={6} className="px-4 py-6 text-sm text-ink/60">
+                        No articles match this filter.
+                      </td>
+                    </tr>
+                  )}
+                  {filtered.map((a) => {
                     const status = a.is_published ? 'Live' : 'Draft';
                     return (
                       <tr key={a.id} className="border-b border-ink/5 last:border-b-0">
