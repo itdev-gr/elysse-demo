@@ -35,7 +35,7 @@ export default function NavSearch() {
   // Debounced live search with a stale-response guard.
   useEffect(() => {
     const query = q.trim();
-    if (query.length < 2) { setResults([]); setOpen(false); return; }
+    if (query.length < 2) { setResults([]); setOpen(false); setFailed(false); return; }
     const id = ++seq.current;
     const t = setTimeout(async () => {
       try {
