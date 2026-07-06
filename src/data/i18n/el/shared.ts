@@ -145,6 +145,13 @@ export const shared: Record<string, string> = {
   'No results for': 'Κανένα αποτέλεσμα για',
   'Search is temporarily unavailable. Please try again.': 'Η αναζήτηση δεν είναι διαθέσιμη αυτή τη στιγμή. Δοκιμάστε ξανά.',
 
+  // /search page
+  'Search': 'Αναζήτηση',
+  'Results for': 'Αποτελέσματα για',
+  'Searching…': 'Γίνεται αναζήτηση…',
+  'Type at least 2 characters to search.': 'Πληκτρολογήστε τουλάχιστον 2 χαρακτήρες για αναζήτηση.',
+  'Search products, pages, insights…': 'Αναζήτηση σε προϊόντα, σελίδες, άρθρα…',
+
   // Search result kind labels
   'Series': 'Σειρές',
   'Pages': 'Σελίδες',

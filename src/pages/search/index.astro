@@ -1,0 +1,22 @@
+---
+/**
+ * Site search results. Static shell + a client island that reads ?q=,
+ * queries the search_site RPC + static pages index, and renders grouped
+ * results. Client-rendered so results are always live (and to keep DB
+ * content out of SSR, matching the insights pages' pattern).
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SearchResults from '../../components/search/SearchResults.tsx';
+export const prerender = true;
+---
+<BaseLayout
+  title="Search — Elysée"
+  description="Search Elysée products, categories, pages, news and insights."
+  padForHeader={false}
+>
+  <section class="pt-28 md:pt-32 pb-16 md:pb-24 px-4 md:px-8">
+    <div class="max-w-screen-lg mx-auto min-h-[60vh]">
+      <SearchResults client:load />
+    </div>
+  </section>
+</BaseLayout>
