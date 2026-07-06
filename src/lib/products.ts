@@ -3,7 +3,7 @@ import type { CatalogProduct, CategorySlug } from '../scripts/catalog/types';
 import type { Product, ProductGroup, GroupCountry, ProductDraft } from '../types/product';
 import { expandCountriesForGroups } from './product-groups';
 import { getFamilies } from './families';
-import { imagesByCode, groupImagesByFamily, type FamilyImageRow } from './family-images';
+import { imagesByCode, groupImagesByFamily, resolveSeriesImages, type FamilyImageRow, type FamilyImageEntry } from './family-images';
 import {
   configSlug,
   fetchConfigsByCategorySlug,
@@ -145,7 +145,7 @@ function configToCatalogProduct(
     pnRating: parsePnFromSubCategory(rep.sub_category),
     standards: [],
     imageUrls: [],
-    image: cardImage ?? rep.image_url ?? '', // assigned photo → gallery primary → card placeholder
+    image: cardImage ?? '', // family-gallery image (series-aware) → card placeholder
     blurb: '',
     pressure: '',
     sizeRange: '',
@@ -197,27 +197,18 @@ async function familySortMap(categorySlug: string): Promise<Map<string, number>>
 }
 
 /**
- * family_code → ordered gallery URLs (primary first) for one category.
- * product_family_images is keyed by family_id, so join through the category's
- * product_families rows. Shared by the grid and the detail page.
+ * family_code → ordered gallery entries (primary first, with series tags) for
+ * one category. product_family_images is keyed by family_id, so join through
+ * the category's product_families rows. Shared by the grid and the detail
+ * page — the family gallery is the ONLY image source for the catalog; the
+ * legacy products.image_url column is no longer read.
  */
-async function familyGalleryByCode(categorySlug: string): Promise<Map<string, string[]>> {
+async function familyGalleryByCode(categorySlug: string): Promise<Map<string, FamilyImageEntry[]>> {
   const fams = (await getFamilies({ includeHidden: true })).filter((f) => f.category_slug === categorySlug);
   const { data: imgRows } = await supabase
-    .from('product_family_images').select('id, family_id, url, sort_order')
+    .from('product_family_images').select('id, family_id, url, series, sort_order')
     .in('family_id', fams.map((f) => f.id));
   return imagesByCode(fams, groupImagesByFamily((imgRows ?? []) as FamilyImageRow[]));
-}
-
-/**
- * Grid-card image: the per-configuration assignment (products.image_url) wins,
- * the family gallery primary is the fallback — the reverse of the detail
- * page's resolveConfigImages, deliberately, so per-series card images assigned
- * in the admin keep working while a wiped/blank product URL no longer blanks
- * the card when the family has a gallery.
- */
-export function resolveCardImage(repUrl: string | null, familyImages: string[] | undefined): string {
-  return repUrl ?? familyImages?.[0] ?? '';
 }
 
 /**
@@ -234,20 +225,18 @@ export async function fetchCatalogConfigurations(categoryName: string, categoryS
   ]);
   const groups = new Map<
     string,
-    { rep: Product; countries: Set<string>; order: number; perRow: Record<string, string>; image: string | null }
+    { rep: Product; countries: Set<string>; order: number; perRow: Record<string, string> }
   >();
   for (const p of products) {
     const key = configSlug(p.sub_category, p.family_code ?? p.code);
     const countries = countriesByCode.get(p.code) ?? [];
     let g = groups.get(key);
     if (!g) {
-      g = { rep: p, countries: new Set(countries), order: p.sort_order, perRow: {}, image: p.image_url };
+      g = { rep: p, countries: new Set(countries), order: p.sort_order, perRow: {} };
       groups.set(key, g);
     } else {
       for (const c of countries) g.countries.add(c);
       if (p.sort_order < g.order) g.order = p.sort_order;
-      // First non-null image across the size rows (mirrors the detail page).
-      if (!g.image && p.image_url) g.image = p.image_url;
     }
     // Merge per-row name translations (first non-empty wins) — the fallback for
     // any configuration without a product_configurations record.
@@ -263,7 +252,9 @@ export async function fetchCatalogConfigurations(categoryName: string, categoryS
       // Same resolution as the detail page: product_configurations record wins,
       // per-row merged map is the fallback, English always present.
       const nameI18n = resolveNameI18n(derivedName, g.perRow, configRecords.get(key));
-      const cardImage = resolveCardImage(g.image, galleryByCode.get(g.rep.family_code ?? g.rep.code));
+      const cardImage = resolveSeriesImages(
+        galleryByCode.get(g.rep.family_code ?? g.rep.code), g.rep.sub_category ?? null,
+      )[0] ?? '';
       return configToCatalogProduct(g.rep, [...g.countries], categorySlug, nameI18n, cardImage);
     });
 }
@@ -332,14 +323,13 @@ export async function fetchConfigurationDetails(categoryName: string, categorySl
         subCategory: p.sub_category ?? '',
         categorySlug,
         categoryName: p.category_name ?? categoryName,
-        image: p.image_url ?? null,
+        image: null, // resolved from the family gallery below
         images: [],
         availableCountries: [],
         sizes: [],
       };
       map.set(slug, cfg);
     }
-    if (!cfg.image && p.image_url) cfg.image = p.image_url;
     // Merge in any per-language NAME translations from this row (first non-empty
     // wins) as a fallback for configurations with no record. Description
     // translations are intentionally NOT merged here — the description comes
@@ -375,13 +365,13 @@ export async function fetchConfigurationDetails(categoryName: string, categorySl
     cfg.descriptionI18n = resolveDescriptionI18n(null, {}, rec);
     cfg.description = cfg.descriptionI18n.en ?? null;
   }
-  // Attach each family's ordered images (primary first). A family shared
-  // across two series gets the same gallery.
+  // Attach each configuration's images from its family gallery, series-aware:
+  // images tagged for this configuration's series first, then the general
+  // (untagged) ones. The gallery is the ONLY image source.
   const byCode = await familyGalleryByCode(categorySlug);
   for (const cfg of map.values()) {
-    const { images, image } = resolveConfigImages(byCode.get(cfg.familyCode), cfg.image);
-    cfg.images = images;
-    cfg.image = image;
+    cfg.images = resolveSeriesImages(byCode.get(cfg.familyCode), cfg.subCategory || null);
+    cfg.image = cfg.images[0] ?? null;
   }
   // Order configurations the same way as the listing: series order, then by the
   // family code's admin-set sort_order within each series.
@@ -391,15 +381,6 @@ export async function fetchConfigurationDetails(categoryName: string, categorySl
     cfg,
   }));
   return orderConfigEntries(entries, famSort).map((e) => e.cfg);
-}
-
-/** A configuration's ordered images + primary, from its family's image list. */
-export function resolveConfigImages(
-  familyImages: string[] | undefined,
-  fallbackImage: string | null,
-): { images: string[]; image: string | null } {
-  const images = familyImages ?? [];
-  return { images, image: images[0] ?? fallbackImage };
 }
 
 /** Map a configuration to a catalogue card (for "Related products"). */

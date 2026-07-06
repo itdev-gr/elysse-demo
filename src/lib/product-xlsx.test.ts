@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { PRODUCT_COLUMNS, productToRow, rowToDraft, findDuplicateCodes, normalizeHeaderRow, HEADER_ROW, COLUMN_LABELS, CLEAR_IMAGE, splitDraftsByImagePresence, type ProductRow } from './product-xlsx';
+import { PRODUCT_COLUMNS, productToRow, rowToDraft, findDuplicateCodes, normalizeHeaderRow, HEADER_ROW, COLUMN_LABELS, type ProductRow } from './product-xlsx';
 import type { Product } from '../types/product';
 import type { ProductConfiguration } from './product-configurations';
 
@@ -86,43 +86,20 @@ describe('rowToDraft', () => {
   });
 });
 
-describe('image_url import semantics (blank = keep, CLEAR = erase)', () => {
-  it('omits the image_url key entirely for a blank cell so upserts leave it untouched', () => {
+describe('image_url is import-inert (images are family-owned)', () => {
+  it('never sets image_url on the draft — not for blank cells', () => {
     const { draft } = rowToDraft({ code: 'X', configuration: 'c', description: 'd', image_url: '' });
     expect(draft && 'image_url' in draft).toBe(false);
   });
-  it('treats a whitespace-only cell as blank', () => {
-    const { draft } = rowToDraft({ code: 'X', configuration: 'c', description: 'd', image_url: '   ' });
-    expect(draft && 'image_url' in draft).toBe(false);
-  });
-  it('maps the CLEAR sentinel to null (explicit erase)', () => {
-    const { draft } = rowToDraft({ code: 'X', configuration: 'c', description: 'd', image_url: CLEAR_IMAGE });
-    expect(draft?.image_url).toBeNull();
-  });
-  it('passes a real URL through', () => {
+  it('…and not even for a real URL in the cell', () => {
     const url = 'https://x.supabase.co/storage/v1/object/public/product-images/uploads/a.jpg';
     const { draft } = rowToDraft({ code: 'X', configuration: 'c', description: 'd', image_url: url });
-    expect(draft?.image_url).toBe(url);
+    expect(draft && 'image_url' in draft).toBe(false);
   });
-  it('round-trips an existing image through export → import unchanged', () => {
+  it('exports still carry the current image as read-only reference', () => {
     const url = 'https://x.supabase.co/storage/v1/object/public/product-images/uploads/a.jpg';
     const row = productToRow({ ...product, image_url: url }, [], null);
-    const { draft } = rowToDraft(row);
-    expect(draft?.image_url).toBe(url);
-  });
-});
-
-describe('splitDraftsByImagePresence', () => {
-  it('partitions drafts by presence of the image_url key (not by its value)', () => {
-    const a = { code: 'A', image_url: 'u' };
-    const b = { code: 'B', image_url: null };
-    const c = { code: 'C' };
-    const { withImage, withoutImage } = splitDraftsByImagePresence([a, b, c]);
-    expect(withImage).toEqual([a, b]);
-    expect(withoutImage).toEqual([c]);
-  });
-  it('handles empty input', () => {
-    expect(splitDraftsByImagePresence([])).toEqual({ withImage: [], withoutImage: [] });
+    expect(row.image_url).toBe(url);
   });
 });
 

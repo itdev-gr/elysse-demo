@@ -97,31 +97,6 @@ describe('orderConfigEntries', () => {
   });
 });
 
-import { resolveCardImage, resolveConfigImages } from './products';
-
-describe('resolveConfigImages', () => {
-  it('uses the family images and makes the first the primary', () => {
-    expect(resolveConfigImages(['p', 'a', 'b'], '/old.png')).toEqual({
-      images: ['p', 'a', 'b'], image: 'p',
-    });
-  });
-  it('falls back to the existing single image when the family has none', () => {
-    expect(resolveConfigImages(undefined, '/old.png')).toEqual({ images: [], image: '/old.png' });
-    expect(resolveConfigImages([], null)).toEqual({ images: [], image: null });
-  });
-});
-
-describe('resolveCardImage', () => {
-  // Grid semantics are the REVERSE of resolveConfigImages: the per-config
-  // assignment wins, the family gallery is only the fallback.
-  it('prefers the per-configuration product URL over the gallery', () => {
-    expect(resolveCardImage('/assigned.png', ['g1', 'g2'])).toBe('/assigned.png');
-  });
-  it('falls back to the gallery primary when the product URL is missing', () => {
-    expect(resolveCardImage(null, ['g1', 'g2'])).toBe('g1');
-  });
-  it('returns the empty string (placeholder) when neither exists', () => {
-    expect(resolveCardImage(null, undefined)).toBe('');
-    expect(resolveCardImage(null, [])).toBe('');
-  });
-});
+// Image resolution moved to resolveSeriesImages in ./family-images (the family
+// gallery is the only image source since the combined-image migration) — see
+// family-images.test.ts for its coverage.
