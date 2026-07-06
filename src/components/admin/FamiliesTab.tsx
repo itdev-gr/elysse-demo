@@ -528,7 +528,19 @@ export default function FamiliesTab() {
                                 className="text-brand-500 uppercase tracking-[0.1em]">★</button>
                             )}
                             <button type="button" aria-label="Remove"
-                              onClick={() => assignTarget && mutateImages(assignTarget, removeFamilyImage(assignImages, i))}
+                              onClick={() => {
+                                if (!assignTarget) return;
+                                const next = removeFamilyImage(assignImages, i);
+                                // Emptying the gallery also nulls the cover +
+                                // every member product's catalog image (RPC
+                                // mirror) — make that explicit.
+                                if (next.length === 0) {
+                                  const cat = catForFamily(assignTarget);
+                                  const n = cat ? (famProducts[famKey(cat, assignTarget.code)] ?? []).length : 0;
+                                  if (!confirm(`Remove the last image for No.${assignTarget.code}? This clears the catalog image for ${n ? `all ${n}` : 'all'} products of this family.`)) return;
+                                }
+                                mutateImages(assignTarget, next);
+                              }}
                               className="px-1 text-red-600">×</button>
                             <button type="button" aria-label="Move right" disabled={i === assignImages.length - 1}
                               onClick={() => assignTarget && mutateImages(assignTarget, moveFamilyImage(assignImages, i, 'right'))}

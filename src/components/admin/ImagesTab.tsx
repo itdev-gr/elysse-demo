@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { supabase } from '../../lib/supabase';
 import { triggerPublish } from '../../lib/publish';
+import { storagePathFromUrl, deleteBlockedMessage, type ImageUsage } from '../../lib/image-refs';
 import { LibraryGrid, type ProductImage } from './ImageLibraryGrid';
 
 // ─── Local types ────────────────────────────────────────────────────────────
@@ -138,8 +139,23 @@ export default function ImagesTab() {
 
   const handleDelete = async (img: ProductImage) => {
     if (!confirm(`Delete image "${img.filename}"? This cannot be undone.`)) return;
-    const { error } = await supabase.from('product_images').delete().eq('id', img.id);
+    // Reference-aware: the RPC refuses (atomically) while the URL is still used
+    // by products / family covers / family galleries — a used image can never
+    // silently vanish from the live site again.
+    const { data, error } = await supabase.rpc('delete_library_image', { p_id: img.id });
     if (error) { setLibError(error.message); return; }
+    if (!data?.deleted) {
+      if (data?.reason === 'in_use') setLibError(deleteBlockedMessage(img.filename, data as ImageUsage & typeof data));
+      else setLibError(`Could not delete "${img.filename}" (${data?.reason ?? 'unknown error'}).`);
+      return;
+    }
+    // Row is gone — remove the file too so admin is the one safe delete path.
+    // A failed removal only orphans the file (nothing references it anymore).
+    const path = storagePathFromUrl(data.url as string);
+    if (path) {
+      const { error: rmErr } = await supabase.storage.from('product-images').remove([path]);
+      if (rmErr) setLibError(`Image record deleted, but removing the file from storage failed: ${rmErr.message}`);
+    }
     await loadImages();
     triggerPublish();
   };
