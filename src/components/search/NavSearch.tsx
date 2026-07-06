@@ -17,11 +17,16 @@ export default function NavSearch() {
   const [failed, setFailed] = useState(false);
   const seq = useRef(0);
   const rootRef = useRef<HTMLFormElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   // Language: start as 'en' to match the server HTML, then apply the stored
   // choice and follow the toggle. Same pattern as MegaNav.tsx.
   useEffect(() => {
     try { setLang(localStorage.getItem('elysee.lang') || 'en'); } catch { /* keep en */ }
+    // Adopt keystrokes typed into the SSR input before hydration — the
+    // controlled value would otherwise silently discard them.
+    const domQ = inputRef.current?.value;
+    if (domQ) setQ(domQ);
   }, []);
   useEffect(() => {
     const onLang = (e: Event) => {
@@ -97,6 +102,7 @@ export default function NavSearch() {
       </svg>
 
       <input
+        ref={inputRef}
         type="search"
         name="q"
         autoComplete="off"

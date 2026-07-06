@@ -21,7 +21,10 @@ export default function SearchResults() {
 
   useEffect(() => {
     try { setLang(localStorage.getItem('elysee.lang') || 'en'); } catch { /* keep en */ }
-    setQ(new URLSearchParams(window.location.search).get('q') ?? '');
+    // Adopt keystrokes typed into the SSR input before hydration — the
+    // controlled value would otherwise silently discard them.
+    const domQ = inputRef.current?.value ?? '';
+    setQ(new URLSearchParams(window.location.search).get('q') ?? domQ);
     inputRef.current?.focus();
   }, []);
   useEffect(() => {
