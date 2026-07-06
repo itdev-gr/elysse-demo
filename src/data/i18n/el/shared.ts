@@ -9,6 +9,7 @@ export const shared: Record<string, string> = {
   'Contact': 'Επικοινωνία',
   'Home': 'Αρχική',
   'Search…': 'Αναζήτηση…',
+  'Search in category…': 'Αναζήτηση στην κατηγορία…',
   'Site search': 'Αναζήτηση στον ιστότοπο',
   'Read more': 'Διαβάστε περισσότερα',
   'Learn more': 'Μάθετε περισσότερα',

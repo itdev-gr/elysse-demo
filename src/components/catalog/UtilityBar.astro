@@ -1,4 +1,5 @@
 ---
+import { i18nAttrFor } from '../../lib/i18n';
 interface Props { count: number; category?: string; categorySlug?: string; categoryI18n?: Record<string, string>; }
 const { count, category, categorySlug, categoryI18n = {} } = Astro.props;
 ---
@@ -15,6 +16,19 @@ const { count, category, categorySlug, categoryI18n = {} } = Astro.props;
       Showing {count} of {count} products
     </p>
     <div class="flex items-center gap-3">
+      <label class="relative hidden sm:flex items-center">
+        <svg class="pointer-events-none absolute left-2 h-3 w-3 text-ink/40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="11" cy="11" r="7" />
+          <path d="m21 21-4.3-4.3" />
+        </svg>
+        <input
+          type="search"
+          data-catalog-search
+          placeholder="Search in category…"
+          data-i18n-attr={i18nAttrFor({ placeholder: 'Search in category…' })}
+          class="w-40 md:w-52 border border-ink/10 rounded-sm bg-transparent pl-7 pr-2 py-1 font-mono text-[11px] text-ink placeholder:text-ink/40 focus:outline-none focus:border-brand-500 [&::-webkit-search-cancel-button]:appearance-none"
+        />
+      </label>
       <div class="flex items-center border border-ink/10 rounded-sm overflow-hidden" role="group" aria-label="View mode">
         <button data-catalog-view="grid" class="font-mono text-[11px] px-2 py-1 bg-brand-500 text-surface" aria-pressed="true">Grid</button>
         <button data-catalog-view="list" class="font-mono text-[11px] px-2 py-1" aria-pressed="false">List</button>

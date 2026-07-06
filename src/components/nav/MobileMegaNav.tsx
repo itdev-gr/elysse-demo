@@ -160,6 +160,32 @@ export default function MobileMegaNav({ groups }: Props) {
                 </button>
               </div>
 
+              <form
+                role="search"
+                aria-label={tFor(lang, 'Site search')}
+                className="px-6 py-4 border-b border-ink/10"
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  const input = e.currentTarget.querySelector('input');
+                  const query = input?.value.trim() ?? '';
+                  if (query.length >= 2) window.location.assign(`/search?q=${encodeURIComponent(query)}`);
+                }}
+              >
+                <div className="flex items-center gap-2 border-b border-ink/20 focus-within:border-brand-500 transition-colors duration-200">
+                  <svg className="h-4 w-4 shrink-0 text-ink/50" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <circle cx="11" cy="11" r="7" />
+                    <path d="m21 21-4.3-4.3" />
+                  </svg>
+                  <input
+                    type="search"
+                    name="q"
+                    autoComplete="off"
+                    placeholder={tFor(lang, 'Search…')}
+                    className="w-full bg-transparent py-2 text-sm text-ink placeholder:text-ink/50 focus:outline-none [&::-webkit-search-cancel-button]:appearance-none"
+                  />
+                </div>
+              </form>
+
               <nav aria-label={tFor(lang, 'Mobile primary')} className="px-2 py-2">
                 <ul>
                   <li className="border-b border-ink/5">
