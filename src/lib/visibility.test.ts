@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import {
   buildVisibilityTree, triState, codesForConfig, codesForSeries, matchesQuery,
-  isZetaSeries,
+  isZetaSeries, membershipCounts,
   type VisibilityRow,
 } from './visibility';
 
@@ -59,6 +59,20 @@ describe('bulk code collection', () => {
   });
   it('codesForSeries returns every size code of the series', () => {
     expect(codesForSeries(tree[0]).sort()).toEqual(['A1', 'A2', 'B1']);
+  });
+});
+
+describe('membershipCounts', () => {
+  const members = new Map<string, Set<string>>([
+    ['Z1', new Set(['A', 'B'])],
+    ['Z2', new Set(['B'])],
+  ]);
+  it('counts members of the given group among the codes', () => {
+    expect(membershipCounts(['Z1', 'Z2', 'Z3'], members, 'A')).toEqual({ member: 1, total: 3 });
+    expect(membershipCounts(['Z1', 'Z2', 'Z3'], members, 'B')).toEqual({ member: 2, total: 3 });
+  });
+  it('handles empty code lists', () => {
+    expect(membershipCounts([], members, 'A')).toEqual({ member: 0, total: 0 });
   });
 });
 

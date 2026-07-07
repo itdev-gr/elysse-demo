@@ -107,6 +107,14 @@ export function isZetaSeries(series: string | null): boolean {
   return !!series && series.toLowerCase().includes('zeta');
 }
 
+/** How many of `codes` belong to `group`, per the memberships map. */
+export function membershipCounts(
+  codes: string[], members: Map<string, Set<string>>, group: string,
+): { member: number; total: number } {
+  const member = codes.filter((c) => members.get(c)?.has(group)).length;
+  return { member, total: codes.length };
+}
+
 /** Case-insensitive match on code, configuration name, or size text. */
 export function matchesQuery(row: VisibilityRow, q: string): boolean {
   const needle = q.trim().toLowerCase();
