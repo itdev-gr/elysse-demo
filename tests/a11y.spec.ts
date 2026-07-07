@@ -1,10 +1,9 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, type Page } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 
 const ROUTES = [
   '/',
   '/about-us/',
-  '/about-us/your-marine-energy-provider/',
   '/about-us/history/',
   '/about-us/company-structure/',
   '/about-us/vision-mission-values/',
@@ -13,8 +12,6 @@ const ROUTES = [
   '/our-services/landscape/',
   '/our-services/building-infrastructure/',
   '/our-services/industry/',
-  '/contact/',
-  '/press-room/news/',
   '/legal/privacy-policy/',
   '/green-elysee/',
   '/green-elysee/certifications/',
@@ -51,34 +48,51 @@ const ROUTES = [
   '/catalog/network-drainage/',
   '/catalog/cable-applications/',
   '/catalog/building-sewerage/',
-  '/catalog/compression-fittings/epsilon/',
-  '/catalog/compression-fittings/coupling-epsilon-pn16/',
-  '/catalog/compression-fittings/coupling-repair/',
-  '/catalog/compression-fittings/coupling-transition/',
-  '/catalog/compression-fittings/adaptor-flanged/',
-  '/catalog/saddles/single-4-bolts/',
-  '/catalog/saddles/saddle-clamp/',
-  '/catalog/valves/pvc-ball-valve/',
-  '/catalog/pvc-pressure-pipes-and-fittings/double-union-glued/',
 ];
+
+async function expectNoAxeViolations(page: Page, route: string) {
+  const results = await new AxeBuilder({ page })
+    .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])
+    .analyze();
+  if (results.violations.length) {
+    console.log(`\n=== ${route} ===`);
+    for (const v of results.violations) {
+      console.log(`  [${v.impact}] ${v.id}: ${v.help}`);
+      console.log(`    ${v.helpUrl}`);
+      for (const n of v.nodes.slice(0, 3)) {
+        console.log(`    target: ${n.target.join(' ')}`);
+      }
+    }
+  }
+  expect(results.violations, `axe violations on ${route}`).toEqual([]);
+}
 
 for (const route of ROUTES) {
   test(`a11y: ${route}`, async ({ page }) => {
     // 'load' (not 'networkidle') — robust against HMR WebSocket on the dev server.
-    await page.goto(`http://localhost:4321${route}`, { waitUntil: 'load' });
-    const results = await new AxeBuilder({ page })
-      .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])
-      .analyze();
-    if (results.violations.length) {
-      console.log(`\n=== ${route} ===`);
-      for (const v of results.violations) {
-        console.log(`  [${v.impact}] ${v.id}: ${v.help}`);
-        console.log(`    ${v.helpUrl}`);
-        for (const n of v.nodes.slice(0, 3)) {
-          console.log(`    target: ${n.target.join(' ')}`);
-        }
-      }
-    }
-    expect(results.violations, `axe violations on ${route}`).toEqual([]);
+    const resp = await page.goto(`http://localhost:4321${route}`, { waitUntil: 'load' });
+    // A dead route renders a blank 404 with zero axe violations — assert the
+    // page actually exists so removed pages fail loudly instead of silently
+    // passing (this list once carried 11 such ghosts).
+    expect(resp?.ok(), `${route} responded ${resp?.status()}`).toBeTruthy();
+    await expectNoAxeViolations(page, route);
+  });
+}
+
+// Product detail pages are DB-driven (slugs change with catalog data), so
+// resolve one real config link per category from its live listing instead of
+// hardcoding slugs that rot — same pattern as catalog-images.spec.ts.
+for (const category of ['compression-fittings', 'saddles']) {
+  test(`a11y: first product detail page under /catalog/${category}/`, async ({ page }) => {
+    await page.goto(`http://localhost:4321/catalog/${category}/`, { waitUntil: 'load' });
+    const href = await page.evaluate((cat) =>
+      Array.from(document.querySelectorAll('a'))
+        .map((a) => a.getAttribute('href') ?? '')
+        .find((h) => new RegExp(`^/catalog/${cat}/[^/?#]+/?$`).test(h)) ?? null,
+      category);
+    expect(href, `no config detail link found on /catalog/${category}/`).toBeTruthy();
+    const resp = await page.goto(`http://localhost:4321${href}`, { waitUntil: 'load' });
+    expect(resp?.ok(), `${href} responded ${resp?.status()}`).toBeTruthy();
+    await expectNoAxeViolations(page, href!);
   });
 }
