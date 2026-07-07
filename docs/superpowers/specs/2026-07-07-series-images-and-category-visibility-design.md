@@ -82,3 +82,13 @@ Optimistic UI; on error re-fetch and surface the message.
 - Per-country visibility (Groups system remains as-is).
 - Deleting products; the checklist only hides/shows.
 - Site-wide a11y color-contrast debt, stale nav specs (tracked separately).
+
+## Amendment (2026-07-07, user request after first release)
+
+Zeta series size rows additionally carry two market-group checkmarks —
+**Group A** and **Group B** (`product_group_memberships`): ticking adds the
+size to that group's countries, unticking removes it. Scoped to Zeta rows
+only (user's explicit choice over all-series or all-groups variants);
+detection is name-based (`isZetaSeries`). Groups C/D/E and all other series
+stay managed via the Country Groups tab / bulk import. Duplicate-insert
+races (23505) are treated as success.

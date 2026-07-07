@@ -97,6 +97,16 @@ export function codesForSeries(node: SeriesNode): string[] {
   return node.configs.flatMap(codesForConfig);
 }
 
+/**
+ * Zeta ("Zero-Force") series rows additionally show per-size Group A / B
+ * market checkmarks in the Visibility tab — an explicit user request
+ * (2026-07-07) scoped to Zeta only, hence the name-based detection rather
+ * than a per-category config.
+ */
+export function isZetaSeries(series: string | null): boolean {
+  return !!series && series.toLowerCase().includes('zeta');
+}
+
 /** Case-insensitive match on code, configuration name, or size text. */
 export function matchesQuery(row: VisibilityRow, q: string): boolean {
   const needle = q.trim().toLowerCase();

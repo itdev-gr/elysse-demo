@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import {
   buildVisibilityTree, triState, codesForConfig, codesForSeries, matchesQuery,
+  isZetaSeries,
   type VisibilityRow,
 } from './visibility';
 
@@ -58,6 +59,17 @@ describe('bulk code collection', () => {
   });
   it('codesForSeries returns every size code of the series', () => {
     expect(codesForSeries(tree[0]).sort()).toEqual(['A1', 'A2', 'B1']);
+  });
+});
+
+describe('isZetaSeries', () => {
+  it('matches the Zeta series name regardless of prefix/case', () => {
+    expect(isZetaSeries('ζ - Zeta Series PN 16 bar')).toBe(true);
+    expect(isZetaSeries('ZETA something')).toBe(true);
+  });
+  it('rejects other series and null', () => {
+    expect(isZetaSeries('έ - Epsilon Series PN 16 bar')).toBe(false);
+    expect(isZetaSeries(null)).toBe(false);
   });
 });
 
