@@ -13,6 +13,19 @@ export interface SkuRow {
   moq?: number | string;
   npt?: number | string;
   note?: string;
+  /** ISO codes of the countries this size is sold in (from the DB catalog's
+   *  group memberships). Absent on legacy/static rows = shown everywhere. */
+  countries?: string[];
+}
+
+/**
+ * Whether a sizes-table row should show for the visitor's country. Rows
+ * without a country list (legacy tables) and visitors who never picked a
+ * country see everything; otherwise the row must be sold in that country.
+ */
+export function skuRowVisibleFor(countries: string[] | undefined, country: string | null): boolean {
+  if (!countries || !country) return true;
+  return countries.includes(country);
 }
 
 const TABLES: Record<string, SkuRow[]> = {

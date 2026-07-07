@@ -13,13 +13,17 @@ interface Props {
 }
 const { config: c, related = [], subCategoryI18n = {} } = Astro.props;
 
-// Map each size (SKU) into the SkuTable row shape.
+// Map each size (SKU) into the SkuTable row shape. `countries` lets the
+// table hide sizes not sold in the visitor's country (per-size group
+// memberships — sibling codes of one configuration can serve different
+// markets, e.g. Zeta ...A vs ...Z variants).
 const skuRows: SkuRow[] = c.sizes.map((s) => ({
   code: s.code,
   size: s.size ?? '',
   box: s.packing_box ?? undefined,
   bag: s.packing_bag ?? undefined,
   moq: s.moq ?? undefined,
+  countries: s.countries,
 }));
 
 // Name + description are rendered in English and swapped to the visitor's
