@@ -92,3 +92,15 @@ only (user's explicit choice over all-series or all-groups variants);
 detection is name-based (`isZetaSeries`). Groups C/D/E and all other series
 stay managed via the Country Groups tab / bulk import. Duplicate-insert
 races (23505) are treated as success.
+
+### Amendment 2 (2026-07-07): group panels replace the inline marks
+
+The per-size inline A/B checkmarks were superseded the same day by two
+dedicated panels under the Zeta series — "Group A — <countries>" and
+"Group B — <countries>" (country names fetched from group_countries) — each
+listing every Zeta code with its own checkbox plus per-card and per-panel
+tri-state bulk boxes (helpers: membershipCounts). Per-GROUP granularity was
+confirmed as the intent; a per-COUNTRY variant was explicitly surfaced and
+not chosen (it would require a new public-site gating model). Live-verified:
+removing a card's sizes from Group B drops de/at/it/pl/bg/ro from its
+availableCountries in the listing JSON; restoring brings them back.

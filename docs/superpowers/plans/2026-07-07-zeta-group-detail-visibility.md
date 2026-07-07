@@ -31,7 +31,7 @@ export function membershipCounts(
 ```
 (Feeds the existing `triState(member, total)` for panel/config checkboxes.)
 
-- [ ] **Step 1: Failing tests** — append to `visibility.test.ts`:
+- [x] **Step 1: Failing tests** — append to `visibility.test.ts`:
 
 ```ts
 describe('membershipCounts', () => {
@@ -49,8 +49,8 @@ describe('membershipCounts', () => {
 });
 ```
 
-- [ ] **Step 2: Run to fail.** `npx vitest run src/lib/visibility.test.ts` → FAIL (not exported).
-- [ ] **Step 3: Implement** in `visibility.ts`:
+- [x] **Step 2: Run to fail.** `npx vitest run src/lib/visibility.test.ts` → FAIL (not exported).
+- [x] **Step 3: Implement** in `visibility.ts`:
 
 ```ts
 /** How many of `codes` belong to `group`, per the memberships map. */
@@ -62,8 +62,8 @@ export function membershipCounts(
 }
 ```
 
-- [ ] **Step 4: Run to pass**, then full `npm test`.
-- [ ] **Step 5: Commit.** `feat(admin): membershipCounts helper for Zeta group panels`
+- [x] **Step 4: Run to pass**, then full `npm test`.
+- [x] **Step 5: Commit.** `feat(admin): membershipCounts helper for Zeta group panels`
 
 ### Task 2: Group panels in VisibilityTab
 
@@ -72,8 +72,8 @@ export function membershipCounts(
 
 **Interfaces — Consumes:** `membershipCounts` (Task 1), existing `abMembers`, `TriBox`, `triState`, `codesForConfig`, `isZetaSeries`; `group_countries` rows.
 
-- [ ] **Step 1: Load group country labels.** Alongside `loadMemberships`, fetch `group_countries` (`group_code, country`, ordered) into `Record<string, string[]>` state `groupCountries`.
-- [ ] **Step 2: Bulk membership writer.**
+- [x] **Step 1: Load group country labels.** Alongside `loadMemberships`, fetch `group_countries` (`group_code, country`, ordered) into `Record<string, string[]>` state `groupCountries`.
+- [x] **Step 2: Bulk membership writer.**
 
 ```ts
 const setGroupBulk = async (codes: string[], group: string, on: boolean) => {
@@ -103,15 +103,15 @@ const setGroupBulk = async (codes: string[], group: string, on: boolean) => {
 ```
 (Single-checkbox toggles call `setGroupBulk([code], g, on)`; delete the old `setGroupMembership`.)
 
-- [ ] **Step 3: Replace the inline A/B marks with panels.** Remove the `isZetaSeries(c.series) && (...)` block from size rows and the series-header legend. After the series' config `<ul>`, when `isZetaSeries(s.series)`, render for each of `MARKET_GROUPS`: a bordered subsection with header `Group {g} — {groupCountries[g]?.join(', ')}` + panel-level TriBox (`triState(...membershipCounts(codesForSeries(s), abMembers, g))`) + count text; inside, each config as a row (config-level TriBox via `membershipCounts(codesForConfig(c), ...)` + name) with its sizes as compact checkbox chips (`checked = abMembers.get(code)?.has(g)`), all disabled while `abMembers === null`.
-- [ ] **Step 4: Verify.** `npm test`, `npx tsc --noEmit --ignoreDeprecations 6.0` (only the 2 pre-existing errors), `npm run build`.
-- [ ] **Step 5: Commit.** `feat(admin): Zeta Group A/B membership panels replace inline marks`
+- [x] **Step 3: Replace the inline A/B marks with panels.** Remove the `isZetaSeries(c.series) && (...)` block from size rows and the series-header legend. After the series' config `<ul>`, when `isZetaSeries(s.series)`, render for each of `MARKET_GROUPS`: a bordered subsection with header `Group {g} — {groupCountries[g]?.join(', ')}` + panel-level TriBox (`triState(...membershipCounts(codesForSeries(s), abMembers, g))`) + count text; inside, each config as a row (config-level TriBox via `membershipCounts(codesForConfig(c), ...)` + name) with its sizes as compact checkbox chips (`checked = abMembers.get(code)?.has(g)`), all disabled while `abMembers === null`.
+- [x] **Step 4: Verify.** `npm test`, `npx tsc --noEmit --ignoreDeprecations 6.0` (only the 2 pre-existing errors), `npm run build`.
+- [x] **Step 5: Commit.** `feat(admin): Zeta Group A/B membership panels replace inline marks`
 
 ### Task 3: Live verification + docs
 
-- [ ] **Step 1: Data loop (pattern already user-approved):** toggle ONE Zeta size's Group A membership via Management API, confirm the catalog for a Group A country drops/regains it (listing `?country=` behavior or availableCountries), restore, checker clean.
+- [x] **Step 1: Data loop (pattern already user-approved):** toggle ONE Zeta size's Group A membership via Management API, confirm the catalog for a Group A country drops/regains it (listing `?country=` behavior or availableCountries), restore, checker clean.
 - [ ] **Step 2: Push; user clicks through** the panels after deploy.
-- [ ] **Step 3:** Spec amendment note + memory update + tick this plan's boxes.
+- [x] **Step 3:** Spec amendment note + memory update + tick this plan's boxes.
 
 ## Self-Review
 
