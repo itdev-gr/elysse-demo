@@ -17,10 +17,12 @@ import FamiliesTab from './FamiliesTab';
 import GroupsTab from './GroupsTab';
 import DataErrorsTab from './DataErrorsTab';
 import ImagesTab from './ImagesTab';
+import VisibilityTab from './VisibilityTab';
 
 type Tab =
   | 'jobs' | 'posts' | 'news' | 'exhibitions' | 'media' | 'ebooks' | 'countries' | 'certs' | 'catalogues'
-  | 'products' | 'categories' | 'families' | 'groups' | 'errors' | 'messages' | 'settings' | 'images';
+  | 'products' | 'categories' | 'families' | 'groups' | 'errors' | 'messages' | 'settings' | 'images'
+  | 'visibility';
 
 const HEADINGS: Record<Tab, string> = {
   jobs: 'Jobs.',
@@ -34,6 +36,7 @@ const HEADINGS: Record<Tab, string> = {
   catalogues: 'Catalogues.',
   images: 'Images.',
   products: 'Products.',
+  visibility: 'Visibility.',
   categories: 'Categories.',
   families: 'Families.',
   groups: 'Country Groups.',
@@ -49,6 +52,7 @@ const GROUPS: { label: string; items: { id: Tab; label: string }[] }[] = [
     items: [
       { id: 'categories', label: 'Categories' },
       { id: 'products', label: 'Products' },
+      { id: 'visibility', label: 'Visibility' },
       { id: 'families', label: 'Families' },
       { id: 'groups', label: 'Country Groups' },
       { id: 'errors', label: 'Data Errors' },
@@ -188,6 +192,7 @@ export default function Dashboard() {
           {tab === 'certs' && <CertificationsTab />}
           {tab === 'catalogues' && <CataloguesTab />}
           {tab === 'products' && <ProductsTab />}
+          {tab === 'visibility' && <VisibilityTab />}
           {tab === 'categories' && <CategoriesTab />}
           {tab === 'families' && <FamiliesTab />}
           {tab === 'groups' && <GroupsTab />}
