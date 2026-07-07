@@ -78,7 +78,7 @@
 - Create: `supabase/migrations/0040_retire_image_mirror_columns.sql`
 
 - [x] **Step 1: Write the migration**: create `public._retired_image_urls` (`source text, code text, image_url text, retired_at timestamptz default now()`) populated from both tables where `image_url is not null`; RLS enabled with no policies + revoke from anon/authenticated (not readable via Data API); `alter table ... drop column if exists image_url` on both tables; `notify pgrst, 'reload schema';`
-- [ ] **Step 2: DO NOT APPLY.** Apply only after the user reviews, commits, and Vercel finishes deploying Tasks 2–3. Then re-run the Task 1 Step 3 verifications plus one product save in the admin.
+- [x] **Step 2: Applied 2026-07-07 after the Vercel deploy went live** (verified via a deleted-asset probe flipping 200→404, ~70s after push). Post-apply verification: both columns gone; `_retired_image_urls` holds exactly 2759 products + 225 family rows, RLS on, anon/authenticated denied (REST returns 401); checker runs (54 open, unchanged); `search_site` returns gallery thumbnails; PostgREST schema cache fresh (`select=image_url` → 42703 on both tables — the PGRST204 stale-cache risk for admin saves is confirmed cleared); live catalog listing renders 393 storage images and the 550F detail page shows its series-tagged primary. (A service-role write probe was denied by the permission classifier — correctly out of scope; the read-only cache probes cover the same risk.)
 
 ### Task 5: Verification
 
