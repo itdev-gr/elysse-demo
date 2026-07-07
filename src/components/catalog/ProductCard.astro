@@ -16,6 +16,8 @@ const Media = p.hasDetailPage ? 'a' : 'div';
 >
   <Media
     href={p.hasDetailPage ? detailUrl : undefined}
+    aria-hidden="true"
+    tabindex={p.hasDetailPage ? -1 : undefined}
     class="relative block aspect-square bg-surface-alt overflow-hidden"
   >
     {fallback ? (
