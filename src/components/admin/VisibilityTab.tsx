@@ -4,7 +4,7 @@ import { triggerPublish } from '../../lib/publish';
 import type { ProductCategory } from '../../lib/categories';
 import {
   buildVisibilityTree, triState, codesForConfig, codesForSeries, matchesQuery,
-  isZetaSeries,
+  isZetaSeries, membershipCounts,
   type VisibilityRow, type TriState,
 } from '../../lib/visibility';
 
@@ -44,8 +44,10 @@ export default function VisibilityTab() {
   const [cats, setCats] = useState<ProductCategory[] | null>(null);
   const [picked, setPicked] = useState<string>('');       // category slug
   const [rows, setRows] = useState<VisibilityRow[] | null>(null);
-  // code → subset of MARKET_GROUPS the size belongs to (Zeta rows only render it).
+  // code → subset of MARKET_GROUPS the size belongs to (Zeta panels render it).
   const [abMembers, setAbMembers] = useState<Map<string, Set<string>> | null>(null);
+  // group code → its country names (for the panel headers; never hardcoded).
+  const [groupCountries, setGroupCountries] = useState<Record<string, string[]>>({});
   const [query, setQuery] = useState('');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -85,28 +87,46 @@ export default function VisibilityTab() {
     setAbMembers(mem);
   };
 
-  useEffect(() => { void loadMemberships(); }, []);
+  useEffect(() => {
+    void loadMemberships();
+    void (async () => {
+      const { data } = await supabase
+        .from('group_countries').select('group_code, country')
+        .order('group_code').order('country');
+      const byGroup: Record<string, string[]> = {};
+      for (const r of (data ?? []) as { group_code: string; country: string }[]) {
+        (byGroup[r.group_code] ??= []).push(r.country);
+      }
+      setGroupCountries(byGroup);
+    })();
+  }, []);
 
-  // Tick/untick a Zeta size's membership in market group A or B.
-  const setGroupMembership = async (code: string, group: string, on: boolean) => {
-    if (busy || !abMembers) return;
+  // Tick/untick a set of Zeta codes' membership in market group A or B.
+  // Upsert with ignoreDuplicates rides the (product_code, group_code) PK, so
+  // repeated ticks and double-click races are no-ops rather than errors.
+  const setGroupBulk = async (codes: string[], group: string, on: boolean) => {
+    if (!codes.length || busy || !abMembers) return;
     setBusy(true); setError(null);
     const next = new Map(abMembers);
-    const set = new Set(next.get(code) ?? []);
-    if (on) set.add(group); else set.delete(group);
-    next.set(code, set);
+    for (const c of codes) {
+      const set = new Set(next.get(c) ?? []);
+      if (on) set.add(group); else set.delete(group);
+      next.set(c, set);
+    }
     setAbMembers(next);
-    const { error: err } = on
-      ? await supabase.from('product_group_memberships')
-          .insert({ product_code: code, group_code: group })
-      : await supabase.from('product_group_memberships')
-          .delete().eq('product_code', code).eq('group_code', group);
-    // 23505 = already a member (double click raced) — the desired state holds.
-    if (err && err.code !== '23505') {
-      setError(`Save failed: ${err.message} — group list reloaded.`);
-      await loadMemberships();
-      setBusy(false);
-      return;
+    for (const part of chunk(codes, CHUNK)) {
+      const { error: err } = on
+        ? await supabase.from('product_group_memberships').upsert(
+            part.map((product_code) => ({ product_code, group_code: group })),
+            { onConflict: 'product_code,group_code', ignoreDuplicates: true })
+        : await supabase.from('product_group_memberships')
+            .delete().in('product_code', part).eq('group_code', group);
+      if (err) {
+        setError(`Save failed: ${err.message} — group list reloaded.`);
+        await loadMemberships();
+        setBusy(false);
+        return;
+      }
     }
     setBusy(false);
     triggerPublish();
@@ -223,11 +243,6 @@ export default function VisibilityTab() {
                   />
                   <h3 className="font-heavy text-base text-ink">{s.series ?? 'No series'}</h3>
                   <span className="text-[11px] text-ink/45">{s.visible}/{s.total} visible</span>
-                  {isZetaSeries(s.series) && (
-                    <span className="ml-auto text-[10px] uppercase tracking-[0.15em] text-ink/45">
-                      A / B = market groups (Country Groups tab)
-                    </span>
-                  )}
                 </header>
 
                 <ul className="flex flex-col gap-3">
@@ -259,29 +274,6 @@ export default function VisibilityTab() {
                               />
                               <span className="font-mono text-xs text-ink/70">{z.code}</span>
                               {z.size && <span className="text-xs text-ink/50 truncate">{z.size}</span>}
-                              {isZetaSeries(c.series) && (
-                                <span className="ml-auto flex items-center gap-2 shrink-0">
-                                  {MARKET_GROUPS.map((g) => (
-                                    <label
-                                      key={g}
-                                      title={`Show ${z.code} for Group ${g} countries`}
-                                      className="flex items-center gap-1 text-[10px] uppercase tracking-[0.15em] text-ink/60"
-                                    >
-                                      <input
-                                        type="checkbox"
-                                        aria-label={`${z.code} in Group ${g}`}
-                                        checked={abMembers?.get(z.code)?.has(g) ?? false}
-                                        disabled={abMembers === null}
-                                        onChange={() =>
-                                          setGroupMembership(z.code, g, !(abMembers?.get(z.code)?.has(g) ?? false))
-                                        }
-                                        className="h-3.5 w-3.5 accent-brand-500"
-                                      />
-                                      {g}
-                                    </label>
-                                  ))}
-                                </span>
-                              )}
                             </li>
                           ))}
                         </ul>
@@ -289,6 +281,76 @@ export default function VisibilityTab() {
                     );
                   })}
                 </ul>
+
+                {/* Zeta market panels: tick a code under a group = visible in
+                    that group's countries (product_group_memberships). */}
+                {isZetaSeries(s.series) && MARKET_GROUPS.map((g) => {
+                  const gCounts = membershipCounts(codesForSeries(s), abMembers ?? new Map(), g);
+                  const gState = triState(gCounts.member, gCounts.total);
+                  return (
+                    <div key={g} className="mt-4 border border-ink/10 rounded-md p-4">
+                      <header className="flex flex-wrap items-center gap-3 border-b border-ink/10 pb-2 mb-3">
+                        <TriBox
+                          state={gState}
+                          onChange={() => setGroupBulk(codesForSeries(s), g, gState !== 'all')}
+                          label={`Toggle every ${s.series} code for Group ${g}`}
+                        />
+                        <h4 className="font-heavy text-sm text-ink">Group {g}</h4>
+                        <span className="text-[11px] text-ink/50">
+                          {(groupCountries[g] ?? []).join(', ') || '—'}
+                        </span>
+                        <span className="ml-auto text-[11px] text-ink/45">
+                          {gCounts.member}/{gCounts.total} codes in this market
+                        </span>
+                      </header>
+                      <ul className="flex flex-col gap-2">
+                        {s.configs.map((c) => {
+                          const cCounts = membershipCounts(codesForConfig(c), abMembers ?? new Map(), g);
+                          const cState = triState(cCounts.member, cCounts.total);
+                          return (
+                            <li key={c.key}>
+                              <div className="flex items-center gap-2.5">
+                                <TriBox
+                                  state={cState}
+                                  onChange={() => setGroupBulk(codesForConfig(c), g, cState !== 'all')}
+                                  label={`Toggle every size of ${c.name} for Group ${g}`}
+                                />
+                                <span className="text-sm text-ink">{c.name}</span>
+                                {c.familyCode && (
+                                  <span className="font-mono text-[11px] text-ink/45">No.{c.familyCode}</span>
+                                )}
+                                <span className="text-[11px] text-ink/45">{cCounts.member}/{cCounts.total}</span>
+                              </div>
+                              <ul className="mt-1 ml-6 flex flex-wrap gap-x-4 gap-y-0.5">
+                                {c.sizes.map((z) => {
+                                  const on = abMembers?.get(z.code)?.has(g) ?? false;
+                                  return (
+                                    <li key={z.code}>
+                                      <label
+                                        title={`Show ${z.code} for Group ${g} countries`}
+                                        className={`flex items-center gap-1.5 text-xs ${on ? 'text-ink/80' : 'text-ink/45'}`}
+                                      >
+                                        <input
+                                          type="checkbox"
+                                          aria-label={`${z.code} in Group ${g}`}
+                                          checked={on}
+                                          disabled={abMembers === null}
+                                          onChange={() => setGroupBulk([z.code], g, !on)}
+                                          className="h-3.5 w-3.5 accent-brand-500"
+                                        />
+                                        <span className="font-mono">{z.code}</span>
+                                      </label>
+                                    </li>
+                                  );
+                                })}
+                              </ul>
+                            </li>
+                          );
+                        })}
+                      </ul>
+                    </div>
+                  );
+                })}
               </section>
             );
           })}
