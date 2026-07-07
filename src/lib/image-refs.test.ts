@@ -22,21 +22,13 @@ describe('storagePathFromUrl', () => {
 });
 
 describe('deleteBlockedMessage', () => {
-  it('lists every non-zero usage with correct pluralisation', () => {
-    const msg = deleteBlockedMessage('370t.jpg', {
-      products: 23, family_mirrors: 1, gallery_rows: 1, families: ['370T'],
-    });
+  it('names the blocking galleries with correct pluralisation', () => {
+    const msg = deleteBlockedMessage('370t.jpg', { gallery_rows: 1, families: ['370T'] });
     expect(msg).toContain('"370t.jpg"');
-    expect(msg).toContain('23 products');
-    expect(msg).toContain('1 family cover');
     expect(msg).toContain('1 family gallery image (families: 370T)');
   });
-  it('omits zero-count parts', () => {
-    const msg = deleteBlockedMessage('a.jpg', {
-      products: 1, family_mirrors: 0, gallery_rows: 0, families: [],
-    });
-    expect(msg).toContain('1 product');
-    expect(msg).not.toContain('family cover');
-    expect(msg).not.toContain('gallery image');
+  it('pluralises and lists multiple families', () => {
+    const msg = deleteBlockedMessage('a.jpg', { gallery_rows: 3, families: ['330', '370T'] });
+    expect(msg).toContain('3 family gallery images (families: 330, 370T)');
   });
 });

@@ -4,7 +4,6 @@ export interface ProductFamily {
   id: string;
   category_slug: string;
   code: string;             // matches products.family_code (e.g. '330', '330T')
-  image_url: string | null;
   sort_order: number;
   is_active: boolean;
 }

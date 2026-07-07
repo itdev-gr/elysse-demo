@@ -200,8 +200,8 @@ async function familySortMap(categorySlug: string): Promise<Map<string, number>>
  * family_code → ordered gallery entries (primary first, with series tags) for
  * one category. product_family_images is keyed by family_id, so join through
  * the category's product_families rows. Shared by the grid and the detail
- * page — the family gallery is the ONLY image source for the catalog; the
- * legacy products.image_url column is no longer read.
+ * page — the family gallery is the ONLY image source for the catalog (the
+ * legacy per-row image columns were retired in migrations 0039/0040).
  */
 async function familyGalleryByCode(categorySlug: string): Promise<Map<string, FamilyImageEntry[]>> {
   const fams = (await getFamilies({ includeHidden: true })).filter((f) => f.category_slug === categorySlug);

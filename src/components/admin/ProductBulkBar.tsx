@@ -142,8 +142,8 @@ export default function ProductBulkBar({ onChanged }: { onChanged: () => void })
       });
 
       // Upsert products in chunks; on a chunk failure, retry that chunk row-by-row
-      // so one bad row doesn't reject the whole batch. Drafts never carry
-      // image_url (images are family-owned), so the column is never touched.
+      // so one bad row doesn't reject the whole batch. Drafts carry no image
+      // links — images are family-owned (product_family_images).
       const okCodes: string[] = [];
       for (const part of chunk(valid.map((v) => v.draft), CHUNK)) {
         const { error: upErr } = await supabase.from('products').upsert(part, { onConflict: 'code' });

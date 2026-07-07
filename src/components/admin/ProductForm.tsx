@@ -17,7 +17,7 @@ const I18N_LANGS: { code: string; label: string }[] = [
 const EMPTY: ProductDraft = {
   code: '', category: null, category_name: null, sub_category: null, family_code: null,
   configuration: null, size: null, packing_bag: null, packing_box: null, moq: null,
-  box_size: null, description: null, name_i18n: {}, description_i18n: {}, image_url: null,
+  box_size: null, description: null, name_i18n: {}, description_i18n: {},
   sort_order: 0, is_active: true, is_hidden: false,
 };
 
@@ -32,8 +32,8 @@ export default function ProductForm({ initial, onDone, onCancel }:
   // products yet are still selectable here), keyed by the Excel category name.
   const [managedSubs, setManagedSubs] = useState<{ category_name: string; sub_category: string }[]>([]);
   // Managed family codes from product_families (likewise selectable before any
-  // product uses them), each carrying the image allocated to that code.
-  const [managedFamilies, setManagedFamilies] = useState<{ category_name: string; code: string; image_url: string | null }[]>([]);
+  // product uses them).
+  const [managedFamilies, setManagedFamilies] = useState<{ category_name: string; code: string }[]>([]);
   // Product-level translations (product_configurations), edited here but shared
   // by every size of this configuration.
   const [cfgTr, setCfgTr] = useState<ConfigTranslations>({ name: '', description: '', name_i18n: {}, description_i18n: {} });
@@ -80,7 +80,7 @@ export default function ProductForm({ initial, onDone, onCancel }:
       const [{ data: pcats }, { data: psubs }, { data: pfams }] = await Promise.all([
         supabase.from('product_categories').select('slug, product_category_name, category_letter'),
         supabase.from('product_subcategories').select('category_slug, name').eq('is_active', true),
-        supabase.from('product_families').select('category_slug, code, image_url').eq('is_active', true),
+        supabase.from('product_families').select('category_slug, code').eq('is_active', true),
       ]);
       const pcatRows = (pcats ?? []) as { slug: string; product_category_name: string | null; category_letter: string | null }[];
       const nameBySlug = new Map(pcatRows.map((c) => [c.slug, c.product_category_name]));
@@ -104,9 +104,9 @@ export default function ProductForm({ initial, onDone, onCancel }:
           .filter((x): x is { category_name: string; sub_category: string } => !!x.category_name),
       );
       setManagedFamilies(
-        ((pfams ?? []) as { category_slug: string; code: string; image_url: string | null }[])
-          .map((f) => ({ category_name: nameBySlug.get(f.category_slug) ?? null, code: f.code, image_url: f.image_url }))
-          .filter((x): x is { category_name: string; code: string; image_url: string | null } => !!x.category_name),
+        ((pfams ?? []) as { category_slug: string; code: string }[])
+          .map((f) => ({ category_name: nameBySlug.get(f.category_slug) ?? null, code: f.code }))
+          .filter((x): x is { category_name: string; code: string } => !!x.category_name),
       );
     })();
   }, []);
@@ -232,16 +232,10 @@ export default function ProductForm({ initial, onDone, onCancel }:
       .map((m) => m.code),
   );
 
-  // Pick a family code; if that code has an allocated image and the draft has
-  // none yet, default the product's image to it.
+  // Pick a family code. Images are family-owned (Families tab → Manage
+  // images) — the product row carries no image link of its own.
   const pickFamilyCode = (v: string | null) =>
-    setD((p) => {
-      const fam = v
-        ? managedFamilies.find((m) => m.code === v && (!p.category_name || m.category_name === p.category_name))
-        : undefined;
-      const image_url = fam?.image_url && !p.image_url ? fam.image_url : p.image_url;
-      return { ...p, family_code: v, image_url };
-    });
+    setD((p) => ({ ...p, family_code: v }));
 
   // Pick a category name: auto-fill its letter and reset the dependent fields.
   const pickCategory = (v: string | null) =>

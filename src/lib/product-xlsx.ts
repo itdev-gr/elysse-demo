@@ -6,8 +6,9 @@ export const I18N_LANGS = ['el', 'de', 'es', 'fr'] as const;
 
 /**
  * Images are family-owned (product_family_images, managed in the Families
- * tab) — the importer NEVER writes products.image_url. The Image_url column
- * remains in exports as read-only reference only.
+ * tab) — product rows carry no image links, so the sheet has no image column.
+ * Old exports that still contain an Image_url column import fine: unknown
+ * headers are dropped by normalizeHeaderRow.
  */
 
 /**
@@ -51,7 +52,6 @@ export const PRODUCT_COLUMNS = [
   'description',
   'packing_bag', 'packing_box', 'moq', 'box_size',
   'groups',
-  'image_url',
   'is_active',
   'is_hidden',
   'sort_order',
@@ -90,7 +90,6 @@ export const COLUMN_LABELS: Record<string, string> = {
   moq: 'MOQ',
   box_size: 'Box_Size',
   groups: 'Country Groups',
-  image_url: 'Image_url',
   is_active: 'Is_Active',
   is_hidden: 'Is_Hidden',
   sort_order: 'Sort_Order',
@@ -204,7 +203,6 @@ export function productToRow(
     description: p.description ?? '',
     packing_bag: p.packing_bag ?? '', packing_box: p.packing_box ?? '', moq: p.moq ?? '', box_size: p.box_size ?? '',
     groups: groupCodes.join(','),
-    image_url: p.image_url ?? '',
     is_active: p.is_active ? 'TRUE' : 'FALSE',
     is_hidden: p.is_hidden ? 'TRUE' : 'FALSE',
     sort_order: p.sort_order ?? 0,
@@ -301,7 +299,6 @@ export function templateExampleRow(): ProductRow {
     description: 'Male threaded adaptor for PE pipe.',
     packing_bag: 25, packing_box: 750, moq: 25, box_size: '',
     groups: 'A,B,C',
-    image_url: '',
     is_active: 'TRUE',
     is_hidden: 'FALSE',
     sort_order: 1,

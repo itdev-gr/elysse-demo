@@ -485,7 +485,7 @@ export default function FamiliesTab() {
                         const sf = series ? f.perSeries.get(series) : undefined;
                         const count = sf?.count ?? f.count;
                         const configuration = sf?.configuration ?? f.configuration;
-                        const thumb = primaryByFam[fam.id] ?? fam.image_url;
+                        const thumb = primaryByFam[fam.id] ?? null;
                         return (
                           <li key={fam.id} className={`flex items-center gap-3 text-sm border-b border-ink/5 py-1.5 ${fam.is_active ? '' : 'opacity-60'}`}>
                             <label className="flex items-center gap-1 shrink-0" title="Display order within this series (lower shows first)">

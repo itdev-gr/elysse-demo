@@ -1,13 +1,10 @@
 ---
 import type { CatalogProduct } from '~/scripts/catalog/types';
-import { imagesForProduct } from '~/scripts/catalog/per-country-images';
 
 interface Props { product: CatalogProduct; }
 const { product: p } = Astro.props;
 
 const fallback = p.imageUrls[0] ?? p.image ?? '';
-const perCountry = imagesForProduct(p.slug);
-const perCountryEntries = perCountry ? Object.entries(perCountry) : [];
 const detailUrl = `/catalog/${p.categorySlug}/${p.slug}`;
 const Media = p.hasDetailPage ? 'a' : 'div';
 ---
@@ -21,12 +18,7 @@ const Media = p.hasDetailPage ? 'a' : 'div';
     href={p.hasDetailPage ? detailUrl : undefined}
     class="relative block aspect-square bg-surface-alt overflow-hidden"
   >
-    {perCountryEntries.length > 0 ? (
-      perCountryEntries.map(([code, url]) => (
-        <img src={url} data-for-country={code} alt={p.name} loading="lazy" width="320" height="320"
-          class="absolute inset-0 w-full h-full object-contain p-5 transition-transform duration-300 ease-out group-hover:scale-[1.03]" />
-      ))
-    ) : fallback ? (
+    {fallback ? (
       <img src={fallback} alt={p.name} loading="lazy" width="320" height="320"
         class="absolute inset-0 w-full h-full object-contain p-5 transition-transform duration-300 ease-out group-hover:scale-[1.03]" />
     ) : (

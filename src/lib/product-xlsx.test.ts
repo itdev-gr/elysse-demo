@@ -8,7 +8,7 @@ const product: Product = {
   sub_category: 'Epsilon Series PN 16 bar', family_code: '330', configuration: 'Adaptor Male',
   size: '16 x ⅜"', packing_bag: 25, packing_box: 750, moq: 0, box_size: 'L',
   description: 'Adaptor Male Epsilon Series PN16 - 16 x ⅜"',
-  name_i18n: { el: 'legacy — ignored' }, description_i18n: null, image_url: null, sort_order: 1,
+  name_i18n: { el: 'legacy — ignored' }, description_i18n: null, sort_order: 1,
   is_active: true, is_hidden: true, created_at: '', updated_at: '',
 };
 
@@ -86,7 +86,7 @@ describe('rowToDraft', () => {
   });
 });
 
-describe('image_url is import-inert (images are family-owned)', () => {
+describe('image columns are retired (images are family-owned)', () => {
   it('never sets image_url on the draft — not for blank cells', () => {
     const { draft } = rowToDraft({ code: 'X', configuration: 'c', description: 'd', image_url: '' });
     expect(draft && 'image_url' in draft).toBe(false);
@@ -96,10 +96,15 @@ describe('image_url is import-inert (images are family-owned)', () => {
     const { draft } = rowToDraft({ code: 'X', configuration: 'c', description: 'd', image_url: url });
     expect(draft && 'image_url' in draft).toBe(false);
   });
-  it('exports still carry the current image as read-only reference', () => {
-    const url = 'https://x.supabase.co/storage/v1/object/public/product-images/uploads/a.jpg';
-    const row = productToRow({ ...product, image_url: url }, [], null);
-    expect(row.image_url).toBe(url);
+  it('an old export with an Image_url header still normalizes (column dropped)', () => {
+    const normalized = normalizeHeaderRow({ 'Primary Code': 'X', Image_url: 'ignored.jpg' });
+    expect(normalized.code).toBe('X');
+    expect('image_url' in normalized).toBe(false);
+  });
+  it('exports carry no image column', () => {
+    const row = productToRow(product, [], null);
+    expect('image_url' in row).toBe(false);
+    expect(HEADER_ROW).not.toContain('Image_url');
   });
 });
 

@@ -5,8 +5,6 @@
 
 /** Usage counts returned by the delete_library_image RPC when it refuses. */
 export interface ImageUsage {
-  products: number;
-  family_mirrors: number;
   gallery_rows: number;
   families: string[];
 }
@@ -32,14 +30,8 @@ export function storagePathFromUrl(url: string): string | null {
 
 /** Human message for a blocked delete, listing what still uses the image. */
 export function deleteBlockedMessage(filename: string, usage: ImageUsage): string {
-  const parts: string[] = [];
-  if (usage.products > 0) parts.push(`${usage.products} product${usage.products === 1 ? '' : 's'}`);
-  if (usage.family_mirrors > 0) parts.push(`${usage.family_mirrors} family cover${usage.family_mirrors === 1 ? '' : 's'}`);
-  if (usage.gallery_rows > 0) {
-    const fams = usage.families.length ? ` (families: ${usage.families.join(', ')})` : '';
-    parts.push(`${usage.gallery_rows} family gallery image${usage.gallery_rows === 1 ? '' : 's'}${fams}`);
-  }
-  return `Cannot delete "${filename}" — still used by ${parts.join(', ')}. ` +
-    'Remove it from the family galleries first (Families tab → Manage images). ' +
-    'Legacy per-product references can only be cleared in the product form until the image-column retirement.';
+  const fams = usage.families.length ? ` (families: ${usage.families.join(', ')})` : '';
+  const used = `${usage.gallery_rows} family gallery image${usage.gallery_rows === 1 ? '' : 's'}${fams}`;
+  return `Cannot delete "${filename}" — still used by ${used}. ` +
+    'Remove it from the family galleries first (Families tab → Manage images).';
 }

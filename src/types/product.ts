@@ -17,7 +17,6 @@ export interface Product {
   // `configuration` / `description` columns and is the fallback.
   name_i18n: Record<string, string> | null;
   description_i18n: Record<string, string> | null;
-  image_url: string | null;
   sort_order: number;
   is_active: boolean;
   // Hidden rows are removed from BOTH the public catalog and the admin list
@@ -26,13 +25,9 @@ export interface Product {
   created_at: string;
   updated_at: string;
 }
-// `image_url` is optional and VESTIGIAL: the site renders from the family
-// galleries (product_family_images) only. The bulk importer never sets it;
-// only the single-product form still writes it, until the column-retirement
-// migration drops it.
-export type ProductDraft = Omit<Product, 'created_at' | 'updated_at' | 'image_url'> & {
-  image_url?: string | null;
-};
+// Images live ONLY in the family galleries (product_family_images) — product
+// rows carry no image links (columns retired in migrations 0039/0040).
+export type ProductDraft = Omit<Product, 'created_at' | 'updated_at'>;
 
 export interface ProductGroup {
   code: string;                   // 'A'..'E'
