@@ -84,7 +84,7 @@ const productsJson = JSON.stringify(products);
       {isEmpty ? (
         <div class="grid grid-cols-12 gap-6 py-6">
           <aside class="col-span-12 md:col-span-3">
-            <div class="md:sticky md:top-24">
+            <div class="md:sticky md:top-24 md:max-h-[calc(100vh-7rem)] md:overflow-y-auto md:overscroll-y-contain md:pb-4">
               <CategoriesNav active={category} subCategories={series} subCategoryI18n={seriesI18n} />
             </div>
           </aside>
@@ -97,7 +97,7 @@ const productsJson = JSON.stringify(products);
       ) : (
         <div class="grid grid-cols-12 gap-6 py-6">
           <aside class="col-span-12 md:col-span-3">
-            <div class="md:sticky md:top-24">
+            <div class="md:sticky md:top-24 md:max-h-[calc(100vh-7rem)] md:overflow-y-auto md:overscroll-y-contain md:pb-4">
               <CategoriesNav active={category} subCategories={series} subCategoryI18n={seriesI18n} />
             </div>
           </aside>
