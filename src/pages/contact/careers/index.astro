@@ -176,9 +176,9 @@ const contactLines = (callout?.body ?? '').split('\n').map((l) => {
             {contactLines.map((line) => {
               const isFullWidth = line.label.toLowerCase() === 'address';
               const k = line.label.toLowerCase();
-              const isLink = k === 'phone' || k === 'email' || k === 'website';
+              const isLink = k === 'phone' || k === 'tel' || k === 'email' || k === 'website';
               const href =
-                k === 'phone' ? `tel:${line.value.replace(/[^+\d]/g, '')}` :
+                k === 'phone' || k === 'tel' ? `tel:${line.value.replace(/[^+\d]/g, '')}` :
                 k === 'email' ? `mailto:${line.value}` :
                 k === 'website' ? `https://${line.value.replace(/^https?:\/\//, '')}` :
                 undefined;
