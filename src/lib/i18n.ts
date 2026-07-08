@@ -1,8 +1,13 @@
 import { EL } from '../data/i18n/el';
+import { DE } from '../data/i18n/de';
+import { ES } from '../data/i18n/es';
+import { FR } from '../data/i18n/fr';
 
 /** Languages that receive a client-side swap. English is the in-DOM base/fallback. */
-export const I18N_LOCALES = ['el'] as const;
+export const I18N_LOCALES = ['el', 'de', 'es', 'fr'] as const;
 export type I18nLocale = (typeof I18N_LOCALES)[number];
+
+const DICTS: Record<I18nLocale, Record<string, string>> = { el: EL, de: DE, es: ES, fr: FR };
 
 /**
  * Build the `data-i18n` value for a text node: a JSON map of the available
@@ -11,8 +16,10 @@ export type I18nLocale = (typeof I18N_LOCALES)[number];
  */
 export function i18nAttr(en: string): string | undefined {
   const out: Record<string, string> = {};
-  const el = EL[en];
-  if (el && el.trim()) out.el = el;
+  for (const locale of I18N_LOCALES) {
+    const t = DICTS[locale][en];
+    if (t && t.trim()) out[locale] = t;
+  }
   return Object.keys(out).length ? JSON.stringify(out) : undefined;
 }
 
@@ -24,8 +31,12 @@ export function i18nAttr(en: string): string | undefined {
 export function i18nAttrFor(attrs: Record<string, string>): string | undefined {
   const out: Record<string, Record<string, string>> = {};
   for (const [attr, en] of Object.entries(attrs)) {
-    const el = EL[en];
-    if (el && el.trim()) out[attr] = { el };
+    const langs: Record<string, string> = {};
+    for (const locale of I18N_LOCALES) {
+      const t = DICTS[locale][en];
+      if (t && t.trim()) langs[locale] = t;
+    }
+    if (Object.keys(langs).length) out[attr] = langs;
   }
   return Object.keys(out).length ? JSON.stringify(out) : undefined;
 }
@@ -43,8 +54,9 @@ export function missingGreek(strings: string[]): string[] {
  * mismatches that reverted the nav to English for Greek visitors.
  */
 export function tFor(lang: string, en: string): string {
-  if (lang === 'el') {
-    const t = EL[en];
+  const dict = DICTS[lang as I18nLocale];
+  if (dict) {
+    const t = dict[en];
     if (t && t.trim()) return t;
   }
   return en;

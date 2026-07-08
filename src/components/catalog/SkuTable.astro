@@ -1,5 +1,6 @@
 ---
 import type { SkuRow } from '~/scripts/catalog/sku-tables';
+import { i18nAttr } from '~/lib/i18n';
 interface Props {
   rows: SkuRow[];
   title?: string;
@@ -19,21 +20,21 @@ function display(v: number | string | undefined): string {
 ---
 {rows.length > 0 && (
   <section class="sku-table-wrap mt-2">
-    {title && <h3 class="font-mono text-[11px] uppercase tracking-wider text-ink/70 mb-2">{title}</h3>}
+    {title && <h3 class="font-mono text-[11px] uppercase tracking-wider text-ink/70 mb-2" data-i18n={i18nAttr(title)}>{title}</h3>}
     <div class="overflow-x-auto border border-ink/10 rounded-md">
       <table class="sku-table w-full text-sm">
         <thead>
           <tr>
-            <th rowspan="2" class="px-3 py-2 text-center">Code</th>
-            <th rowspan="2" class="px-3 py-2 text-center">Size</th>
-            <th colspan="2" class="px-3 py-1 text-center border-b border-white/30">Packing (pcs)</th>
+            <th rowspan="2" class="px-3 py-2 text-center" data-i18n={i18nAttr('Code')}>Code</th>
+            <th rowspan="2" class="px-3 py-2 text-center" data-i18n={i18nAttr('Characteristics')}>Characteristics</th>
+            <th colspan="2" class="px-3 py-1 text-center border-b border-white/30" data-i18n={i18nAttr('Packing (pcs)')}>Packing (pcs)</th>
             {hasMoq && <th rowspan="2" class="px-3 py-2 text-center">MOQ</th>}
             {hasNpt && <th rowspan="2" class="px-3 py-2 text-center">NPT</th>}
             {hasNote && <th rowspan="2" class="px-3 py-2 text-center">Note</th>}
           </tr>
           <tr>
-            <th class="px-3 py-1 text-center font-normal">Bag</th>
-            <th class="px-3 py-1 text-center font-normal">Box</th>
+            <th class="px-3 py-1 text-center font-normal" data-i18n={i18nAttr('Bag')}>Bag</th>
+            <th class="px-3 py-1 text-center font-normal" data-i18n={i18nAttr('Box')}>Box</th>
           </tr>
         </thead>
         <tbody>
