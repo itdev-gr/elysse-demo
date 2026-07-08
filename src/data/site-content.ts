@@ -1822,7 +1822,7 @@ export const contactCareers: ContentPage = {
       kind: 'callout',
       title: 'How to apply',
       body:
-        'Address: 5 Pentadaktylou Street, 2643 Ergates Industrial Area, Nicosia, Cyprus\nTel: +357 22 455 000\nFax: +357 22 455 055',
+        'Address: 5 Pentadaktylou Street, 2643 Ergates Industrial Area, Nicosia, Cyprus\nTel: +357 22 455 000\nFax: +357 22 455 055\nEmail: recruitment@elysee.com.cy',
     },
   ],
 };
