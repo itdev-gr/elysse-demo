@@ -14,10 +14,6 @@ import type { ImageMetadata } from 'astro';
 
 // Hero images — one per page (where the source has a clear hero asset).
 import heroHome from '../assets/images/ocean-1440x900.jpg';
-import heroFuelProducts from '../assets/images/shutterstock-377226832-fuel-products.jpg';
-import heroLandscape from '../assets/images/shutterstock-1007620258-scaled.jpg';
-import heroAlternativeFuels from '../assets/images/green-hydrogen-shutterstock-1938738706.jpg';
-import heroAdvisoryServices from '../assets/images/shutterstock-377226832-advisory-services.jpg';
 import heroPrivacy from '../assets/images/shutterstock-377226832-privacy-policy.jpg';
 
 // Section/article images.
@@ -311,7 +307,7 @@ export const agriculturePage: PageContent = {
     eyebrow: 'Our Services',
     headline: 'Agriculture',
     sub: 'A reliable supplier of irrigation systems from the pump to the plant. Main, sub-main and laterals.',
-    image: heroFuelProducts,
+    image: imgServiceAgriculture,
   },
   sections: [
     {
@@ -340,7 +336,7 @@ export const landscapePage: PageContent = {
     eyebrow: 'Our Services',
     headline: 'Landscape',
     sub: 'Specialist support for parks, campuses, and grounds — irrigation, turf, and ongoing care.',
-    image: heroLandscape,
+    image: imgServiceLandscape,
   },
   sections: [
     {
@@ -369,7 +365,7 @@ export const buildingInfrastructurePage: PageContent = {
     eyebrow: 'Our Services',
     headline: 'Building & Infrastructure',
     sub: 'Pipe and fitting systems for water supply, sewerage and drainage on construction projects of every scale.',
-    image: heroAlternativeFuels,
+    image: imgServiceBuilding,
   },
   sections: [
     {
@@ -398,7 +394,7 @@ export const industryPage: PageContent = {
     eyebrow: 'Our Services',
     headline: 'Industry',
     sub: 'Industrial-grade plastic piping, valves, and fittings engineered for plant uptime and regulatory compliance.',
-    image: heroAdvisoryServices,
+    image: imgServiceIndustry,
   },
   sections: [
     {
