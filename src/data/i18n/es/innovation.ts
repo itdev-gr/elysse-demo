@@ -157,4 +157,17 @@ export const innovation: Record<string, string> = {
   'Please solve: 7 − 2 *': 'Resuelva: 7 − 2 *',
   'Thank you — we will be in touch shortly to discuss your idea confidentially.':
     'Gracias — nos pondremos en contacto con usted en breve para hablar de su idea de manera confidencial.',
+
+  // R&D listing (Research & Development page — admin-managed entries)
+  'From our R&D team': 'De nuestro equipo de I+D',
+  'The latest in Research & Development.': 'Lo último en Investigación y Desarrollo.',
+  'No R&D updates yet.': 'Aún no hay novedades de I+D.',
+  'Check back soon — we publish research findings, project milestones and development updates from our R&D team regularly.':
+    'Vuelva pronto — publicamos periódicamente hallazgos de investigación, hitos de proyectos y novedades de desarrollo de nuestro equipo de I+D.',
+  'Entry not found.': 'Entrada no encontrada.',
+  'Entry temporarily unavailable.': 'Entrada temporalmente no disponible.',
+  'The entry you are looking for may have been moved or unpublished. Browse all our latest R&D updates below.':
+    'La entrada que busca puede haber sido movida o dejada de publicar. Consulte a continuación todas nuestras últimas novedades de I+D.',
+  'Innovation · R&D': 'Innovación · I+D',
+  'Back to Research & Development': 'Volver a Investigación y Desarrollo',
 };

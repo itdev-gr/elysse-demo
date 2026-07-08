@@ -3,6 +3,7 @@ import { supabase } from '../../lib/supabase';
 import JobsTab from './JobsTab';
 import PostsTab from './PostsTab';
 import NewsTab from './NewsTab';
+import ResearchPostsTab from './ResearchPostsTab';
 import ExhibitionsTab from './ExhibitionsTab';
 import MediaTab from './MediaTab';
 import EbooksTab from './EbooksTab';
@@ -20,7 +21,7 @@ import ImagesTab from './ImagesTab';
 import VisibilityTab from './VisibilityTab';
 
 type Tab =
-  | 'jobs' | 'posts' | 'news' | 'exhibitions' | 'media' | 'ebooks' | 'countries' | 'certs' | 'catalogues'
+  | 'jobs' | 'posts' | 'news' | 'research' | 'exhibitions' | 'media' | 'ebooks' | 'countries' | 'certs' | 'catalogues'
   | 'products' | 'categories' | 'families' | 'groups' | 'errors' | 'messages' | 'settings' | 'images'
   | 'visibility';
 
@@ -28,6 +29,7 @@ const HEADINGS: Record<Tab, string> = {
   jobs: 'Jobs.',
   posts: 'Blogs.',
   news: 'News.',
+  research: 'R&D.',
   exhibitions: 'Exhibitions.',
   media: 'Media.',
   ebooks: 'eBooks.',
@@ -69,6 +71,7 @@ const GROUPS: { label: string; items: { id: Tab; label: string }[] }[] = [
     items: [
       { id: 'posts', label: 'Blogs' },
       { id: 'news', label: 'News' },
+      { id: 'research', label: 'R&D' },
       { id: 'exhibitions', label: 'Exhibitions' },
       { id: 'media', label: 'Media' },
       { id: 'ebooks', label: 'eBooks' },
@@ -185,6 +188,7 @@ export default function Dashboard() {
           {tab === 'jobs' && <JobsTab />}
           {tab === 'posts' && <PostsTab />}
           {tab === 'news' && <NewsTab />}
+          {tab === 'research' && <ResearchPostsTab />}
           {tab === 'exhibitions' && <ExhibitionsTab />}
           {tab === 'media' && <MediaTab />}
           {tab === 'ebooks' && <EbooksTab />}

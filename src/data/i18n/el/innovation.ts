@@ -160,4 +160,17 @@ export const innovation: Record<string, string> = {
   'Please solve: 7 − 2 *': 'Λύστε: 7 − 2 *',
   'Thank you — we will be in touch shortly to discuss your idea confidentially.':
     'Σας ευχαριστούμε — θα επικοινωνήσουμε σύντομα μαζί σας για να συζητήσουμε την ιδέα σας εμπιστευτικά.',
+
+  // R&D listing (Research & Development page — admin-managed entries)
+  'From our R&D team': 'Από την ομάδα R&D μας',
+  'The latest in Research & Development.': 'Τα τελευταία στην Έρευνα & Ανάπτυξη.',
+  'No R&D updates yet.': 'Δεν υπάρχουν ενημερώσεις R&D ακόμη.',
+  'Check back soon — we publish research findings, project milestones and development updates from our R&D team regularly.':
+    'Επιστρέψτε σύντομα — δημοσιεύουμε τακτικά ευρήματα έρευνας, ορόσημα έργων και ενημερώσεις ανάπτυξης από την ομάδα R&D μας.',
+  'Entry not found.': 'Η καταχώριση δεν βρέθηκε.',
+  'Entry temporarily unavailable.': 'Η καταχώριση δεν είναι προσωρινά διαθέσιμη.',
+  'The entry you are looking for may have been moved or unpublished. Browse all our latest R&D updates below.':
+    'Η καταχώριση που αναζητάτε ενδέχεται να έχει μετακινηθεί ή να μην έχει δημοσιευτεί. Δείτε παρακάτω όλες τις πρόσφατες ενημερώσεις R&D μας.',
+  'Innovation · R&D': 'Καινοτομία · R&D',
+  'Back to Research & Development': 'Επιστροφή στην Έρευνα & Ανάπτυξη',
 };

@@ -1,8 +1,38 @@
 ---
-import ContentPageLayout from '../../../layouts/ContentPageLayout.astro';
+/**
+ * Innovation — Research & Development.
+ *
+ * URL: /innovation/research-development/
+ * Source of truth: the `research_posts` table, managed in the admin dashboard
+ * (Insights → R&D tab). New entries appear here as soon as they are published.
+ *
+ * Hero copy/image are still taken from `innovationRD` (site-content.ts) so the
+ * page hero is unchanged; the body is now a blog-style listing island.
+ */
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import PageHero from '../../../components/PageHero.astro';
 import InnovationSubNav from '../../../components/innovation/InnovationSubNav.astro';
+import ResearchList from '../../../components/research/ResearchList.tsx';
 import { innovationRD } from '../../../data/site-content';
+import { i18nAttr } from '../../../lib/i18n';
 ---
-<ContentPageLayout content={innovationRD}>
-  <InnovationSubNav slot="subnav" currentPath={Astro.url.pathname} />
-</ContentPageLayout>
+<BaseLayout title={`${innovationRD.title} — Elysée`} description={innovationRD.subtitle ?? innovationRD.title}>
+  <PageHero
+    title={innovationRD.title}
+    eyebrow={innovationRD.eyebrow}
+    subtitle={innovationRD.subtitle}
+    image={innovationRD.heroImage}
+    imageAlt={innovationRD.heroImageAlt}
+    compact
+  />
+  <InnovationSubNav currentPath={Astro.url.pathname} />
+  <section class="mx-auto max-w-screen-xl px-4 md:px-8 py-12 md:py-16">
+    <header class="max-w-3xl mb-10 md:mb-14">
+      <p data-i18n={i18nAttr('From our R&D team')} class="text-[11px] uppercase tracking-[0.4em] text-brand-500 mb-6">From our R&D team</p>
+      <h2 data-i18n={i18nAttr('The latest in Research & Development.')} class="font-display font-heavy leading-[1.02] tracking-tight text-ink" style="font-size: clamp(2rem, 5vw, 3.5rem);">
+        The latest in Research & Development.
+      </h2>
+    </header>
+    <ResearchList client:visible fallback={[]} />
+  </section>
+</BaseLayout>
