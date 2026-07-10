@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { buildCatalogueTree, validateCataloguePdf, pickCataloguePdf } from './catalogues';
+import { buildCatalogueTree, validateCataloguePdf, pickCataloguePdf, filterCatalogueTree } from './catalogues';
 import type { Catalogue } from '../types/catalogue';
 
 const row = (over: Partial<Catalogue>): Catalogue => ({
@@ -102,5 +102,45 @@ describe('pickCataloguePdf', () => {
       pdf_url_black: 'BLACK.pdf', pdf_url_blue: null,
       groups_black: ['A'], groups_blue: null,
     }), null)).toBeNull();
+  });
+});
+
+describe('filterCatalogueTree', () => {
+  const tree = () =>
+    buildCatalogueTree([
+      row({ id: 'c1', name: 'Compression Fittings', sort_order: 1 }),
+      row({ id: 's1', parent_id: 'c1', name: 'Zeta Series', sort_order: 1 }),
+      row({ id: 's2', parent_id: 'c1', name: 'Epsilon Series', description: 'PN 16', sort_order: 2 }),
+      row({ id: 'c2', name: 'Valves', sort_order: 2 }),
+      row({ id: 's3', parent_id: 'c2', name: 'Ball Valves', sort_order: 1 }),
+    ]);
+
+  it('returns the whole tree for an empty query', () => {
+    expect(filterCatalogueTree(tree(), '')).toEqual(tree());
+  });
+  it('a matching category keeps ALL its children', () => {
+    const out = filterCatalogueTree(tree(), 'compression');
+    expect(out.map((c) => c.id)).toEqual(['c1']);
+    expect(out[0].children.map((s) => s.id)).toEqual(['s1', 's2']);
+  });
+  it('a matching subcategory keeps its parent, siblings drop', () => {
+    const out = filterCatalogueTree(tree(), 'zeta');
+    expect(out.map((c) => c.id)).toEqual(['c1']);
+    expect(out[0].children.map((s) => s.id)).toEqual(['s1']);
+  });
+  it('matches on description too', () => {
+    const out = filterCatalogueTree(tree(), 'pn 16');
+    expect(out[0].children.map((s) => s.id)).toEqual(['s2']);
+  });
+  it('categories with no match drop out entirely', () => {
+    expect(filterCatalogueTree(tree(), 'ball').map((c) => c.id)).toEqual(['c2']);
+  });
+  it('returns [] when nothing matches', () => {
+    expect(filterCatalogueTree(tree(), 'zzz')).toEqual([]);
+  });
+  it('does not mutate the input tree', () => {
+    const input = tree();
+    filterCatalogueTree(input, 'zeta');
+    expect(input[0].children.length).toBe(2);
   });
 });

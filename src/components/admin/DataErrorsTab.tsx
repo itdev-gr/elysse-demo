@@ -1,12 +1,15 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '../../lib/supabase';
 import type { ProductImportIssue } from '../../types/product';
+import { matchesFields } from '../../lib/admin-search';
+import SearchInput from './SearchInput';
 
 export default function DataErrorsTab() {
   const [rows, setRows] = useState<ProductImportIssue[] | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [running, setRunning] = useState(false);
   const [lastRun, setLastRun] = useState<string | null>(null);
+  const [query, setQuery] = useState('');
 
   const loadState = async () => {
     const { data } = await supabase.from('data_check_state').select('last_run_at').eq('id', 1).maybeSingle();
@@ -59,6 +62,7 @@ export default function DataErrorsTab() {
 
   const errors = rows.filter((r) => r.severity === 'error');
   const warnings = rows.filter((r) => r.severity === 'warning');
+  const visible = rows.filter((r) => matchesFields(query, [r.code, r.issue_type, r.message]));
 
   return (
     <>
@@ -83,11 +87,16 @@ export default function DataErrorsTab() {
       <p className="text-sm text-ink/70 mb-6">
         {errors.length} errors · {warnings.length} warnings open.
       </p>
+      <div className="mb-6">
+        <SearchInput value={query} onChange={setQuery} placeholder="Search code, issue type, message…" />
+      </div>
       {rows.length === 0 ? (
         <p className="text-sm text-ink/60">No open data issues.</p>
+      ) : visible.length === 0 ? (
+        <p className="text-sm text-ink/60">No issues match &ldquo;{query}&rdquo;.</p>
       ) : (
         <ul className="space-y-3">
-          {rows.map((r) => (
+          {visible.map((r) => (
             <li
               key={r.id}
               className={`border-l-2 p-4 ${

@@ -1,8 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { supabase } from '../../lib/supabase';
 import type { Job } from '../../types/job';
 import { getStatus } from '../../lib/jobs';
 import JobForm from './JobForm';
+import { matchesFields } from '../../lib/admin-search';
+import SearchInput from './SearchInput';
 
 type Mode =
   | { kind: 'list' }
@@ -13,6 +15,7 @@ export default function JobsTab() {
   const [jobs, setJobs] = useState<Job[] | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [mode, setMode] = useState<Mode>({ kind: 'list' });
+  const [query, setQuery] = useState('');
 
   const load = async () => {
     setError(null);
@@ -47,6 +50,11 @@ export default function JobsTab() {
     await load();
   };
 
+  const visible = useMemo(
+    () => (jobs ?? []).filter((j) => matchesFields(query, [j.title, j.department, j.location, j.employment_type])),
+    [jobs, query],
+  );
+
   return (
     <>
       {error && (
@@ -67,10 +75,16 @@ export default function JobsTab() {
             </button>
           </div>
 
+          <div className="mb-6">
+            <SearchInput value={query} onChange={setQuery} placeholder="Search title, department, location…" />
+          </div>
+
           {jobs === null ? (
             <p className="text-sm text-ink/60">Loading…</p>
           ) : jobs.length === 0 ? (
             <p className="text-sm text-ink/60">No jobs yet. Create the first one.</p>
+          ) : visible.length === 0 ? (
+            <p className="text-sm text-ink/60">No jobs match &ldquo;{query}&rdquo;.</p>
           ) : (
             <div className="overflow-x-auto bg-surface border border-ink/10">
               <table className="w-full text-sm">
@@ -85,7 +99,7 @@ export default function JobsTab() {
                   </tr>
                 </thead>
                 <tbody>
-                  {jobs.map((j) => {
+                  {visible.map((j) => {
                     const status = getStatus(j);
                     return (
                       <tr key={j.id} className="border-b border-ink/5 last:border-b-0">

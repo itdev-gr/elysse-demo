@@ -1,9 +1,10 @@
 import { Fragment, useEffect, useMemo, useState } from 'react';
 import { supabase } from '../../lib/supabase';
 import type { Catalogue } from '../../types/catalogue';
-import { buildCatalogueTree } from '../../lib/catalogues';
+import { buildCatalogueTree, filterCatalogueTree } from '../../lib/catalogues';
 import { nextSortOrder } from '../../lib/certifications';
 import CatalogueForm from './CatalogueForm';
+import SearchInput from './SearchInput';
 
 type Mode =
   | { kind: 'list' }
@@ -14,6 +15,7 @@ export default function CataloguesTab() {
   const [rows, setRows] = useState<Catalogue[] | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [mode, setMode] = useState<Mode>({ kind: 'list' });
+  const [query, setQuery] = useState('');
 
   const load = async () => {
     setError(null);
@@ -33,6 +35,7 @@ export default function CataloguesTab() {
   }, []);
 
   const tree = useMemo(() => buildCatalogueTree(rows ?? []), [rows]);
+  const shownTree = useMemo(() => filterCatalogueTree(tree, query), [tree, query]);
   const categories = useMemo(() => (rows ?? []).filter((r) => !r.parent_id), [rows]);
 
   const toggleActive = async (cat: Catalogue) => {
@@ -144,10 +147,16 @@ export default function CataloguesTab() {
             </button>
           </div>
 
+          <div className="mb-6">
+            <SearchInput value={query} onChange={setQuery} placeholder="Search category or subcategory…" />
+          </div>
+
           {rows === null ? (
             <p className="text-sm text-ink/60">Loading…</p>
           ) : tree.length === 0 ? (
             <p className="text-sm text-ink/60">No catalogues yet. Create the first category.</p>
+          ) : shownTree.length === 0 ? (
+            <p className="text-sm text-ink/60">Nothing matches &ldquo;{query}&rdquo;.</p>
           ) : (
             <div className="overflow-x-auto bg-surface border border-ink/10">
               <table className="w-full text-sm">
@@ -162,7 +171,7 @@ export default function CataloguesTab() {
                   </tr>
                 </thead>
                 <tbody>
-                  {tree.map((cat) => (
+                  {shownTree.map((cat) => (
                     <Fragment key={cat.id}>
                       <tr className="border-b border-ink/5 bg-surface-alt/40">
                         <td className="px-4 py-3 text-ink/60">{cat.sort_order}</td>

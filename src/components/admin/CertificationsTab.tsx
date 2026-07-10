@@ -4,6 +4,8 @@ import type { Certification, CertGroup } from '../../types/certification';
 import { sortCertifications, nextSortOrder } from '../../lib/certifications';
 import { QUALITY_CATEGORIES } from '../../data/quality-certificates';
 import CertificationForm from './CertificationForm';
+import { matchesFields } from '../../lib/admin-search';
+import SearchInput from './SearchInput';
 
 type Mode =
   | { kind: 'list' }
@@ -22,6 +24,7 @@ export default function CertificationsTab() {
   const [certs, setCerts] = useState<Certification[] | null>(null);
   const [group, setGroup] = useState<CertGroup>('green');
   const [category, setCategory] = useState<string>('all');
+  const [query, setQuery] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [mode, setMode] = useState<Mode>({ kind: 'list' });
 
@@ -48,10 +51,11 @@ export default function CertificationsTab() {
         (certs ?? []).filter(
           (c) =>
             c.cert_group === group &&
-            (group !== 'quality' || category === 'all' || c.category === category),
+            (group !== 'quality' || category === 'all' || c.category === category) &&
+            matchesFields(query, [c.name, c.description, c.scope, c.tag]),
         ),
       ),
-    [certs, group, category],
+    [certs, group, category, query],
   );
 
   const toggleActive = async (cert: Certification) => {
@@ -129,10 +133,18 @@ export default function CertificationsTab() {
             </div>
           )}
 
+          <div className="mb-6">
+            <SearchInput value={query} onChange={setQuery} placeholder="Search name, description, scope…" />
+          </div>
+
           {certs === null ? (
             <p className="text-sm text-ink/60">Loading…</p>
           ) : visible.length === 0 ? (
-            <p className="text-sm text-ink/60">No certifications in this group yet. Create the first one.</p>
+            <p className="text-sm text-ink/60">
+              {query.trim() !== ''
+                ? <>No certifications match &ldquo;{query}&rdquo;.</>
+                : 'No certifications in this group yet. Create the first one.'}
+            </p>
           ) : (
             <div className="overflow-x-auto bg-surface border border-ink/10">
               <table className="w-full text-sm">

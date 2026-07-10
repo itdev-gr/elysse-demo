@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { mergeFamilyCodes, buildCodeFacts, type ProductFactRow } from './families';
+import { mergeFamilyCodes, buildCodeFacts, filterFamilies, type ProductFactRow, type ProductFamily, type CodeFacts } from './families';
 
 describe('mergeFamilyCodes', () => {
   it('unions product-derived and managed codes', () => {
@@ -71,5 +71,42 @@ describe('buildCodeFacts', () => {
     expect(codesByFam['Compression Fittings|330']).toEqual(['330001M', '330002M']);
     expect(facts['Compression Fittings|330'].series).toEqual(['A']);
     expect(Object.keys(facts)).toEqual(['Compression Fittings|330']);     // orphan skipped
+  });
+});
+
+describe('filterFamilies', () => {
+  const fam = (code: string): ProductFamily =>
+    ({ id: code, category_slug: 'compression', code, sort_order: 0, is_active: true });
+  const facts = (configuration: string | null, perSeries: [string, string | null][] = []): CodeFacts => ({
+    count: 1,
+    configuration,
+    series: perSeries.map(([s]) => s),
+    perSeries: new Map(perSeries.map(([s, c]) => [s, { count: 1, configuration: c }])),
+  });
+  const factsByCode: Record<string, CodeFacts> = {
+    '330': facts('Male Adaptor'),
+    '330T': facts(null, [['Zeta', 'Tee Connector']]),
+    '382B': facts('Elbow', [['Zeta', 'Elbow'], ['Epsilon', 'Reducing Elbow']]),
+  };
+  const fams = [fam('330'), fam('330T'), fam('382B')];
+  const factsFor = (f: ProductFamily) => factsByCode[f.code];
+
+  it('returns everything for an empty query', () => {
+    expect(filterFamilies(fams, '', factsFor)).toEqual(fams);
+  });
+  it('matches by family code (case-insensitive)', () => {
+    expect(filterFamilies(fams, '330t', factsFor).map((f) => f.code)).toEqual(['330T']);
+  });
+  it('a bare-number query matches every code containing it', () => {
+    expect(filterFamilies(fams, '330', factsFor).map((f) => f.code)).toEqual(['330', '330T']);
+  });
+  it('matches by the overall configuration name', () => {
+    expect(filterFamilies(fams, 'male adaptor', factsFor).map((f) => f.code)).toEqual(['330']);
+  });
+  it('matches by a per-series configuration name', () => {
+    expect(filterFamilies(fams, 'reducing', factsFor).map((f) => f.code)).toEqual(['382B']);
+  });
+  it('returns [] when nothing matches', () => {
+    expect(filterFamilies(fams, 'zzz', factsFor)).toEqual([]);
   });
 });

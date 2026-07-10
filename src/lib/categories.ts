@@ -1,4 +1,5 @@
 import { supabase } from './supabase';
+import { matchesFields } from './admin-search';
 
 /** Non-English languages categories/subcategories can be translated into.
  *  English is the base column and the fallback, so it is not listed here. */
@@ -43,6 +44,34 @@ export interface ProductSubcategory {
   is_active: boolean;
   /** Non-English name translations keyed by language code (el/de/es/fr). */
   name_i18n: Record<string, string> | null;
+}
+
+export interface CategoryCardMatch {
+  cat: ProductCategory;
+  subs: ProductSubcategory[];
+}
+
+/** Admin search over the Categories tab cards. A category whose name or slug
+ *  matches keeps its full series list; otherwise only matching series remain,
+ *  and categories with no match at all drop out. */
+export function filterCategoryCards(
+  cats: ProductCategory[],
+  subs: ProductSubcategory[],
+  query: string,
+): CategoryCardMatch[] {
+  const subsFor = (cat: ProductCategory) => subs.filter((s) => s.category_slug === cat.slug);
+  if (query.trim() === '') return cats.map((cat) => ({ cat, subs: subsFor(cat) }));
+  const out: CategoryCardMatch[] = [];
+  for (const cat of cats) {
+    const all = subsFor(cat);
+    if (matchesFields(query, [cat.name, cat.slug])) {
+      out.push({ cat, subs: all });
+      continue;
+    }
+    const matching = all.filter((s) => matchesFields(query, [s.name]));
+    if (matching.length > 0) out.push({ cat, subs: matching });
+  }
+  return out;
 }
 
 /** Categories ordered by sort_order. Active-only unless includeHidden. */

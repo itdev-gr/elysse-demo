@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useState } from 'react';
 import { supabase } from '../../lib/supabase';
 import type { ContactStatus, ContactSubmission } from '../../types/contact';
+import { matchesFields } from '../../lib/admin-search';
+import SearchInput from './SearchInput';
 
 type StatusFilter = 'all' | ContactStatus;
 
@@ -20,6 +22,7 @@ export default function MessagesTab() {
   const [error, setError] = useState<string | null>(null);
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('all');
   const [sourceFilter, setSourceFilter] = useState<string>('all');
+  const [query, setQuery] = useState('');
   const [openId, setOpenId] = useState<string | null>(null);
 
   const load = async () => {
@@ -46,9 +49,10 @@ export default function MessagesTab() {
     return rows.filter(
       (r) =>
         (statusFilter === 'all' || r.status === statusFilter) &&
-        (sourceFilter === 'all' || r.source === sourceFilter),
+        (sourceFilter === 'all' || r.source === sourceFilter) &&
+        matchesFields(query, [r.name, r.email, r.company, r.phone, r.message]),
     );
-  }, [rows, statusFilter, sourceFilter]);
+  }, [rows, statusFilter, sourceFilter, query]);
 
   const setStatus = async (row: ContactSubmission, status: ContactStatus) => {
     const { error: err } = await supabase
@@ -88,6 +92,7 @@ export default function MessagesTab() {
       )}
 
       <div className="mb-6 flex flex-wrap items-center gap-x-6 gap-y-3">
+        <SearchInput value={query} onChange={setQuery} placeholder="Search name, email, company, message…" />
         <div className="flex items-center gap-1 border border-ink/10">
           {(['all', 'new', 'read', 'archived'] as StatusFilter[]).map((s) => (
             <button key={s} type="button" onClick={() => setStatusFilter(s)} className={filterBtn(statusFilter === s)}>
@@ -112,7 +117,7 @@ export default function MessagesTab() {
       {rows === null ? (
         <p className="text-sm text-ink/60">Loading…</p>
       ) : visible.length === 0 ? (
-        <p className="text-sm text-ink/60">No enquiries{statusFilter !== 'all' || sourceFilter !== 'all' ? ' match this filter' : ' yet'}.</p>
+        <p className="text-sm text-ink/60">No enquiries{statusFilter !== 'all' || sourceFilter !== 'all' || query.trim() !== '' ? ' match this filter' : ' yet'}.</p>
       ) : (
         <div className="bg-surface border border-ink/10 divide-y divide-ink/5">
           {visible.map((r) => {

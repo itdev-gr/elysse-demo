@@ -1,5 +1,6 @@
 import { supabase } from './supabase';
 import type { Catalogue } from '../types/catalogue';
+import { matchesFields } from './admin-search';
 
 export interface CatalogueNode extends Catalogue {
   children: Catalogue[];
@@ -22,6 +23,19 @@ export function buildCatalogueTree(rows: Catalogue[]): CatalogueNode[] {
     if (r.parent_id) byId.get(r.parent_id)?.children.push(r);
   }
   return categories;
+}
+
+/** Admin search over the catalogue tree. A category that matches keeps all its
+ *  children; otherwise only its matching children remain, and categories left
+ *  with no matches drop out entirely. */
+export function filterCatalogueTree(tree: CatalogueNode[], query: string): CatalogueNode[] {
+  if (query.trim() === '') return tree;
+  const matches = (row: Catalogue) => matchesFields(query, [row.name, row.description]);
+  return tree.flatMap((cat) => {
+    if (matches(cat)) return [cat];
+    const children = cat.children.filter(matches);
+    return children.length > 0 ? [{ ...cat, children }] : [];
+  });
 }
 
 const PDF_MAX = 25 * 1024 * 1024;

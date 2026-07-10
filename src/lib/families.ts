@@ -1,4 +1,5 @@
 import { supabase } from './supabase';
+import { matchesFields } from './admin-search';
 
 export interface ProductFamily {
   id: string;
@@ -78,6 +79,21 @@ export function buildCodeFacts(rows: ProductFactRow[]): {
     (codesByFam[k] ??= []).push(r.code);
   }
   return { facts, codesByFam };
+}
+
+/** Admin search over family codes: matches the code itself or any of the
+ *  family's configuration names (overall or per-series). */
+export function filterFamilies(
+  fams: ProductFamily[],
+  query: string,
+  factsFor: (fam: ProductFamily) => CodeFacts,
+): ProductFamily[] {
+  if (query.trim() === '') return fams;
+  return fams.filter((fam) => {
+    const f = factsFor(fam);
+    const configs = [f.configuration, ...[...f.perSeries.values()].map((s) => s.configuration)];
+    return matchesFields(query, [fam.code, ...configs]);
+  });
 }
 
 /**

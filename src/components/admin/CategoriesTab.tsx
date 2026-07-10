@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '../../lib/supabase';
 import { triggerPublish } from '../../lib/publish';
+import { filterCategoryCards } from '../../lib/categories';
 import type { ProductCategory, ProductSubcategory } from '../../lib/categories';
 import CategoryForm from './CategoryForm';
 import SubcategoryEditForm from './SubcategoryEditForm';
+import SearchInput from './SearchInput';
 
 export default function CategoriesTab() {
   const [cats, setCats] = useState<ProductCategory[] | null>(null);
@@ -16,6 +18,7 @@ export default function CategoriesTab() {
   const [addingSubFor, setAddingSubFor] = useState<string | null>(null);    // category slug adding a series to
   const [newSubName, setNewSubName] = useState('');
   const [editingSub, setEditingSub] = useState<string | null>(null);        // subcategory id being edited
+  const [query, setQuery] = useState('');
 
   const load = async () => {
     setError(null);
@@ -149,13 +152,18 @@ export default function CategoriesTab() {
         <button type="button" onClick={() => { setCreating(true); setEditing(null); }}
           className="text-[11px] text-brand-500 uppercase tracking-[0.2em]">+ New category</button>
       </div>
+      <div className="mb-6">
+        <SearchInput value={query} onChange={setQuery} placeholder="Search category or series…" />
+      </div>
       {creating && <CategoryForm onDone={() => { setCreating(false); load(); }} onCancel={() => setCreating(false)} />}
 
       {cats === null && <p className="text-sm text-ink/60">Loading…</p>}
+      {cats !== null && filterCategoryCards(cats, subs, query).length === 0 && query.trim() !== '' && (
+        <p className="text-sm text-ink/60">Nothing matches &ldquo;{query}&rdquo;.</p>
+      )}
       {cats !== null && (
         <div className="space-y-6">
-          {cats.map((cat) => {
-            const catSubs = subs.filter((s) => s.category_slug === cat.slug);
+          {filterCategoryCards(cats, subs, query).map(({ cat, subs: catSubs }) => {
             const excel = cat.product_category_name;
             return (
               <section key={cat.slug} className={`border p-5 ${cat.is_active ? 'border-ink/10' : 'border-ink/10 bg-ink/[0.03] opacity-70'}`}>
@@ -216,7 +224,9 @@ export default function CategoriesTab() {
                       className="px-3 py-1.5 text-[11px] uppercase tracking-[0.2em] text-ink/60">Cancel</button>
                   </div>
                 )}
-                {catSubs.length === 0 && addingSubFor !== cat.slug && <p className="text-sm text-ink/50">No series.</p>}
+                {catSubs.length === 0 && addingSubFor !== cat.slug && (
+                  <p className="text-sm text-ink/50">{query.trim() !== '' ? 'No matching series.' : 'No series.'}</p>
+                )}
                 <ul className="flex flex-col gap-1">
                   {catSubs.map((sub) => {
                     const count = excel ? (subCounts[`${excel}|${sub.name}`] ?? 0) : 0;

@@ -1,8 +1,10 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { supabase } from '../../lib/supabase';
 import { triggerPublish } from '../../lib/publish';
 import { storagePathFromUrl, deleteBlockedMessage, type ImageUsage } from '../../lib/image-refs';
 import { LibraryGrid, type ProductImage } from './ImageLibraryGrid';
+import { matchesFields } from '../../lib/admin-search';
+import SearchInput from './SearchInput';
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
 
@@ -16,6 +18,7 @@ export default function ImagesTab() {
   // ── library state ──
   const [images, setImages] = useState<ProductImage[] | null>(null);
   const [libError, setLibError] = useState<string | null>(null);
+  const [query, setQuery] = useState('');
 
   // ── upload state ──
   const [uploading, setUploading] = useState(false);
@@ -34,6 +37,11 @@ export default function ImagesTab() {
     if (error) { setLibError(error.message); return; }
     setImages((data ?? []) as ProductImage[]);
   }, []);
+
+  const visible = useMemo(
+    () => (images ?? []).filter((img) => matchesFields(query, [img.filename, img.family_code])),
+    [images, query],
+  );
 
   useEffect(() => {
     loadImages();
@@ -163,8 +171,16 @@ export default function ImagesTab() {
             Image library
           </h2>
           {images && (
-            <span className="text-xs text-ink/55">{images.length} image{images.length !== 1 ? 's' : ''}</span>
+            <span className="text-xs text-ink/55">
+              {query.trim() !== ''
+                ? `${visible.length} of ${images.length}`
+                : `${images.length} image${images.length !== 1 ? 's' : ''}`}
+            </span>
           )}
+        </div>
+
+        <div className="mb-4">
+          <SearchInput value={query} onChange={setQuery} placeholder="Search filename or family code…" />
         </div>
 
         {libError && (
@@ -176,7 +192,11 @@ export default function ImagesTab() {
         {images === null ? (
           <p className="text-sm text-ink/60">Loading…</p>
         ) : (
-          <LibraryGrid images={images} onDelete={handleDelete} />
+          <LibraryGrid
+            images={visible}
+            onDelete={handleDelete}
+            emptyLabel={query.trim() !== '' ? `No images match “${query}”.` : 'No images in the library yet.'}
+          />
         )}
       </section>
 

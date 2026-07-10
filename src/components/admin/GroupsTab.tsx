@@ -3,12 +3,15 @@ import { supabase } from '../../lib/supabase';
 import type { ProductGroup, GroupCountry } from '../../types/product';
 import GroupCountryForm from './GroupCountryForm';
 import { triggerPublish } from '../../lib/publish';
+import { filterGroups } from '../../lib/product-groups';
+import SearchInput from './SearchInput';
 
 export default function GroupsTab() {
   const [groups, setGroups] = useState<ProductGroup[] | null>(null);
   const [countries, setCountries] = useState<GroupCountry[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [adding, setAdding] = useState<string | null>(null);
+  const [query, setQuery] = useState('');
 
   const load = async () => {
     setError(null);
@@ -31,6 +34,16 @@ export default function GroupsTab() {
     triggerPublish();
   };
 
+  // Keep the group whose add-country form is open visible even when the search
+  // filters it out, so the form can't vanish mid-typing (same guard as FamiliesTab).
+  const matched = filterGroups(groups ?? [], countries, query);
+  const shown = (groups ?? []).flatMap((g) => {
+    const m = matched.find((x) => x.group.code === g.code);
+    if (m) return [m];
+    if (adding !== g.code) return [];
+    return [{ group: g, countries: countries.filter((c) => c.group_code === g.code) }];
+  });
+
   return (
     <>
       {error && (
@@ -40,8 +53,16 @@ export default function GroupsTab() {
       )}
       {groups === null && <p className="text-sm text-ink/60">Loading…</p>}
       {groups !== null && (
+        <div className="mb-6">
+          <SearchInput value={query} onChange={setQuery} placeholder="Search group or country…" />
+        </div>
+      )}
+      {groups !== null && shown.length === 0 && query.trim() !== '' && (
+        <p className="text-sm text-ink/60">Nothing matches &ldquo;{query}&rdquo;.</p>
+      )}
+      {groups !== null && (
         <div className="space-y-8">
-          {groups.map((g) => (
+          {shown.map(({ group: g, countries: cs }) => (
             <section key={g.code} className="border border-ink/10 p-5">
               <header className="flex items-center justify-between mb-3">
                 <h3 className="font-heavy text-lg">
@@ -64,7 +85,7 @@ export default function GroupsTab() {
                 />
               )}
               <ul className="flex flex-wrap gap-2">
-                {countries.filter((c) => c.group_code === g.code).map((c) => (
+                {cs.map((c) => (
                   <li key={c.id} className="inline-flex items-center gap-2 bg-ink/5 px-3 py-1 text-sm">
                     {c.country}
                     <span className="font-mono text-[10px] text-ink/50">{c.country_code}</span>

@@ -4,7 +4,7 @@ import { triggerPublish } from '../../lib/publish';
 import { getSubcategories } from '../../lib/categories';
 import type { ProductCategory, ProductSubcategory } from '../../lib/categories';
 import type { ProductFamily, CodeFacts, ProductFactRow } from '../../lib/families';
-import { buildCodeFacts } from '../../lib/families';
+import { buildCodeFacts, filterFamilies } from '../../lib/families';
 import { LibraryGrid, type ProductImage } from './ImageLibraryGrid';
 import { planConfigSlugRemap, applyConfigSlugRemap } from '../../lib/remap-config-slugs';
 import {
@@ -12,6 +12,7 @@ import {
   removeFamilyImage, setPrimaryFamilyImage, moveFamilyImage, setFamilyImageSeries,
   type FamilyImageRow, type FamilyImageEntry,
 } from '../../lib/family-images';
+import SearchInput from './SearchInput';
 
 function chunk<T>(arr: T[], n: number): T[][] {
   const out: T[][] = [];
@@ -31,6 +32,7 @@ export default function FamiliesTab() {
   // Keyed by `${excelCategoryName}|${code}` — product count + series from products.
   const [facts, setFacts] = useState<Record<string, CodeFacts>>({});
   const [error, setError] = useState<string | null>(null);
+  const [query, setQuery] = useState('');
 
   const [addingFor, setAddingFor] = useState<string | null>(null);   // category slug
   const [newCode, setNewCode] = useState('');
@@ -152,6 +154,19 @@ export default function FamiliesTab() {
     (excelName(cat) ? facts[`${excelName(cat)}|${code}`] : undefined) ??
     { count: 0, configuration: null, series: [], perSeries: new Map() };
   const famKey = (cat: ProductCategory, code: string) => `${excelName(cat)}|${code}`;
+
+  // Admin search: keep a category section when it still has matching codes, or
+  // when the admin is mid-add there (so the add-code input can't vanish).
+  const sections = (cats ?? [])
+    .map((cat) => ({
+      cat,
+      codes: filterFamilies(
+        families.filter((f) => f.category_slug === cat.slug),
+        query,
+        (fam) => factsFor(cat, fam.code),
+      ),
+    }))
+    .filter(({ cat, codes }) => query.trim() === '' || codes.length > 0 || addingFor === cat.slug);
 
   // ── mutations ──────────────────────────────────────────────────────────────
 
@@ -392,11 +407,17 @@ export default function FamiliesTab() {
         removes it. A dash means only some of the family's products carry that group.
       </p>
 
+      <div className="mb-6">
+        <SearchInput value={query} onChange={setQuery} placeholder="Search family code or configuration…" />
+      </div>
+
       {cats === null && <p className="text-sm text-ink/60">Loading…</p>}
+      {cats !== null && sections.length === 0 && query.trim() !== '' && (
+        <p className="text-sm text-ink/60">No family codes match &ldquo;{query}&rdquo;.</p>
+      )}
       {cats !== null && (
         <div className="space-y-6">
-          {cats.map((cat) => {
-            const codes = families.filter((f) => f.category_slug === cat.slug);
+          {sections.map(({ cat, codes }) => {
             // Group family codes under EACH (product-derived) series they have
             // products in — a code with SKUs in two series (e.g. its A/M/Z code
             // variants) appears under both. No products yet → the null bucket.
