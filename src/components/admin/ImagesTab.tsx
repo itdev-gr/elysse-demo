@@ -6,6 +6,8 @@ import { planImageRename, sanitiseName } from '../../lib/image-rename';
 import { LibraryGrid, type ProductImage } from './ImageLibraryGrid';
 import { matchesFields } from '../../lib/admin-search';
 import SearchInput from './SearchInput';
+import { downloadZip } from 'client-zip';
+import { zipEntryNames } from '../../lib/image-zip';
 
 // ─── Main component ──────────────────────────────────────────────────────────
 
@@ -14,6 +16,7 @@ export default function ImagesTab() {
   const [images, setImages] = useState<ProductImage[] | null>(null);
   const [libError, setLibError] = useState<string | null>(null);
   const [renaming, setRenaming] = useState(false);
+  const [zipProgress, setZipProgress] = useState<{ done: number; total: number } | null>(null);
   const [query, setQuery] = useState('');
 
   // ── upload state ──
@@ -186,6 +189,74 @@ export default function ImagesTab() {
     }
   };
 
+  // ── bulk ZIP download ────────────────────────────────────────────────────
+  // Read-only: fetches the SHOWN images' public URLs (concurrency 4), stores
+  // them uncompressed in a ZIP (they're already-compressed images), and saves
+  // it. Failed fetches are skipped and reported; everything else still lands
+  // in the archive.
+
+  /** Local YYYY-MM-DD for the archive name (toISOString would be UTC). */
+  const localDate = () => {
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  };
+
+  const handleDownloadZip = async () => {
+    if (zipProgress || visible.length === 0) return;
+    const targets = [...visible];
+    const names = zipEntryNames(targets);
+    setLibError(null);
+    setZipProgress({ done: 0, total: targets.length });
+
+    const entries: { name: string; input: Blob }[] = [];
+    const failed: string[] = [];
+    let cursor = 0;
+    let completed = 0;
+    const worker = async () => {
+      while (cursor < targets.length) {
+        const i = cursor++;
+        try {
+          const res = await fetch(targets[i].url);
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+          entries[i] = { name: names[i], input: await res.blob() };
+        } catch {
+          failed.push(names[i]);
+        }
+        completed++;
+        setZipProgress({ done: completed, total: targets.length });
+      }
+    };
+
+    try {
+      await Promise.all(Array.from({ length: 4 }, worker));
+      const ok = entries.filter(Boolean);
+      if (ok.length === 0) {
+        setLibError('Could not download any images.');
+        return;
+      }
+      const blob = await downloadZip(ok).blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `elysse-images-${localDate()}.zip`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      // Deferred: revoking synchronously can abort the queued download task
+      // in Firefox/Safari (the blob dereference happens after click returns).
+      setTimeout(() => URL.revokeObjectURL(url), 10_000);
+      if (failed.length > 0) {
+        const shown = failed.slice(0, 5).join(', ');
+        const more = failed.length - 5;
+        setLibError(`Downloaded ${ok.length} of ${targets.length} — failed: ${shown}${more > 0 ? ` (+${more} more)` : ''}`);
+      }
+    } catch (e) {
+      setLibError(`Could not build the ZIP: ${e instanceof Error ? e.message : String(e)}`);
+    } finally {
+      setZipProgress(null);
+    }
+  };
+
   // ── render ───────────────────────────────────────────────────────────────
 
   return (
@@ -235,13 +306,23 @@ export default function ImagesTab() {
           <h2 className="font-display font-heavy text-base text-ink">
             Image library
           </h2>
-          {images && (
-            <span className="text-xs text-ink/55">
-              {query.trim() !== ''
-                ? `${visible.length} of ${images.length}`
-                : `${images.length} image${images.length !== 1 ? 's' : ''}`}
-            </span>
-          )}
+          <div className="flex items-center gap-4">
+            {images && (
+              <span className="text-xs text-ink/55">
+                {query.trim() !== ''
+                  ? `${visible.length} of ${images.length}`
+                  : `${images.length} image${images.length !== 1 ? 's' : ''}`}
+              </span>
+            )}
+            <button
+              type="button"
+              onClick={handleDownloadZip}
+              disabled={zipProgress !== null || visible.length === 0}
+              className="text-[11px] uppercase tracking-[0.2em] px-4 py-2 border border-ink/15 hover:border-brand-500 hover:text-brand-500 transition-colors duration-200 disabled:opacity-50 cursor-pointer"
+            >
+              {zipProgress ? `Zipping ${zipProgress.done} / ${zipProgress.total}…` : 'Download ZIP'}
+            </button>
+          </div>
         </div>
 
         <div className="mb-4">
