@@ -12,16 +12,13 @@ import {
   removeFamilyImage, setPrimaryFamilyImage, moveFamilyImage, setFamilyImageSeries,
   type FamilyImageRow, type FamilyImageEntry,
 } from '../../lib/family-images';
+import { sanitiseName } from '../../lib/image-rename';
 import SearchInput from './SearchInput';
 
 function chunk<T>(arr: T[], n: number): T[][] {
   const out: T[][] = [];
   for (let i = 0; i < arr.length; i += n) out.push(arr.slice(i, i + n));
   return out;
-}
-
-function sanitiseName(name: string) {
-  return name.replace(/[^a-zA-Z0-9.\-]+/g, '-');
 }
 
 export default function FamiliesTab() {

@@ -2,15 +2,10 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { supabase } from '../../lib/supabase';
 import { triggerPublish } from '../../lib/publish';
 import { storagePathFromUrl, deleteBlockedMessage, type ImageUsage } from '../../lib/image-refs';
+import { planImageRename, sanitiseName } from '../../lib/image-rename';
 import { LibraryGrid, type ProductImage } from './ImageLibraryGrid';
 import { matchesFields } from '../../lib/admin-search';
 import SearchInput from './SearchInput';
-
-// ─── Helpers ────────────────────────────────────────────────────────────────
-
-function sanitiseName(name: string) {
-  return name.replace(/[^a-zA-Z0-9.\-]+/g, '-');
-}
 
 // ─── Main component ──────────────────────────────────────────────────────────
 
@@ -18,6 +13,7 @@ export default function ImagesTab() {
   // ── library state ──
   const [images, setImages] = useState<ProductImage[] | null>(null);
   const [libError, setLibError] = useState<string | null>(null);
+  const [renaming, setRenaming] = useState(false);
   const [query, setQuery] = useState('');
 
   // ── upload state ──
@@ -38,14 +34,30 @@ export default function ImagesTab() {
     setImages((data ?? []) as ProductImage[]);
   }, []);
 
+  // Deferred rename cleanup: old storage objects whose 24h grace window has
+  // passed AND that nothing references anymore. due_image_cleanups() only
+  // enumerates candidates; the actual claim is atomic (claim_image_cleanup
+  // re-verifies unreferenced-ness and deletes the queue row in the same
+  // statement) so a late re-insert can never race the file removal — the row
+  // is only ever gone once removing the file is safe. Only then do we call
+  // storage.remove(); a failure after the claim just orphans a file, which
+  // is harmless and invisible to the data checker.
+  const runDueCleanups = useCallback(async () => {
+    const { data, error } = await supabase.rpc('due_image_cleanups');
+    if (error) return; // silent — cleanup is background plumbing
+    for (const row of (data ?? []) as { id: string; storage_path: string }[]) {
+      const { data: claimedPath, error: claimErr } = await supabase.rpc('claim_image_cleanup', { p_id: row.id });
+      if (claimErr || !claimedPath) continue;
+      await supabase.storage.from('product-images').remove([claimedPath as string]);
+    }
+  }, []);
+
   const visible = useMemo(
     () => (images ?? []).filter((img) => matchesFields(query, [img.filename, img.family_code])),
     [images, query],
   );
 
-  useEffect(() => {
-    loadImages();
-  }, [loadImages]);
+  useEffect(() => { loadImages().then(() => runDueCleanups()); }, [loadImages, runDueCleanups]);
 
   // ── upload handler ───────────────────────────────────────────────────────
 
@@ -99,6 +111,7 @@ export default function ImagesTab() {
   // ── delete handler ───────────────────────────────────────────────────────
 
   const handleDelete = async (img: ProductImage) => {
+    if (renaming) return;
     if (!confirm(`Delete image "${img.filename}"? This cannot be undone.`)) return;
     // Reference-aware: the RPC refuses (atomically) while the URL is still used
     // by products / family covers / family galleries — a used image can never
@@ -119,6 +132,58 @@ export default function ImagesTab() {
     }
     await loadImages();
     triggerPublish();
+  };
+
+  // ── rename handler ───────────────────────────────────────────────────────
+  // REAL rename: copy to the new path (old file untouched) → atomic DB
+  // rewrite via RPC (library row + every gallery row + cleanup enqueue in one
+  // transaction) → reload. The old object outlives all references by ≥24h
+  // (removed by runDueCleanups), so nothing cached can break. Any failure
+  // leaves the site fully on the old URL.
+  const handleRename = async (img: ProductImage) => {
+    if (renaming || uploading) return;
+    const requested = prompt(`Rename "${img.filename ?? 'image'}" to:`, img.filename ?? '');
+    if (requested === null) return;
+
+    const result = planImageRename({ url: img.url, filename: img.filename }, requested, crypto.randomUUID());
+    if ('error' in result) { setLibError(result.error); return; }
+
+    const oldPath = storagePathFromUrl(img.url);
+    if (!oldPath) {
+      setLibError('This image is not stored in the product-images bucket, so it cannot be renamed.');
+      return;
+    }
+
+    setRenaming(true);
+    setLibError(null);
+    try {
+      const { error: cpErr } = await supabase.storage
+        .from('product-images').copy(oldPath, result.plan.newPath);
+      if (cpErr) {
+        setLibError(`Could not copy the file to its new name: ${cpErr.message}`);
+        return;
+      }
+
+      const { data: urlData } = supabase.storage
+        .from('product-images').getPublicUrl(result.plan.newPath);
+      const { data, error } = await supabase.rpc('rename_library_image', {
+        p_id: img.id,
+        p_new_url: urlData.publicUrl,
+        p_new_filename: result.plan.newFilename,
+      });
+      if (error || !data?.renamed) {
+        // Roll back the copy (best-effort — an orphan is harmless, nothing
+        // references it) and leave everything on the old URL.
+        await supabase.storage.from('product-images').remove([result.plan.newPath]);
+        setLibError(error ? error.message : `Could not rename (${data?.reason ?? 'unknown error'}).`);
+        return;
+      }
+
+      await loadImages();
+      triggerPublish();
+    } finally {
+      setRenaming(false);
+    }
   };
 
   // ── render ───────────────────────────────────────────────────────────────
@@ -195,6 +260,7 @@ export default function ImagesTab() {
           <LibraryGrid
             images={visible}
             onDelete={handleDelete}
+            onRename={handleRename}
             emptyLabel={query.trim() !== '' ? `No images match “${query}”.` : 'No images in the library yet.'}
           />
         )}

@@ -15,10 +15,12 @@ export function ImageCard({
   img,
   onDelete,
   onPick,
+  onRename,
 }: {
   img: ProductImage;
   onDelete?: (img: ProductImage) => void;
   onPick?: (img: ProductImage) => void;
+  onRename?: (img: ProductImage) => void;
 }) {
   return (
     <div className="flex flex-col bg-surface border border-ink/10 overflow-hidden">
@@ -42,6 +44,15 @@ export function ImageCard({
               Select
             </button>
           )}
+          {onRename && (
+            <button
+              type="button"
+              onClick={() => onRename(img)}
+              className="flex-1 text-[11px] uppercase tracking-[0.2em] text-ink/70 hover:text-brand-500 transition-colors duration-200 cursor-pointer border border-ink/15 px-2 py-1"
+            >
+              Rename
+            </button>
+          )}
           {onDelete && (
             <button
               type="button"
@@ -61,11 +72,13 @@ export function LibraryGrid({
   images,
   onDelete,
   onPick,
+  onRename,
   emptyLabel = 'No images in the library yet.',
 }: {
   images: ProductImage[];
   onDelete?: (img: ProductImage) => void;
   onPick?: (img: ProductImage) => void;
+  onRename?: (img: ProductImage) => void;
   emptyLabel?: string;
 }) {
   if (images.length === 0) {
@@ -74,7 +87,7 @@ export function LibraryGrid({
   return (
     <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-3">
       {images.map((img) => (
-        <ImageCard key={img.id} img={img} onDelete={onDelete} onPick={onPick} />
+        <ImageCard key={img.id} img={img} onDelete={onDelete} onPick={onPick} onRename={onRename} />
       ))}
     </div>
   );
