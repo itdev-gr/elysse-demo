@@ -152,18 +152,23 @@ const year = new Date().getFullYear();
       <path d="M0,20 C360,115 880,100 1440,38 L1440,95 L0,95 Z" fill="#4c6830" />
     </svg>
 
-    <Container size="xl" class="relative py-5 md:py-6">
-      <div class="flex flex-col md:flex-row items-center justify-between gap-6 text-xs text-surface">
-        {/* Logo mark on left */}
-        <a href="/" class="inline-flex shrink-0" aria-label="Elysée Group — home" data-i18n-attr={i18nAttrFor({ 'aria-label': 'Elysée Group — home' })}>
-          <img
-            src={logo.src}
-            alt="Elysée"
-            class="h-9 md:h-10 w-auto"
-            loading="lazy"
-          />
-        </a>
+    {/* Logo mark riding the curve — centered on the white/green boundary */}
+    <a
+      href="/"
+      class="absolute left-1/2 top-0 z-10 -translate-x-1/2 -translate-y-1/2 inline-flex"
+      aria-label="Elysée Group — home"
+      data-i18n-attr={i18nAttrFor({ 'aria-label': 'Elysée Group — home' })}
+    >
+      <img
+        src={logo.src}
+        alt="Elysée"
+        class="h-10 md:h-12 w-auto"
+        loading="lazy"
+      />
+    </a>
 
+    <Container size="xl" class="relative pt-10 md:pt-12 pb-5 md:pb-6">
+      <div class="flex flex-col md:flex-row items-center justify-between gap-6 text-xs text-surface">
         {/* Copyright + legal links — pipe-separated */}
         <div class="flex flex-wrap items-center justify-center gap-x-4 gap-y-2">
           <p>Copyright &copy; {year} Elysee</p>
