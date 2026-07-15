@@ -7,7 +7,7 @@ import MobileMegaNav from './nav/MobileMegaNav.tsx';
 // the Products group so the mobile accordion shows all of them with images.
 const productItems: NavItem[] = (await getCategories()).map((c) => ({
   label: c.name,
-  href: `/catalog/${c.slug}/?country=ask`,
+  href: `/catalog/${c.slug}/`,
   image: c.image,
   caption: c.blurb ?? undefined,
 }));

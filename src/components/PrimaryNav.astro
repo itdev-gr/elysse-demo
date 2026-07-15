@@ -7,7 +7,7 @@ import MegaNav from './nav/MegaNav.tsx';
 // the 13 product categories render as image cards (same layout as Innovation).
 const productItems: NavItem[] = (await getCategories()).map((c) => ({
   label: c.name,
-  href: `/catalog/${c.slug}/?country=ask`,
+  href: `/catalog/${c.slug}/`,
   image: c.image,
   caption: c.blurb ?? undefined,
 }));

@@ -76,7 +76,7 @@ export default function MegaNav({ groups }: Props) {
       const caption = pick(c.blurb_i18n, c.blurb ?? '');
       return {
         label: pick(c.name_i18n, c.name),
-        href: `/catalog/${c.slug}/?country=ask`,
+        href: `/catalog/${c.slug}/`,
         image: c.image ?? undefined,
         caption: caption || undefined,
       };
