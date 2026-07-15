@@ -5,22 +5,19 @@ import { supabase } from '../../lib/supabase';
 const { data: mapped } = await supabase
   .from('group_countries').select('country_code, country').order('country', { ascending: true });
 const codes = new Set((mapped ?? []).map((m: { country_code: string | null }) => m.country_code?.toLowerCase()).filter(Boolean));
-const selectable = codes.size > 0
-  ? COUNTRIES.filter((c) => codes.has(c.code)).slice().sort((a, b) => a.label.localeCompare(b.label))
-  : (() => {
-      // Fallback: use the existing static top/other split when Supabase is unreachable.
-      const TOP_CODES = ['cy', 'at', 'de', 'gr', 'fr'] as const;
-      type TopCode = (typeof TOP_CODES)[number];
-      const codeOrder = (code: string) => TOP_CODES.indexOf(code as TopCode);
-      const top = TOP_CODES
-        .map((code) => COUNTRIES.find((c) => c.code === code))
-        .filter((c): c is (typeof COUNTRIES)[number] => Boolean(c));
-      const other = COUNTRIES
-        .filter((c) => codeOrder(c.code) === -1)
-        .slice()
-        .sort((a, b) => a.label.localeCompare(b.label));
-      return [...top, ...other];
-    })();
+// Fallback: the full static list when Supabase is unreachable.
+const pool = codes.size > 0 ? COUNTRIES.filter((c) => codes.has(c.code)) : COUNTRIES;
+
+// Featured markets pinned above a separator, in this order.
+const TOP_CODES: readonly string[] = ['cy', 'at', 'eg', 'lb', 'gr'];
+const topCountries = TOP_CODES
+  .map((code) => pool.find((c) => c.code === code))
+  .filter((c): c is (typeof COUNTRIES)[number] => Boolean(c));
+const otherCountries = pool
+  .filter((c) => !TOP_CODES.includes(c.code))
+  .slice()
+  .sort((a, b) => a.label.localeCompare(b.label));
+const groups = [topCountries, otherCountries].filter((g) => g.length > 0);
 ---
 <div
   class="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center px-4"
@@ -61,20 +58,25 @@ const selectable = codes.size > 0
         aria-label="Country"
         class="mt-2 hidden max-h-[min(15rem,35vh)] overflow-y-auto overscroll-contain rounded-md border border-surface-divider bg-surface text-ink shadow-lg py-1"
       >
-        {selectable.map((c) => (
-          <li>
-            <button
-              type="button"
-              role="option"
-              aria-selected="false"
-              data-country-option
-              data-value={c.code}
-              class="flex w-full items-center gap-2.5 px-4 py-2.5 text-left transition-colors duration-150 hover:bg-surface-alt hover:text-brand-500 focus:outline-none focus-visible:bg-surface-alt focus-visible:text-brand-500 cursor-pointer"
-            >
-              <span class="w-7 shrink-0 text-[11px] uppercase tracking-wider font-semibold">{c.code}</span>
-              <span class="text-sm" data-country-option-name>{c.label}</span>
-            </button>
-          </li>
+        {groups.map((group, i) => (
+          <Fragment>
+            {i > 0 && <li role="separator" aria-hidden="true" class="my-1 border-t border-surface-divider"></li>}
+            {group.map((c) => (
+              <li>
+                <button
+                  type="button"
+                  role="option"
+                  aria-selected="false"
+                  data-country-option
+                  data-value={c.code}
+                  class="flex w-full items-center gap-2.5 px-4 py-2.5 text-left transition-colors duration-150 hover:bg-surface-alt hover:text-brand-500 focus:outline-none focus-visible:bg-surface-alt focus-visible:text-brand-500 cursor-pointer"
+                >
+                  <span class="w-7 shrink-0 text-[11px] uppercase tracking-wider font-semibold">{c.code}</span>
+                  <span class="text-sm" data-country-option-name>{c.label}</span>
+                </button>
+              </li>
+            ))}
+          </Fragment>
         ))}
       </ul>
     </div>
