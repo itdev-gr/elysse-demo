@@ -5,7 +5,7 @@ import {
   greenElyseeAbout, greenElyseeCertifications, greenElyseeReports,
   innovationWhy, innovationRD, innovationFundedProjects,
   innovationNetworkPartners, innovationInnovateWithUs,
-  innovationInsightDetails, fundedProjectDetails,
+  innovationInsightDetails,
   subBrandWise, subBrandPrime, subBrandRohrsysteme, contactCareers,
 } from '../data/site-content';
 import type { Section, PageContent } from '../data/content';
@@ -151,10 +151,8 @@ export function buildPagesIndex(): PageIndexEntry[] {
     out.push(entry(`/innovation/insights/${a.slug}/`, a.title, 'Innovation Insights',
       [a.excerpt, ...a.blocks.flatMap(blockText)]));
   }
-  for (const p of fundedProjectDetails) {
-    out.push(entry(`/innovation/funded-research-projects/${p.slug}/`, p.name, 'Funded Research Projects',
-      [p.excerpt, ...p.blocks.flatMap(blockText)]));
-  }
+  // Funded research project detail pages are dashboard-managed (funded_projects)
+  // and searched via the DB search_site RPC ('funded' branch), not this static index.
   for (const m of MANUAL_PAGES) out.push(entry(m.path, m.title, m.section, [m.title, m.keywords]));
   return out;
 }

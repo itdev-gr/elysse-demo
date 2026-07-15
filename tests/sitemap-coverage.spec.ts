@@ -1,20 +1,14 @@
 import { test, expect } from '@playwright/test';
-import {
-  fundedProjectDetails,
-  innovationInsightDetails,
-} from '../src/data/site-content';
+import { innovationInsightDetails } from '../src/data/site-content';
 
 // Same convention as the other specs (no baseURL in playwright.config.ts);
 // PW_BASE_URL lets the suite run against a preview on a non-default port.
 const BASE_URL = process.env.PW_BASE_URL ?? 'http://localhost:4321';
 
-// News, blog, and the Insights detail routes (exhibitions/media/ebooks) are
-// Supabase-managed and deliberately excluded from this static-coverage spec.
+// News, blog, funded research projects, and the Insights detail routes
+// (exhibitions/media/ebooks) are Supabase-managed and deliberately excluded
+// from this static-coverage spec.
 const cases = [
-  ...fundedProjectDetails.map((p) => ({
-    url: `/innovation/funded-research-projects/${p.slug}/`,
-    heading: p.name,
-  })),
   ...innovationInsightDetails.map((a) => ({
     url: `/innovation/insights/${a.slug}/`,
     heading: a.title,

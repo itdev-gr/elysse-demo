@@ -10,7 +10,7 @@ import type { PageIndexEntry } from './search-pages';
  */
 export type SearchKind =
   | 'category' | 'subcategory' | 'product' | 'page'
-  | 'news' | 'post' | 'exhibition' | 'media' | 'ebook'
+  | 'news' | 'post' | 'research' | 'funded' | 'exhibition' | 'media' | 'ebook'
   | 'certification' | 'catalogue' | 'job';
 
 export interface SearchRpcRow {
@@ -37,14 +37,15 @@ export interface SearchResult {
 /** Display order of result groups on the /search page. */
 export const KIND_ORDER: SearchKind[] = [
   'category', 'subcategory', 'product', 'page',
-  'news', 'post', 'exhibition', 'media', 'ebook',
+  'news', 'post', 'research', 'funded', 'exhibition', 'media', 'ebook',
   'certification', 'catalogue', 'job',
 ];
 
 /** English group labels — render with tFor(lang, label). */
 export const KIND_LABELS: Record<SearchKind, string> = {
   category: 'Categories', subcategory: 'Series', product: 'Products', page: 'Pages',
-  news: 'News', post: 'Blog', exhibition: 'Exhibitions', media: 'Media', ebook: 'eBooks',
+  news: 'News', post: 'Blog', research: 'R&D', funded: 'Funded Projects',
+  exhibition: 'Exhibitions', media: 'Media', ebook: 'eBooks',
   certification: 'Certifications', catalogue: 'Catalogues', job: 'Careers',
 };
 

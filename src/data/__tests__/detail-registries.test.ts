@@ -1,14 +1,13 @@
 import { describe, expect, it } from 'vitest';
-import type { ProjectsBlock } from '../site-content';
 import {
-  fundedProjectDetails,
   innovationInsightDetails,
   innovationInsightsItems,
-  innovationFundedProjects,
 } from '../site-content';
 
+// Funded research projects moved to the dashboard-managed `funded_projects`
+// table (see FundedProjectsTab); their slugs are validated by the DB unique
+// constraint, so they no longer have a static registry to test here.
 const registries = [
-  { name: 'fundedProjectDetails', entries: fundedProjectDetails },
   { name: 'innovationInsightDetails', entries: innovationInsightDetails },
 ] as const;
 
@@ -61,20 +60,3 @@ describe('list-item hrefs resolve to registered detail slugs', () => {
   }
 });
 
-describe('innovationFundedProjects blocks → fundedProjectDetails', () => {
-  it('all project hrefs resolve to registered project slugs', () => {
-    const projectHrefs = innovationFundedProjects.blocks
-      .filter((b): b is ProjectsBlock => b.kind === 'projects')
-      .flatMap((b) => b.items.map((p) => p.href))
-      .filter((href): href is string => Boolean(href) && href !== '#');
-
-    expect(projectHrefs).toHaveLength(3);
-
-    const slugs = new Set(fundedProjectDetails.map((d) => d.slug));
-    for (const href of projectHrefs) {
-      const slug = slugUnder(href, '/innovation/funded-research-projects/');
-      expect(slug, `href "${href}" is not under the funded-projects base path`).not.toBeNull();
-      expect(slugs, `slug "${slug}" missing from fundedProjectDetails`).toContain(slug);
-    }
-  });
-});

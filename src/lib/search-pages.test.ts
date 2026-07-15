@@ -45,9 +45,20 @@ describe('buildPagesIndex', () => {
     expect(e!.title).toBe('Agriculture');
   });
 
-  it('indexes innovation insight articles and funded projects by slug', () => {
+  it('indexes innovation insight articles by slug', () => {
     expect(index.some((x) => x.path.startsWith('/innovation/insights/') && x.path.length > '/innovation/insights/'.length)).toBe(true);
-    expect(index.some((x) => x.path.startsWith('/innovation/funded-research-projects/') && x.path.length > '/innovation/funded-research-projects/'.length)).toBe(true);
+  });
+
+  it('does not statically index funded project detail pages (now DB-searched)', () => {
+    // funded_projects moved to the dashboard; detail pages are searched via the
+    // search_site RPC ('funded' branch), not this build-time static index.
+    const detailPages = index.filter(
+      (x) => x.path.startsWith('/innovation/funded-research-projects/')
+        && x.path.length > '/innovation/funded-research-projects/'.length,
+    );
+    expect(detailPages).toHaveLength(0);
+    // The listing page itself is still statically indexed (hero + intro copy).
+    expect(index.some((x) => x.path === '/innovation/funded-research-projects/')).toBe(true);
   });
 
   it('includes manual entries for listing pages', () => {
