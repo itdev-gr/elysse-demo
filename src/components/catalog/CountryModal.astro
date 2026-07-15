@@ -35,15 +35,49 @@ const selectable = codes.size > 0
     <h2 id="country-modal-title" class="text-2xl font-heavy text-ink">Select your country</h2>
     <p class="text-sm text-ink/70 mt-2">Product availability varies by region. Choose your country to browse the catalog.</p>
 
-    <label for="country-select" class="sr-only">Country</label>
-    <select
-      id="country-select"
-      data-country-select
-      class="mt-6 block w-full bg-surface border border-ink/20 rounded-sm px-3 py-3 text-sm text-ink focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/30 transition-colors duration-fast"
-    >
-      <option value="" disabled selected>Choose your country…</option>
-      {selectable.map((c) => <option value={c.code}>{c.label}</option>)}
-    </select>
+    <div class="relative mt-6" data-country-picker>
+      <button
+        type="button"
+        data-country-trigger
+        aria-haspopup="listbox"
+        aria-expanded="false"
+        aria-label="Country"
+        class="flex w-full items-center justify-between gap-3 bg-surface border border-ink/20 rounded-sm px-4 py-3 text-sm text-ink/50 cursor-pointer transition-colors duration-fast hover:border-ink/40 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/30"
+      >
+        <span data-country-label data-placeholder="Choose your country…">Choose your country…</span>
+        <svg
+          data-country-chevron
+          viewBox="0 0 12 12"
+          aria-hidden="true"
+          class="h-2.5 w-2.5 shrink-0 transition-transform duration-200"
+        >
+          <path d="M2.5 4.5 6 8l3.5-3.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+      </button>
+
+      <ul
+        data-country-menu
+        role="listbox"
+        aria-label="Country"
+        class="mt-2 hidden max-h-[min(15rem,35vh)] overflow-y-auto overscroll-contain rounded-md border border-surface-divider bg-surface text-ink shadow-lg py-1"
+      >
+        {selectable.map((c) => (
+          <li>
+            <button
+              type="button"
+              role="option"
+              aria-selected="false"
+              data-country-option
+              data-value={c.code}
+              class="flex w-full items-center gap-2.5 px-4 py-2.5 text-left transition-colors duration-150 hover:bg-surface-alt hover:text-brand-500 focus:outline-none focus-visible:bg-surface-alt focus-visible:text-brand-500 cursor-pointer"
+            >
+              <span class="w-7 shrink-0 text-[11px] uppercase tracking-wider font-semibold">{c.code}</span>
+              <span class="text-sm" data-country-option-name>{c.label}</span>
+            </button>
+          </li>
+        ))}
+      </ul>
+    </div>
 
     <button
       type="button"
