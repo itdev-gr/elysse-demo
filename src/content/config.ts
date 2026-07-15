@@ -1,14 +1,9 @@
 import { defineCollection, z } from 'astro:content';
+import { COUNTRIES } from '../data/catalog-countries';
 
-/** ISO 3166-1 alpha-2 codes for countries we operate in. Kept in sync with
- *  src/data/catalog-countries.ts. The enum is duplicated here because Zod
- *  needs literal strings at schema-definition time. */
-const COUNTRY_CODES = [
-  'cy','gr','de','at','fr','it','es','pt',
-  'lb','ae','sa','eg','il','jo','ma','za',
-  'jp','au','nz','in','sg',
-  'us','ca','br','mx',
-] as const;
+/** Country codes accepted in product frontmatter — derived from the single
+ *  source of truth (catalog-countries.ts) so the two lists can never drift. */
+const COUNTRY_CODES = COUNTRIES.map((c) => c.code) as [string, ...string[]];
 
 const CATEGORY_SLUGS = [
   'compression-fittings', 'hydraulic-fittings', 'saddles',
