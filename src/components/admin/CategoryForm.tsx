@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { supabase } from '../../lib/supabase';
 import { triggerPublish } from '../../lib/publish';
 import { CATEGORY_I18N_LANGS, cleanI18n, type ProductCategory } from '../../lib/categories';
+import ImageLibraryPicker from './ImageLibraryPicker';
 
 const EMPTY: ProductCategory = {
   slug: '', name: '', sort_order: 0, image: '', source_image: null,
@@ -14,6 +15,7 @@ export default function CategoryForm({ initial, onDone, onCancel }:
   const [d, setD] = useState<ProductCategory>(initial ? { ...initial } : { ...EMPTY });
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const [pickerOpen, setPickerOpen] = useState(false);
   const editing = !!initial;
 
   const set = <K extends keyof ProductCategory>(k: K, v: ProductCategory[K]) =>
@@ -25,7 +27,7 @@ export default function CategoryForm({ initial, onDone, onCancel }:
   const submit = async () => {
     if (!d.slug.trim()) return setError('Slug is required.');
     if (!d.name.trim()) return setError('Name is required.');
-    if (!d.image.trim()) return setError('Image path is required.');
+    if (!d.image.trim()) return setError('Image is required.');
     setBusy(true); setError(null);
     const payload = {
       ...d,
@@ -70,7 +72,22 @@ export default function CategoryForm({ initial, onDone, onCancel }:
         {field('Name', 'name')}
         {field('Sort order', 'sort_order', 'number')}
         {field('Category letter', 'category_letter', 'text', 'Single letter (A, B, C…). Auto-fills the product form and vice-versa.')}
-        {field('Image path', 'image', 'text', '/images/products/categories/<slug>.png')}
+        <div className="mb-3">
+          <span className="block text-[10px] uppercase tracking-[0.2em] text-ink/55 mb-1">Image</span>
+          <div className="flex items-center gap-3">
+            {d.image.trim() ? (
+              <div className="w-16 h-16 bg-surface-alt border border-ink/10 flex items-center justify-center overflow-hidden shrink-0">
+                <img src={d.image} alt="" className="w-full h-full object-contain" />
+              </div>
+            ) : (
+              <div className="w-16 h-16 border border-dashed border-ink/25 flex items-center justify-center text-[9px] uppercase tracking-[0.15em] text-ink/40 text-center shrink-0">No image</div>
+            )}
+            <button type="button" onClick={() => setPickerOpen(true)}
+              className="text-[11px] uppercase tracking-[0.2em] text-brand-500 border border-ink/15 px-3 py-2 hover:border-brand-500 transition-colors duration-200 cursor-pointer">
+              Choose from library
+            </button>
+          </div>
+        </div>
         {field('Leaflet PDF', 'leaflet_pdf')}
         {field('Excel category link (advanced)', 'product_category_name', 'text', 'Defaults to the Name. Must equal products.category_name to show catalogue items')}
       </div>
@@ -114,6 +131,12 @@ export default function CategoryForm({ initial, onDone, onCancel }:
         </button>
         <button type="button" onClick={onCancel} className="px-5 py-2.5 text-[11px] uppercase tracking-[0.25em] text-ink/70">Cancel</button>
       </div>
+      {pickerOpen && (
+        <ImageLibraryPicker
+          onPick={(url) => set('image', url)}
+          onClose={() => setPickerOpen(false)}
+        />
+      )}
     </div>
   );
 }

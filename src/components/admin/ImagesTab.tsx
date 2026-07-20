@@ -2,7 +2,8 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { supabase } from '../../lib/supabase';
 import { triggerPublish } from '../../lib/publish';
 import { storagePathFromUrl, deleteBlockedMessage, type ImageUsage } from '../../lib/image-refs';
-import { planImageRename, sanitiseName } from '../../lib/image-rename';
+import { planImageRename } from '../../lib/image-rename';
+import { uploadLibraryImage, LibraryUploadError } from '../../lib/image-library';
 import { LibraryGrid, type ProductImage } from './ImageLibraryGrid';
 import { matchesFields } from '../../lib/admin-search';
 import SearchInput from './SearchInput';
@@ -73,34 +74,15 @@ export default function ImagesTab() {
     setUploadLog([]);
 
     for (const file of files) {
-      const path = `uploads/${crypto.randomUUID()}-${sanitiseName(file.name)}`;
-      const { error: upErr } = await supabase.storage
-        .from('product-images')
-        .upload(path, file, { upsert: true, contentType: file.type });
-
-      if (upErr) {
-        setUploadError(`Failed to upload "${file.name}": ${upErr.message}`);
+      try {
+        await uploadLibraryImage(file);
+      } catch (err) {
+        const msg = err instanceof Error ? err.message : String(err);
+        setUploadError(err instanceof LibraryUploadError && err.stage === 'insert'
+          ? `Uploaded "${file.name}" but failed to save record: ${msg}`
+          : `Failed to upload "${file.name}": ${msg}`);
         break;
       }
-
-      const { data: urlData } = supabase.storage
-        .from('product-images')
-        .getPublicUrl(path);
-
-      const publicUrl = urlData.publicUrl;
-
-      const { error: insErr } = await supabase.from('product_images').insert({
-        url: publicUrl,
-        filename: file.name,
-        family_code: null,
-        source: 'upload',
-      });
-
-      if (insErr) {
-        setUploadError(`Uploaded "${file.name}" but failed to save record: ${insErr.message}`);
-        break;
-      }
-
       setUploadLog((prev) => [...prev, file.name]);
     }
 
