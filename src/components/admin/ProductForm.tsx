@@ -211,10 +211,17 @@ export default function ProductForm({ initial, onDone, onCancel }:
     [...new Set(vals.filter((v): v is string => !!v))].sort((a, b) => a.localeCompare(b));
   // Category names from existing products merged with the managed categories
   // (product_categories), so newly-added ones with no products yet are selectable.
+  // Ordered by catalogue letter (A → B → C…) to match the "letter - name" option
+  // labels; categories with no letter sink to the end, alphabetical by name.
   const categoryOpts = uniqSorted([
     ...opts.map((o) => o.category_name),
     ...slugByName.keys(),
-  ]);
+  ]).sort((a, b) => {
+    const la = letterByCategory.get(a);
+    const lb = letterByCategory.get(b);
+    if (la && lb) return la.localeCompare(lb) || a.localeCompare(b);
+    return la ? -1 : lb ? 1 : a.localeCompare(b);
+  });
   // Sub-categories belong to a category, so only show them once a category is
   // chosen, scoped to that category. (Category name is required — see validateProductDraft.)
   const subCategoryOpts = d.category_name ? uniqSorted([
