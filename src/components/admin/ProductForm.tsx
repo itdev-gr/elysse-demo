@@ -263,14 +263,16 @@ export default function ProductForm({ initial, onDone, onCancel }:
       return { ...p, category: letter };
     });
 
-  const selectField = (label: string, value: string | null, options: string[], onPick: (v: string | null) => void) => (
+  // labelFor customises the visible option text only — the option VALUE (and
+  // what gets stored) is always the bare string.
+  const selectField = (label: string, value: string | null, options: string[], onPick: (v: string | null) => void, labelFor: (v: string) => string = (v) => v) => (
     <label className="block mb-3">
       <span className="block text-[10px] uppercase tracking-[0.2em] text-ink/55 mb-1">{label}</span>
       <select value={value ?? ''} onChange={(e) => onPick(e.currentTarget.value || null)}
         className="w-full bg-transparent border-b border-ink/25 py-2 text-sm focus:outline-none focus:border-brand-500">
         <option value="">— select —</option>
-        {value && !options.includes(value) && <option value={value}>{value}</option>}
-        {options.map((o) => <option key={o} value={o}>{o}</option>)}
+        {value && !options.includes(value) && <option value={value}>{labelFor(value)}</option>}
+        {options.map((o) => <option key={o} value={o}>{labelFor(o)}</option>)}
       </select>
     </label>
   );
@@ -284,7 +286,10 @@ export default function ProductForm({ initial, onDone, onCancel }:
           <input value={d.code} disabled={editing} onChange={(e) => set('code', e.currentTarget.value)}
             className="w-full bg-transparent border-b border-ink/25 py-2 text-sm font-mono disabled:opacity-50 focus:outline-none focus:border-brand-500" />
         </label>
-        {selectField('Category name', d.category_name, categoryOpts, pickCategory)}
+        {selectField('Category name', d.category_name, categoryOpts, pickCategory, (name) => {
+          const letter = letterByCategory.get(name);
+          return letter ? `${letter} - ${name}` : name;
+        })}
         <label className="block mb-3">
           <span className="block text-[10px] uppercase tracking-[0.2em] text-ink/55 mb-1">Category letter</span>
           <input value={d.category ?? ''} onChange={(e) => pickLetter(e.currentTarget.value)}
