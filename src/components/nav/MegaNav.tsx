@@ -241,8 +241,11 @@ export default function MegaNav({ groups }: Props) {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: reduce ? 0.01 : 0.22, ease: [0.16, 1, 0.3, 1] }}
-            style={{ top: headerH }}
-            className="fixed inset-x-0 z-30 text-ink bg-surface shadow-lg border-t border-ink/5"
+            // Cap the panel to the viewport: with enough categories the grid
+            // outgrows short screens, and a fixed element can't rely on page
+            // scroll — the overflow must scroll inside the panel itself.
+            style={{ top: headerH, maxHeight: `calc(100vh - ${headerH}px)` }}
+            className="fixed inset-x-0 z-30 text-ink bg-surface shadow-lg border-t border-ink/5 overflow-y-auto overscroll-contain"
             onMouseEnter={cancelClose}
             onMouseLeave={scheduleClose}
             role="region"
