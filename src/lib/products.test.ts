@@ -95,6 +95,37 @@ describe('orderConfigEntries', () => {
     const famSort = new Map([['b', 1]]);
     expect(orderConfigEntries(entries, famSort).map((e) => e.id)).toEqual(['X/b', 'X/a', 'X/c']);
   });
+
+  it('ranks series by the admin sub-category order when provided (sidebar parity)', () => {
+    // Product order says Lock Fittings first; the admin order must win.
+    const entries = [
+      mk('Lock Fittings', 'L1', 2933),
+      mk('Heavy Duty', 'H1', 3014),
+      mk('Manifolds', 'M1', 3039),
+      mk('Valve Boxes', 'V1', 3054),
+    ];
+    const subSort = new Map([['Valve Boxes', 1], ['Manifolds', 2], ['Lock Fittings', 3], ['Heavy Duty', 4]]);
+    expect(orderConfigEntries(entries, new Map(), subSort).map((e) => e.id))
+      .toEqual(['Valve Boxes/V1', 'Manifolds/M1', 'Lock Fittings/L1', 'Heavy Duty/H1']);
+  });
+
+  it('series without an admin order keep the product-order ranking, after the managed ones', () => {
+    const entries = [
+      mk('Unmanaged', 'U1', 1),   // lowest product order, but not in the admin list
+      mk('Managed', 'M1', 50),
+      mk('AlsoUnmanaged', 'U2', 5),
+    ];
+    const subSort = new Map([['Managed', 7]]);
+    expect(orderConfigEntries(entries, new Map(), subSort).map((e) => e.id))
+      .toEqual(['Managed/M1', 'Unmanaged/U1', 'AlsoUnmanaged/U2']);
+  });
+
+  it('famSort still orders families within an admin-ranked series', () => {
+    const entries = [mk('S', 'a', 1), mk('S', 'b', 2)];
+    const famSort = new Map([['b', 1], ['a', 2]]);
+    const subSort = new Map([['S', 1]]);
+    expect(orderConfigEntries(entries, famSort, subSort).map((e) => e.id)).toEqual(['S/b', 'S/a']);
+  });
 });
 
 // Image resolution moved to resolveSeriesImages in ./family-images (the family
