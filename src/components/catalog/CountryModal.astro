@@ -1,23 +1,21 @@
 ---
 import { COUNTRIES } from '../../data/catalog-countries';
 import { supabase } from '../../lib/supabase';
+import { featuredCodes, partitionPickerCountries } from '../../lib/picker-countries';
 
 const { data: mapped } = await supabase
-  .from('group_countries').select('country_code, country').order('country', { ascending: true });
-const codes = new Set((mapped ?? []).map((m: { country_code: string | null }) => m.country_code?.toLowerCase()).filter(Boolean));
-// Fallback: the full static list when Supabase is unreachable.
+  .from('group_countries')
+  .select('country_code, country, featured_order')
+  .order('country', { ascending: true });
+const rows = (mapped ?? []) as { country_code: string | null; country: string; featured_order: number | null }[];
+const codes = new Set(rows.map((m) => m.country_code?.toLowerCase()).filter(Boolean));
+// Fallback: the full static list (no pinned section) when Supabase is unreachable.
 const pool = codes.size > 0 ? COUNTRIES.filter((c) => codes.has(c.code)) : COUNTRIES;
 
-// Featured markets pinned above a separator, in this order.
-const TOP_CODES: readonly string[] = ['cy', 'at', 'eg', 'lb', 'gr'];
-const topCountries = TOP_CODES
-  .map((code) => pool.find((c) => c.code === code))
-  .filter((c): c is (typeof COUNTRIES)[number] => Boolean(c));
-const otherCountries = pool
-  .filter((c) => !TOP_CODES.includes(c.code))
-  .slice()
-  .sort((a, b) => a.label.localeCompare(b.label));
-const groups = [topCountries, otherCountries].filter((g) => g.length > 0);
+// Admin-pinned markets above a separator (group_countries.featured_order),
+// managed in the dashboard's Country Groups tab.
+const { top, rest } = partitionPickerCountries([...pool], featuredCodes(rows));
+const groups = [top, rest].filter((g) => g.length > 0);
 ---
 <div
   class="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center px-4"

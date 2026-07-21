@@ -5,7 +5,7 @@ import type { ProductGroup, GroupCountry } from '../types/product';
 const group = (code: string, label: string | null): ProductGroup =>
   ({ code, label, description: null, sort_order: 0, is_active: true, created_at: '', updated_at: '' });
 const country = (id: string, group_code: string, name: string, cc: string | null): GroupCountry =>
-  ({ id, group_code, country: name, country_code: cc, sort_order: 0, created_at: '', updated_at: '' });
+  ({ id, group_code, country: name, country_code: cc, sort_order: 0, featured_order: null, created_at: '', updated_at: '' });
 
 const groups = [group('A', 'Europe'), group('B', 'Middle East')];
 const countries = [

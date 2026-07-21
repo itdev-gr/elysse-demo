@@ -4,7 +4,7 @@ import type { GroupCountry } from '../types/product';
 
 const gc = (group_code: string, country_code: string): GroupCountry => ({
   id: country_code, group_code, country: country_code.toUpperCase(),
-  country_code, sort_order: 0, created_at: '', updated_at: '',
+  country_code, sort_order: 0, featured_order: null, created_at: '', updated_at: '',
 });
 
 describe('expandCountriesForGroups', () => {

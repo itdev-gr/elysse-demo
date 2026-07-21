@@ -45,10 +45,14 @@ export interface GroupCountry {
   country: string;
   country_code: string | null;
   sort_order: number;
+  /** null = normal; 1..n = position in the country picker's pinned top section. */
+  featured_order: number | null;
   created_at: string;
   updated_at: string;
 }
-export type GroupCountryDraft = Omit<GroupCountry, 'id' | 'created_at' | 'updated_at'>;
+export type GroupCountryDraft =
+  Omit<GroupCountry, 'id' | 'created_at' | 'updated_at' | 'featured_order'>
+  & { featured_order?: number | null };
 
 export type IssueType =
   | 'duplicate_code' | 'missing_code' | 'missing_field' | 'missing_group' | 'invalid_value'
