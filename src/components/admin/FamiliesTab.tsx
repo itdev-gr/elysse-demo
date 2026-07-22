@@ -13,6 +13,7 @@ import {
   type FamilyImageRow, type FamilyImageEntry,
 } from '../../lib/family-images';
 import { sanitiseName } from '../../lib/image-rename';
+import { extraSlugsByFamily, diffCrossListings, type CrossListingRow } from '../../lib/cross-listings';
 import SearchInput from './SearchInput';
 
 function chunk<T>(arr: T[], n: number): T[][] {
@@ -56,6 +57,14 @@ export default function FamiliesTab() {
   // family_id → primary (lowest sort_order) image url, for the row thumbnail.
   const [primaryByFam, setPrimaryByFam] = useState<Record<string, string>>({});
 
+  // family_id → extra category slugs the family is cross-listed into.
+  const [crossByFam, setCrossByFam] = useState<Record<string, string[]>>({});
+  // Family open in the "Also show in…" modal + its draft selection.
+  const [crossTarget, setCrossTarget] = useState<ProductFamily | null>(null);
+  const [crossDraft, setCrossDraft] = useState<Set<string>>(new Set());
+  const [crossSaving, setCrossSaving] = useState(false);
+  const [crossError, setCrossError] = useState<string | null>(null);
+
   // Country-group coverage per family (drives the public catalog's country
   // gating). Group codes come from product_groups; coverage counts how many of
   // the family's products belong to each group.
@@ -69,15 +78,18 @@ export default function FamiliesTab() {
     setError(null);
     const [
       { data: c, error: cErr }, { data: f, error: fErr }, { data: imgs, error: iErr },
-      { data: grps, error: gErr }, { data: gcRows, error: gcErr },
+      { data: grps, error: gErr }, { data: gcRows, error: gcErr }, { data: xRows, error: xErr },
     ] = await Promise.all([
       supabase.from('product_categories').select('*').order('sort_order'),
       supabase.from('product_families').select('*').order('category_slug').order('sort_order'),
       supabase.from('product_images').select('*').order('created_at', { ascending: false }),
       supabase.from('product_groups').select('code').order('sort_order'),
       supabase.from('group_countries').select('group_code, country').order('group_code').order('country'),
+      supabase.from('product_family_extra_categories').select('family_id, category_slug').order('category_slug'),
     ]);
-    if (cErr || fErr || iErr || gErr || gcErr) return setError((cErr ?? fErr ?? iErr ?? gErr ?? gcErr)!.message);
+    if (cErr || fErr || iErr || gErr || gcErr || xErr) {
+      return setError((cErr ?? fErr ?? iErr ?? gErr ?? gcErr ?? xErr)!.message);
+    }
     setCats((c ?? []) as ProductCategory[]);
     setFamilies((f ?? []) as ProductFamily[]);
     setImages((imgs ?? []) as ProductImage[]);
@@ -87,6 +99,7 @@ export default function FamiliesTab() {
       gcMap[r.group_code] = gcMap[r.group_code] ? `${gcMap[r.group_code]}, ${r.country}` : r.country;
     }
     setGroupCountries(gcMap);
+    setCrossByFam(extraSlugsByFamily((xRows ?? []) as CrossListingRow[]));
     setSubcats(await getSubcategories({ includeHidden: true }));   // for series order + grouping
 
     // product-derived counts + series (paginated past the 1000-row cap)
@@ -161,6 +174,10 @@ export default function FamiliesTab() {
         families.filter((f) => f.category_slug === cat.slug),
         query,
         (fam) => factsFor(cat, fam.code),
+        (fam) => (crossByFam[fam.id] ?? []).flatMap((slug) => {
+          const c = (cats ?? []).find((x) => x.slug === slug);
+          return [slug, c?.name ?? null];
+        }),
       ),
     }))
     .filter(({ cat, codes }) => query.trim() === '' || codes.length > 0 || addingFor === cat.slug);
@@ -269,6 +286,40 @@ export default function FamiliesTab() {
     const { error: err } = await supabase.from('product_families').delete().eq('id', fam.id);
     if (err) return setError(err.message);
     await load(); triggerPublish();
+  };
+
+  // ── cross-listing ("Also show in…") ──────────────────────────────────────
+
+  const openCrossListing = (fam: ProductFamily) => {
+    setCrossTarget(fam);
+    setCrossError(null);
+    setCrossDraft(new Set(crossByFam[fam.id] ?? []));
+  };
+
+  const saveCrossListing = async () => {
+    if (!crossTarget) return;
+    setCrossSaving(true);
+    setCrossError(null);
+    try {
+      const { toAdd, toRemove } = diffCrossListings(crossByFam[crossTarget.id] ?? [], [...crossDraft]);
+      if (toAdd.length) {
+        const { error: err } = await supabase.from('product_family_extra_categories')
+          .insert(toAdd.map((slug) => ({ family_id: crossTarget.id, category_slug: slug })));
+        if (err) throw new Error(err.message);
+      }
+      if (toRemove.length) {
+        const { error: err } = await supabase.from('product_family_extra_categories')
+          .delete().eq('family_id', crossTarget.id).in('category_slug', toRemove);
+        if (err) throw new Error(err.message);
+      }
+      setCrossTarget(null);
+      await load();
+      triggerPublish();
+    } catch (e) {
+      setCrossError(e instanceof Error ? e.message : 'Saving cross-listing failed.');
+    } finally {
+      setCrossSaving(false);
+    }
   };
 
   // ── image management ─────────────────────────────────────────────────────
@@ -529,6 +580,15 @@ export default function FamiliesTab() {
                             <span className="font-mono w-16 shrink-0">{fam.code}</span>
                             {/* Configuration (English) — display only. */}
                             <span className="flex-1 min-w-0 truncate text-ink/70" title={configuration ?? undefined}>{configuration ?? '—'}</span>
+                            {(crossByFam[fam.id] ?? []).map((slug) => {
+                              const c = (cats ?? []).find((x) => x.slug === slug);
+                              return (
+                                <span key={slug} title={`Also shown in ${c?.name ?? slug}`}
+                                  className="shrink-0 inline-block px-1.5 py-0.5 text-[9px] uppercase tracking-[0.15em] bg-brand-500/10 text-brand-500 rounded">
+                                  + {c?.name ?? slug}
+                                </span>
+                              );
+                            })}
                             <span className="flex items-center gap-1.5 shrink-0" aria-label={`Country groups for ${fam.code}`}>
                               {groupCodes.map((g) => {
                                 const key = famKey(cat, fam.code);
@@ -558,6 +618,7 @@ export default function FamiliesTab() {
                             </span>
                             <span className="font-mono text-[10px] text-ink/45">{count} prod</span>
                             {!fam.is_active && <span className="text-[10px] uppercase tracking-[0.2em] text-ink/45">hidden</span>}
+                            <button type="button" onClick={() => openCrossListing(fam)} className="text-[11px] text-brand-500 uppercase tracking-[0.15em]">Also in…</button>
                             <button type="button" onClick={() => openImageManager(fam)} className="text-[11px] text-brand-500 uppercase tracking-[0.15em]">Manage images</button>
                             <button type="button" onClick={() => renameCode(cat, fam)} className="text-[11px] text-brand-500 uppercase tracking-[0.15em]">Rename</button>
                             <button type="button" onClick={() => toggleCode(fam)} className="text-[11px] text-ink/60 uppercase tracking-[0.15em]">{fam.is_active ? 'Hide' : 'Show'}</button>
@@ -571,6 +632,53 @@ export default function FamiliesTab() {
               </section>
             );
           })}
+        </div>
+      )}
+
+      {/* Modal: cross-list a family into additional categories */}
+      {crossTarget && (
+        <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/50 p-4 sm:p-8">
+          <div className="relative w-full max-w-md bg-surface border border-ink/15 shadow-xl">
+            <div className="border-b border-ink/10 px-5 py-4">
+              <p className="text-[10px] uppercase tracking-[0.25em] text-brand-500 font-semibold mb-0.5">Also show in</p>
+              <p className="text-sm text-ink font-medium">
+                {catForFamily(crossTarget)?.name} · No.{crossTarget.code}
+              </p>
+            </div>
+            <div className="p-5">
+              {crossError && (
+                <p role="alert" className="text-sm text-red-700 bg-red-50 border-l-2 border-red-500 px-3 py-2 mb-4">{crossError}</p>
+              )}
+              <p className="text-xs text-ink/60 mb-3">
+                The card (with all its sizes) also appears on the ticked categories&rsquo; pages.
+                It keeps its product page under {catForFamily(crossTarget)?.name ?? 'its own category'}.
+              </p>
+              <ul className="flex flex-col gap-1.5">
+                {(cats ?? []).filter((c) => c.is_active && c.slug !== crossTarget.category_slug).map((c) => (
+                  <li key={c.slug}>
+                    <label className="flex items-center gap-2 text-sm cursor-pointer">
+                      <input type="checkbox" className="accent-brand-500"
+                        checked={crossDraft.has(c.slug)}
+                        onChange={(e) => {
+                          const next = new Set(crossDraft);
+                          if (e.currentTarget.checked) next.add(c.slug); else next.delete(c.slug);
+                          setCrossDraft(next);
+                        }} />
+                      {c.name}
+                    </label>
+                  </li>
+                ))}
+              </ul>
+              <div className="flex items-center justify-end gap-3 mt-5">
+                <button type="button" onClick={() => setCrossTarget(null)}
+                  className="px-3 py-1.5 text-[11px] uppercase tracking-[0.2em] text-ink/60">Cancel</button>
+                <button type="button" disabled={crossSaving} onClick={saveCrossListing}
+                  className="bg-brand-500 text-surface px-4 py-1.5 text-[11px] uppercase tracking-[0.2em] disabled:opacity-50">
+                  {crossSaving ? 'Saving…' : 'Save'}
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       )}
 

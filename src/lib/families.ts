@@ -81,18 +81,20 @@ export function buildCodeFacts(rows: ProductFactRow[]): {
   return { facts, codesByFam };
 }
 
-/** Admin search over family codes: matches the code itself or any of the
- *  family's configuration names (overall or per-series). */
+/** Admin search over family codes: matches the code itself, any of the
+ *  family's configuration names (overall or per-series), or any extra fields
+ *  the caller supplies (e.g. cross-listed category slugs/names). */
 export function filterFamilies(
   fams: ProductFamily[],
   query: string,
   factsFor: (fam: ProductFamily) => CodeFacts,
+  extraFieldsFor?: (fam: ProductFamily) => (string | null)[],
 ): ProductFamily[] {
   if (query.trim() === '') return fams;
   return fams.filter((fam) => {
     const f = factsFor(fam);
     const configs = [f.configuration, ...[...f.perSeries.values()].map((s) => s.configuration)];
-    return matchesFields(query, [fam.code, ...configs]);
+    return matchesFields(query, [fam.code, ...configs, ...(extraFieldsFor?.(fam) ?? [])]);
   });
 }
 

@@ -109,4 +109,14 @@ describe('filterFamilies', () => {
   it('returns [] when nothing matches', () => {
     expect(filterFamilies(fams, 'zzz', factsFor)).toEqual([]);
   });
+  it('matches via extraFieldsFor (cross-listed category names)', () => {
+    const fams: ProductFamily[] = [
+      { id: 'f1', category_slug: 'compression-fittings', code: '330A', sort_order: 0, is_active: true },
+      { id: 'f2', category_slug: 'compression-fittings', code: '331', sort_order: 1, is_active: true },
+    ];
+    const noFacts = (): CodeFacts => ({ count: 0, configuration: null, series: [], perSeries: new Map() });
+    const extras = (fam: ProductFamily) => (fam.id === 'f1' ? ['turf', 'Turf'] : []);
+    expect(filterFamilies(fams, 'turf', noFacts, extras).map((f) => f.code)).toEqual(['330A']);
+    expect(filterFamilies(fams, '330', noFacts, extras).map((f) => f.code)).toEqual(['330A']);
+  });
 });
