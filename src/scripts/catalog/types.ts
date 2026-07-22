@@ -25,6 +25,11 @@ export interface CatalogProduct {
   nameI18n?: Record<string, string>;
   code?: string;
   categorySlug: CategorySlug;
+  /** When set, the detail link points at THIS category instead of
+   *  `categorySlug`. Used by cross-listed cards: they sit on the extra
+   *  category's page (categorySlug = that page, so the client-side category
+   *  filter keeps them) but link to their canonical home page. */
+  detailCategorySlug?: CategorySlug;
   sectors: Sector[];
   material?: string;
   dnRange?: [number, number];

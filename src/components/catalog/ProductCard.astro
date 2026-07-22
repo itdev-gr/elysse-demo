@@ -5,7 +5,7 @@ interface Props { product: CatalogProduct; }
 const { product: p } = Astro.props;
 
 const fallback = p.imageUrls[0] ?? p.image ?? '';
-const detailUrl = `/catalog/${p.categorySlug}/${p.slug}`;
+const detailUrl = `/catalog/${p.detailCategorySlug ?? p.categorySlug}/${p.slug}`;
 const Media = p.hasDetailPage ? 'a' : 'div';
 ---
 <article
