@@ -667,7 +667,7 @@ export default function FamiliesTab() {
                       <select
                         value={crossDraft[c.slug] ?? ''}
                         disabled={series.length === 0}
-                        onChange={(e) => setCrossDraft((d) => ({ ...d, [c.slug]: e.currentTarget.value }))}
+                        onChange={(e) => { const value = e.currentTarget.value; setCrossDraft((d) => ({ ...d, [c.slug]: value })); }}
                         className="shrink-0 bg-transparent border-b border-ink/25 py-1 text-sm focus:outline-none focus:border-brand-500"
                       >
                         <option value="">— not shown —</option>

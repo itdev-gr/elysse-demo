@@ -3,6 +3,7 @@ import type { Session } from '@supabase/supabase-js';
 import { supabase } from '../../lib/supabase';
 import LoginForm from './LoginForm';
 import Dashboard from './Dashboard';
+import ErrorBoundary from './ErrorBoundary';
 
 export default function AdminApp() {
   const [session, setSession] = useState<Session | null>(null);
@@ -27,5 +28,9 @@ export default function AdminApp() {
     );
   }
 
-  return session ? <Dashboard /> : <LoginForm />;
+  return (
+    <ErrorBoundary>
+      {session ? <Dashboard /> : <LoginForm />}
+    </ErrorBoundary>
+  );
 }
