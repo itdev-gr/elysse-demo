@@ -97,7 +97,8 @@ export async function fetchCrossListedCards(extraSlug: CategorySlug): Promise<Ca
   const { data, error } = await supabase
     .from('product_family_extra_categories')
     .select('family_id, category_slug, sub_category')
-    .eq('category_slug', extraSlug);
+    .eq('category_slug', extraSlug)
+    .order('family_id');   // stable order so borrowed cards don't flicker between SSR renders
   if (error) { console.error('fetchCrossListedCards:', error.message); return []; }
   const listings = (data ?? []) as CrossListingRow[];
   if (listings.length === 0) return [];
