@@ -44,11 +44,9 @@ if (excelName) {
 
 // Cards cross-listed into this category from other families ("borrowed"):
 // appended after the native cards, linking back to their canonical home pages.
-let crossSeriesI18n: Record<string, Record<string, string>> = {};
 try {
-  const cross = await fetchCrossListedCards(categoryEntry.slug as CategorySlug);
-  products = [...products, ...cross.cards];
-  crossSeriesI18n = cross.seriesI18n;
+  const crossCards = await fetchCrossListedCards(categoryEntry.slug as CategorySlug);
+  products = [...products, ...crossCards];
 } catch (err) {
   console.error(`catalog "${category}": cross-listed fetch failed, skipping`, err);
 }
@@ -73,9 +71,6 @@ const series = applySubcategoryOverlay(rawSeries, overlay);
 // Series name → its non-English translations, for the storefront language swap.
 const seriesI18n: Record<string, Record<string, string>> = {};
 for (const o of overlay) if (o.name_i18n && Object.keys(o.name_i18n).length) seriesI18n[o.name] = o.name_i18n;
-// Borrowed series translations come from their HOME categories' overlays.
-// This category's own overlay wins on a name clash.
-for (const [name, tr] of Object.entries(crossSeriesI18n)) seriesI18n[name] ??= tr;
 
 const productsJson = JSON.stringify(products);
 ---

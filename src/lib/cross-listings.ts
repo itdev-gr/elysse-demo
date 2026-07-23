@@ -87,45 +87,42 @@ export function buildCrossListedCards(
 }
 
 /**
- * The borrowed cards to append to one category's catalog page, plus the
- * series-name translations their sidebar entries need (from each family's
- * HOME category overlay). Empty result when the category has no listings.
- * Errors are logged and degrade to "no borrowed cards" — a bad listing must
- * never 500 the category page.
+ * The borrowed cards to append to one category's catalog page. Each card is
+ * relabelled to the destination series the admin chose, so it slots into that
+ * (managed) series' existing section — its translations already come from this
+ * category's own overlay, so no borrowed i18n is needed. Errors degrade to [];
+ * a bad listing must never 500 the page.
  */
-export async function fetchCrossListedCards(extraSlug: CategorySlug): Promise<{
-  cards: CatalogProduct[];
-  seriesI18n: Record<string, Record<string, string>>;
-}> {
-  const empty = { cards: [], seriesI18n: {} };
+export async function fetchCrossListedCards(extraSlug: CategorySlug): Promise<CatalogProduct[]> {
   const { data, error } = await supabase
     .from('product_family_extra_categories')
-    .select('family_id, category_slug')
+    .select('family_id, category_slug, sub_category')
     .eq('category_slug', extraSlug);
-  if (error) { console.error('fetchCrossListedCards:', error.message); return empty; }
+  if (error) { console.error('fetchCrossListedCards:', error.message); return []; }
   const listings = (data ?? []) as CrossListingRow[];
-  if (listings.length === 0) return empty;
+  if (listings.length === 0) return [];
 
   const [families, categories, subcats] = await Promise.all([
-    getFamilies({ includeHidden: true }),   // mirror the home grid, which doesn't gate on family is_active
-    getCategories(),                         // active only — a hidden home category lends nothing
-    getSubcategories(),                      // includes hidden rows; they filter the borrowed cards
+    getFamilies({ includeHidden: true }),   // mirror the home grid
+    getCategories(),                         // active only — a hidden home lends nothing
+    getSubcategories(),                      // includes hidden; used for the home-hidden filter
   ]);
   const fams = crossListedFamiliesFor(listings, families, extraSlug);
-  // Home category slug → the family codes borrowed from it. getFamilies is
-  // ordered (category_slug, sort_order), so iteration order is deterministic.
-  const byHome = new Map<string, Set<string>>();
-  for (const f of fams) {
-    let set = byHome.get(f.category_slug);
-    if (!set) { set = new Set(); byHome.set(f.category_slug, set); }
-    set.add(f.code);
+  const famById = new Map(fams.map((f) => [f.id, f]));
+  // home category slug → Map(code → destination series), from each placement.
+  const byHome = new Map<string, Map<string, string>>();
+  for (const l of listings) {
+    const f = famById.get(l.family_id);
+    if (!f) continue;                         // filtered out (self-listing / unknown)
+    let m = byHome.get(f.category_slug);
+    if (!m) { m = new Map(); byHome.set(f.category_slug, m); }
+    m.set(f.code, l.sub_category);
   }
 
   const cards: CatalogProduct[] = [];
-  const seriesI18n: Record<string, Record<string, string>> = {};
-  for (const [homeSlug, codes] of byHome) {
+  for (const [homeSlug, seriesByCode] of byHome) {
     const home = categories.find((c) => c.slug === homeSlug);
-    if (!home?.product_category_name) continue;   // hidden or unlinked home category
+    if (!home?.product_category_name) continue;   // hidden/unlinked home category
     const overlay = subcats.filter((s) => s.category_slug === homeSlug);
     const hidden = new Set(overlay.filter((s) => !s.is_active).map((s) => s.name));
     let homeCards: CatalogProduct[] = [];
@@ -135,13 +132,7 @@ export async function fetchCrossListedCards(extraSlug: CategorySlug): Promise<{
       console.error(`fetchCrossListedCards: home "${homeSlug}" fetch failed, skipping`, err);
       continue;
     }
-    const borrowed = buildCrossListedCards(homeCards, codes, hidden, extraSlug);
-    cards.push(...borrowed);
-    for (const o of overlay) {
-      if (o.name_i18n && Object.keys(o.name_i18n).length && borrowed.some((c) => c.material === o.name)) {
-        seriesI18n[o.name] = o.name_i18n;
-      }
-    }
+    cards.push(...buildCrossListedCards(homeCards, seriesByCode, hidden, extraSlug));
   }
-  return { cards, seriesI18n };
+  return cards;
 }
