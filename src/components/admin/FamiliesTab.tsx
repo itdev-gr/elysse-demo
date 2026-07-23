@@ -13,7 +13,7 @@ import {
   type FamilyImageRow, type FamilyImageEntry,
 } from '../../lib/family-images';
 import { sanitiseName } from '../../lib/image-rename';
-import { extraSlugsByFamily, diffCrossListings, type CrossListingRow } from '../../lib/cross-listings';
+import { placementsByFamily, diffPlacements, type Placement, type CrossListingRow } from '../../lib/cross-listings';
 import SearchInput from './SearchInput';
 
 function chunk<T>(arr: T[], n: number): T[][] {
@@ -57,11 +57,11 @@ export default function FamiliesTab() {
   // family_id → primary (lowest sort_order) image url, for the row thumbnail.
   const [primaryByFam, setPrimaryByFam] = useState<Record<string, string>>({});
 
-  // family_id → extra category slugs the family is cross-listed into.
-  const [crossByFam, setCrossByFam] = useState<Record<string, string[]>>({});
-  // Family open in the "Also show in…" modal + its draft selection.
+  // family_id → its placements (destination category + series).
+  const [crossByFam, setCrossByFam] = useState<Record<string, Placement[]>>({});
   const [crossTarget, setCrossTarget] = useState<ProductFamily | null>(null);
-  const [crossDraft, setCrossDraft] = useState<Set<string>>(new Set());
+  // draft: destination category_slug → chosen series ('' = not shown).
+  const [crossDraft, setCrossDraft] = useState<Record<string, string>>({});
   const [crossSaving, setCrossSaving] = useState(false);
   const [crossError, setCrossError] = useState<string | null>(null);
 
@@ -85,7 +85,7 @@ export default function FamiliesTab() {
       supabase.from('product_images').select('*').order('created_at', { ascending: false }),
       supabase.from('product_groups').select('code').order('sort_order'),
       supabase.from('group_countries').select('group_code, country').order('group_code').order('country'),
-      supabase.from('product_family_extra_categories').select('family_id, category_slug').order('category_slug'),
+      supabase.from('product_family_extra_categories').select('family_id, category_slug, sub_category').order('category_slug'),
     ]);
     if (cErr || fErr || iErr || gErr || gcErr || xErr) {
       return setError((cErr ?? fErr ?? iErr ?? gErr ?? gcErr ?? xErr)!.message);
@@ -99,7 +99,7 @@ export default function FamiliesTab() {
       gcMap[r.group_code] = gcMap[r.group_code] ? `${gcMap[r.group_code]}, ${r.country}` : r.country;
     }
     setGroupCountries(gcMap);
-    setCrossByFam(extraSlugsByFamily((xRows ?? []) as CrossListingRow[]));
+    setCrossByFam(placementsByFamily((xRows ?? []) as CrossListingRow[]));
     setSubcats(await getSubcategories({ includeHidden: true }));   // for series order + grouping
 
     // product-derived counts + series (paginated past the 1000-row cap)
@@ -174,9 +174,9 @@ export default function FamiliesTab() {
         families.filter((f) => f.category_slug === cat.slug),
         query,
         (fam) => factsFor(cat, fam.code),
-        (fam) => (crossByFam[fam.id] ?? []).flatMap((slug) => {
-          const c = (cats ?? []).find((x) => x.slug === slug);
-          return [slug, c?.name ?? null];
+        (fam) => (crossByFam[fam.id] ?? []).flatMap((p) => {
+          const c = (cats ?? []).find((x) => x.slug === p.category_slug);
+          return [p.category_slug, c?.name ?? null, p.sub_category];
         }),
       ),
     }))
@@ -293,7 +293,9 @@ export default function FamiliesTab() {
   const openCrossListing = (fam: ProductFamily) => {
     setCrossTarget(fam);
     setCrossError(null);
-    setCrossDraft(new Set(crossByFam[fam.id] ?? []));
+    const draft: Record<string, string> = {};
+    for (const p of crossByFam[fam.id] ?? []) draft[p.category_slug] = p.sub_category;
+    setCrossDraft(draft);
   };
 
   const saveCrossListing = async () => {
@@ -301,15 +303,18 @@ export default function FamiliesTab() {
     setCrossSaving(true);
     setCrossError(null);
     try {
-      const { toAdd, toRemove } = diffCrossListings(crossByFam[crossTarget.id] ?? [], [...crossDraft]);
-      if (toAdd.length) {
+      const current: Record<string, string> = {};
+      for (const p of crossByFam[crossTarget.id] ?? []) current[p.category_slug] = p.sub_category;
+      const { upserts, deletes } = diffPlacements(current, crossDraft);
+      if (upserts.length) {
         const { error: err } = await supabase.from('product_family_extra_categories')
-          .insert(toAdd.map((slug) => ({ family_id: crossTarget.id, category_slug: slug })));
+          .upsert(upserts.map((u) => ({ family_id: crossTarget.id, ...u })),
+                  { onConflict: 'family_id,category_slug' });
         if (err) throw new Error(err.message);
       }
-      if (toRemove.length) {
+      if (deletes.length) {
         const { error: err } = await supabase.from('product_family_extra_categories')
-          .delete().eq('family_id', crossTarget.id).in('category_slug', toRemove);
+          .delete().eq('family_id', crossTarget.id).in('category_slug', deletes);
         if (err) throw new Error(err.message);
       }
       setCrossTarget(null);
@@ -580,12 +585,12 @@ export default function FamiliesTab() {
                             <span className="font-mono w-16 shrink-0">{fam.code}</span>
                             {/* Configuration (English) — display only. */}
                             <span className="flex-1 min-w-0 truncate text-ink/70" title={configuration ?? undefined}>{configuration ?? '—'}</span>
-                            {(crossByFam[fam.id] ?? []).map((slug) => {
-                              const c = (cats ?? []).find((x) => x.slug === slug);
+                            {(crossByFam[fam.id] ?? []).map((p) => {
+                              const c = (cats ?? []).find((x) => x.slug === p.category_slug);
                               return (
-                                <span key={slug} title={`Also shown in ${c?.name ?? slug}`}
+                                <span key={p.category_slug} title={`Also in ${c?.name ?? p.category_slug} / ${p.sub_category}`}
                                   className="shrink-0 inline-block px-1.5 py-0.5 text-[9px] uppercase tracking-[0.15em] bg-brand-500/10 text-brand-500 rounded">
-                                  + {c?.name ?? slug}
+                                  + {c?.name ?? p.category_slug} / {p.sub_category}
                                 </span>
                               );
                             })}
@@ -653,21 +658,24 @@ export default function FamiliesTab() {
                 The card (with all its sizes) also appears on the ticked categories&rsquo; pages.
                 It keeps its product page under {catForFamily(crossTarget)?.name ?? 'its own category'}.
               </p>
-              <ul className="flex flex-col gap-1.5">
-                {(cats ?? []).filter((c) => c.is_active && c.slug !== crossTarget.category_slug).map((c) => (
-                  <li key={c.slug}>
-                    <label className="flex items-center gap-2 text-sm cursor-pointer">
-                      <input type="checkbox" className="accent-brand-500"
-                        checked={crossDraft.has(c.slug)}
-                        onChange={(e) => {
-                          const next = new Set(crossDraft);
-                          if (e.currentTarget.checked) next.add(c.slug); else next.delete(c.slug);
-                          setCrossDraft(next);
-                        }} />
-                      {c.name}
-                    </label>
-                  </li>
-                ))}
+              <ul className="flex flex-col gap-2">
+                {(cats ?? []).filter((c) => c.is_active && c.slug !== crossTarget.category_slug).map((c) => {
+                  const series = subcats.filter((s) => s.category_slug === c.slug && s.is_active);
+                  return (
+                    <li key={c.slug} className="flex items-center justify-between gap-3 text-sm">
+                      <span className="truncate">{c.name}</span>
+                      <select
+                        value={crossDraft[c.slug] ?? ''}
+                        disabled={series.length === 0}
+                        onChange={(e) => setCrossDraft((d) => ({ ...d, [c.slug]: e.currentTarget.value }))}
+                        className="shrink-0 bg-transparent border-b border-ink/25 py-1 text-sm focus:outline-none focus:border-brand-500"
+                      >
+                        <option value="">— not shown —</option>
+                        {series.map((s) => <option key={s.id} value={s.name}>{s.name}</option>)}
+                      </select>
+                    </li>
+                  );
+                })}
               </ul>
               <div className="flex items-center justify-end gap-3 mt-5">
                 <button type="button" onClick={() => setCrossTarget(null)}
