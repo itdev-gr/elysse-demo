@@ -8,32 +8,51 @@ import { fetchCatalogConfigurations } from './products';
 /** One row of product_family_extra_categories. */
 export interface CrossListingRow {
   family_id: string;
-  /** The EXTRA category the family also appears in (not its home). */
+  /** The destination category the family also appears in (not its home). */
   category_slug: string;
+  /** The destination series (a managed subcategory of category_slug). */
+  sub_category: string;
 }
 
-/** family_id → extra category slugs, for the admin row badges + search. */
-export function extraSlugsByFamily(listings: CrossListingRow[]): Record<string, string[]> {
-  const out: Record<string, string[]> = {};
-  for (const l of listings) (out[l.family_id] ??= []).push(l.category_slug);
+/** A family's placement into one destination category, under one series. */
+export interface Placement {
+  category_slug: string;
+  sub_category: string;
+}
+
+/** family_id → its placements, for the admin row badges + modal + search. */
+export function placementsByFamily(listings: CrossListingRow[]): Record<string, Placement[]> {
+  const out: Record<string, Placement[]> = {};
+  for (const l of listings) {
+    (out[l.family_id] ??= []).push({ category_slug: l.category_slug, sub_category: l.sub_category });
+  }
   return out;
 }
 
-/** Admin save: which slugs to insert and which to delete. */
-export function diffCrossListings(
-  current: string[],
-  next: string[],
-): { toAdd: string[]; toRemove: string[] } {
-  const cur = new Set(current);
-  const nxt = new Set(next);
-  return {
-    toAdd: [...nxt].filter((s) => !cur.has(s)),
-    toRemove: [...cur].filter((s) => !nxt.has(s)),
-  };
+/**
+ * Admin save diff. `current`/`next` map category_slug → chosen series (an empty
+ * string or a missing key means "not shown"). Returns the placements to upsert
+ * (added or series-changed) and the category slugs to delete (cleared).
+ */
+export function diffPlacements(
+  current: Record<string, string>,
+  next: Record<string, string>,
+): { upserts: Placement[]; deletes: string[] } {
+  const upserts: Placement[] = [];
+  const deletes: string[] = [];
+  const cats = new Set([...Object.keys(current), ...Object.keys(next)]);
+  for (const category_slug of cats) {
+    const was = current[category_slug] ?? '';
+    const now = next[category_slug] ?? '';
+    if (now === was) continue;
+    if (now === '') deletes.push(category_slug);
+    else upserts.push({ category_slug, sub_category: now });
+  }
+  return { upserts, deletes };
 }
 
-/** The families cross-listed into one extra category. Self-listings (family
- *  already home there) are bad data — dropped defensively; the checker flags them. */
+/** The families cross-listed into one destination category. Self-listings
+ *  (family already home there) are bad data — dropped defensively. */
 export function crossListedFamiliesFor(
   listings: CrossListingRow[],
   families: ProductFamily[],
@@ -44,21 +63,27 @@ export function crossListedFamiliesFor(
 }
 
 /**
- * Rebrand a home category's cards for display inside the extra category: keep
- * only the cross-listed codes, drop series hidden at home, and tag with the
- * extra slug so the client-side category filter keeps them — while the card's
- * link stays canonical via detailCategorySlug (the home slug).
+ * Rebrand a home category's cards for display inside the destination category:
+ * keep only the borrowed codes (present in seriesByCode), drop cards whose HOME
+ * series is hidden, then relabel each surviving card's series (`material`) to
+ * its chosen destination series and tag it with the destination slug — while
+ * the card's link stays canonical via detailCategorySlug (the home slug).
  */
 export function buildCrossListedCards(
   homeCards: CatalogProduct[],
-  codes: Set<string>,
+  seriesByCode: Map<string, string>,
   hiddenHomeSeries: Set<string>,
   extraSlug: CategorySlug,
 ): CatalogProduct[] {
   return homeCards
-    .filter((c) => c.code != null && codes.has(c.code))
+    .filter((c) => c.code != null && seriesByCode.has(c.code))
     .filter((c) => !c.material || !hiddenHomeSeries.has(c.material))
-    .map((c) => ({ ...c, categorySlug: extraSlug, detailCategorySlug: c.categorySlug }));
+    .map((c) => ({
+      ...c,
+      categorySlug: extraSlug,
+      detailCategorySlug: c.categorySlug,
+      material: seriesByCode.get(c.code as string),
+    }));
 }
 
 /**
